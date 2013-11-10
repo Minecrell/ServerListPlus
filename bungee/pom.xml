@@ -4,11 +4,15 @@
     <parent>
         <artifactId>ServerListPlus</artifactId>
         <groupId>net.minecrell</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.7-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>BungeeServerListPlus</artifactId>
+
+    <properties>
+        <project.mainClass>${project.groupId}.serverlistplus.ServerListPlus</project.mainClass>
+    </properties>
 
     <dependencies>
         <dependency>

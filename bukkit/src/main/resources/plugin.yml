@@ -1,4 +1,5 @@
 main: ${project.mainClass}
 name: ${project.name}
 version: ${project.version}
+author: ${project.developers[0].name} (${project.developers[0].url})
 depend: [ProtocolLib]
