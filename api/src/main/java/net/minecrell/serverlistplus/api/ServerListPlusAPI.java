@@ -30,6 +30,7 @@ public final class ServerListPlusAPI {
 
     public void reload() throws IOException {
         if (Files.notExists(configPath)) {
+            Files.createDirectories(configPath.getParent());
             Files.createFile(configPath);
             lines = new ArrayList<>();
         } else

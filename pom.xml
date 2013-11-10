@@ -22,6 +22,10 @@
 
     <url>https://github.com/Minecrell/ServerListPlus/tree/minecraft-1.7</url>
 
+    <properties>
+        <project.author>Minecrell (https://github.com/Minecrell)</project.author>
+    </properties>
+
     <licenses>
         <license>
             <name>GNU General Public License (GPL) 3.0</name>
@@ -29,6 +33,15 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <id>minecrell</id>
+            <name>Minecrell</name>
+            <email>dev@minecrell.net</email>
+            <url>https://github.com/Minecrell</url>
+        </developer>
+    </developers>
 
     <scm>
         <url>https://github.com/Minecrell/ServerListPlus</url>

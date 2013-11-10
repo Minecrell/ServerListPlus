@@ -10,6 +10,7 @@ import com.comphenix.protocol.injector.GamePhase;
 import net.md_5.bungee.api.ServerPing;
 import net.minecrell.serverlistplus.api.ServerListPlusAPI;
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -48,7 +49,14 @@ public final class ServerListPlus extends JavaPlugin {
         @Override
         public void onPacketSending(PacketEvent event) {
             PacketContainer packet = event.getPacket(); Gson gson = new Gson();
-            packet.getStrings().write(0,gson.toJson(serverList.handleServerPing(gson.fromJson(packet.getStrings().read(0), ServerPing.class))));
+
+            try {
+                ServerPing ping = gson.fromJson(packet.getStrings().read(0), ServerPing.class);
+                if ((ping.getVersion() == null) || (ping.getPlayers() == null)) return;
+                packet.getStrings().write(0,gson.toJson(serverList.handleServerPing(ping)));
+            } catch (JsonParseException e) {
+                return;
+            }
         }
     }
 }
