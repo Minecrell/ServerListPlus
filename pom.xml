@@ -52,7 +52,7 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.minecrell.net/job/ServerListPlus/</url>
+        <url>http://ci.minecrell.net/job/ServerListPlus-1.7/</url>
     </ciManagement>
 
     <issueManagement>
