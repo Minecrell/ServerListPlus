@@ -3,3 +3,13 @@ name: ${project.name}
 version: ${project.version}
 author: ${project.author}
 depend: [ProtocolLib]
+permissions:
+  serverlistplus.reload:
+    description: Allows you to reload the ServerListPlus configuration.
+    default: op
+commands:
+  serverlistplus:
+    description: 'Reloads the ServerListPlus configuration.'
+    aliases: [serverlist, slp]
+    permission: serverlistplus.reload
+    usage: "\u00A7cUsage: \u00A76/<command>"

@@ -73,6 +73,7 @@
                                 <filter>
                                     <artifact>net.md-5:bungeecord-api</artifact>
                                     <includes>
+                                        <include>net/md_5/bungee/api/ChatColor**</include>
                                         <include>net/md_5/bungee/api/ServerPing**</include>
                                     </includes>
                                 </filter>
