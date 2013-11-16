@@ -155,7 +155,7 @@ public class ServerListConfiguration {
 
     private List<String> loadServerListLines() throws IOException {
         if (Files.notExists(linesPath)) {
-            Files.createDirectories(configPath.getParent());
+            Files.createDirectories(linesPath.getParent());
 
             InputStream defaultConfig = api.getPlugin().getClass().getClassLoader().getResourceAsStream(LINES_FILENAME);
             if (defaultConfig != null)
