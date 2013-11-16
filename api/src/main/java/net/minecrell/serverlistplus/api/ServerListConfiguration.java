@@ -172,7 +172,7 @@ public class ServerListConfiguration {
 
                     // Process configuration line
                     if (line.startsWith("#")) continue; // Skip comment lines
-                    lines.add(api.getPlugin().colorizeString((line.length() > 0) ? line : "&r"));
+                    lines.add(api.getPlugin().colorizeString((!line.trim().isEmpty()) ? line : "&r"));
                 }
 
                 return lines;
