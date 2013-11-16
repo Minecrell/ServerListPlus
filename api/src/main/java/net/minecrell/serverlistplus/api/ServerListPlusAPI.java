@@ -1,76 +1,120 @@
+/*
+ * ServerListPlus - Customize your server's ping information!
+ * Copyright (C) 2013, Minecrell
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.minecrell.serverlistplus.api;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.ServerPing.PlayerInfo;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
+import java.net.InetSocketAddress;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public final class ServerListPlusAPI {
-    private final Path configPath;
-    private List<String> lines = null;
+    private final ServerListPlugin plugin;
+    private final ServerListConfiguration config;
 
-    public ServerListPlusAPI(File configFile) throws IOException {
-        this(configFile.toPath());
+    private final Map<String, String> playerIPs = new HashMap<>();
+
+    public ServerListPlusAPI(ServerListPlugin plugin) throws Exception {
+        this.plugin = plugin;
+
+        this.getLogger().info("Initializing ServerListPlusAPI...");
+        this.config = new ServerListConfiguration(this);
+        this.getLogger().info("ServerListPlusAPI initialized!");
     }
 
-    public ServerListPlusAPI(Path configPath) throws IOException {
-        this.configPath = configPath;
-        this.reload();
+    public ServerListPlugin getPlugin() {
+        return plugin;
     }
 
-    public ServerPing handleServerPing(InetAddress address, ServerPing ping) {
-        return handleServerPing(address, ping, lines);
+    public ServerListConfiguration getConfiguration() {
+        return config;
+    }
+
+    public Logger getLogger()     {
+        return plugin.getLogger();
     }
 
     public void reload() throws IOException {
-        if (Files.notExists(configPath)) {
-            Files.createDirectories(configPath.getParent());
-            Files.createFile(configPath);
-            lines = new ArrayList<>();
-        } else
-            // Colorize and replace empty lines using an RESET color
-            this.lines = Lists.transform(Files.readAllLines(configPath, StandardCharsets.UTF_8), new Function<String, String>() {
-                @Override
-                public String apply(String s) {
-                    return ChatColor.translateAlternateColorCodes('&', (s.length() > 0) ? s : "&r");
-                }
-            });
+        this.getConfiguration().reload();
+        plugin.reload();
     }
 
-    public List<String> getLines() {
-        return lines;
+    public ServerPing processRequest(InetSocketAddress address, ServerPing ping) {
+        return this.processRequest(address.getAddress(), ping);
     }
 
-    private static Map<String, String> playerIPs = new HashMap<>();
-
-    public static ServerPing handleServerPing(InetAddress address, ServerPing ping, List<String> lines) {
-        if (lines.size() == 0) {
+    public ServerPing processRequest(InetAddress address, ServerPing ping) {
+        if (config.getLines().size() <= 0) {
             ping.getPlayers().setSample(null); return ping;
         }
 
         final String playerIP = address.getHostAddress();
 
-        PlayerInfo[] players = new PlayerInfo[lines.size()];
+        PlayerInfo[] players = new PlayerInfo[config.getLines().size()];
         for (int i = 0; i < players.length; i++) {
-            players[i] = new PlayerInfo(lines.get(i).replace("%player%", (playerIPs.containsKey(playerIP) ? playerIPs.get(playerIP) : "player")), "");
+            String line = config.getLines().get(i);
+            if (config.trackPlayers())
+                line = line.replace("%player%", (playerIPs.containsKey(playerIP) ? playerIPs.get(playerIP) : config.getDefaultPlayerName()));
+
+            players[i] = new PlayerInfo(line, ""); // Create a player with an empty ID
         }
 
         ping.getPlayers().setSample(players); return ping;
     }
 
-    public static void handlePlayerLogin(String playerName, InetAddress address) {
-        playerIPs.put(address.getHostAddress(), playerName);
+    public void processPlayerLogin(String playerName, InetSocketAddress address) {
+        this.processPlayerLogin(playerName, address.getAddress());
+    }
+
+    public void processPlayerLogin(String playerName, InetAddress address) {
+        if (config.trackPlayers()) playerIPs.put(address.getHostAddress(), playerName);
+    }
+
+    public void processCommand(ServerCommandSender sender, String label, String[] args) {
+        switch (((args.length > 0) ? args[0] : "info").toUpperCase(Locale.ENGLISH)) {
+            case "RELOAD":
+                try {
+                    this.reload();
+                    this.sendColoredMessage(sender, "&aConfiguration reloaded!");
+                } catch (Exception e) {
+                    this.getLogger().warning("Cancelling configuration reload!");
+                    this.sendColoredMessage(sender, "&cAn internal error occurred while reloading the plugin configuration!");
+                } break;
+            default:
+                this.sendColoredMessage(
+                        sender,
+                        "&6ServerListPlusAPI v" + plugin.getVersion(),
+                        "&cCopyright (C) 2013, Minecrell",
+                        "&9http://www.spigotmc.org/resources/serverlistplus.241/",
+                        "-----------------------------------------------",
+                        "&2Type &6/" + label + " reload &2to reload the plugin configuration."
+                ); break;
+        }
+    }
+
+    private void sendColoredMessage(ServerCommandSender sender, String... messages) {
+        for (String message : messages)
+            sender.sendMessage(plugin.colorizeString(message));
     }
 }

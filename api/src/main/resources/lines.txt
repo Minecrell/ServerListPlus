@@ -1,0 +1,8 @@
+# '%player%' will be replaced by the player name when he has logged in on the server once.
+&aHey, %player%!
+&eThis is the default configuration
+&eof the ServerListPlus plugin preview.
+
+&6If you can see this, you should probably
+&6contact the server admin to customize
+&6this text for the server.

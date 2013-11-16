@@ -1,15 +1,19 @@
 main: ${project.mainClass}
+
 name: ${project.name}
-version: ${project.version}
+version: '${project.version}'
+
+description: "${project.description}"
+
 author: ${project.author}
 depend: [ProtocolLib]
+
 permissions:
-  serverlistplus.reload:
-    description: Allows you to reload the ServerListPlus configuration.
+  ServerListPlus.Admin:
+    description: Allows you to access the ServerListPlus commands.
     default: op
 commands:
   serverlistplus:
-    description: 'Reloads the ServerListPlus configuration.'
+    description: "${project.description}"
     aliases: [serverlist, slp]
-    permission: serverlistplus.reload
-    usage: "\u00A7cUsage: \u00A76/<command>"
+    permission: ServerListPlus.Admin

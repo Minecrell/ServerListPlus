@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ ServerListPlus - Customize your server's ping information!
+  ~ Copyright (C) 2013, Minecrell
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -18,9 +36,11 @@
     <artifactId>ServerListPlus</artifactId>
 
     <name>ServerListPlus</name>
-    <version>1.7-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
 
-    <url>https://github.com/Minecrell/ServerListPlus/tree/minecraft-1.7</url>
+    <description>Customize your server's ping information!</description>
+
+    <url>http://www.spigotmc.org/resources/serverlistplus.241/</url>
 
     <properties>
         <project.author>Minecrell (https://github.com/Minecrell)</project.author>
@@ -90,6 +110,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>*.yml</include>
+                    <include>*.txt</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>
@@ -102,6 +123,13 @@
                     <configuration>
                         <source>1.7</source>
                         <target>1.7</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
                     </configuration>
                 </plugin>
             </plugins>
