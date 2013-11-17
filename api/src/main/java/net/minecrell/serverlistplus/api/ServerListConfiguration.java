@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-public class ServerListConfiguration {
+public final class ServerListConfiguration {
     public final static String CONFIG_FILENAME = "serverlistplus.cfg";
     public final static String LINES_FILENAME = "lines.txt";
 
@@ -38,7 +38,8 @@ public class ServerListConfiguration {
 
     public static enum ConfigurationEntry {
         TRACK_PLAYERS ("track-players", "true"),
-        DEFAULT_PLAYER_NAME ("default-player-name", "player");
+        DEFAULT_PLAYER_NAME ("default-player-name", "player"),
+        ENABLE_METRICS ("enable-metrics", "true");
 
         private final String key;
         private final String defaultValue;
@@ -76,6 +77,8 @@ public class ServerListConfiguration {
     private boolean trackPlayers = true;
     private String defaultPlayerName = "player";
 
+    private boolean enableMetrics = true;
+
     public ServerListConfiguration(ServerListPlusAPI api) throws IOException {
         this.api = api;
 
@@ -110,6 +113,10 @@ public class ServerListConfiguration {
         return defaultPlayerName;
     }
 
+    public boolean enableMetrics() {
+        return enableMetrics;
+    }
+
     public void reload() throws IOException {
         try {
             api.getLogger().info("Reloading plugin configuration...");
@@ -117,6 +124,8 @@ public class ServerListConfiguration {
 
             this.trackPlayers = Boolean.parseBoolean(ConfigurationEntry.getProperty(properties, ConfigurationEntry.TRACK_PLAYERS));
             this.defaultPlayerName = ConfigurationEntry.getProperty(properties, ConfigurationEntry.DEFAULT_PLAYER_NAME);
+
+            this.enableMetrics = Boolean.parseBoolean(ConfigurationEntry.getProperty(properties, ConfigurationEntry.ENABLE_METRICS));
             api.getLogger().info("Successful!");
 
             api.getLogger().info("Reloading server list lines...");

@@ -28,7 +28,6 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.minecrell.serverlistplus.api.ServerListPlugin;
 import net.minecrell.serverlistplus.api.ServerListPlusAPI;
-import org.mcstats.MetricsLite;
 
 public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
     private ServerListPlusAPI serverList;
@@ -45,10 +44,6 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
         this.getProxy().getPluginManager().registerListener(this, new PingListener());
         this.getProxy().getPluginManager().registerCommand(this, new ServerListCommand());
         this.reload();
-
-        try {
-            new MetricsLite(this).start();
-        } catch (Throwable ignored) {}
     }
 
     public class ServerListCommand extends Command {
@@ -94,6 +89,16 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
     @Override
     public ServerType getServerType() {
         return ServerType.BUNGEE;
+    }
+
+    @Override
+    public String getServerVersion() {
+        return this.getProxy().getVersion() + " (MC: " + this.getProxy().getGameVersion() + ")";
+    }
+
+    @Override
+    public int getOnlinePlayers() {
+        return this.getProxy().getOnlineCount();
     }
 
     @Override

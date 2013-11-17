@@ -19,6 +19,6 @@
 package net.minecrell.serverlistplus.api;
 
 public interface ServerCommandSender {
-    public String getName();
-    public void sendMessage(String message);
+    String getName();
+    void sendMessage(String message);
 }

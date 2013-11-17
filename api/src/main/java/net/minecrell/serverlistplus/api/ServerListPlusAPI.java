@@ -35,12 +35,20 @@ public final class ServerListPlusAPI {
 
     private final Map<String, String> playerIPs = new HashMap<>();
 
+    private ServerListMetrics metrics;
+
     public ServerListPlusAPI(ServerListPlugin plugin) throws Exception {
         this.plugin = plugin;
 
         this.getLogger().info("Initializing ServerListPlusAPI...");
         this.config = new ServerListConfiguration(this);
         this.getLogger().info("ServerListPlusAPI initialized!");
+
+        if (config.enableMetrics()) {
+            try {
+                this.metrics = new ServerListMetrics(this);
+            } catch (Throwable ignored) {}
+        }
     }
 
     public ServerListPlugin getPlugin() {
@@ -56,8 +64,14 @@ public final class ServerListPlusAPI {
     }
 
     public void reload() throws IOException {
-        this.getConfiguration().reload();
+        config.reload();
         plugin.reload();
+
+        if (metrics != null) {
+            try {
+                metrics.reloadConfiguration(config);
+            } catch (Throwable ignored) {}
+        }
     }
 
     public ServerPing processRequest(InetSocketAddress address, ServerPing ping) {
@@ -69,18 +83,36 @@ public final class ServerListPlusAPI {
             ping.getPlayers().setSample(null); return ping;
         }
 
-        final String playerIP = address.getHostAddress();
+        String playerName = null;
+        boolean identified = false;
+        if (config.trackPlayers()) {
+            playerName = address.getHostAddress();
+            if (playerIPs.containsKey(playerName)) {
+                playerName = playerIPs.get(playerName);
+                identified = true;
+            } else {
+                playerName = config.getDefaultPlayerName();
+            }
+        }
+
 
         PlayerInfo[] players = new PlayerInfo[config.getLines().size()];
         for (int i = 0; i < players.length; i++) {
             String line = config.getLines().get(i);
-            if (config.trackPlayers())
-                line = line.replace("%player%", (playerIPs.containsKey(playerIP) ? playerIPs.get(playerIP) : config.getDefaultPlayerName()));
+            if (config.trackPlayers()) line = line.replace("%player%", playerName);
 
             players[i] = new PlayerInfo(line, ""); // Create a player with an empty ID
         }
 
-        ping.getPlayers().setSample(players); return ping;
+        ping.getPlayers().setSample(players);
+
+        if (metrics != null) {
+            try {
+                metrics.processRequest(identified);
+            } catch (Throwable ignored) {}
+        }
+
+        return ping;
     }
 
     public void processPlayerLogin(String playerName, InetSocketAddress address) {

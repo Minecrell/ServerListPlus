@@ -39,7 +39,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.MetricsLite;
 
 public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin {
     private final Gson gson = new Gson();
@@ -59,10 +58,6 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
         ProtocolLibrary.getProtocolManager().addPacketListener(new PingListener());
         this.getCommand("serverlistplus").setExecutor(new ServerListCommand());
         this.reload();
-
-        try {
-            new MetricsLite(this).start();
-        } catch (Throwable ignored) {}
 
         this.getLogger().info(this.getName() + " enabled.");
     }
@@ -116,6 +111,16 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
     @Override
     public ServerType getServerType() {
         return ServerType.BUKKIT;
+    }
+
+    @Override
+    public String getServerVersion() {
+        return this.getServer().getVersion();
+    }
+
+    @Override
+    public int getOnlinePlayers() {
+        return this.getServer().getOnlinePlayers().length;
     }
 
     @Override

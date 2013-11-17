@@ -41,13 +41,6 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.mcstats.bungee</groupId>
-            <artifactId>metrics-lite</artifactId>
-            <version>R7</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -65,15 +58,8 @@
                             <artifactSet>
                                 <includes>
                                     <include>net.minecrell:ServerListPlus-API</include>
-                                    <include>org.mcstats.bungee:metrics-lite</include>
                                 </includes>
                             </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.mcstats</pattern>
-                                    <shadedPattern>${project.package}</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>

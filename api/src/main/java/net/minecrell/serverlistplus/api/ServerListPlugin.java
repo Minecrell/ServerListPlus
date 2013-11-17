@@ -26,15 +26,18 @@ public interface ServerListPlugin {
         BUKKIT, BUNGEE, CUSTOM;
     }
 
-    public String getName();
-    public String getVersion();
-    public ServerType getServerType();
+    String getName();
+    String getVersion();
 
-    public File getDataFolder();
+    File getDataFolder();
 
-    public Logger getLogger();
+    Logger getLogger();
 
-    public String colorizeString(String s);
+    String colorizeString(String s);
 
-    public void reload();
+    void reload();
+
+    ServerType getServerType();
+    String getServerVersion();
+    int getOnlinePlayers();
 }

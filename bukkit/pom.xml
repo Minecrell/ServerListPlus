@@ -57,12 +57,6 @@
             <version>2.7.3</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics-lite</artifactId>
-            <version>R7</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <repositories>
@@ -94,7 +88,6 @@
                                 <includes>
                                     <include>net.minecrell:ServerListPlus-API</include>
                                     <include>net.md-5:bungeecord-api</include>
-                                    <include>org.mcstats.bukkit:metrics-lite</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -108,10 +101,6 @@
                             <relocations>
                                 <relocation>
                                     <pattern>net.md_5.bungee.api</pattern>
-                                    <shadedPattern>${project.package}</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.mcstats</pattern>
                                     <shadedPattern>${project.package}</shadedPattern>
                                 </relocation>
                             </relocations>

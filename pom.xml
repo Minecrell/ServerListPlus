@@ -80,32 +80,12 @@
         <url>https://github.com/Minecrell/ServerListPlus/issues</url>
     </issueManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.7-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
-
     <repositories>
         <repository>
             <id>minecrell-repo</id>
             <url>http://repo.minecrell.net/</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>sonatype-oss</id>
-            <url>http://oss.sonatype.org/content/groups/public/</url>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-        <repository>
-            <id>metrics-repo</id>
-            <url>http://repo.mcstats.org/content/repositories/public/</url>
-            <releases><enabled>true</enabled></releases>
         </repository>
     </repositories>
 
