@@ -47,6 +47,7 @@ public final class ServerListPlusAPI {
         if (config.enableMetrics()) {
             try {
                 this.metrics = new ServerListMetrics(this);
+                metrics.start();
             } catch (Throwable ignored) {}
         }
     }
