@@ -102,6 +102,11 @@
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
         </repository>
+        <repository>
+            <id>metrics-repo</id>
+            <url>http://repo.mcstats.org/content/repositories/public/</url>
+            <releases><enabled>true</enabled></releases>
+        </repository>
     </repositories>
 
     <build>

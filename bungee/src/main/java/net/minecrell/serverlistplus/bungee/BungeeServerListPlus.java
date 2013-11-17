@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus;
+package net.minecrell.serverlistplus.bungee;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -28,6 +28,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 import net.minecrell.serverlistplus.api.ServerListPlugin;
 import net.minecrell.serverlistplus.api.ServerListPlusAPI;
+import org.mcstats.MetricsLite;
 
 public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
     private ServerListPlusAPI serverList;
@@ -44,6 +45,10 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
         this.getProxy().getPluginManager().registerListener(this, new PingListener());
         this.getProxy().getPluginManager().registerCommand(this, new ServerListCommand());
         this.reload();
+
+        try {
+            new MetricsLite(this).start();
+        } catch (Throwable ignored) {}
     }
 
     public class ServerListCommand extends Command {

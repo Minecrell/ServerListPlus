@@ -16,15 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus;
+package net.minecrell.serverlistplus.bungee;
 
+import net.md_5.bungee.api.CommandSender;
 import net.minecrell.serverlistplus.api.ServerCommandSender;
-import org.bukkit.command.CommandSender;
 
-public class BukkitCommandSender implements ServerCommandSender {
+public class BungeeCommandSender implements ServerCommandSender {
     private final CommandSender sender;
 
-    public BukkitCommandSender(CommandSender sender) {
+    public BungeeCommandSender(CommandSender sender) {
         this.sender = sender;
     }
 

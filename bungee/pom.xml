@@ -30,7 +30,8 @@
     <artifactId>BungeeServerListPlus</artifactId>
 
     <properties>
-        <project.mainClass>${project.groupId}.serverlistplus.BungeeServerListPlus</project.mainClass>
+        <project.package>${project.groupId}.serverlistplus.bungee</project.package>
+        <project.mainClass>${project.package}.BungeeServerListPlus</project.mainClass>
     </properties>
 
     <dependencies>
@@ -38,6 +39,13 @@
             <groupId>net.minecrell</groupId>
             <artifactId>ServerListPlus-API</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mcstats.bungee</groupId>
+            <artifactId>metrics-lite</artifactId>
+            <version>R7</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -57,8 +65,15 @@
                             <artifactSet>
                                 <includes>
                                     <include>net.minecrell:ServerListPlus-API</include>
+                                    <include>org.mcstats.bungee:metrics-lite</include>
                                 </includes>
                             </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.mcstats</pattern>
+                                    <shadedPattern>${project.package}</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>

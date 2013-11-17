@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus;
+package net.minecrell.serverlistplus.bukkit;
 
 import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -39,6 +39,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
 public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin {
     private final Gson gson = new Gson();
@@ -58,6 +59,10 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
         ProtocolLibrary.getProtocolManager().addPacketListener(new PingListener());
         this.getCommand("serverlistplus").setExecutor(new ServerListCommand());
         this.reload();
+
+        try {
+            new MetricsLite(this).start();
+        } catch (Throwable ignored) {}
 
         this.getLogger().info(this.getName() + " enabled.");
     }

@@ -33,10 +33,18 @@
     <properties>
         <project.bukkitType>craftbukkit</project.bukkitType>
         <project.bukkitVersion>1.6.4-R2.0</project.bukkitVersion>
-        <project.mainClass>${project.groupId}.serverlistplus.BukkitServerListPlus</project.mainClass>
+        <project.package>${project.groupId}.serverlistplus.bukkit</project.package>
+        <project.mainClass>${project.package}.BukkitServerListPlus</project.mainClass>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>net.minecrell</groupId>
+            <artifactId>ServerListPlus-API</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>${project.bukkitType}</artifactId>
@@ -50,9 +58,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.minecrell</groupId>
-            <artifactId>ServerListPlus-API</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.mcstats.bukkit</groupId>
+            <artifactId>metrics-lite</artifactId>
+            <version>R7</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -86,6 +94,7 @@
                                 <includes>
                                     <include>net.minecrell:ServerListPlus-API</include>
                                     <include>net.md-5:bungeecord-api</include>
+                                    <include>org.mcstats.bukkit:metrics-lite</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -99,7 +108,11 @@
                             <relocations>
                                 <relocation>
                                     <pattern>net.md_5.bungee.api</pattern>
-                                    <shadedPattern>net.minecrell.serverlistplus.api</shadedPattern>
+                                    <shadedPattern>${project.package}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.mcstats</pattern>
+                                    <shadedPattern>${project.package}</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
