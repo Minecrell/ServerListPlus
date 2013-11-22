@@ -26,9 +26,9 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
 import net.md_5.bungee.api.ServerPing;
-import net.minecrell.serverlistplus.api.ServerListPlugin;
+import net.minecrell.serverlistplus.api.plugin.ServerListPlugin;
 import net.minecrell.serverlistplus.api.ServerListPlusAPI;
-import org.bukkit.ChatColor;
+import net.minecrell.serverlistplus.api.plugin.ServerListServer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,6 +42,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin {
     private final Gson gson = new Gson();
+
+    private final ServerListServer server = new BukkitServer(this);
 
     private ServerListPlusAPI serverList;
     private LoginListener loginListener;
@@ -109,28 +111,14 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
     }
 
     @Override
-    public ServerType getServerType() {
-        return ServerType.BUKKIT;
-    }
-
-    @Override
-    public String getServerVersion() {
-        return this.getServer().getVersion();
-    }
-
-    @Override
-    public int getOnlinePlayers() {
-        return this.getServer().getOnlinePlayers().length;
-    }
-
-    @Override
-    public String colorizeString(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
+    public ServerListServer getServerListServer() {
+        return server;
     }
 
     @Override
     public void reload() {
-        if (serverList.getConfiguration().trackPlayers()) {
+        if (serverList == null) return;
+        if (serverList.getConfiguration().getPlayerTracking().isEnabled()) {
             if (loginListener == null)
                 this.getServer().getPluginManager().registerEvents((this.loginListener = new LoginListener()), this);
         } else if (loginListener != null) {

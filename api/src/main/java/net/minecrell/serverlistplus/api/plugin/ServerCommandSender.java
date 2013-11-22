@@ -16,25 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bungee;
+package net.minecrell.serverlistplus.api.plugin;
 
-import net.md_5.bungee.api.CommandSender;
-import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
-
-public class BungeeCommandSender implements ServerCommandSender {
-    private final CommandSender sender;
-
-    public BungeeCommandSender(CommandSender sender) {
-        this.sender = sender;
-    }
-
-    @Override
-    public String getName() {
-        return sender.getName();
-    }
-
-    @Override
-    public void sendMessage(String message) {
-        sender.sendMessage(message);
-    }
+public interface ServerCommandSender {
+    String getName();
+    void sendMessage(String message);
 }

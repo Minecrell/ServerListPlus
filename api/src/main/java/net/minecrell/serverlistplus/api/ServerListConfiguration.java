@@ -18,177 +18,175 @@
 
 package net.minecrell.serverlistplus.api;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import net.minecrell.serverlistplus.api.yaml.FieldOrderPropertyUtils;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.DumperOptions.FlowStyle;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
+
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-import java.util.logging.Level;
+import java.util.Map;
 
-public final class ServerListConfiguration {
-    public final static String CONFIG_FILENAME = "serverlistplus.cfg";
-    public final static String LINES_FILENAME = "lines.txt";
+@Data
+@AllArgsConstructor
+public class ServerListConfiguration {
+    private static final String[] comments = new String[] {
+            "ServerListPlus - http://www.spigotmc.org/resources/serverlistplus.241/",
+            "Please go to the plugin website for more information about the configuration!"
+    };
 
+    public static ServerListConfiguration getDefaultConfiguration() {
+        return new ServerListConfiguration();
+    }
+
+    public ServerListConfiguration() {
+        // Default configuration
+        this.enableMetrics = true;
+
+        this.lines = Arrays.asList(
+                "&aHey, %player%!",
+                "&eThis is the default configuration",
+                "&eof the ServerListPlus plugin preview.",
+                "",
+                "&6If you can see this, you should probably",
+                "&6contact the server admin to customize",
+                "&6this text for the server!"
+        );
+
+        this.playerTracking = new PlayerTracking();
+        this.forcedHosts = new HashMap<>();
+
+        this.forcedHosts.put(
+                "ExampleServer",
+                Arrays.asList(
+                        "&eExample lines for an example server",
+                        "&eusing forced hosts. Have fun!"
+                )
+        );
+    }
+
+    private boolean enableMetrics;
+
+    private List<String> lines;
+    private PlayerTracking playerTracking;
+
+    private Map<String, List<String>> forcedHosts;
+
+    @Data
+    @AllArgsConstructor
+    public static class PlayerTracking {
+        private boolean enabled;
+        private UnknownPlayer unknownPlayer;
+
+        public PlayerTracking() {
+            // Default configuration
+            this.enabled = true;
+            this.unknownPlayer = new UnknownPlayer();
+        }
+
+        @Data
+        @AllArgsConstructor
+        public static class UnknownPlayer {
+            private String name;
+            private CustomLines customLines;
+
+            public UnknownPlayer() {
+                // Default configuration
+                this.name = "player";
+                this.customLines = new CustomLines();
+            }
+
+            @Data
+            @AllArgsConstructor
+            public static class CustomLines {
+                public CustomLines() {
+                    this.enabled = false;
+                    this.lines = Arrays.asList(
+                            "&aHey unknown player!",
+                            "&eThis message is only used",
+                            "&eif you haven't logged in to",
+                            "&ethe server yet.",
+                            "",
+                            "&6A custom text for unknown players",
+                            "&6is enabled in the configuration!"
+                    );
+                }
+
+                private boolean enabled;
+                private List<String> lines;
+            }
+        }
+    }
+
+    // Configuration loading
     public final static Charset FILE_CHARSET = StandardCharsets.UTF_8;
+    public final static String CONFIG_FILENAME = "serverlistplus.yml";
 
-    public static enum ConfigurationEntry {
-        TRACK_PLAYERS ("track-players", "true"),
-        DEFAULT_PLAYER_NAME ("default-player-name", "player"),
-        ENABLE_METRICS ("enable-metrics", "true");
+    public static Yaml createYAMLLoader(ClassLoader loader) {
+        Representer representer = new Representer();
+        representer.setPropertyUtils(new FieldOrderPropertyUtils());
+        representer.addClassTag(ServerListConfiguration.class, new Tag("ServerListConfiguration"));
 
-        private final String key;
-        private final String defaultValue;
-
-        private ConfigurationEntry(String key, String defaultValue) {
-            this.key = key;
-            this.defaultValue = defaultValue;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public String getDefaultValue() {
-            return defaultValue;
-        }
-
-        public static String getProperty(Properties properties, ConfigurationEntry entry) {
-            return properties.getProperty(entry.getKey(), entry.getDefaultValue());
-        }
-
-        public static void validateProperty(Properties properties, ConfigurationEntry entry) {
-            if (!properties.containsKey(entry.getKey()))
-                properties.setProperty(entry.getKey(), entry.getDefaultValue());
-        }
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(FlowStyle.BLOCK);
+        return new Yaml(new CustomClassLoaderConstructor(loader), representer, options);
     }
 
-    private final ServerListPlusAPI api;
+    public static ServerListConfiguration loadConfiguration(ServerListPlusAPI api, Yaml yaml) throws Exception {
+        Path configPath = api.getPlugin().getDataFolder().toPath().resolve(CONFIG_FILENAME);
 
-    private final Path configPath;
-    private final Path linesPath;
+        api.getLogger().info("Loading configuration...");
 
-    private List<String> lines = new ArrayList<>();
+        ServerListConfiguration config;
 
-    private boolean trackPlayers = true;
-    private String defaultPlayerName = "player";
-
-    private boolean enableMetrics = true;
-
-    public ServerListConfiguration(ServerListPlusAPI api) throws IOException {
-        this.api = api;
-
-        Path pluginFolder = api.getPlugin().getDataFolder().toPath();
-        this.configPath = pluginFolder.resolve(CONFIG_FILENAME);
-        this.linesPath = pluginFolder.resolve(LINES_FILENAME);
-
-        this.reload();
-    }
-
-    public Path getConfigPath() {
-        return configPath;
-    }
-
-    public Path getLinesPath() {
-        return linesPath;
-    }
-
-    public List<String> getLines() {
-        return lines;
-    }
-
-    public void setLines(List<String> lines) {
-        this.lines = lines;
-    }
-
-    public boolean trackPlayers() {
-        return trackPlayers;
-    }
-
-    public String getDefaultPlayerName() {
-        return defaultPlayerName;
-    }
-
-    public boolean enableMetrics() {
-        return enableMetrics;
-    }
-
-    public void reload() throws IOException {
-        try {
-            api.getLogger().info("Reloading plugin configuration...");
-            Properties properties = this.loadConfiguration();
-
-            this.trackPlayers = Boolean.parseBoolean(ConfigurationEntry.getProperty(properties, ConfigurationEntry.TRACK_PLAYERS));
-            this.defaultPlayerName = ConfigurationEntry.getProperty(properties, ConfigurationEntry.DEFAULT_PLAYER_NAME);
-
-            this.enableMetrics = Boolean.parseBoolean(ConfigurationEntry.getProperty(properties, ConfigurationEntry.ENABLE_METRICS));
-            api.getLogger().info("Successful!");
-
-            api.getLogger().info("Reloading server list lines...");
-            this.lines = this.loadServerListLines();
-            api.getLogger().info("Successful!");
-        } catch (IOException e) {
-            api.getLogger().log(Level.SEVERE, "Unable to access server list configuration file: " + configPath.toAbsolutePath().toString(), e); throw e;
-        } catch (Exception e) {
-            api.getLogger().log(Level.SEVERE, "An internal error occurred while reloading the plugin configuration!", e); throw e;
-        }
-
-    }
-
-    private Properties loadConfiguration() throws IOException {
         if (Files.notExists(configPath)) {
             Files.createDirectories(configPath.getParent());
 
             InputStream defaultConfig = api.getPlugin().getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
-            if (defaultConfig != null)
+            if (defaultConfig != null) {
+                api.getLogger().info("Copying default configuration...");
                 Files.copy(defaultConfig, configPath);
+            }
         }
 
-        Properties defaultProperties = new Properties();
+        if (Files.notExists(configPath)) {
+            api.getLogger().info("Creating default configuration...");
 
-        if (Files.exists(configPath)) {
-            defaultProperties.load(Files.newBufferedReader(configPath, FILE_CHARSET));
-        } else Files.createFile(configPath);
-
-        for (ConfigurationEntry entry : ConfigurationEntry.values())
-            ConfigurationEntry.validateProperty(defaultProperties, entry);
-
-        defaultProperties.store(Files.newBufferedWriter(configPath, FILE_CHARSET), "ServerListPlus - Default configuration");
-
-        return defaultProperties;
-    }
-
-    private List<String> loadServerListLines() throws IOException {
-        if (Files.notExists(linesPath)) {
-            Files.createDirectories(linesPath.getParent());
-
-            InputStream defaultConfig = api.getPlugin().getClass().getClassLoader().getResourceAsStream(LINES_FILENAME);
-            if (defaultConfig != null)
-                Files.copy(defaultConfig, linesPath);
+            config = new ServerListConfiguration();
+        } else {
+            try (BufferedReader reader = Files.newBufferedReader(configPath, FILE_CHARSET)) {
+                config = yaml.loadAs(reader, ServerListConfiguration.class);
+            }
         }
 
-        if (Files.exists(linesPath)) {
-            try (BufferedReader reader = Files.newBufferedReader(linesPath, FILE_CHARSET)) {
-                List<String> lines = new ArrayList<>();
+        if (config != null) {
+            api.getLogger().info("Configuration successfully loaded!");
+            api.getLogger().info("Saving configuration...");
 
-                while (true) {
-                    String line = reader.readLine();
-                    if (line == null) break;
-
-                    // Process configuration line
-                    if (line.startsWith("#")) continue; // Skip comment lines
-                    lines.add(api.getPlugin().colorizeString((!line.trim().isEmpty()) ? line : "&r"));
+            try (BufferedWriter writer = Files.newBufferedWriter(configPath, FILE_CHARSET)) {
+                for (String comment : comments) {
+                    writer.write("# " + comment); writer.newLine();
                 }
 
-                return lines;
+                yaml.dump(config, writer);
             }
-        } else {
-            Files.createFile(linesPath);
-            return new ArrayList<>();
-        }
+
+            api.getLogger().info("Configuration successfully saved.");
+
+            return config;
+        } else throw new Exception("YAML configuration loader returned null!");
     }
 }

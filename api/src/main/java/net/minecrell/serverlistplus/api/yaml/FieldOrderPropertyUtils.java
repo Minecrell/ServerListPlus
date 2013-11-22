@@ -16,25 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bungee;
+package net.minecrell.serverlistplus.api.yaml;
 
-import net.md_5.bungee.api.CommandSender;
-import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
+import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
 
-public class BungeeCommandSender implements ServerCommandSender {
-    private final CommandSender sender;
+import java.beans.IntrospectionException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-    public BungeeCommandSender(CommandSender sender) {
-        this.sender = sender;
+public class FieldOrderPropertyUtils extends PropertyUtils {
+    public FieldOrderPropertyUtils() {
+        this.setBeanAccess(BeanAccess.FIELD);
     }
 
     @Override
-    public String getName() {
-        return sender.getName();
-    }
-
-    @Override
-    public void sendMessage(String message) {
-        sender.sendMessage(message);
+    protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
+        return new LinkedHashSet<>(getPropertiesMap(type, BeanAccess.FIELD).values());
     }
 }

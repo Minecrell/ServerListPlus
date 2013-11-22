@@ -16,9 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api;
+package net.minecrell.serverlistplus.api.plugin;
 
-public interface ServerCommandSender {
-    String getName();
-    void sendMessage(String message);
+import java.io.File;
+
+public interface ServerListServer {
+    public static enum ServerType {
+        BUKKIT, BUNGEE, CUSTOM
+    }
+
+    String colorizeString(String s);
+
+    ServerType getServerType();
+    String getServerVersion();
+    int getOnlinePlayers();
+    boolean getOnlineMode();
+
+    File getMetricsConfiguration();
 }

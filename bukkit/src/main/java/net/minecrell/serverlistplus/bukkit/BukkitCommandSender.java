@@ -18,7 +18,7 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
-import net.minecrell.serverlistplus.api.ServerCommandSender;
+import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
 import org.bukkit.command.CommandSender;
 
 public class BukkitCommandSender implements ServerCommandSender {

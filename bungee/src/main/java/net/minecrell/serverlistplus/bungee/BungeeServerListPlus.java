@@ -18,18 +18,21 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
-import net.minecrell.serverlistplus.api.ServerListPlugin;
+import net.minecrell.serverlistplus.api.plugin.ServerListPlugin;
 import net.minecrell.serverlistplus.api.ServerListPlusAPI;
+import net.minecrell.serverlistplus.api.plugin.ServerListServer;
 
 public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
+    private final ServerListServer server = new BungeeServer(this);
     private ServerListPlusAPI serverList;
     private LoginListener loginListener;
 
@@ -38,7 +41,8 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
         try {
             this.serverList = new ServerListPlusAPI(this);
         } catch (Exception e) {
-            this.getLogger().warning("Disabling the plugin, please fix the error before restarting the server!"); return;
+            this.getLogger().warning("Disabling the plugin, please fix the error before restarting the server!");
+            e.printStackTrace(); return;
         }
 
         this.getProxy().getPluginManager().registerListener(this, new PingListener());
@@ -62,7 +66,16 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
 
         @EventHandler
         public void onProxyPing(ProxyPingEvent event) {
-            serverList.processRequest(event.getConnection().getAddress(), event.getResponse());
+            String forcedHost = null;
+
+            if (serverList.getConfiguration().getForcedHosts().size() > 0) {
+                ServerInfo forcedHostInfo = AbstractReconnectHandler.getForcedHost(event.getConnection());
+                if (forcedHostInfo != null) {
+                    forcedHost = forcedHostInfo.getName();
+                }
+            }
+
+            serverList.processRequest(event.getConnection().getAddress(), event.getResponse(), forcedHost);
         }
     }
 
@@ -87,28 +100,14 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
     }
 
     @Override
-    public ServerType getServerType() {
-        return ServerType.BUNGEE;
-    }
-
-    @Override
-    public String getServerVersion() {
-        return this.getProxy().getVersion() + " (MC: " + this.getProxy().getGameVersion() + ")";
-    }
-
-    @Override
-    public int getOnlinePlayers() {
-        return this.getProxy().getOnlineCount();
-    }
-
-    @Override
-    public String colorizeString(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
+    public ServerListServer getServerListServer() {
+        return server;
     }
 
     @Override
     public void reload() {
-        if (serverList.getConfiguration().trackPlayers()) {
+        if (serverList == null) return;
+        if (serverList.getConfiguration().getPlayerTracking().isEnabled()) {
             if (loginListener == null)
                 this.getProxy().getPluginManager().registerListener(this, (this.loginListener = new LoginListener()));
         } else if (loginListener != null) {

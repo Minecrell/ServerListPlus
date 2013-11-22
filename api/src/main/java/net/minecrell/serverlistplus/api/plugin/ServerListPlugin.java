@@ -16,28 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api;
+package net.minecrell.serverlistplus.api.plugin;
 
 import java.io.File;
 import java.util.logging.Logger;
 
 public interface ServerListPlugin {
-    public static enum ServerType {
-        BUKKIT, BUNGEE, CUSTOM;
-    }
-
     String getName();
     String getVersion();
+
+    ServerListServer getServerListServer();
 
     File getDataFolder();
 
     Logger getLogger();
 
-    String colorizeString(String s);
-
     void reload();
-
-    ServerType getServerType();
-    String getServerVersion();
-    int getOnlinePlayers();
 }

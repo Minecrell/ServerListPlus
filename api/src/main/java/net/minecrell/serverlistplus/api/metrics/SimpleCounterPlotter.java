@@ -16,25 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bungee;
+package net.minecrell.serverlistplus.api.metrics;
 
-import net.md_5.bungee.api.CommandSender;
-import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
+import net.minecrell.serverlistplus.api.metrics.Metrics.Plotter;
 
-public class BungeeCommandSender implements ServerCommandSender {
-    private final CommandSender sender;
+public class SimpleCounterPlotter extends Plotter {
+    public SimpleCounterPlotter() {}
 
-    public BungeeCommandSender(CommandSender sender) {
-        this.sender = sender;
+    public SimpleCounterPlotter(String name) {
+        super(name);
+    }
+
+    public int value = 0;
+
+    public void count() {
+        this.count(1);
+    }
+
+    public void count(int count) {
+        this.value += count;
     }
 
     @Override
-    public String getName() {
-        return sender.getName();
+    public int getValue() {
+        return value;
     }
 
     @Override
-    public void sendMessage(String message) {
-        sender.sendMessage(message);
+    public void reset() {
+        this.value = 0;
     }
 }

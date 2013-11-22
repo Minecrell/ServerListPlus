@@ -36,16 +36,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.7-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.12.2</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.mcstats.standalone</groupId>
-            <artifactId>metrics</artifactId>
-            <version>R7</version>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <version>1.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -66,30 +66,13 @@
 
     <build>
         <plugins>
+            <!-- Do only deploy API to the repo -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.mcstats.standalone:metrics</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.mcstats</pattern>
-                                    <shadedPattern>${project.package}.metrics</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

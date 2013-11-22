@@ -20,18 +20,26 @@ package net.minecrell.serverlistplus.api;
 
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.ServerPing.PlayerInfo;
+import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
+import net.minecrell.serverlistplus.api.plugin.ServerListPlugin;
+import net.minecrell.serverlistplus.api.plugin.ServerListServer;
+import org.yaml.snakeyaml.Yaml;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class ServerListPlusAPI {
     private final ServerListPlugin plugin;
-    private final ServerListConfiguration config;
+
+    private final Yaml yamlLoader;
+
+    private ServerListConfiguration config;
 
     private final Map<String, String> playerIPs = new HashMap<>();
 
@@ -41,19 +49,17 @@ public final class ServerListPlusAPI {
         this.plugin = plugin;
 
         this.getLogger().info("Initializing ServerListPlusAPI...");
-        this.config = new ServerListConfiguration(this);
+        this.yamlLoader = ServerListConfiguration.createYAMLLoader(this.getPlugin().getClass().getClassLoader());
+        this.reload();
         this.getLogger().info("ServerListPlusAPI initialized!");
-
-        if (config.enableMetrics()) {
-            try {
-                this.metrics = new ServerListMetrics(this);
-                metrics.start();
-            } catch (Throwable ignored) {}
-        }
     }
 
     public ServerListPlugin getPlugin() {
         return plugin;
+    }
+
+    public ServerListServer getServer() {
+        return this.getPlugin().getServerListServer();
     }
 
     public ServerListConfiguration getConfiguration() {
@@ -64,9 +70,30 @@ public final class ServerListPlusAPI {
         return plugin.getLogger();
     }
 
-    public void reload() throws IOException {
-        config.reload();
+    public void reload() throws Exception {
+        try {
+            this.config = ServerListConfiguration.loadConfiguration(this, yamlLoader);
+        } catch (Exception e) {
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while loading the configuration!", e);
+            throw e;
+        }
+
         plugin.reload();
+
+        if (config.isEnableMetrics()) {
+            if (metrics == null) {
+                try {
+                    this.metrics = new ServerListMetrics(this);
+                    metrics.start();
+                } catch (Throwable ignored) {}
+            }
+        } else if (metrics != null) {
+            // Disable metrics
+            try {
+                this.metrics.disable();
+            } catch (Throwable ignored) {}
+            this.metrics = null;
+        }
 
         if (metrics != null) {
             try {
@@ -76,33 +103,47 @@ public final class ServerListPlusAPI {
     }
 
     public ServerPing processRequest(InetSocketAddress address, ServerPing ping) {
-        return this.processRequest(address.getAddress(), ping);
+        return this.processRequest(address, ping, null);
     }
 
     public ServerPing processRequest(InetAddress address, ServerPing ping) {
+        return this.processRequest(address, ping, null);
+    }
+
+    public ServerPing processRequest(InetSocketAddress address, ServerPing ping, String forcedHost) {
+        return this.processRequest(address.getAddress(), ping, forcedHost);
+    }
+
+    public ServerPing processRequest(InetAddress address, ServerPing ping, String forcedHost) {
         if (config.getLines().size() <= 0) {
             ping.getPlayers().setSample(null); return ping;
         }
 
+        List<String> lines = ((forcedHost != null) && config.getForcedHosts().containsKey(forcedHost)) ?
+                config.getForcedHosts().get(forcedHost) : config.getLines();
+
         String playerName = null;
         boolean identified = false;
-        if (config.trackPlayers()) {
+        if (config.getPlayerTracking().isEnabled()) {
             playerName = address.getHostAddress();
             if (playerIPs.containsKey(playerName)) {
                 playerName = playerIPs.get(playerName);
                 identified = true;
             } else {
-                playerName = config.getDefaultPlayerName();
+                playerName = config.getPlayerTracking().getUnknownPlayer().getName();
+                if (config.getPlayerTracking().getUnknownPlayer().getCustomLines().isEnabled()) {
+                    lines = config.getPlayerTracking().getUnknownPlayer().getCustomLines().getLines();
+                }
             }
         }
 
-
-        PlayerInfo[] players = new PlayerInfo[config.getLines().size()];
+        PlayerInfo[] players = new PlayerInfo[lines.size()];
         for (int i = 0; i < players.length; i++) {
-            String line = config.getLines().get(i);
-            if (config.trackPlayers()) line = line.replace("%player%", playerName);
+            String line = lines.get(i);
+            if (line.trim().length() <= 0) line = "&r";
+            if (config.getPlayerTracking().isEnabled()) line = line.replace("%player%", playerName);
 
-            players[i] = new PlayerInfo(line, ""); // Create a player with an empty ID
+            players[i] = new PlayerInfo(this.getServer().colorizeString(line), ""); // Create a player with an empty ID
         }
 
         ping.getPlayers().setSample(players);
@@ -121,7 +162,13 @@ public final class ServerListPlusAPI {
     }
 
     public void processPlayerLogin(String playerName, InetAddress address) {
-        if (config.trackPlayers()) playerIPs.put(address.getHostAddress(), playerName);
+        if (config.getPlayerTracking().isEnabled()) playerIPs.put(address.getHostAddress(), playerName);
+
+        if (metrics != null) {
+            try {
+                metrics.processPlayerLogin();
+            } catch (Throwable ignored) {}
+        }
     }
 
     public void processCommand(ServerCommandSender sender, String label, String[] args) {
@@ -148,6 +195,6 @@ public final class ServerListPlusAPI {
 
     private void sendColoredMessage(ServerCommandSender sender, String... messages) {
         for (String message : messages)
-            sender.sendMessage(plugin.colorizeString(message));
+            sender.sendMessage(this.getServer().colorizeString(message));
     }
 }
