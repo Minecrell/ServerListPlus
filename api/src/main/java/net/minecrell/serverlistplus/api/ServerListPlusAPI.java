@@ -18,6 +18,8 @@
 
 package net.minecrell.serverlistplus.api;
 
+import com.google.common.io.BaseEncoding;
+import com.google.common.io.Files;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.ServerPing.PlayerInfo;
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
@@ -25,6 +27,7 @@ import net.minecrell.serverlistplus.api.plugin.ServerListPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerListServer;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -42,6 +45,7 @@ public final class ServerListPlusAPI {
     private ServerListConfiguration config;
 
     private final Map<String, String> playerIPs = new HashMap<>();
+    private final Map<String, String> favicons = new HashMap<>();
 
     private ServerListMetrics metrics;
 
@@ -73,6 +77,25 @@ public final class ServerListPlusAPI {
     public void reload() throws Exception {
         try {
             this.config = ServerListConfiguration.loadConfiguration(this, yamlLoader);
+
+            favicons.clear();
+
+            for ( String forcedHost : this.config.getForcedHosts().keySet() )
+            {
+                File fav = new File( "server-icon.png" );
+                if ( fav.exists() )
+                {
+                    try
+                    {
+                        String favicon = "data:image/png;base64," + BaseEncoding.base64().encode( Files.toByteArray( fav ) );
+                        favicons.put( forcedHost, favicon );
+                    } catch ( Exception exception ) {
+                        favicons.put( forcedHost, null );
+                        this.getLogger().warning( "Could not load server icon for forced host " + forcedHost + " are you sure the file is named (case sensitive) " + forcedHost + "-server-icon.png" );
+                    }
+                }
+            }
+
         } catch (Exception e) {
             this.getLogger().log(Level.SEVERE, "An internal error occurred while loading the configuration!", e);
             throw e;
@@ -121,6 +144,12 @@ public final class ServerListPlusAPI {
 
         List<String> lines = ((forcedHost != null) && config.getForcedHosts().containsKey(forcedHost)) ?
                 config.getForcedHosts().get(forcedHost) : config.getLines();
+
+        String favicon = ((forcedHost != null) && config.getForcedHosts().containsKey(forcedHost) && favicons.containsKey(forcedHost) && favicons.get(forcedHost) != null) ?
+                favicons.get(forcedHost) : null;
+
+        if ( favicon != null )
+            ping.setFavicon( favicon );
 
         String playerName = null;
         boolean identified = false;
