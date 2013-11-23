@@ -18,6 +18,7 @@
 
 package net.minecrell.serverlistplus.api;
 
+import com.google.common.io.BaseEncoding;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.ServerPing.PlayerInfo;
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
@@ -27,6 +28,9 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,13 +39,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class ServerListPlusAPI {
+    private static final String FAVICON_BASE = "data:image/png;base64,";
+
     private final ServerListPlugin plugin;
 
     private final Yaml yamlLoader;
-
     private ServerListConfiguration config;
 
     private final Map<String, String> playerIPs = new HashMap<>();
+    private Map<String, String> favicons;
 
     private ServerListMetrics metrics;
 
@@ -78,8 +84,13 @@ public final class ServerListPlusAPI {
             throw e;
         }
 
+        // Clear the favicon cache
+        this.favicons = new HashMap<>();
+
+        // Let the plugin register it's listeners
         plugin.reload();
 
+        // Enable Metrics
         if (config.isEnableMetrics()) {
             if (metrics == null) {
                 try {
@@ -118,8 +129,30 @@ public final class ServerListPlusAPI {
             ping.getPlayers().setSample(null); return ping;
         }
 
-        List<String> lines = ((forcedHost != null) && config.getForcedHosts().containsKey(forcedHost)) ?
-                config.getForcedHosts().get(forcedHost) : config.getLines();
+        List<String> lines = config.getLines();
+        String favicon = null;
+
+        if (forcedHost != null) {
+            if (config.getForcedHosts().containsKey(forcedHost))
+                lines = config.getForcedHosts().get(forcedHost);
+
+            if (favicons.containsKey(forcedHost)) {
+                favicon = favicons.get(forcedHost);
+            } else {
+                // Try loading the favicon
+                Path faviconFile = Paths.get(favicon + "_server-icon.png");
+
+                if (Files.exists(faviconFile)) {
+                    try {
+                        favicons.put(forcedHost, (favicon = FAVICON_BASE + BaseEncoding.base64().encode(Files.readAllBytes(faviconFile))));
+                    } catch (Throwable e) {
+                        this.getLogger().log(Level.SEVERE, "Could not load server icon for forced host '" + forcedHost +
+                                "' from '" + faviconFile.toAbsolutePath().toString() + "'!", e);
+                        favicons.put(forcedHost, null);
+                    }
+                } else favicons.put(forcedHost, null);
+            }
+        }
 
         String playerName = null;
         boolean identified = false;
@@ -146,6 +179,8 @@ public final class ServerListPlusAPI {
         }
 
         ping.getPlayers().setSample(players);
+
+        if (favicon != null) ping.setFavicon(favicon);
 
         if (metrics != null) {
             try {
