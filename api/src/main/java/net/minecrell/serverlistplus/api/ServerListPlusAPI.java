@@ -147,10 +147,14 @@ public final class ServerListPlusAPI {
                         favicons.put(forcedHost, (favicon = FAVICON_BASE + BaseEncoding.base64().encode(Files.readAllBytes(faviconFile))));
                     } catch (Throwable e) {
                         this.getLogger().log(Level.SEVERE, "Could not load server icon for forced host '" + forcedHost +
-                                "' from '" + faviconFile.toAbsolutePath().toString() + "'!", e);
+                                "' from '" + faviconFile.toAbsolutePath() + "'!", e);
                         favicons.put(forcedHost, null);
                     }
-                } else favicons.put(forcedHost, null);
+                } else {
+                    this.getLogger().warning("Unable to find server icon for forced host '" + forcedHost +
+                            "' in file '" + faviconFile.getFileName() + "' in your server's root folder.");
+                    favicons.put(forcedHost, null);
+                }
             }
         }
 
