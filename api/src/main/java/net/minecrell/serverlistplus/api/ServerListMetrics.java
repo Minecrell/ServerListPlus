@@ -23,6 +23,7 @@ import net.minecrell.serverlistplus.api.metrics.SimpleCounterPlotter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public final class ServerListMetrics extends Metrics<ServerListPlusAPI> {
     private SimpleCounterPlotter pingPlotter, playerPlotter, loginPlotter;
@@ -35,11 +36,15 @@ public final class ServerListMetrics extends Metrics<ServerListPlusAPI> {
         pingGraph.addPlotter((pingPlotter = new SimpleCounterPlotter("Server pings")));
         pingGraph.addPlotter((playerPlotter = new SimpleCounterPlotter("Players identified")));
         pingGraph.addPlotter((loginPlotter = new SimpleCounterPlotter("Players logged in")));
-        this.createGraph("Configuration lines loaded").addPlotter((configPlotter = new SimpleCounterPlotter()));
+        this.createGraph("Server list lines loaded").addPlotter((configPlotter = new SimpleCounterPlotter()));
     }
 
     protected void reloadConfiguration(ServerListConfiguration config) {
         configPlotter.count(config.getLines().size());
+        for (List<String> lines : config.getForcedHosts().values())
+            configPlotter.count(lines.size());
+        if (config.getPlayerTracking().getUnknownPlayer().getCustomLines().isEnabled())
+            configPlotter.count(config.getPlayerTracking().getUnknownPlayer().getCustomLines().getLines().size());
     }
 
     protected void processRequest(boolean identified) {
