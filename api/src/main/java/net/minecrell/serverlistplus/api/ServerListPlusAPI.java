@@ -83,8 +83,7 @@ public final class ServerListPlusAPI {
         if (config.isEnableMetrics()) {
             if (metrics == null) {
                 try {
-                    this.metrics = new ServerListMetrics(this);
-                    metrics.start();
+                    (this.metrics = new ServerListMetrics(this)).start();
                 } catch (Throwable ignored) {}
             }
         } else if (metrics != null) {

@@ -49,7 +49,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 
-public abstract class Metrics {
+public abstract class Metrics<Plugin> {
 
     /**
      * The current revision number
@@ -87,6 +87,15 @@ public abstract class Metrics {
     private final Properties properties = new Properties();
 
     /**
+     * The plugin instance
+     */
+    private final Plugin plugin;
+
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    /**
      * The plugin's name
      */
     private final String pluginName;
@@ -116,11 +125,12 @@ public abstract class Metrics {
      */
     private Thread thread = null;
 
-    public Metrics(String pluginName, String pluginVersion) throws IOException {
-        if (pluginName == null || pluginVersion == null) {
+    public Metrics(Plugin plugin, String pluginName, String pluginVersion) throws IOException {
+        if (plugin == null || pluginName == null || pluginVersion == null) {
             throw new IllegalArgumentException("Plugin cannot be null");
         }
 
+        this.plugin = plugin;
         this.pluginName = pluginName;
         this.pluginVersion = pluginVersion;
 

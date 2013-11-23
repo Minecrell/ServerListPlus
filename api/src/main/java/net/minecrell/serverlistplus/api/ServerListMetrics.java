@@ -24,15 +24,12 @@ import net.minecrell.serverlistplus.api.metrics.SimpleCounterPlotter;
 import java.io.File;
 import java.io.IOException;
 
-public final class ServerListMetrics extends Metrics {
-    private final ServerListPlusAPI api;
-
+public final class ServerListMetrics extends Metrics<ServerListPlusAPI> {
     private SimpleCounterPlotter pingPlotter, playerPlotter, loginPlotter;
     private SimpleCounterPlotter configPlotter;
 
     public ServerListMetrics(ServerListPlusAPI api) throws IOException {
-        super("ServerListPlus", api.getPlugin().getVersion());
-        this.api = api;
+        super(api, "ServerListPlus", api.getPlugin().getVersion());
 
         Graph pingGraph = this.createGraph("Server pings processed");
         pingGraph.addPlotter((pingPlotter = new SimpleCounterPlotter("Server pings")));
@@ -56,21 +53,21 @@ public final class ServerListMetrics extends Metrics {
 
     @Override
     public String getFullServerVersion() {
-        return api.getServer().getServerVersion();
+        return this.getPlugin().getServer().getServerVersion();
     }
 
     @Override
     public boolean getAuthMode() {
-        return api.getServer().getOnlineMode();
+        return this.getPlugin().getServer().getOnlineMode();
     }
 
     @Override
     public int getPlayersOnline() {
-        return api.getServer().getOnlinePlayers();
+        return this.getPlugin().getServer().getOnlinePlayers();
     }
 
     @Override
     public File getConfigFile() {
-        return api.getServer().getMetricsConfiguration();
+        return this.getPlugin().getServer().getMetricsConfiguration();
     }
 }
