@@ -25,6 +25,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
+import com.comphenix.protocol.reflect.StructureModifier;
 import net.md_5.bungee.api.ServerPing;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlugin;
 import net.minecrell.serverlistplus.api.ServerListPlusAPI;
@@ -40,6 +41,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
+
 public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin {
     private final Gson gson = new Gson();
 
@@ -47,6 +52,9 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
 
     private ServerListPlusAPI serverList;
     private LoginListener loginListener;
+
+    private RequestListener requestListener;
+    private Map<String, String> hostMap;
 
     @Override
     public void onEnable() {
@@ -78,19 +86,46 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
         }
     }
 
+    public class RequestListener extends PacketAdapter {
+        private RequestListener() {
+            super(BukkitServerListPlus.this, ConnectionSide.CLIENT_SIDE, GamePhase.LOGIN, Packets.Client.HANDSHAKE);
+        }
+
+        @Override // Handshake
+        public void onPacketReceiving(PacketEvent event) {
+            PacketContainer packet = event.getPacket();
+            Integer state = packet.getIntegers().readSafely(2);
+
+            // Check if handshake is for server ping
+            if (state == null) return;
+            if (state != 1) return;
+
+            String hostname = packet.getStrings().readSafely(0);
+            if (hostname == null) return; // Check if hostname was correctly read
+
+            // Cache the hostname
+            hostMap.put(event.getPlayer().getAddress().getAddress().getHostAddress(), hostname);
+        }
+    }
+
     public class PingListener extends PacketAdapter {
         private PingListener() {
             super(BukkitServerListPlus.this, ConnectionSide.SERVER_SIDE, GamePhase.LOGIN, Packets.Server.KICK_DISCONNECT);
         }
 
-        @Override
+        @Override // Kick disconnect
         public void onPacketSending(PacketEvent event) {
             PacketContainer packet = event.getPacket();
+            StructureModifier<String> packetStrings = packet.getStrings();
+
+            InetAddress address = event.getPlayer().getAddress().getAddress();
+            String hostname = address.getHostAddress();
+            hostname = (hostMap.containsKey(hostname)) ? hostMap.get(hostname) : null;
 
             try {
-                ServerPing ping = gson.fromJson(packet.getStrings().read(0), ServerPing.class);
+                ServerPing ping = gson.fromJson(packetStrings.read(0), ServerPing.class);
                 if ((ping == null) || (ping.getVersion() == null) || (ping.getPlayers() == null)) return;
-                packet.getStrings().write(0, gson.toJson(serverList.processRequest(event.getPlayer().getAddress(), ping)));
+                packetStrings.write(0, gson.toJson(serverList.processRequest(address, ping, hostname)));
             } catch (JsonParseException ignored) {}
         }
     }
@@ -118,10 +153,27 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
     @Override
     public void reload() {
         if (serverList == null) return;
+
+        // Clear the host cache
+        hostMap = new HashMap<>();
+
+        if (serverList.getConfiguration().getForcedHosts().size() > 0) {
+            // Enable packet listener if it is disbled
+            if (requestListener == null)
+                ProtocolLibrary.getProtocolManager().addPacketListener((this.requestListener = new RequestListener()));
+        } else if (requestListener != null) {
+            // Disable packet listener if it is enabled
+            ProtocolLibrary.getProtocolManager().removePacketListener(requestListener);
+            this.requestListener = null;
+        }
+
+        // Register / unregister the listeners
         if (serverList.getConfiguration().getPlayerTracking().isEnabled()) {
+            // Enable login listener if it is disabled
             if (loginListener == null)
                 this.getServer().getPluginManager().registerEvents((this.loginListener = new LoginListener()), this);
         } else if (loginListener != null) {
+            // Disable login listener if it is enabled
             HandlerList.unregisterAll(loginListener);
             this.loginListener = null;
         }
