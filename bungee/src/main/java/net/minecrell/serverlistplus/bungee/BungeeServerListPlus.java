@@ -72,6 +72,9 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
                 ServerInfo forcedHostInfo = AbstractReconnectHandler.getForcedHost(event.getConnection());
                 if (forcedHostInfo != null) {
                     forcedHost = forcedHostInfo.getName();
+                } else if (event.getConnection().getVirtualHost() != null) {
+                    // Use the hostname used for pinging
+                    forcedHost = event.getConnection().getVirtualHost().getHostString();
                 }
             }
 
