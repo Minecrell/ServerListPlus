@@ -94,14 +94,12 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
         @Override // Handshake
         public void onPacketReceiving(PacketEvent event) {
             PacketContainer packet = event.getPacket();
-            Integer state = packet.getIntegers().readSafely(2);
+            int state = packet.getIntegers().read(2);
 
             // Check if handshake is for server ping
-            if (state == null) return;
             if (state != 1) return;
 
-            String hostname = packet.getStrings().readSafely(0);
-            if (hostname == null) return; // Check if hostname was correctly read
+            String hostname = packet.getStrings().read(0);
 
             // Cache the hostname
             hostMap.put(event.getPlayer().getAddress().getAddress().getHostAddress(), hostname);
