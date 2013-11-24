@@ -18,8 +18,8 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
-import net.md_5.bungee.api.ChatColor;
 import net.minecrell.serverlistplus.api.plugin.ServerListServer;
+import org.bukkit.ChatColor;
 
 import java.io.File;
 
