@@ -292,6 +292,14 @@ public abstract class Metrics<Plugin> {
         }
     }
 
+    public void stop() {
+        // Disable Task, if it is running
+        if (thread != null) {
+            thread.interrupt();
+            thread = null;
+        }
+    }
+
     /**
      * Has the server owner denied plugin metrics?
      *

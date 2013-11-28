@@ -100,7 +100,7 @@ public final class ServerListPlusAPI {
         } else if (metrics != null) {
             // Disable metrics
             try {
-                this.metrics.disable();
+                this.metrics.stop();
             } catch (Throwable ignored) {}
             this.metrics = null;
         }
