@@ -16,23 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.yaml;
+package net.minecrell.serverlistplus.api.metrics.configuration;
 
-import org.yaml.snakeyaml.introspector.BeanAccess;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.introspector.PropertyUtils;
+import java.util.UUID;
 
-import java.beans.IntrospectionException;
-import java.util.LinkedHashSet;
-import java.util.Set;
+public class DefaultMetricsConfiguration implements MetricsConfiguration {
+    private static final String uuid = UUID.randomUUID().toString();
 
-public class FieldOrderPropertyUtils extends PropertyUtils {
-    public FieldOrderPropertyUtils() {
-        this.setBeanAccess(BeanAccess.FIELD);
+    private static final DefaultMetricsConfiguration defaultConfig = new DefaultMetricsConfiguration();
+
+    public static DefaultMetricsConfiguration getDefaultConfig() {
+        return defaultConfig;
     }
 
     @Override
-    protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
-        return new LinkedHashSet<>(getPropertiesMap(type, BeanAccess.FIELD).values());
+    public boolean isOptOut() {
+        return false;
+    }
+
+    @Override
+    public String getUUID() {
+        return uuid;
+    }
+
+    @Override
+    public boolean debugEnabled() {
+        return false;
     }
 }

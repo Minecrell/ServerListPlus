@@ -31,7 +31,7 @@
     <name>BukkitServerListPlus</name>
 
     <properties>
-        <project.bukkitType>craftbukkit</project.bukkitType>
+        <project.bukkitType>bukkit</project.bukkitType>
         <project.bukkitVersion>1.6.4-R2.0</project.bukkitVersion>
         <project.package>${project.groupId}.serverlistplus.bukkit</project.package>
         <project.mainClass>${project.package}.BukkitServerListPlus</project.mainClass>
@@ -102,6 +102,14 @@
                                 <relocation>
                                     <pattern>net.md_5.bungee.api</pattern>
                                     <shadedPattern>${project.package}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.minecrell.serverlistplus.api</pattern>
+                                    <shadedPattern>${project.package}.api</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>org.bukkit.craftbukkit.libs.com.google.gson</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

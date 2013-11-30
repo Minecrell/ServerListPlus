@@ -16,23 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.plugin;
+package net.minecrell.serverlistplus.api.metrics.configuration;
 
-import net.minecrell.serverlistplus.api.metrics.configuration.MetricsConfigurationProvider;
+import java.io.IOException;
 
-import java.io.File;
-
-public interface ServerListServer {
-    public static enum ServerType {
-        BUKKIT, BUNGEE, CUSTOM
+public class DefaultMetricsConfigurationProvider implements MetricsConfigurationProvider {
+    @Override
+    public MetricsConfiguration loadConfiguration() throws IOException {
+        return DefaultMetricsConfiguration.getDefaultConfig();
     }
-
-    String colorizeString(String s);
-
-    ServerType getServerType();
-    String getServerVersion();
-    int getOnlinePlayers();
-    boolean getOnlineMode();
-
-    MetricsConfigurationProvider getMetricsConfigurationProvider();
 }

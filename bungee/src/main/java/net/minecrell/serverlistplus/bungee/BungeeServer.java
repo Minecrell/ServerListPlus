@@ -19,7 +19,9 @@
 package net.minecrell.serverlistplus.bungee;
 
 import net.md_5.bungee.api.ChatColor;
+import net.minecrell.serverlistplus.api.metrics.configuration.MetricsConfigurationProvider;
 import net.minecrell.serverlistplus.api.plugin.ServerListServer;
+import net.minecrell.serverlistplus.bungee.metrics.BungeeMetricsConfigurationProvider;
 
 import java.io.File;
 
@@ -56,7 +58,7 @@ public class BungeeServer implements ServerListServer {
     }
 
     @Override
-    public File getMetricsConfiguration() {
-        return new File(new File(plugin.getDataFolder().getParentFile(), "PluginMetrics"), "config.properties");
+    public MetricsConfigurationProvider getMetricsConfigurationProvider() {
+        return new BungeeMetricsConfigurationProvider(plugin);
     }
 }

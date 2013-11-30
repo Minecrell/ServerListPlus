@@ -68,7 +68,8 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
         public void onProxyPing(ProxyPingEvent event) {
             String forcedHost = null;
 
-            if (serverList.getConfiguration().getForcedHosts().size() > 0) {
+            if ((serverList.getConfiguration().getAdvanced() != null) &&
+                    (serverList.getConfiguration().getAdvanced().getForcedHosts().size() > 0)) {
                 ServerInfo forcedHostInfo = AbstractReconnectHandler.getForcedHost(event.getConnection());
                 if (forcedHostInfo != null) {
                     forcedHost = forcedHostInfo.getName();
@@ -110,7 +111,8 @@ public class BungeeServerListPlus extends Plugin implements ServerListPlugin {
     @Override
     public void reload() {
         if (serverList == null) return;
-        if (serverList.getConfiguration().getPlayerTracking().isEnabled()) {
+        if (serverList.getConfiguration().getAdvanced() == null) return;
+        if (serverList.getConfiguration().getAdvanced().getPlayerTracking().isEnabled()) {
             if (loginListener == null)
                 this.getProxy().getPluginManager().registerListener(this, (this.loginListener = new LoginListener()));
         } else if (loginListener != null) {

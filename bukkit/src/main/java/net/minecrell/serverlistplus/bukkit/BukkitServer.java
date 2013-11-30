@@ -18,7 +18,9 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
+import net.minecrell.serverlistplus.api.metrics.configuration.MetricsConfigurationProvider;
 import net.minecrell.serverlistplus.api.plugin.ServerListServer;
+import net.minecrell.serverlistplus.bukkit.metrics.BukkitMetricsConfigurationProvider;
 import org.bukkit.ChatColor;
 
 import java.io.File;
@@ -56,7 +58,7 @@ public class BukkitServer implements ServerListServer {
     }
 
     @Override
-    public File getMetricsConfiguration() {
-        return new File(new File(plugin.getDataFolder().getParentFile(), "PluginMetrics"), "config.properties");
+    public MetricsConfigurationProvider getMetricsConfigurationProvider() {
+        return new BukkitMetricsConfigurationProvider(plugin);
     }
 }

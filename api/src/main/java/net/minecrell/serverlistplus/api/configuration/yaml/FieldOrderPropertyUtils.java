@@ -16,23 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.plugin;
+package net.minecrell.serverlistplus.api.configuration.yaml;
 
-import net.minecrell.serverlistplus.api.metrics.configuration.MetricsConfigurationProvider;
+import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
 
-import java.io.File;
+import java.beans.IntrospectionException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-public interface ServerListServer {
-    public static enum ServerType {
-        BUKKIT, BUNGEE, CUSTOM
+public class FieldOrderPropertyUtils extends PropertyUtils {
+    public FieldOrderPropertyUtils() {
+        this.setBeanAccess(BeanAccess.FIELD);
     }
 
-    String colorizeString(String s);
-
-    ServerType getServerType();
-    String getServerVersion();
-    int getOnlinePlayers();
-    boolean getOnlineMode();
-
-    MetricsConfigurationProvider getMetricsConfigurationProvider();
+    @Override
+    protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
+        return new LinkedHashSet<>(getPropertiesMap(type, BeanAccess.FIELD).values());
+    }
 }

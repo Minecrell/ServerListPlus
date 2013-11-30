@@ -60,6 +60,12 @@
                                     <include>net.minecrell:ServerListPlus-API</include>
                                 </includes>
                             </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>net.minecrell.serverlistplus.api</pattern>
+                                    <shadedPattern>${project.package}.api</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>

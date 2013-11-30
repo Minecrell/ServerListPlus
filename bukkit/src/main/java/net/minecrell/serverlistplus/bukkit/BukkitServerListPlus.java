@@ -26,6 +26,8 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.injector.GamePhase;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import net.md_5.bungee.api.ServerPing;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlugin;
 import net.minecrell.serverlistplus.api.ServerListPlusAPI;
@@ -33,8 +35,6 @@ import net.minecrell.serverlistplus.api.plugin.ServerListServer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
-import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -61,6 +61,7 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
         try {
             this.serverList = new ServerListPlusAPI(this);
         } catch (Exception e) {
+            e.printStackTrace();
             this.getLogger().warning("Disabling the plugin, please fix the error before restarting the server!");
             this.getServer().getPluginManager().disablePlugin(this); return;
         }
@@ -155,7 +156,9 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
         // Clear the host cache
         hostMap = new HashMap<>();
 
-        if (serverList.getConfiguration().getForcedHosts().size() > 0) {
+        if (serverList.getConfiguration().getAdvanced() == null) return;
+
+        if (serverList.getConfiguration().getAdvanced().getForcedHosts().size() > 0) {
             // Enable packet listener if it is disbled
             if (requestListener == null)
                 ProtocolLibrary.getProtocolManager().addPacketListener((this.requestListener = new RequestListener()));
@@ -166,7 +169,7 @@ public class BukkitServerListPlus extends JavaPlugin implements ServerListPlugin
         }
 
         // Register / unregister the listeners
-        if (serverList.getConfiguration().getPlayerTracking().isEnabled()) {
+        if (serverList.getConfiguration().getAdvanced().getPlayerTracking().isEnabled()) {
             // Enable login listener if it is disabled
             if (loginListener == null)
                 this.getServer().getPluginManager().registerEvents((this.loginListener = new LoginListener()), this);

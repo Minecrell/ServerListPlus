@@ -16,23 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.plugin;
+package net.minecrell.serverlistplus.api.util;
 
-import net.minecrell.serverlistplus.api.metrics.configuration.MetricsConfigurationProvider;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
-import java.io.File;
+public final class SimplePrefixLogger extends Logger {
+    private final String prefix;
 
-public interface ServerListServer {
-    public static enum ServerType {
-        BUKKIT, BUNGEE, CUSTOM
+    public SimplePrefixLogger(String name, Logger parent, String prefix) {
+        super(name, null);
+        this.prefix = "[" + prefix + "] ";
+        this.setParent(parent); this.setUseParentHandlers(true);
     }
 
-    String colorizeString(String s);
+    public String getPrefix() {
+        return prefix;
+    }
 
-    ServerType getServerType();
-    String getServerVersion();
-    int getOnlinePlayers();
-    boolean getOnlineMode();
-
-    MetricsConfigurationProvider getMetricsConfigurationProvider();
+    @Override
+    public void log(LogRecord record) {
+        record.setMessage(prefix + record.getMessage());
+        super.log(record);
+    }
 }

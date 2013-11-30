@@ -18,8 +18,6 @@
 
 package net.minecrell.serverlistplus.api.metrics;
 
-import net.minecrell.serverlistplus.api.metrics.Metrics.Plotter;
-
 public class SimpleCounterPlotter extends Plotter {
     public SimpleCounterPlotter() {}
 

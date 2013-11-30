@@ -21,6 +21,8 @@ package net.minecrell.serverlistplus.api;
 import com.google.common.io.BaseEncoding;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.ServerPing.PlayerInfo;
+import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
+import net.minecrell.serverlistplus.api.configuration.LineProcessor;
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerListServer;
@@ -43,8 +45,8 @@ public final class ServerListPlusAPI {
 
     private final ServerListPlugin plugin;
 
-    private final Yaml yamlLoader;
-    private ServerListConfiguration config;
+    private final ConfigurationManager configManager;
+    private LineProcessor lineProcessor;
 
     private final Map<String, String> playerIPs = new HashMap<>();
     private Map<String, String> favicons;
@@ -55,7 +57,7 @@ public final class ServerListPlusAPI {
         this.plugin = plugin;
 
         this.getLogger().info("Initializing ServerListPlusAPI...");
-        this.yamlLoader = ServerListConfiguration.createYAMLLoader(this.getPlugin().getClass().getClassLoader());
+        this.configManager = new ConfigurationManager(this);
         this.reload();
         this.getLogger().info("ServerListPlusAPI initialized!");
     }
@@ -68,8 +70,8 @@ public final class ServerListPlusAPI {
         return this.getPlugin().getServerListServer();
     }
 
-    public ServerListConfiguration getConfiguration() {
-        return config;
+    public ConfigurationManager getConfiguration() {
+        return configManager;
     }
 
     public Logger getLogger()     {
@@ -77,21 +79,17 @@ public final class ServerListPlusAPI {
     }
 
     public void reload() throws Exception {
-        try {
-            this.config = ServerListConfiguration.loadConfiguration(this, yamlLoader);
-        } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "An internal error occurred while loading the configuration!", e);
-            throw e;
-        }
-
         // Clear the favicon cache
         this.favicons = new HashMap<>();
+
+        configManager.reload();
+        this.lineProcessor = new LineProcessor(this);
 
         // Let the plugin register it's listeners
         plugin.reload();
 
         // Enable Metrics
-        if (config.isEnableMetrics()) {
+        if ((configManager.getAdvanced() != null) && configManager.getAdvanced().isEnableMetrics()) {
             if (metrics == null) {
                 try {
                     (this.metrics = new ServerListMetrics(this)).start();
@@ -107,7 +105,7 @@ public final class ServerListPlusAPI {
 
         if (metrics != null) {
             try {
-                metrics.reloadConfiguration(config);
+                metrics.reloadConfiguration(configManager);
             } catch (Throwable ignored) {}
         }
     }
@@ -125,22 +123,24 @@ public final class ServerListPlusAPI {
     }
 
     public ServerPing processRequest(InetAddress address, ServerPing ping, String forcedHost) {
-        if (config.getLines().size() <= 0) {
-            ping.getPlayers().setSample(null); return ping;
-        }
-
-        List<String> lines = config.getLines();
+        List<String> lines = lineProcessor.getLines();
         String favicon = null;
 
         if (forcedHost != null) {
-            if (config.getForcedHosts().containsKey(forcedHost))
-                lines = config.getForcedHosts().get(forcedHost);
+            forcedHost = forcedHost.toLowerCase(Locale.ENGLISH);
+
+            List<String> forcedLines = lineProcessor.getForcedHost(forcedHost);
+            if (forcedLines != null) lines = forcedLines;
+
+            if ((configManager.getAdvanced() != null) && configManager.getAdvanced().getForcedHosts().containsKey(forcedHost)) {
+                lines = configManager.getAdvanced().getForcedHosts().get(forcedHost); // TODO: Formatting
+            }
 
             if (favicons.containsKey(forcedHost)) {
                 favicon = favicons.get(forcedHost);
             } else {
                 // Try loading the favicon
-                Path faviconFile = Paths.get(favicon + "_server-icon.png");
+                Path faviconFile = Paths.get(forcedHost + "_server-icon.png");
 
                 if (Files.exists(faviconFile)) {
                     try {
@@ -160,15 +160,18 @@ public final class ServerListPlusAPI {
 
         String playerName = null;
         boolean identified = false;
-        if (config.getPlayerTracking().isEnabled()) {
+        boolean playerTracking = false;
+
+        if ((configManager.getAdvanced() != null) && configManager.getAdvanced().getPlayerTracking().isEnabled()) {
+            playerTracking = true;
             playerName = address.getHostAddress();
             if (playerIPs.containsKey(playerName)) {
                 playerName = playerIPs.get(playerName);
                 identified = true;
             } else {
-                playerName = config.getPlayerTracking().getUnknownPlayer().getName();
-                if (config.getPlayerTracking().getUnknownPlayer().getCustomLines().isEnabled()) {
-                    lines = config.getPlayerTracking().getUnknownPlayer().getCustomLines().getLines();
+                playerName = configManager.getAdvanced().getPlayerTracking().getUnknownPlayer().getName();
+                if (configManager.getAdvanced().getPlayerTracking().getUnknownPlayer().getCustomLines().isEnabled()) {
+                    lines = lineProcessor.getUnknownPlayerLines();
                 }
             }
         }
@@ -176,13 +179,12 @@ public final class ServerListPlusAPI {
         PlayerInfo[] players = new PlayerInfo[lines.size()];
         for (int i = 0; i < players.length; i++) {
             String line = lines.get(i);
-            if (line.trim().length() <= 0) line = "&r";
-            if (config.getPlayerTracking().isEnabled()) line = line.replace("%player%", playerName);
-
-            players[i] = new PlayerInfo(this.getServer().colorizeString(line), ""); // Create a player with an empty ID
+            if (playerTracking) line = line.replace("%player%", playerName); // Replacing cannot be cached
+            players[i] = new PlayerInfo(line, ""); // Create a player with an empty ID
         }
 
-        ping.getPlayers().setSample(players);
+        if (players.length > 0) ping.getPlayers().setSample(players);
+            else ping.getPlayers().setSample(null);
 
         if (favicon != null) ping.setFavicon(favicon);
 
@@ -200,7 +202,8 @@ public final class ServerListPlusAPI {
     }
 
     public void processPlayerLogin(String playerName, InetAddress address) {
-        if (config.getPlayerTracking().isEnabled()) playerIPs.put(address.getHostAddress(), playerName);
+        if ((configManager.getAdvanced() != null) && configManager.getAdvanced().getPlayerTracking().isEnabled())
+            playerIPs.put(address.getHostAddress(), playerName);
 
         if (metrics != null) {
             try {

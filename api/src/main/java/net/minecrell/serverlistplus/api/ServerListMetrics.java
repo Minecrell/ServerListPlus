@@ -18,33 +18,78 @@
 
 package net.minecrell.serverlistplus.api;
 
-import net.minecrell.serverlistplus.api.metrics.Metrics;
+import net.minecrell.serverlistplus.api.configuration.AdvancedConfiguration;
+import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
+import net.minecrell.serverlistplus.api.metrics.AbstractMetrics;
+import net.minecrell.serverlistplus.api.metrics.Graph;
+import net.minecrell.serverlistplus.api.metrics.MetricsPlugin;
+import net.minecrell.serverlistplus.api.metrics.MetricsServer;
 import net.minecrell.serverlistplus.api.metrics.SimpleCounterPlotter;
+import net.minecrell.serverlistplus.api.util.SimplePrefixLogger;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
-public final class ServerListMetrics extends Metrics<ServerListPlusAPI> {
+public final class ServerListMetrics extends AbstractMetrics<ServerListPlusAPI> {
+    private final Logger logger;
+
     private SimpleCounterPlotter pingPlotter, playerPlotter, loginPlotter;
     private SimpleCounterPlotter configPlotter;
 
-    public ServerListMetrics(ServerListPlusAPI api) throws IOException {
-        super(api, "ServerListPlus", api.getPlugin().getVersion());
+    private MetricsPlugin plugin;
+    private MetricsServer server;
+
+    public ServerListMetrics(ServerListPlusAPI api) throws Exception {
+        super(api, api.getPlugin().getServerListServer().getMetricsConfigurationProvider());
+
+        this.logger = new SimplePrefixLogger("ServerListMetrics", api.getLogger(), "Metrics");
 
         Graph pingGraph = this.createGraph("Server pings processed");
         pingGraph.addPlotter((pingPlotter = new SimpleCounterPlotter("Server pings")));
         pingGraph.addPlotter((playerPlotter = new SimpleCounterPlotter("Players identified")));
         pingGraph.addPlotter((loginPlotter = new SimpleCounterPlotter("Players logged in")));
         this.createGraph("Server list lines loaded").addPlotter((configPlotter = new SimpleCounterPlotter()));
+
+        this.plugin = new MetricsPlugin() {
+            @Override
+            public String getName() {
+                return "ServerListPlus";
+            }
+
+            @Override
+            public String getVersion() {
+                return getPlugin().getPlugin().getVersion();
+            }
+        };
+
+        this.server = new MetricsServer() {
+
+            @Override
+            public String getVersion() {
+                return getPlugin().getServer().getServerVersion();
+            }
+
+            @Override
+            public boolean getOnlineMode() {
+                return getPlugin().getServer().getOnlineMode();
+            }
+
+            @Override
+            public int getOnlinePlayers() {
+                return getPlugin().getServer().getOnlinePlayers();
+            }
+        };
     }
 
-    protected void reloadConfiguration(ServerListConfiguration config) {
+    protected void reloadConfiguration(ConfigurationManager config) {
         configPlotter.count(config.getLines().size());
-        for (List<String> lines : config.getForcedHosts().values())
-            configPlotter.count(lines.size());
-        if (config.getPlayerTracking().getUnknownPlayer().getCustomLines().isEnabled())
-            configPlotter.count(config.getPlayerTracking().getUnknownPlayer().getCustomLines().getLines().size());
+        AdvancedConfiguration advancedConfig = config.getAdvanced();
+        if (advancedConfig != null) {
+            for (List<String> lines : advancedConfig.getForcedHosts().values())
+                configPlotter.count(lines.size());
+            if (advancedConfig.getPlayerTracking().getUnknownPlayer().getCustomLines().isEnabled())
+                configPlotter.count(advancedConfig.getPlayerTracking().getUnknownPlayer().getCustomLines().getLines().size());
+        }
     }
 
     protected void processRequest(boolean identified) {
@@ -57,22 +102,17 @@ public final class ServerListMetrics extends Metrics<ServerListPlusAPI> {
     }
 
     @Override
-    public String getFullServerVersion() {
-        return this.getPlugin().getServer().getServerVersion();
+    protected Logger getLogger() {
+        return logger;
     }
 
     @Override
-    public boolean getAuthMode() {
-        return this.getPlugin().getServer().getOnlineMode();
+    protected MetricsPlugin getMetricsPlugin() {
+        return plugin;
     }
 
     @Override
-    public int getPlayersOnline() {
-        return this.getPlugin().getServer().getOnlinePlayers();
-    }
-
-    @Override
-    public File getConfigFile() {
-        return this.getPlugin().getServer().getMetricsConfiguration();
+    protected MetricsServer getMetricsServer() {
+        return server;
     }
 }
