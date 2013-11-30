@@ -176,6 +176,7 @@ public final class ConfigurationManager {
     private static void writeHeader(BufferedWriter writer) throws IOException {
         if (FILE_HEADER == null) return;
         writeCommentLines(writer, Arrays.asList(FILE_HEADER));
+        writer.newLine();
     }
 
     private static void writeCommentLines(BufferedWriter writer, Iterable<String> lines) throws IOException {
