@@ -3,8 +3,8 @@
      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
      \__/\___|_|    \_/ \___|_| \____/_|___/\__\/    |_|\__,_|___/
-                         ${project.version}
 
+${project.version}
 Copyright (C) ${project.inceptionYear}, ${project.author}
 
    This program is free software: you can redistribute it and/or modify
