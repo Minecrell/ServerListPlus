@@ -42,7 +42,7 @@ public class BungeeMetricsConfigurationProvider extends AbstractMetricsConfigura
 
     @Override
     public Path getConfigurationPath() {
-        return new File(new File(plugin.getDataFolder().getParentFile(), "PluginMetrics"), "config.yml").toPath();
+        return new File(new File(plugin.getDataFolder().getParentFile(), "PluginMetrics"), "config.properties").toPath();
     }
 
     @Override
