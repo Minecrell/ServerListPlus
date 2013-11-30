@@ -31,7 +31,7 @@ public abstract class AbstractMetricsConfigurationProvider implements MetricsCon
     public final MetricsConfiguration loadConfiguration() throws Exception {
         Path configPath = this.getConfigurationPath();
         if (Files.notExists(configPath)) {
-            Files.createDirectories(configPath);
+            Files.createDirectories(configPath.getParent());
             this.createConfiguration();
         }
 
