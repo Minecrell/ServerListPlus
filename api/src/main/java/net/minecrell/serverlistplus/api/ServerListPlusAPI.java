@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class ServerListPlusAPI {
+    private static final String FAVICON_FILENAME = "%s_server-icon.png";
     private static final String FAVICON_BASE = "data:image/png;base64,";
 
     private final ServerListPlugin plugin;
@@ -140,7 +141,7 @@ public final class ServerListPlusAPI {
                 favicon = favicons.get(forcedHost);
             } else {
                 // Try loading the favicon
-                Path faviconFile = Paths.get(forcedHost + "_server-icon.png");
+                Path faviconFile = Paths.get(String.format(FAVICON_FILENAME, forcedHost));
 
                 if (Files.exists(faviconFile)) {
                     try {
