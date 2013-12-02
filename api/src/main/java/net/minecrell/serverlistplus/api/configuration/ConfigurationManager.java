@@ -21,6 +21,8 @@ import java.util.logging.Level;
 
 public final class ConfigurationManager {
     private static final Charset FILE_CHARSET = StandardCharsets.UTF_8;
+
+    private static final String HEADER_FILENAME = "HEADER";
     private static String[] FILE_HEADER;
 
     private final ServerListPlusAPI api;
@@ -34,7 +36,7 @@ public final class ConfigurationManager {
 
         // Load file header if it wasn't loaded before
         if (FILE_HEADER == null) {
-            try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("HEADER")) {
+            try (InputStream in = this.getClass().getClassLoader().getResourceAsStream(HEADER_FILENAME)) {
                 List<String> header = readAllLines(in);
                 FILE_HEADER = header.toArray(new String[header.size()]);
             } catch (IOException e) {
