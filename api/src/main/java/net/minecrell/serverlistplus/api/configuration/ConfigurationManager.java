@@ -34,7 +34,7 @@ public final class ConfigurationManager {
 
         // Load file header if it wasn't loaded before
         if (FILE_HEADER == null) {
-            try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("NOTICE")) {
+            try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("HEADER")) {
                 List<String> header = readAllLines(in);
                 FILE_HEADER = header.toArray(new String[header.size()]);
             } catch (IOException e) {
