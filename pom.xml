@@ -24,7 +24,7 @@
     <parent>
         <groupId>net.minecrell</groupId>
         <artifactId>maven-parent</artifactId>
-        <version>3.5</version>
+        <version>3.6</version>
     </parent>
 
     <modules>
@@ -102,15 +102,6 @@
         </resources>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
-                        <showDeprecation>true</showDeprecation>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
