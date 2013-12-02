@@ -94,7 +94,8 @@
                 <includes>
                     <include>*.yml</include>
                     <include>*.txt</include>
-                    <include>NOTICE</include>
+                    <include>HEADER</include>
+                    <include>LICENSE</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>
