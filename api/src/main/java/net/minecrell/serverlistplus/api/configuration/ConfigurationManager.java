@@ -129,6 +129,7 @@ public final class ConfigurationManager {
             try (BufferedWriter writer = Files.newBufferedWriter(configPath, FILE_CHARSET)) {
                 writeHeader(writer);
                 writeCommentLines(writer, Arrays.asList(CONFIG_COMMENTS));
+                writer.newLine();
 
                 yaml.dump(config, writer);
             }
