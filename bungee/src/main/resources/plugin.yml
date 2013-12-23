@@ -1,6 +1,0 @@
-main: ${project.mainClass}
-
-name: ${project.name}
-version: ${project.version}
-
-author: ${project.author}
