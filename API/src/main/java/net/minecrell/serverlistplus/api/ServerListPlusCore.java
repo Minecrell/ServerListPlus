@@ -61,14 +61,6 @@ public interface ServerListPlusCore {
     Logger getLogger();
 
     /**
-     * Processes an exception, sends it to the logger, and finally throws an {@link ServerListPlusException}.
-     * @param e The thrown exception.
-     * @param message The message for logging and the exception.
-     * @return The exception to throw with the specified message and cause.
-     */
-    ServerListPlusException processException(Throwable e, String message);
-
-    /**
      * Reloads the plugin configuration and disables unnecessary services.
      * @throws ServerListPlusException If the configuration file could not be successfully read.
      */
@@ -115,4 +107,12 @@ public interface ServerListPlusCore {
      * @see ServerCommandSender
      */
     void processCommand(ServerCommandSender sender, String cmd, String label, String[] args);
+
+    /**
+     * Processes an exception, sends it to the logger, and finally throws an {@link ServerListPlusException}.
+     * @param e The thrown exception.
+     * @param message The message for logging and the exception.
+     * @return The exception to throw with the specified message and cause.
+     */
+    ServerListPlusException processException(Throwable e, String message);
 }

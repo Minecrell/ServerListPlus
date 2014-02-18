@@ -24,17 +24,51 @@
 
 package net.minecrell.serverlistplus.bungee;
 
+import java.util.logging.Level;
+
+import net.minecrell.serverlistplus.api.ServerListPlusCore;
+import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerType;
+import net.minecrell.serverlistplus.core.DefaultServerListPlusCore;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.plugin.Command;
 
 public final class BungeePlugin extends AbstractBungeePlugin implements ServerListPlusPlugin {
+    private ServerListPlusCore core;
+
+    @Override
+    public void onEnable() {
+        try {
+            this.core = new DefaultServerListPlusCore(this);
+        } catch (ServerListPlusException e) {
+            this.getLogger().info("Please fix the error before restarting the server!"); return;
+        } catch (Throwable e) {
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the ServerListPlus core!", e); return;
+        }
+
+        this.getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
+        this.configurationReloaded();
+    }
+
+    public final class ServerListPlusCommand extends Command {
+        private ServerListPlusCommand() {
+            super("ServerListPlus", "ServerListPlus.Admin", "ServerList+", "ServerList", "slp", "sl");
+        }
+
+        @Override
+        public void execute(CommandSender sender, String[] args) {
+            // TODO: Unable to get the entered comand in BungeeCord
+            core.processCommand(new BungeeCommandSender(sender), this.getName(), this.getName(), args);
+        }
+    }
 
     @Override
     public void configurationReloaded() {
-
+        if (core == null) return;
     }
 
     @Override

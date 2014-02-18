@@ -24,16 +24,38 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
+import java.util.logging.Level;
+
+import net.minecrell.serverlistplus.api.ServerListPlusCore;
+import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.bukkit.util.AbstractBukkitPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerType;
+import net.minecrell.serverlistplus.core.DefaultServerListPlusCore;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerListPlusPlugin {
+    private ServerListPlusCore core;
 
     @Override
     public void onEnable() {
+        try {
+            this.core = new DefaultServerListPlusCore(this);
+        } catch (ServerListPlusException e) {
+            this.getLogger().info("Please fix the error before restarting the server!");
+            this.disablePlugin(); return;
+        } catch (Throwable e) {
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the ServerListPlus core!", e);
+            this.disablePlugin(); return;
+        }
+
+        this.getCommand("ServerListPlus").setExecutor(new ServerListPlusCommand());
+        this.configurationReloaded();
+
         this.getLogger().info(this.getDisplayVersion() + " enabled.");
     }
 
@@ -42,9 +64,18 @@ public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerLi
         this.getLogger().info(this.getDisplayVersion() + " disabled.");
     }
 
+    public final class ServerListPlusCommand implements CommandExecutor {
+        private ServerListPlusCommand() {}
+
+        @Override
+        public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+            core.processCommand(new BukkitCommandSender(sender), cmd.getName(), label, args); return true;
+        }
+    }
+
     @Override
     public void configurationReloaded() {
-
+        if (core == null) return;
     }
 
     @Override

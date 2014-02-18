@@ -1,0 +1,5 @@
+&6${project.pluginName} v${project.version}
+&cCopyright (C) ${project.inceptionYear}, ${project.author}
+&9${project.website}
+-----------------------------------------------
+&2Type &6/ServerListPlus Reload &2to reload the configuration.

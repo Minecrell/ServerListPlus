@@ -24,14 +24,22 @@
 
 package net.minecrell.serverlistplus.core;
 
-import lombok.Getter;
+import net.minecrell.serverlistplus.api.ServerListPlusException;
 
-import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
+public class CoreServerListPlusException extends ServerListPlusException {
+    protected CoreServerListPlusException() {
+        super();
+    }
 
-public final class ServerListPlusCore {
-    private final @Getter ServerListPlusPlugin plugin;
+    protected CoreServerListPlusException(String message) {
+        super(message);
+    }
 
-    public ServerListPlusCore(ServerListPlusPlugin plugin) {
-        this.plugin = plugin;
+    protected CoreServerListPlusException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    protected CoreServerListPlusException(Throwable cause) {
+        super(cause);
     }
 }

@@ -35,4 +35,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin {
     public String getDisplayVersion() {
         return this.getDescription().getFullName();
     }
+
+    protected void disablePlugin() {
+        this.getServer().getPluginManager().disablePlugin(this);
+    }
 }
