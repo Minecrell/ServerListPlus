@@ -28,9 +28,9 @@ import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
-import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerType;
+import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
 import net.minecrell.serverlistplus.core.DefaultServerListPlusCore;
 
 import net.md_5.bungee.api.ChatColor;

@@ -28,9 +28,9 @@ import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
-import net.minecrell.serverlistplus.bukkit.util.AbstractBukkitPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerType;
+import net.minecrell.serverlistplus.bukkit.util.AbstractBukkitPlugin;
 import net.minecrell.serverlistplus.core.DefaultServerListPlusCore;
 
 import org.bukkit.ChatColor;
