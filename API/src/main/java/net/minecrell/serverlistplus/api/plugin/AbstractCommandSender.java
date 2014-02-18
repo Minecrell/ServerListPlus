@@ -1,5 +1,5 @@
 /*
- * __                           __ _     _     ___ _
+ *       __                           __ _     _     ___ _
  *      / _\ ___ _ ____   _____ _ __ / /(_)___| |_  / _ \ |_   _ ___
  *      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
  *      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
@@ -26,6 +26,10 @@ package net.minecrell.serverlistplus.api.plugin;
 
 import lombok.RequiredArgsConstructor;
 
+
+/**
+ * A base class to be used as a wrapper for the implementation specific command sender classes.
+ */
 @RequiredArgsConstructor
 public abstract class AbstractCommandSender<T> implements ServerCommandSender {
     protected final T sender;
