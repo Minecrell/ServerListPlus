@@ -34,7 +34,7 @@ import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
  * Representing the core part of the ServerListPlus plugin.
  * It will handle all server ping requests and is equal in all different implementations of the plugin.
  */
-public interface ServerListPlusAPI {
+public interface ServerListPlusCore {
     /**
      * Gets the name of this plugin core.
      * @return The plugin core's name.
