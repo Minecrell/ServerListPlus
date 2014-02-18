@@ -24,15 +24,20 @@
 
 package net.minecrell.serverlistplus.api.plugin;
 
-import lombok.RequiredArgsConstructor;
-
 
 /**
  * A base class to be used as a wrapper for the implementation specific command sender classes.
  */
-@RequiredArgsConstructor
 public abstract class AbstractCommandSender<T> implements ServerCommandSender {
     protected final T sender;
+
+    /**
+     * Creates a new command sender with the specified command sender object.
+     * @param sender The command sender this class should wrap.
+     */
+    public AbstractCommandSender(T sender) {
+        this.sender = sender;
+    }
 
     @Override
     public String toString() {
