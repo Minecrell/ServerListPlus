@@ -60,10 +60,6 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
         return this.getClass().getPackage().getImplementationVersion();
     }
 
-    public String getDisplayVersion() {
-        return this.getName() + " v" + this.getVersion();
-    }
-
     @Override
     public Logger getLogger() {
         return plugin.getLogger();
