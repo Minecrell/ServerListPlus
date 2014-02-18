@@ -45,12 +45,12 @@
 
         <dependency>
             <groupId>net.minecrell.serverlistplus.plugin</groupId>
-            <artifactId>ServerListPlusBukkit</artifactId>
+            <artifactId>ServerListPlusBungee</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.minecrell.serverlistplus.plugin</groupId>
-            <artifactId>ServerListPlusBungee</artifactId>
+            <artifactId>ServerListPlusBukkit</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
