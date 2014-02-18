@@ -134,4 +134,10 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
             return new String[0]; // Return empty String array
         }
     }
+
+    private static final class CoreServerListPlusException extends ServerListPlusException {
+        private CoreServerListPlusException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 }
