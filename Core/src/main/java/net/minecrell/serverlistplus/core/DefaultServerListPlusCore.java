@@ -109,8 +109,7 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
 
     @Override
     public ServerListPlusException processException(Throwable e, String message) {
-        if (e == null) return null;
-        if (e.getClass() == CoreServerListPlusException.class) return (CoreServerListPlusException) e;
+        if (e != null && e.getClass() == CoreServerListPlusException.class) return (CoreServerListPlusException) e;
         this.getLogger().log(Level.SEVERE, message, e);
         return new CoreServerListPlusException(message, e);
     }
