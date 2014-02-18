@@ -25,6 +25,7 @@
 package net.minecrell.serverlistplus.api;
 
 import java.net.InetAddress;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
@@ -109,10 +110,19 @@ public interface ServerListPlusCore {
     void processCommand(ServerCommandSender sender, String cmd, String label, String[] args);
 
     /**
-     * Processes an exception, sends it to the logger, and finally throws an {@link ServerListPlusException}.
-     * @param e The thrown exception.
+     * Processes an exception, sends it to the logger, and finally returns an {@link ServerListPlusException}.
      * @param message The message for logging and the exception.
+     * @param e The thrown exception.
      * @return The exception to throw with the specified message and cause.
      */
-    ServerListPlusException processException(Throwable e, String message);
+    ServerListPlusException processException(String message, Throwable e);
+
+    /**
+     * Processes an exception, sends it to the logger, and finally returns an {@link ServerListPlusException}.
+     * @param level The level the messaged should be logged with.
+     * @param message The message for logging and the exception.
+     * @param e The thrown exception.
+     * @return The exception to throw with the specified message and cause.
+     */
+    ServerListPlusException processException(Level level, String message, Throwable e);
 }

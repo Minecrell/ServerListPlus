@@ -22,24 +22,35 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core;
+package net.minecrell.serverlistplus.core.util;
 
-import net.minecrell.serverlistplus.api.ServerListPlusException;
+import java.util.Collection;
+import java.util.List;
 
-public final class CoreServerListPlusException extends ServerListPlusException {
-    protected CoreServerListPlusException() {
-        super();
+import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
+public class Helper {
+    private Helper() {}
+
+    public static String[] toStringArray(Collection<String> c) {
+        if (c == null) return null;
+        return c.toArray(new String[c.size()]);
     }
 
-    protected CoreServerListPlusException(String message) {
-        super(message);
+    public static <T> T[] nullWhenEmpty(T[] array) {
+        if (array == null || array.length == 0) return null;
+        return array;
     }
 
-    protected CoreServerListPlusException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    protected CoreServerListPlusException(Throwable cause) {
-        super(cause);
+    public static List<String> colorize(final ServerListPlusPlugin plugin, List<String> lines) {
+        return Lists.transform(lines, new Function<String, String>() {
+            @Override
+            public String apply(String input) {
+                return plugin.colorizeString(input);
+            }
+        });
     }
 }

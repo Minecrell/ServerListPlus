@@ -26,6 +26,7 @@ package net.minecrell.serverlistplus.core;
 
 import lombok.Getter;
 
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,12 +36,18 @@ import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.ServerPingResponse;
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
+import net.minecrell.serverlistplus.core.util.Helper;
 
 public final class DefaultServerListPlusCore implements ServerListPlusCore {
     private final @Getter ServerListPlusPlugin plugin;
 
+    private static final String INFO_COMMAND_FILENAME = "INFO";
+    private final String[] infoCommand;
+
     public DefaultServerListPlusCore(ServerListPlusPlugin plugin) {
         this.plugin = plugin;
+        this.infoCommand = this.loadInfoCommandLines();
     }
 
     @Override
@@ -100,7 +107,7 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
             }
         }
 
-        // TODO: Load info message from INFO file
+        for (String line : infoCommand) sender.sendMessage(line);
     }
 
     private void sendColoredMessage(ServerCommandSender sender, String... messages) {
@@ -108,9 +115,23 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
     }
 
     @Override
-    public ServerListPlusException processException(Throwable e, String message) {
+    public ServerListPlusException processException(String message, Throwable e) {
+        return this.processException(Level.SEVERE, message, e);
+    }
+
+    @Override
+    public ServerListPlusException processException(Level level, String message, Throwable e) {
         if (e != null && e.getClass() == CoreServerListPlusException.class) return (CoreServerListPlusException) e;
-        this.getLogger().log(Level.SEVERE, message, e);
+        this.getLogger().log(level, message, e);
         return new CoreServerListPlusException(message, e);
+    }
+
+    private String[] loadInfoCommandLines() {
+        try (InputStream in = this.getClass().getResourceAsStream(INFO_COMMAND_FILENAME)) {
+            return Helper.toStringArray(Helper.colorize(this.getPlugin(), IOUtil.readLines(in)));
+        } catch (Throwable e) {
+            this.processException(Level.WARNING, "Unable to load info command!", e);
+            return new String[0]; // Return empty String array
+        }
     }
 }

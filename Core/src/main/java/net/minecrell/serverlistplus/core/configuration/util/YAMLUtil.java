@@ -22,24 +22,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core;
+package net.minecrell.serverlistplus.core.configuration.util;
 
-import net.minecrell.serverlistplus.api.ServerListPlusException;
-
-public final class CoreServerListPlusException extends ServerListPlusException {
-    protected CoreServerListPlusException() {
-        super();
-    }
-
-    protected CoreServerListPlusException(String message) {
-        super(message);
-    }
-
-    protected CoreServerListPlusException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    protected CoreServerListPlusException(Throwable cause) {
-        super(cause);
-    }
+public class YAMLUtil {
+    private YAMLUtil() {}
 }
