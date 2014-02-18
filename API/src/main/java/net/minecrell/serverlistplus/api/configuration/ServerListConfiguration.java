@@ -30,7 +30,7 @@ public class ServerListConfiguration {
     public List<String> Motd;
     public PlayersConfiguration Players;
 
-    public class PlayersConfiguration {
+    public static class PlayersConfiguration {
         public List<String> Hover;
     }
 }
