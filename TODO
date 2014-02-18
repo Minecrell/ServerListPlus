@@ -1,0 +1,34 @@
+- [DONE] Create new project
+- [DONE] Create initial project structure
+- [DONE] Add universal package
+
+API:
+  - [DONE] Create base classes
+  - [DONE] Command handling
+  - [In Progress] Add configuration API
+  - [Not Started] Add plugin statistic API
+
+Core:
+  - [DONE] Create base classes
+  - [DONE] Add exception handling
+  - [Started] Command handling
+  - [In Progress] Add configuration loading and processing
+  - [Not Started] Process server ping responses
+  - [Not Started] Player tracking
+  - [Not Started] Plugin statistics
+
+Bungee:
+  - [DONE] Create basic plugin structure
+  - [DONE] Load ServerListPlus core
+  - [DONE] Command handling
+  - [Not Started] Server ping listening
+  - [Not Started] Player tracking
+  - [Not Started] Plugin statistic implementation
+
+Bukkit:
+  - [DONE] Create basic plugin structure
+  - [DONE] Load ServerListPlus core
+  - [DONE] Command handling
+  - [Not Started] Server ping packet manipulation
+  - [Not Started] Player tracking
+  - [Not Started] Plugin statistic implementation
