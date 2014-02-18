@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~       __                           __ _     _     ___ _
+  ~      / _\ ___ _ ____   _____ _ __ / /(_)___| |_  / _ \ |_   _ ___
+  ~      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
+  ~      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
+  ~      \__/\___|_|    \_/ \___|_| \____/_|___/\__\/    |_|\__,_|___/
+  ~                       Customize your server ping!
+  ~
+  ~  Copyright (C) 2014, Minecrell <https://github.com/Minecrell>
+  ~
+  ~    This program is free software: you can redistribute it and/or modify
+  ~    it under the terms of the GNU General Public License as published by
+  ~    the Free Software Foundation, either version 3 of the License, or
+  ~    (at your option) any later version.
+  ~
+  ~    This program is distributed in the hope that it will be useful,
+  ~    but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~    GNU General Public License for more details.
+  ~
+  ~    You should have received a copy of the GNU General Public License
+  ~    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.minecrell.serverlistplus</groupId>
+        <artifactId>ServerListPlus</artifactId>
+        <version>2.5-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>ServerListPlusBungee</artifactId>
+
+    <properties>
+        <project.mainPackageName>bungee</project.mainPackageName>
+        <project.mainClassName>BungeePlugin</project.mainClassName>
+
+        <project.bungeeType>bungeecord-api</project.bungeeType>
+        <project.bungeeVersion>1.7-SNAPSHOT</project.bungeeVersion>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.minecrell.serverlistplus</groupId>
+            <artifactId>ServerListPlusCore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>${project.bungeeType}</artifactId>
+            <version>${project.bungeeVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>sonatype-oss</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+
+                <includes>
+                    <include>*.yml</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+
+                        <configuration>
+                            <target>
+                                <echo>Copying ${project.build.outputDirectory}/plugin.yml -> ${project.build.outputDirectory}/bungee.yml</echo>
+                                <copy file="${project.build.outputDirectory}/plugin.yml" tofile="${project.build.outputDirectory}/bungee.yml" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>net.minecrell.serverlistplus:ServerListPlusCore</include>
+                                </includes>
+                            </artifactSet>
+
+                            <relocations>
+                                <relocation>
+                                    <pattern>net.minecrell.serverlistplus.core</pattern>
+                                    <shadedPattern>${project.mainPackage}.core</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

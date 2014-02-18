@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~       __                           __ _     _     ___ _
+  ~      / _\ ___ _ ____   _____ _ __ / /(_)___| |_  / _ \ |_   _ ___
+  ~      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
+  ~      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
+  ~      \__/\___|_|    \_/ \___|_| \____/_|___/\__\/    |_|\__,_|___/
+  ~                       Customize your server ping!
+  ~
+  ~  Copyright (C) 2014, Minecrell <https://github.com/Minecrell>
+  ~
+  ~    This program is free software: you can redistribute it and/or modify
+  ~    it under the terms of the GNU General Public License as published by
+  ~    the Free Software Foundation, either version 3 of the License, or
+  ~    (at your option) any later version.
+  ~
+  ~    This program is distributed in the hope that it will be useful,
+  ~    but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~    GNU General Public License for more details.
+  ~
+  ~    You should have received a copy of the GNU General Public License
+  ~    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.minecrell</groupId>
+        <artifactId>maven-parent</artifactId>
+        <version>3.8.3</version>
+    </parent>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>Core</module>
+        <module>Bungee</module>
+        <module>Bukkit</module>
+        <module>Universal</module>
+    </modules>
+
+    <groupId>net.minecrell.serverlistplus</groupId>
+    <artifactId>ServerListPlus</artifactId>
+
+    <name>ServerListPlus</name>
+    <description>Customize your server ping!</description>
+    <version>2.5-SNAPSHOT</version>
+
+    <url>${project.website}</url>
+    <inceptionYear>2013</inceptionYear>
+
+    <properties>
+        <project.website>https://github.com/Minecrell/ServerListPlus</project.website>
+        <project.pluginName>ServerListPlus</project.pluginName>
+
+        <project.mainPackage>${project.groupId}.${project.mainPackageName}</project.mainPackage>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPL) 3.0</name>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>minecrell</id>
+            <name>Minecrell</name>
+            <email>dev@minecrell.net</email>
+            <url>https://github.com/Minecrell</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/Minecrell/ServerListPlus</url>
+        <connection>scm:git:https://github.com/Minecrell/ServerListPlus.git</connection>
+        <developerConnection>scm:git:https://github.com/Minecrell/ServerListPlus.git</developerConnection>
+    </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/Minecrell/ServerListPlus/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>http://ci.minecrell.net/job/ServerListPlus/</url>
+    </ciManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.12.2</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>minecrell-repo</id>
+            <url>http://repo.minecrell.net/</url>
+        </repository>
+    </repositories>
+
+</project>
