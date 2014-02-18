@@ -11,7 +11,7 @@ API:
 Core:
   - [DONE] Create base classes
   - [DONE] Add exception handling
-  - [Started] Command handling
+  - [DONE] Command handling
   - [In Progress] Add configuration loading and processing
   - [Not Started] Process server ping responses
   - [Not Started] Player tracking
