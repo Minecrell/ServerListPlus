@@ -107,6 +107,7 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
             }
         }
 
+        // Send info command to the command sender
         for (String line : infoCommand) sender.sendMessage(line);
     }
 
