@@ -39,11 +39,17 @@
     <dependencies>
         <dependency>
             <groupId>net.minecrell.serverlistplus</groupId>
+            <artifactId>ServerListPlusAPI</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.minecrell.serverlistplus.plugin</groupId>
             <artifactId>ServerListPlusBukkit</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.minecrell.serverlistplus</groupId>
+            <groupId>net.minecrell.serverlistplus.plugin</groupId>
             <artifactId>ServerListPlusBungee</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -63,16 +69,22 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>net.minecrell.serverlistplus:ServerListPlusBungee</include>
-                                    <include>net.minecrell.serverlistplus:ServerListPlusBukkit</include>
+                                    <include>net.minecrell.serverlistplus:ServerListPlusAPI</include>
+                                    <include>net.minecrell.serverlistplus.plugin:*</include>
                                 </includes>
                             </artifactSet>
 
                             <filters>
                                 <filter>
-                                    <artifact>net.minecrell.serverlistplus:ServerListPlusBungee</artifact>
+                                    <artifact>net.minecrell.serverlistplus.plugin:ServerListPlusBungee</artifact>
                                     <excludes>
                                         <exclude>plugin.yml</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>net.minecrell.serverlistplus.plugin:*</artifact>
+                                    <excludes>
+                                        <exclude>net/minecrell/serverlistplus/api/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

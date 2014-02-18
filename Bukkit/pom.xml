@@ -34,6 +34,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>net.minecrell.serverlistplus.plugin</groupId>
     <artifactId>ServerListPlusBukkit</artifactId>
 
     <properties>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~       __                           __ _     _     ___ _
+  ~ __                           __ _     _     ___ _
   ~      / _\ ___ _ ____   _____ _ __ / /(_)___| |_  / _ \ |_   _ ___
   ~      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
   ~      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
@@ -34,62 +34,26 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>ServerListPlusCore</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>net.minecrell.serverlistplus</groupId>
-            <artifactId>ServerListPlusAPI</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>15.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.13</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.4</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+    <artifactId>ServerListPlusAPI</artifactId>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-
-                <includes>
-                    <include>HEADER</include>
-                </includes>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>prepare-package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>run</goal>
                         </goals>
 
                         <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>net.minecrell.serverlistplus:ServerListPlusAPI</include>
-                                </includes>
-                            </artifactSet>
+                            <target>
+                                <echo>Copying ${project.basedir}/../LICENSE -> ${project.build.outputDirectory}/LICENSE</echo>
+                                <copy file="${project.basedir}/../LICENSE" tofile="${project.build.outputDirectory}/LICENSE" overwrite="true" />
+                            </target>
                         </configuration>
                     </execution>
                 </executions>

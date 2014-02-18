@@ -1,5 +1,5 @@
 /*
- *       __                           __ _     _     ___ _
+ * __                           __ _     _     ___ _
  *      / _\ ___ _ ____   _____ _ __ / /(_)___| |_  / _ \ |_   _ ___
  *      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
  *      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
@@ -24,26 +24,22 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
-import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
-import net.minecrell.serverlistplus.api.plugin.ServerType;
+import net.minecrell.serverlistplus.api.plugin.AbstractCommandSender;
 
-import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
 
-public final class BungeePlugin extends AbstractBungeePlugin implements ServerListPlusPlugin {
-
-    @Override
-    public void configurationReloaded() {
-
+public final class BungeeCommandSender extends AbstractCommandSender<CommandSender> {
+    public BungeeCommandSender(CommandSender sender) {
+        super(sender);
     }
 
     @Override
-    public ServerType getServerType() {
-        return ServerType.BUNGEE;
+    public String getName() {
+        return sender.getName();
     }
 
     @Override
-    public String colorizeString(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
+    public void sendMessage(String message) {
+        sender.sendMessage(message); // Deprecated, but compatibility with older BungeeCord versions
     }
 }

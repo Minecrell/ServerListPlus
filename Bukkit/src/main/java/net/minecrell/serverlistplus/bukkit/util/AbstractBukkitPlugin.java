@@ -32,7 +32,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin {
         return this.getDescription().getVersion();
     }
 
-    public String getDisplayName() {
+    public String getDisplayVersion() {
         return this.getDescription().getFullName();
     }
 }

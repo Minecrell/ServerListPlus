@@ -25,16 +25,35 @@
 package net.minecrell.serverlistplus.bukkit;
 
 import net.minecrell.serverlistplus.bukkit.util.AbstractBukkitPlugin;
+import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.api.plugin.ServerType;
 
-public final class BukkitPlugin extends AbstractBukkitPlugin {
+import org.bukkit.ChatColor;
+
+public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerListPlusPlugin {
 
     @Override
     public void onEnable() {
-        this.getLogger().info(this.getDisplayName() + " enabled.");
+        this.getLogger().info(this.getDisplayVersion() + " enabled.");
     }
 
     @Override
     public void onDisable() {
-        this.getLogger().info(this.getDisplayName() + " disabled.");
+        this.getLogger().info(this.getDisplayVersion() + " disabled.");
+    }
+
+    @Override
+    public void configurationReloaded() {
+
+    }
+
+    @Override
+    public ServerType getServerType() {
+        return ServerType.BUKKIT;
+    }
+
+    @Override
+    public String colorizeString(String s) {
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 }

@@ -22,28 +22,16 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bungee;
+package net.minecrell.serverlistplus.core;
 
-import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
-import net.minecrell.serverlistplus.api.plugin.ServerType;
 
-import net.md_5.bungee.api.ChatColor;
+public final class ServerListPlusCore {
+    private final @Getter ServerListPlusPlugin plugin;
 
-public final class BungeePlugin extends AbstractBungeePlugin implements ServerListPlusPlugin {
-
-    @Override
-    public void configurationReloaded() {
-
-    }
-
-    @Override
-    public ServerType getServerType() {
-        return ServerType.BUNGEE;
-    }
-
-    @Override
-    public String colorizeString(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
+    public ServerListPlusCore(ServerListPlusPlugin plugin) {
+        this.plugin = plugin;
     }
 }

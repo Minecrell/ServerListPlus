@@ -1,5 +1,5 @@
 /*
- *       __                           __ _     _     ___ _
+ * __                           __ _     _     ___ _
  *      / _\ ___ _ ____   _____ _ __ / /(_)___| |_  / _ \ |_   _ ___
  *      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
  *      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
@@ -22,28 +22,22 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bungee;
+package net.minecrell.serverlistplus.api.plugin;
 
-import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
-import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
-import net.minecrell.serverlistplus.api.plugin.ServerType;
+/**
+ * Represents a player or the console sending a command to the plugin.
+ */
+public interface ServerCommandSender {
+    /**
+     * Gets the name of the command sender. This should be either the player name for players or
+     * <code>CONSOLE</code> / <code>Console</code> if the console has sent the command.
+     * @return The name of the command sender.
+     */
+    String getName();
 
-import net.md_5.bungee.api.ChatColor;
-
-public final class BungeePlugin extends AbstractBungeePlugin implements ServerListPlusPlugin {
-
-    @Override
-    public void configurationReloaded() {
-
-    }
-
-    @Override
-    public ServerType getServerType() {
-        return ServerType.BUNGEE;
-    }
-
-    @Override
-    public String colorizeString(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
-    }
+    /**
+     * Sends a message to this command sender.
+     * @param message The message to send to the command sender.
+     */
+    void sendMessage(String message);
 }

@@ -37,6 +37,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>API</module>
         <module>Core</module>
         <module>Bungee</module>
         <module>Bukkit</module>
@@ -57,7 +58,7 @@
         <project.website>https://github.com/Minecrell/ServerListPlus</project.website>
         <project.pluginName>ServerListPlus</project.pluginName>
 
-        <project.mainPackage>${project.groupId}.${project.mainPackageName}</project.mainPackage>
+        <project.mainPackage>net.minecrell.serverlistplus.${project.mainPackageName}</project.mainPackage>
     </properties>
 
     <licenses>

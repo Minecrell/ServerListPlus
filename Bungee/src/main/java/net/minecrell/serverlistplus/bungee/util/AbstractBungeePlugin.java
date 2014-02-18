@@ -36,7 +36,7 @@ public abstract class AbstractBungeePlugin extends Plugin {
         return this.getDescription().getVersion();
     }
 
-    public String getDisplayName() {
+    public String getDisplayVersion() {
         return this.getName() + " v" + this.getVersion();
     }
 }

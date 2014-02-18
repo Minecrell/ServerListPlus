@@ -22,28 +22,28 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bungee;
+package net.minecrell.serverlistplus.api.plugin;
 
-import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
-import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
-import net.minecrell.serverlistplus.api.plugin.ServerType;
+/**
+ * Represents the server implementation running the ServerListPlus plugin container.
+ */
+public enum ServerType {
+    BUKKIT ("Bukkit"),
+    BUNGEE ("Bungee"),
+    CUSTOM;
 
-import net.md_5.bungee.api.ChatColor;
+    private final String displayName;
 
-public final class BungeePlugin extends AbstractBungeePlugin implements ServerListPlusPlugin {
+    private ServerType() {
+        this(null);
+    }
 
-    @Override
-    public void configurationReloaded() {
-
+    private ServerType(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override
-    public ServerType getServerType() {
-        return ServerType.BUNGEE;
-    }
-
-    @Override
-    public String colorizeString(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
+    public String toString() {
+        return (displayName != null) ? displayName : super.toString();
     }
 }
