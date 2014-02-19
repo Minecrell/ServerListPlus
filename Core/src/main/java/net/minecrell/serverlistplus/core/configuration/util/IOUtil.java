@@ -44,7 +44,7 @@ public class IOUtil {
     public static final Charset CHARSET = StandardCharsets.UTF_8;
 
     public static void writePrefixed(BufferedWriter writer, String prefix, String... lines) throws IOException {
-        if (lines == null) return;
+        if (Helper.nullOrEmpty(lines)) return;
         for (String line : lines) {
             writer.write(prefix); writer.write(line);
             writer.newLine();

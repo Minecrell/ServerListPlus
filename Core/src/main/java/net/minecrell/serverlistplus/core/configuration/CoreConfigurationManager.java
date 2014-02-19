@@ -45,11 +45,14 @@ import net.minecrell.serverlistplus.core.configuration.util.YAML;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ClassToInstanceMap;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 
 public class CoreConfigurationManager extends CoreServerListPlusManager implements ConfigurationManager {
+    private static final String TITLE_SEPERATOR = Strings.repeat("-", 72);
+
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
     private static final String BACKUP_FILENAME = "ServerListPlus.bak.yml";
 
@@ -206,7 +209,20 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
 
             try (BufferedWriter writer = IOUtil.newBufferedWriter(configPath)) {
                 IOUtil.writePrefixed(writer, YAML.COMMENT_PREFIX, header);
-                writer.newLine(); // Empty line after the header
+
+                // TODO: Split into multiple logical methods
+                for (Configuration config : storage.values()) {
+                    // Two empty lines before the next configuration
+                    writer.newLine(); writer.newLine();
+
+                    String title = Configuration.getTitle(config);
+                    if (title != null)
+                        IOUtil.writePrefixed(writer, YAML.COMMENT_PREFIX, TITLE_SEPERATOR, title, TITLE_SEPERATOR);
+                    IOUtil.writePrefixed(writer, YAML.COMMENT_PREFIX, Configuration.getDescription(config));
+
+                    writer.write("--- ");
+                    yaml.dump(config, writer);
+                }
             }
 
             this.getLogger().info("Configuration saving completed successfully.");
