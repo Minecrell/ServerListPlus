@@ -73,7 +73,7 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
 
     @Override
     public void reload() throws ServerListPlusException {
-
+        configManager.reload();
     }
 
     @Override
