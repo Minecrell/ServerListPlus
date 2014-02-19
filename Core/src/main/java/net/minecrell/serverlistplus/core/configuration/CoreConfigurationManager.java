@@ -103,7 +103,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
         String name = Configuration.getUniqueName(configClass);
         if (name != null && !aliases.containsKey(name)) {
             aliases.put(name, configClass);
-            Tag tag = new Tag(name);
+            Tag tag = new Tag("!" + name);
             yamlRepresenter.addClassTag(configClass, tag);
             yamlConstructor.addTypeDescription(new TypeDescription(configClass, tag));
         }
