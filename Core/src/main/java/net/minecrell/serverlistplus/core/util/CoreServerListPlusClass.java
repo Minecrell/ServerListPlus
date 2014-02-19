@@ -22,23 +22,16 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.configuration;
+package net.minecrell.serverlistplus.core.util;
 
-import lombok.EqualsAndHashCode;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+import net.minecrell.serverlistplus.api.ServerListPlusClass;
+import net.minecrell.serverlistplus.api.ServerListPlusCore;
 
-import net.minecrell.serverlistplus.api.configuration.util.Description;
-import net.minecrell.serverlistplus.api.configuration.util.Title;
-
-@Title ("ServerListConfiguration")
-@Description ("This is the server list configuration.")
-@EqualsAndHashCode (callSuper = false)
-public class ServerListConfiguration extends Configuration {
-    public List<String> Motd;
-    public PlayersConfiguration Players;
-
-    public static class PlayersConfiguration {
-        public List<String> Hover;
-    }
+@RequiredArgsConstructor (access = AccessLevel.PROTECTED)
+public abstract class CoreServerListPlusClass implements ServerListPlusClass {
+    private final @Getter ServerListPlusCore core;
 }

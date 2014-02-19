@@ -56,10 +56,10 @@ public interface ServerListPlusCore {
     ServerListPlusPlugin getPlugin();
 
     /**
-     * Gets the plugin logger used for logging errors and messages in the plugin.
-     * @return The logger of the plugin.
+     * Gets a dedicated logger used for logging errors and messages in the core.
+     * @return The dedicated core logger.
      */
-    Logger getLogger();
+    ServerListPlusLogger getLogger();
 
     /**
      * Reloads the plugin configuration and disables unnecessary services.
@@ -108,21 +108,4 @@ public interface ServerListPlusCore {
      * @see ServerCommandSender
      */
     void processCommand(ServerCommandSender sender, String cmd, String label, String[] args);
-
-    /**
-     * Processes an exception, sends it to the logger, and finally returns an {@link ServerListPlusException}.
-     * @param message The message for logging and the exception.
-     * @param e The thrown exception.
-     * @return The exception to throw with the specified message and cause.
-     */
-    ServerListPlusException processException(String message, Throwable e);
-
-    /**
-     * Processes an exception, sends it to the logger, and finally returns an {@link ServerListPlusException}.
-     * @param level The level the messaged should be logged with.
-     * @param message The message for logging and the exception.
-     * @param e The thrown exception.
-     * @return The exception to throw with the specified message and cause.
-     */
-    ServerListPlusException processException(Level level, String message, Throwable e);
 }

@@ -35,39 +35,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
-import net.minecrell.serverlistplus.api.ServerListPlusCore;
-import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 public class IOUtil {
     private IOUtil() {}
 
     public static final Charset CHARSET = StandardCharsets.UTF_8;
-
-    public static final String HEADER_FILENAME = "HEADER";
-    private static String[] header;
-
-    public static void loadHeader(ClassLoader loader) throws IOException {
-        try (InputStream in = loader.getResourceAsStream(HEADER_FILENAME)) {
-            header = (in != null) ? Helper.nullWhenEmpty(readLineArray(in)) : null;
-        }
-    }
-    public static void loadHeader(ServerListPlusCore core) throws ServerListPlusException {
-        try {
-            loadHeader(core.getClass().getClassLoader());
-        } catch (Throwable e) {
-            throw core.processException(Level.WARNING, "Unable to read file header!", e);
-        }
-    }
-    public static void writeHeader(BufferedWriter writer, String prefix) throws IOException {
-        if (header != null) {
-            writePrefixed(writer, prefix, header);
-            // Add an empty line after the header
-            writer.newLine();
-        }
-    }
 
     public static void writePrefixed(BufferedWriter writer, String prefix, String... lines) throws IOException {
         if (lines == null) return;

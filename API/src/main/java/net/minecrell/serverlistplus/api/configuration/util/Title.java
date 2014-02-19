@@ -22,23 +22,22 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.configuration;
+package net.minecrell.serverlistplus.api.configuration.util;
 
-import lombok.EqualsAndHashCode;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.util.List;
-
-import net.minecrell.serverlistplus.api.configuration.util.Description;
-import net.minecrell.serverlistplus.api.configuration.util.Title;
-
-@Title ("ServerListConfiguration")
-@Description ("This is the server list configuration.")
-@EqualsAndHashCode (callSuper = false)
-public class ServerListConfiguration extends Configuration {
-    public List<String> Motd;
-    public PlayersConfiguration Players;
-
-    public static class PlayersConfiguration {
-        public List<String> Hover;
-    }
+@Target (ElementType.TYPE)
+@Retention (RetentionPolicy.RUNTIME)
+/**
+ * Represents the title of a configuration part.
+ */
+public @interface Title {
+    /**
+     * Gets the title of a configuration part.
+     * @return The title.
+     */
+    String value();
 }

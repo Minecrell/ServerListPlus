@@ -25,12 +25,16 @@
 package net.minecrell.serverlistplus.core.util;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.MutableClassToInstanceMap;
 
 public class Helper {
     private Helper() {}
@@ -40,9 +44,12 @@ public class Helper {
         return c.toArray(new String[c.size()]);
     }
 
+    public static <T> boolean nullOrEmpty(T[] array) {
+        return (array == null || array.length == 0);
+    }
+
     public static <T> T[] nullWhenEmpty(T[] array) {
-        if (array == null || array.length == 0) return null;
-        return array;
+        return (!nullOrEmpty(array)) ? array : null;
     }
 
     public static List<String> colorize(final ServerListPlusPlugin plugin, List<String> lines) {
@@ -52,5 +59,18 @@ public class Helper {
                 return plugin.colorizeString(input);
             }
         });
+    }
+
+    public static <T> ClassToInstanceMap<T> createLinkedClassMap() {
+        return MutableClassToInstanceMap.create(new LinkedHashMap<Class<? extends T>, T>());
+    }
+
+    public static <K, V, T extends Map<K, V>> int mergeMaps(T main, Map<K, V> merge) {
+        int counter = 0;
+        for (Map.Entry<K, V> entry : merge.entrySet())
+            if (!main.containsKey(entry.getKey())) {
+                main.put(entry.getKey(), entry.getValue()); counter++;
+            }
+        return counter;
     }
 }

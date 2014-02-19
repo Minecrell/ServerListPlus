@@ -22,23 +22,16 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.configuration;
+package net.minecrell.serverlistplus.api;
 
-import lombok.EqualsAndHashCode;
-
-import java.util.List;
-
-import net.minecrell.serverlistplus.api.configuration.util.Description;
-import net.minecrell.serverlistplus.api.configuration.util.Title;
-
-@Title ("ServerListConfiguration")
-@Description ("This is the server list configuration.")
-@EqualsAndHashCode (callSuper = false)
-public class ServerListConfiguration extends Configuration {
-    public List<String> Motd;
-    public PlayersConfiguration Players;
-
-    public static class PlayersConfiguration {
-        public List<String> Hover;
-    }
+/**
+ * Represents a class managing a specific part of the plugin.
+ * This interface is only used as a base interface for all managers.
+ */
+public interface ServerListPlusClass {
+    /**
+     * Gets the instance of the main core class for this manager.
+     * @return The main core class instance.
+     */
+    ServerListPlusCore getCore();
 }

@@ -22,23 +22,10 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.configuration;
+package net.minecrell.serverlistplus.core.configuration;
 
-import lombok.EqualsAndHashCode;
+import net.minecrell.serverlistplus.api.configuration.Configuration;
 
-import java.util.List;
+public class CoreConfiguration extends Configuration {
 
-import net.minecrell.serverlistplus.api.configuration.util.Description;
-import net.minecrell.serverlistplus.api.configuration.util.Title;
-
-@Title ("ServerListConfiguration")
-@Description ("This is the server list configuration.")
-@EqualsAndHashCode (callSuper = false)
-public class ServerListConfiguration extends Configuration {
-    public List<String> Motd;
-    public PlayersConfiguration Players;
-
-    public static class PlayersConfiguration {
-        public List<String> Hover;
-    }
 }
