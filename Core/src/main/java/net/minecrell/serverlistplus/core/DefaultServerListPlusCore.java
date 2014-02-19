@@ -95,7 +95,7 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
                     this.reload();
                     this.sendColoredMessage(sender, "&aConfiguration successfully reloaded!");
                 } catch (ServerListPlusException e) {
-                    this.sendColoredMessage(sender, "&cAn internal error occurred while reloading the configuration. :(");
+                    this.sendColoredMessage(sender,"&cAn internal error occurred while reloading the configuration.");
                 } return;
             } else if (subCommand.equalsIgnoreCase("save")) {
                 this.getLogger().info("Saving configuration per request by '" + sender + "'!");
@@ -104,7 +104,7 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
                     // TODO: Add configuration saving
                     this.sendColoredMessage(sender, "&aConfiguration successfully saved!");
                 } catch (ServerListPlusException e) {
-                    this.sendColoredMessage(sender, "&cAn internal error occurred while saving the configuration. :(");
+                    this.sendColoredMessage(sender, "&cAn internal error occurred while saving the configuration.");
                 } return;
             }
         }

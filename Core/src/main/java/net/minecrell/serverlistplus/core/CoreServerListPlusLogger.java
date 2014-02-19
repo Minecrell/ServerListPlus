@@ -121,7 +121,8 @@ public class CoreServerListPlusLogger extends CoreServerListPlusClass implements
 
     @Override
     public ServerListPlusException process(Level level, Exception e, String message) {
-        return (this.log(level, e, message)) ? new CoreServerListPlusException(message, e) : (ServerListPlusException) e;
+        return (this.log(level, e, message)) ?
+                new CoreServerListPlusException(message, e) : (ServerListPlusException) e;
     }
 
     @Override

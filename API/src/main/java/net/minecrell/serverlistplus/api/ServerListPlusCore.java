@@ -89,9 +89,9 @@ public interface ServerListPlusCore {
     void processRequest(InetAddress client, String host, ServerPingResponse response);
 
     /**
-     * Handles the login of a player to the server. This is used by the player tracking to track the players with their IP
-     * address, so it can be used by the {@link #processRequest(InetAddress, ServerPingResponse)} method to create
-     * personalized messages.
+     * Handles the login of a player to the server. This is used by the player tracking to track the players with
+     * their IP address, so it can be used by the {@link #processRequest(InetAddress, ServerPingResponse)} method to
+     * create personalized messages.
      *
      * @param playerName The name the player used to login to the server.
      * @param client The IP address of the client.

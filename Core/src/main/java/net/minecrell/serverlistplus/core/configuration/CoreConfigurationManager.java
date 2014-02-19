@@ -91,12 +91,12 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
             if (generated > 0) {
                 this.getLogger().infoF("Generated %d configurations.", generated);
                 if (!created)
-                    this.getLogger().warning((newStorage.size() - generated) + " configurations could not be read from the" +
-                            " configuration file. Your configuration might be outdated, or a part of is not valid YAML" +
-                            " syntax. To prevent data loss the configuration is not saved automatically to add the new " +
-                            "generated configurations. Type '/ServerListPlus save' to save the configuration and add the" +
-                            "missing ones. All invalid configuration parts will be deleted, " +
-                            "as well as any custom made comments. Make a backup before saving!");
+                    this.getLogger().warning((newStorage.size() - generated) + " configurations could not be read " +
+                            "from the configuration file. Your configuration might be outdated," +
+                            "or a part of is not valid YAML syntax. To prevent data loss, the configuration is not " +
+                            "saved automatically to add the new generated configurations. Type '/ServerListPlus save'" +
+                            " to save the configuration and add the missing ones. All invalid configuration parts " +
+                            "will be deleted, as well as any custom made comments. Make a backup before saving!");
             }
             if (created)
                 try { this.save(); } catch (ServerListPlusException ignored) {}
