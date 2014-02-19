@@ -44,7 +44,6 @@ import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ClassToInstanceMap;
 
 import org.yaml.snakeyaml.DumperOptions;
@@ -55,7 +54,6 @@ import org.yaml.snakeyaml.representer.Representer;
 
 public class CoreConfigurationManager extends CoreServerListPlusManager implements ConfigurationManager {
     public static String COMMENT_PREFIX = "# ";
-    private static final String TITLE_SEPERATOR = Strings.repeat("-", 72);
 
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
     private static final String BACKUP_FILENAME = "ServerListPlus.bak.yml";
@@ -220,11 +218,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                     // Two empty lines before the next configuration
                     writer.newLine(); writer.newLine();
 
-                    String title = Configuration.getTitle(config);
-                    if (title != null)
-                        IOUtil.writePrefixed(writer, COMMENT_PREFIX, TITLE_SEPERATOR, title, TITLE_SEPERATOR);
                     IOUtil.writePrefixed(writer, COMMENT_PREFIX, Configuration.getDescription(config));
-
                     writer.write("--- ");
                     yaml.dump(config, writer);
                 }
