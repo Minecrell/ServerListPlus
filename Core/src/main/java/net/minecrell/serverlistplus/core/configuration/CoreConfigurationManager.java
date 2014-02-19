@@ -238,8 +238,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
 
                 // TODO: Split into multiple logical methods
                 for (Configuration config : storage.values()) {
-                    // Two empty lines before the next configuration
-                    writer.newLine(); writer.newLine();
+                    writer.newLine(); // Empty line before the next configuration
 
                     IOUtil.writePrefixed(writer, COMMENT_PREFIX, Configuration.getDescription(config));
                     writer.write("--- ");
