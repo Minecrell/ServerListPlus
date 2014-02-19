@@ -35,8 +35,11 @@ import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.ServerListPlusLogger;
 import net.minecrell.serverlistplus.api.ServerPingResponse;
 import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
+import net.minecrell.serverlistplus.api.configuration.PluginConfiguration;
+import net.minecrell.serverlistplus.api.configuration.ServerListConfiguration;
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.core.configuration.CoreConfiguration;
 import net.minecrell.serverlistplus.core.configuration.CoreConfigurationManager;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.util.Helper;
@@ -58,6 +61,12 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
         this.infoCommand = this.loadInfoCommandLines();
 
         this.configManager = new CoreConfigurationManager(this);
+
+        // Register default configurations
+        configManager.registerDefault(ServerListConfiguration.class, new ServerListConfiguration());
+        configManager.registerDefault(PluginConfiguration.class, new PluginConfiguration());
+        configManager.registerDefault(CoreConfiguration.class, new CoreConfiguration());
+
         this.reload(); // Load configuration
     }
 
