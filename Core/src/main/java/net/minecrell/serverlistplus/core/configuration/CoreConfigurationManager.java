@@ -52,6 +52,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 
 public class CoreConfigurationManager extends CoreServerListPlusManager implements ConfigurationManager {
+    public static String COMMENT_PREFIX = "# ";
     private static final String TITLE_SEPERATOR = Strings.repeat("-", 72);
 
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
@@ -209,7 +210,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
             }
 
             try (BufferedWriter writer = IOUtil.newBufferedWriter(configPath)) {
-                IOUtil.writePrefixed(writer, YAML.COMMENT_PREFIX, header);
+                IOUtil.writePrefixed(writer, COMMENT_PREFIX, header);
 
                 // TODO: Split into multiple logical methods
                 for (Configuration config : storage.values()) {
@@ -218,8 +219,8 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
 
                     String title = Configuration.getTitle(config);
                     if (title != null)
-                        IOUtil.writePrefixed(writer, YAML.COMMENT_PREFIX, TITLE_SEPERATOR, title, TITLE_SEPERATOR);
-                    IOUtil.writePrefixed(writer, YAML.COMMENT_PREFIX, Configuration.getDescription(config));
+                        IOUtil.writePrefixed(writer, COMMENT_PREFIX, TITLE_SEPERATOR, title, TITLE_SEPERATOR);
+                    IOUtil.writePrefixed(writer, COMMENT_PREFIX, Configuration.getDescription(config));
 
                     writer.write("--- ");
                     yaml.dump(config, writer);
