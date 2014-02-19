@@ -26,6 +26,7 @@ package net.minecrell.serverlistplus.api;
 
 import java.net.InetAddress;
 
+import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 
@@ -58,6 +59,12 @@ public interface ServerListPlusCore {
      * @return The dedicated core logger.
      */
     ServerListPlusLogger getLogger();
+
+    /**
+     * Gets the configuration manager storing the loaded configuration for this core.
+     * @return The configuration manager of this core.
+     */
+    ConfigurationManager getConfigManager();
 
     /**
      * Reloads the plugin configuration and disables unnecessary services.
