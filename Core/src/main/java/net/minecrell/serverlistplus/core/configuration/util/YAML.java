@@ -27,5 +27,5 @@ package net.minecrell.serverlistplus.core.configuration.util;
 public class YAML {
     private YAML() {}
 
-    public static String COMMENT_PREFIX;
+    public static String COMMENT_PREFIX = "# ";
 }
