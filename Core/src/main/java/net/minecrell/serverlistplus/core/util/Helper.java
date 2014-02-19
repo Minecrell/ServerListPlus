@@ -39,6 +39,26 @@ import com.google.common.collect.MutableClassToInstanceMap;
 public class Helper {
     private Helper() {}
 
+    public static String ordinalNumber(int i) {
+        return i + getOrdinalPrefix(i);
+    }
+
+    private static String getOrdinalPrefix(int i) {
+        switch (i % 100) {
+            case 11:
+            case 12:
+            case 13:
+                return "th";
+            default:
+                switch (i % 10) {
+                    case 1: return "st";
+                    case 2: return "nd";
+                    case 3: return "rd";
+                    default: return "th";
+                }
+        }
+    }
+
     public static String[] toStringArray(Collection<String> c) {
         if (c == null) return null;
         return c.toArray(new String[c.size()]);

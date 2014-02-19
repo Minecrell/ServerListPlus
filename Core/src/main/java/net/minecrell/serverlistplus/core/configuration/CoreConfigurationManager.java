@@ -28,8 +28,10 @@ import lombok.Getter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
@@ -42,6 +44,8 @@ import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import com.google.common.collect.ClassToInstanceMap;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.error.YAMLException;
 
 public class CoreConfigurationManager extends CoreServerListPlusManager {
     private static final ClassToInstanceMap<Configuration> DefaultConfigurations = Helper.createLinkedClassMap();
@@ -57,6 +61,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
     public static final String HEADER_FILENAME = "HEADER";
     private final @Getter String[] header;
 
+    private final Yaml yaml = new Yaml(); // TODO: Set yaml settings
     private ClassToInstanceMap<Configuration> storage = DefaultConfigurations;
 
     public CoreConfigurationManager(ServerListPlusCore core) {
@@ -77,6 +82,27 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
             ClassToInstanceMap<Configuration> newStorage = Helper.createLinkedClassMap();
             if (Files.exists(configPath)) {
                 // TODO: Load configuration from file.
+                try (InputStreamReader reader = IOUtil.newReader(configPath)) {
+                    int counter = 0;
+                    Iterator<Object> itr = yaml.loadAll(reader).iterator();
+
+                    while (itr.hasNext()) {
+                        counter++;
+                        try {
+                            Object obj = itr.next();
+                            if (obj instanceof Configuration) {
+                                Configuration config = (Configuration) obj;
+                                newStorage.put(config.getClass(), config);
+                                this.getLogger().info("Loaded configuration: " + config.getClass().getSimpleName());
+                            } else
+                                this.getLogger().warningF("Unknown configuration type, skipping %s configuration: %s",
+                                        Helper.ordinalNumber(counter), obj.getClass());
+                        } catch (YAMLException e) {
+                            this.getLogger().logF(Level.WARNING, e, "Unable to parse the %s configuration. Make sure" +
+                                    " the YAML syntax is correct!", Helper.ordinalNumber(counter));
+                        }
+                    }
+                }
             } else {
                 Files.createDirectories(configPath.getParent());
                 created = true;
@@ -102,6 +128,9 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
                 try { this.save(); } catch (ServerListPlusException ignored) {}
 
             return loaded;
+        } catch (YAMLException e) {
+            throw this.getLogger().process(e, "Unable to parse configuration file. Make sure it contains only valid " +
+                    "YAML syntax and check if you haven't got an error somewhere.");
         } catch (IOException e) {
             throw this.getLogger().processF(e, "Unable to access configuration file. " +
                     "Make sure that it is saved using the correct charset (%s) and accessible by the server.\n%s",
