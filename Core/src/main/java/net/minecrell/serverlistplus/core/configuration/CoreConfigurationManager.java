@@ -43,6 +43,7 @@ import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
+import net.minecrell.serverlistplus.core.configuration.util.NullSkippingRepresenter;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
@@ -71,8 +72,8 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     private ClassToInstanceMap<Configuration> storage = Helper.createLinkedClassMap();
 
     private final Yaml yaml;
-    private final Representer yamlRepresenter;
     private final Constructor yamlConstructor;
+    private final Representer yamlRepresenter;
 
     public CoreConfigurationManager(ServerListPlusCore core) {
         super(core);
@@ -83,7 +84,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         this.yaml = new Yaml(
                 this.yamlConstructor = new CustomClassLoaderConstructor(core.getClass().getClassLoader()),
-                this.yamlRepresenter = new Representer(),
+                this.yamlRepresenter = new NullSkippingRepresenter(),
                 dumperOptions);
     }
 
