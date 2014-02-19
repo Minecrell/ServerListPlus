@@ -26,7 +26,6 @@ package net.minecrell.serverlistplus.api.configuration;
 
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecrell.serverlistplus.api.configuration.util.Description;
