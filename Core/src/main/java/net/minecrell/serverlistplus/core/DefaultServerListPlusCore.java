@@ -82,7 +82,7 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
 
     @Override
     public InputStream getResource(String fileName) {
-        return this.getClass().getResourceAsStream(fileName);
+        return this.getClass().getClassLoader().getResourceAsStream(fileName);
     }
 
     @Override
