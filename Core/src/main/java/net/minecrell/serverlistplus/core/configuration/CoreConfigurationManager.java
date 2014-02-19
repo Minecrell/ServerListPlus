@@ -238,7 +238,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     }
 
     public static String[] loadHeader(ServerListPlusCore core) throws ServerListPlusException {
-        try (InputStream in = core.getClass().getClassLoader().getResourceAsStream(HEADER_FILENAME)) {
+        try (InputStream in = core.getResource(HEADER_FILENAME)) {
             return (in != null) ? Helper.nullWhenEmpty(IOUtil.readLineArray(in)) : null;
         } catch (Exception e) {
             core.getLogger().log(Level.WARNING, e, "Unable to read file header!"); return null;

@@ -24,6 +24,7 @@
 
 package net.minecrell.serverlistplus.api;
 
+import java.io.InputStream;
 import java.net.InetAddress;
 
 import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
@@ -65,6 +66,13 @@ public interface ServerListPlusCore {
      * @return The configuration manager of this core.
      */
     ConfigurationManager getConfigManager();
+
+    /**
+     * Gets a resource from the plugin package.
+     * @param fileName The file name inside the plugin package.
+     * @return An input stream of the requested resource, or <code>null</code> if it doesn't exist.
+     */
+    InputStream getResource(String fileName);
 
     /**
      * Reloads the plugin configuration and disables unnecessary services.

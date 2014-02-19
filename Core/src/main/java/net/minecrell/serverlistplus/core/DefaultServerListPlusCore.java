@@ -81,6 +81,11 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
     }
 
     @Override
+    public InputStream getResource(String fileName) {
+        return this.getClass().getResourceAsStream(fileName);
+    }
+
+    @Override
     public void reload() throws ServerListPlusException {
         configManager.reload();
     }
@@ -134,7 +139,7 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
     }
 
     private String[] loadInfoCommandLines() {
-        try (InputStream in = this.getClass().getResourceAsStream(INFO_COMMAND_FILENAME)) {
+        try (InputStream in = this.getResource(INFO_COMMAND_FILENAME)) {
             return Helper.toStringArray(Helper.colorize(this.getPlugin(), IOUtil.readLines(in)));
         } catch (Exception e) {
             this.getLogger().log(Level.WARNING, e, "Unable to load info command!");
