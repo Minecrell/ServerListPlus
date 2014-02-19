@@ -34,4 +34,9 @@ import net.minecrell.serverlistplus.api.configuration.util.Title;
 @EqualsAndHashCode (callSuper = false)
 public class PluginConfiguration extends Configuration {
     public boolean Stats;
+
+    @Override
+    public void setDefault() {
+        this.Stats = true;
+    }
 }

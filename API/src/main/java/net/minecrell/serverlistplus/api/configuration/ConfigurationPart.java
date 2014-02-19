@@ -1,5 +1,5 @@
 /*
- *       __                           __ _     _     ___ _
+ * __                           __ _     _     ___ _
  *      / _\ ___ _ ____   _____ _ __ / /(_)___| |_  / _ \ |_   _ ___
  *      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
  *      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
@@ -24,34 +24,16 @@
 
 package net.minecrell.serverlistplus.api.configuration;
 
-import lombok.EqualsAndHashCode;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecrell.serverlistplus.api.configuration.util.Description;
-import net.minecrell.serverlistplus.api.configuration.util.Title;
-
-@Title ("ServerListConfiguration")
-@Description ("This is the server list configuration.")
-@EqualsAndHashCode (callSuper = false)
-public class ServerListConfiguration extends Configuration {
-    public List<String> Motd;
-    public PlayersConfiguration Players;
-
-    @Override
-    public void setDefault() {
-        this.Motd = null;
-        this.Players = null;
+/**
+ * Represents a part of a configuration.
+ */
+public abstract class ConfigurationPart {
+    protected ConfigurationPart() {
+        this.setDefault();
     }
 
-    @EqualsAndHashCode(callSuper = false)
-    public static class PlayersConfiguration extends ConfigurationPart {
-        public List<String> Hover;
-
-        @Override
-        public void setDefault() {
-            this.Hover = null;
-        }
-    }
+    /**
+     * Sets the configuration back to default values.
+     */
+    public abstract void setDefault();
 }

@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 
 import com.google.common.base.Function;
@@ -59,6 +60,11 @@ public class Helper {
         }
     }
 
+    public static Configuration[] toConfigArray(Collection<Configuration> c) {
+        if (c == null) return null;
+        return c.toArray(new Configuration[c.size()]);
+    }
+
     public static String[] toStringArray(Collection<String> c) {
         if (c == null) return null;
         return c.toArray(new String[c.size()]);
@@ -83,6 +89,10 @@ public class Helper {
 
     public static <T> ClassToInstanceMap<T> createLinkedClassMap() {
         return MutableClassToInstanceMap.create(new LinkedHashMap<Class<? extends T>, T>());
+    }
+
+    public static <T> ClassToInstanceMap<T> copyLinkedClassMap(ClassToInstanceMap<T> src) {
+        return MutableClassToInstanceMap.create(new LinkedHashMap<>(src));
     }
 
     public static <K, V, T extends Map<K, V>> int mergeMaps(T main, Map<K, V> merge) {

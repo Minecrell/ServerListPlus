@@ -30,7 +30,8 @@ import net.minecrell.serverlistplus.api.configuration.util.Title;
 /**
  * Base class for configuration parts - they have to extend this sub class to be loaded and saved to the file.
  */
-public abstract class Configuration {
+public abstract class Configuration extends ConfigurationPart {
+
     /**
      * Gets the title of a configuration part.
      * @param configClass The configuration class.

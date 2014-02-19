@@ -39,8 +39,7 @@ import java.util.logging.Level;
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.configuration.Configuration;
-import net.minecrell.serverlistplus.api.configuration.PluginConfiguration;
-import net.minecrell.serverlistplus.api.configuration.ServerListConfiguration;
+import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.configuration.util.YAML;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
@@ -50,27 +49,69 @@ import com.google.common.collect.ClassToInstanceMap;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 
-public class CoreConfigurationManager extends CoreServerListPlusManager {
-    private static final ClassToInstanceMap<Configuration> DefaultConfigurations = Helper.createLinkedClassMap();
-
-    static {
-        DefaultConfigurations.putInstance(ServerListConfiguration.class, new ServerListConfiguration());
-        DefaultConfigurations.putInstance(PluginConfiguration.class, new PluginConfiguration());
-        DefaultConfigurations.putInstance(CoreConfiguration.class, new CoreConfiguration());
-    }
-
+public class CoreConfigurationManager extends CoreServerListPlusManager implements ConfigurationManager {
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
     private static final String BACKUP_FILENAME = "ServerListPlus.bak.yml";
 
     public static final String HEADER_FILENAME = "HEADER";
     private final @Getter String[] header;
 
+    private final ClassToInstanceMap<Configuration> defaultConfigs = Helper.createLinkedClassMap();
+    private ClassToInstanceMap<Configuration> storage = Helper.createLinkedClassMap();
+
     private final Yaml yaml = new Yaml(); // TODO: Set yaml settings
-    private ClassToInstanceMap<Configuration> storage = DefaultConfigurations;
 
     public CoreConfigurationManager(ServerListPlusCore core) {
         super(core);
         this.header = loadHeader(core); // Try loading the configuration header
+    }
+
+    @Override
+    public Configuration[] getDefault() {
+        return Helper.toConfigArray(defaultConfigs.values());
+    }
+
+    @Override
+    public <T extends Configuration> T getDefault(Class<T> configClass) {
+        return defaultConfigs.getInstance(configClass);
+    }
+
+    @Override
+    public <T extends Configuration> void registerDefault(Class<T> configClass, T defaultConfig) {
+        defaultConfigs.put(configClass, defaultConfig);
+        if (!this.has(configClass)) this.set(configClass, defaultConfig);
+    }
+
+    @Override
+    public boolean unregisterDefault(Class<? extends Configuration> configClass) {
+        return (defaultConfigs.remove(configClass) != null);
+    }
+
+    @Override
+    public Configuration[] reset() {
+        Configuration[] loaded = this.get();
+        this.storage = Helper.copyLinkedClassMap(defaultConfigs);
+        return loaded;
+    }
+
+    @Override
+    public Configuration[] get() {
+        return Helper.toConfigArray(storage.values());
+    }
+
+    @Override
+    public <T extends Configuration> T get(Class<T> configClass) {
+        return storage.getInstance(configClass);
+    }
+
+    @Override
+    public boolean has(Class<? extends Configuration> configClass) {
+        return storage.containsKey(configClass);
+    }
+
+    @Override
+    public <T extends Configuration> T set(Class<T> configClass, T config) {
+        return storage.putInstance(configClass, config);
     }
 
     private Path getDataFolder() {
@@ -81,6 +122,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
         return this.getDataFolder().resolve(CONFIG_FILENAME).toAbsolutePath();
     }
 
+    @Override
     public Configuration[] reload() throws ServerListPlusException {
         Path configPath = this.getConfigPath();
         this.getLogger().info("Reloading configuration from: " + configPath);
@@ -114,9 +156,9 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
             } else created = true;
 
             this.getLogger().infoF("Loaded %d configurations.", newStorage.size());
-            Configuration[] loaded = newStorage.values().toArray(new Configuration[newStorage.size()]);
+            Configuration[] loaded = Helper.toConfigArray(newStorage.values());
 
-            int generated = Helper.mergeMaps(newStorage, DefaultConfigurations);
+            int generated = Helper.mergeMaps(newStorage, defaultConfigs);
             this.storage = newStorage;
 
             if (generated > 0) {
@@ -146,6 +188,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
         }
     }
 
+    @Override
     public void save() throws ServerListPlusException {
         Path configPath = this.getConfigPath();
         this.getLogger().info("Saving configuration to: " + configPath);
