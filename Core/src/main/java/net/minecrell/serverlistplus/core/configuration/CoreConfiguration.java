@@ -25,7 +25,9 @@
 package net.minecrell.serverlistplus.core.configuration;
 
 import net.minecrell.serverlistplus.api.configuration.Configuration;
+import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
+@UniqueName ("Core")
 public class CoreConfiguration extends Configuration {
 
     @Override
