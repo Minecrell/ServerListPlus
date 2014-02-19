@@ -32,12 +32,12 @@ import java.lang.annotation.Target;
 @Target (ElementType.TYPE)
 @Retention (RetentionPolicy.RUNTIME)
 /**
- * Represents the title of a configuration part.
+ * Represents the unique name of a configuration part.
  */
-public @interface Title {
+public @interface UniqueName {
     /**
-     * Gets the title of a configuration part.
-     * @return The title.
+     * Gets the unique name of a configuration part.
+     * @return The unique name.
      */
     String value();
 }

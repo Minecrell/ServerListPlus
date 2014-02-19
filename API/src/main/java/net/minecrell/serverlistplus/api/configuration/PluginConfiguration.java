@@ -27,9 +27,9 @@ package net.minecrell.serverlistplus.api.configuration;
 import lombok.EqualsAndHashCode;
 
 import net.minecrell.serverlistplus.api.configuration.util.Description;
-import net.minecrell.serverlistplus.api.configuration.util.Title;
+import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
-@Title ("Plugin configuration")
+@UniqueName ("Plugin")
 @Description ("This is the plugin configuration.")
 @EqualsAndHashCode (callSuper = false)
 public class PluginConfiguration extends Configuration {

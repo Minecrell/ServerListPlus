@@ -29,9 +29,9 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 import net.minecrell.serverlistplus.api.configuration.util.Description;
-import net.minecrell.serverlistplus.api.configuration.util.Title;
+import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
-@Title ("ServerListConfiguration")
+@UniqueName ("ServerList")
 @Description ("This is the server list configuration.")
 @EqualsAndHashCode (callSuper = false)
 public class ServerListConfiguration extends Configuration {

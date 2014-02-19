@@ -33,7 +33,9 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
@@ -47,9 +49,12 @@ import net.minecrell.serverlistplus.core.util.Helper;
 import com.google.common.collect.ClassToInstanceMap;
 
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 public class CoreConfigurationManager extends CoreServerListPlusManager implements ConfigurationManager {
@@ -61,15 +66,25 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     public static final String HEADER_FILENAME = "HEADER";
     private final @Getter String[] header;
 
+    private final Map<String, Class<? extends Configuration>> aliases = new HashMap<>();
     private final ClassToInstanceMap<Configuration> defaultConfigs = Helper.createLinkedClassMap();
     private ClassToInstanceMap<Configuration> storage = Helper.createLinkedClassMap();
 
     private final Yaml yaml;
+    private final Representer yamlRepresenter;
+    private final Constructor yamlConstructor;
 
     public CoreConfigurationManager(ServerListPlusCore core) {
         super(core);
         this.header = loadHeader(core); // Try loading the configuration header
-        this.yaml = createYAML(core);
+
+        // YAML settings
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        this.yaml = new Yaml(
+                this.yamlConstructor = new CustomClassLoaderConstructor(core.getClass().getClassLoader()),
+                this.yamlRepresenter = new Representer(),
+                dumperOptions);
     }
 
     @Override
@@ -85,11 +100,19 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     @Override
     public <T extends Configuration> void registerDefault(Class<T> configClass, T defaultConfig) {
         defaultConfigs.put(configClass, defaultConfig);
+        String name = Configuration.getUniqueName(configClass);
+        if (name != null && !aliases.containsKey(name)) {
+            aliases.put(name, configClass);
+            Tag tag = new Tag(name);
+            yamlRepresenter.addClassTag(configClass, tag);
+            yamlConstructor.addTypeDescription(new TypeDescription(configClass, tag));
+        }
         if (!this.has(configClass)) this.set(configClass, defaultConfig);
     }
 
     @Override
     public boolean unregisterDefault(Class<? extends Configuration> configClass) {
+        // TODO: Unregister alias
         return (defaultConfigs.remove(configClass) != null);
     }
 
@@ -241,11 +264,5 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
         } catch (Exception e) {
             core.getLogger().log(Level.WARNING, e, "Unable to read file header!"); return null;
         }
-    }
-
-    private static Yaml createYAML(ServerListPlusCore core) {
-        DumperOptions dump = new DumperOptions();
-        dump.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        return new Yaml(new CustomClassLoaderConstructor(core.getClass().getClassLoader()), new Representer(), dump);
     }
 }

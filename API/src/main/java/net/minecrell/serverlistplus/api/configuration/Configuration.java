@@ -25,7 +25,7 @@
 package net.minecrell.serverlistplus.api.configuration;
 
 import net.minecrell.serverlistplus.api.configuration.util.Description;
-import net.minecrell.serverlistplus.api.configuration.util.Title;
+import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
 /**
  * Base class for configuration parts - they have to extend this sub class to be loaded and saved to the file.
@@ -33,22 +33,22 @@ import net.minecrell.serverlistplus.api.configuration.util.Title;
 public abstract class Configuration extends ConfigurationPart {
 
     /**
-     * Gets the title of a configuration part.
+     * Gets the unique name of a configuration part.
      * @param configClass The configuration class.
-     * @return The title of the specified configuration part.
+     * @return The unique name of the specified configuration part.
      */
-    public static String getTitle(Class<? extends Configuration> configClass) {
-        Title title = configClass.getAnnotation(Title.class);
-        return (title != null) ? title.value() : null;
+    public static String getUniqueName(Class<? extends Configuration> configClass) {
+        UniqueName name = configClass.getAnnotation(UniqueName.class);
+        return (name != null) ? name.value() : null;
     }
 
     /**
-     * Gets the title of a configuration part.
+     * Gets the unique name of a configuration part.
      * @param config A configuration instance.
-     * @return The title of the specified configuration part.
+     * @return The unique name of the specified configuration part.
      */
-    public static String getTitle(Configuration config) {
-        return getTitle(config.getClass());
+    public static String getUniqueName(Configuration config) {
+        return getUniqueName(config.getClass());
     }
 
     /**
