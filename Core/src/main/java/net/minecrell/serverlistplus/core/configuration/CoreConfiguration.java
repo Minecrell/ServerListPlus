@@ -28,4 +28,8 @@ import net.minecrell.serverlistplus.api.configuration.Configuration;
 
 public class CoreConfiguration extends Configuration {
 
+    @Override
+    public void setDefault() {
+        // Nothing to do here
+    }
 }
