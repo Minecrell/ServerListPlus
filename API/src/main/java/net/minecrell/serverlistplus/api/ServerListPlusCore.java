@@ -25,8 +25,6 @@
 package net.minecrell.serverlistplus.api;
 
 import java.net.InetAddress;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
