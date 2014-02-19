@@ -26,11 +26,13 @@ package net.minecrell.serverlistplus.core.configuration;
 
 import lombok.Getter;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 import java.util.logging.Level;
 
@@ -40,6 +42,7 @@ import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.configuration.PluginConfiguration;
 import net.minecrell.serverlistplus.api.configuration.ServerListConfiguration;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
+import net.minecrell.serverlistplus.core.configuration.util.YAML;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
@@ -57,6 +60,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
     }
 
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
+    private static final String BACKUP_FILENAME = "ServerListPlus.bak.yml";
 
     public static final String HEADER_FILENAME = "HEADER";
     private final @Getter String[] header;
@@ -69,13 +73,17 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
         this.header = loadHeader(core); // Try loading the configuration header
     }
 
+    private Path getDataFolder() {
+        return this.getCore().getPlugin().getDataFolder().toPath();
+    }
+
     public Path getConfigPath() {
-        return this.getCore().getPlugin().getDataFolder().toPath().resolve(CONFIG_FILENAME).toAbsolutePath();
+        return this.getDataFolder().resolve(CONFIG_FILENAME).toAbsolutePath();
     }
 
     public Configuration[] reload() throws ServerListPlusException {
-        this.getCore().getLogger().info("Reloading configuration...");
         Path configPath = this.getConfigPath();
+        this.getLogger().info("Reloading configuration from: " + configPath);
 
         try {
             boolean created = false;
@@ -103,10 +111,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
                         }
                     }
                 }
-            } else {
-                Files.createDirectories(configPath.getParent());
-                created = true;
-            }
+            } else created = true;
 
             this.getLogger().infoF("Loaded %d configurations.", newStorage.size());
             Configuration[] loaded = newStorage.values().toArray(new Configuration[newStorage.size()]);
@@ -127,22 +132,49 @@ public class CoreConfigurationManager extends CoreServerListPlusManager {
             if (created)
                 try { this.save(); } catch (ServerListPlusException ignored) {}
 
+            this.getLogger().info("Configuration reload completed successfully.");
             return loaded;
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "Unable to parse configuration file. Make sure it contains only valid " +
                     "YAML syntax and check if you haven't got an error somewhere.");
         } catch (IOException e) {
             throw this.getLogger().processF(e, "Unable to access configuration file. " +
-                    "Make sure that it is saved using the correct charset (%s) and accessible by the server.\n%s",
-                    IOUtil.CHARSET.displayName(), configPath);
+                    "Make sure that it is saved using the correct charset (%s) and accessible by the server.",
+                    IOUtil.CHARSET.displayName());
         } catch (Exception e) {
-            throw this.getLogger().process(e, "An internal error occurred while reloading the configuration from: " +
-                    configPath);
+            throw this.getLogger().process(e, "An internal error occurred while reloading the configuration file!");
         }
     }
 
     public void save() throws ServerListPlusException {
-        // TODO: Save configuration to file
+        Path configPath = this.getConfigPath();
+        this.getLogger().info("Saving configuration to: " + configPath);
+
+        try {
+            if (Files.exists(configPath)) {
+                Path backupPath = this.getDataFolder().resolve(BACKUP_FILENAME).toAbsolutePath();
+                this.getLogger().info("Backing up configuration file to: " + backupPath);
+
+                Files.copy(configPath, backupPath, StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                // Create plugin folder if it doesn't already
+                Files.createDirectories(configPath.getParent());
+            }
+
+            try (BufferedWriter writer = IOUtil.newBufferedWriter(configPath)) {
+                IOUtil.writePrefixed(writer, YAML.COMMENT_PREFIX, header);
+                writer.newLine(); // Empty line after the header
+            }
+
+            this.getLogger().info("Configuration saving completed successfully.");
+        } catch (YAMLException e) {
+            throw this.getLogger().process(e, "An error occurred while generating the YAML configuration!");
+        } catch (IOException e) {
+            throw this.getLogger().process(e, "Unable to access configuration file. Make sure that the server has " +
+                    "permission to write to the file.");
+        } catch (Exception e) {
+            throw this.getLogger().process(e, "An internal error occurred while saving the configuration file!");
+        }
     }
 
     public static String[] loadHeader(ServerListPlusCore core) throws ServerListPlusException {
