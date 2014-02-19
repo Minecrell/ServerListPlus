@@ -41,15 +41,17 @@ import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
-import net.minecrell.serverlistplus.core.configuration.util.YAML;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ClassToInstanceMap;
 
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.representer.Representer;
 
 public class CoreConfigurationManager extends CoreServerListPlusManager implements ConfigurationManager {
     public static String COMMENT_PREFIX = "# ";
@@ -64,11 +66,12 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     private final ClassToInstanceMap<Configuration> defaultConfigs = Helper.createLinkedClassMap();
     private ClassToInstanceMap<Configuration> storage = Helper.createLinkedClassMap();
 
-    private final Yaml yaml = new Yaml(); // TODO: Set yaml settings
+    private final Yaml yaml;
 
     public CoreConfigurationManager(ServerListPlusCore core) {
         super(core);
         this.header = loadHeader(core); // Try loading the configuration header
+        this.yaml = createYAML(core);
     }
 
     @Override
@@ -244,5 +247,11 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
         } catch (Exception e) {
             core.getLogger().log(Level.WARNING, e, "Unable to read file header!"); return null;
         }
+    }
+
+    private static Yaml createYAML(ServerListPlusCore core) {
+        DumperOptions dump = new DumperOptions();
+        dump.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        return new Yaml(new CustomClassLoaderConstructor(core.getClass().getClassLoader()), new Representer(), dump);
     }
 }
