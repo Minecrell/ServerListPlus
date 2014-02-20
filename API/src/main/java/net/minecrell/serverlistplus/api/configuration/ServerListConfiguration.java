@@ -35,12 +35,12 @@ import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 @Description ("This is the server list configuration.")
 @EqualsAndHashCode (callSuper = false)
 public class ServerListConfiguration extends Configuration {
-    public List<String> Motd;
+    public List<String> Description;
     public PlayersConfiguration Players;
 
     @Override
     public void setDefault() {
-        this.Motd = null;
+        this.Description = null;
         this.Players = null;
     }
 

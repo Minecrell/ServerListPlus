@@ -35,7 +35,7 @@ public class ConfigurationExamples {
     public static ServerListConfiguration getServerListExample() {
         ServerListConfiguration config = new ServerListConfiguration();
 
-        config.Motd = Arrays.asList(
+        config.Description = Arrays.asList(
                 Helper.joinLines(
                         "&6This server is running &cServerListPlus&6.",
                         "&eIf you add multiple entries here one will be randomly chosen."),
@@ -52,7 +52,7 @@ public class ConfigurationExamples {
                         "&athat it's still visible completely in the client",
                         "&aalso on smaller displays."),
                 Helper.joinLines(
-                        "&cAs for the Motd, randomizing is possible by",
+                        "&cAs for the description, randomizing is possible by",
                         "&cadding multiple entries here."),
                 Helper.joinLines(
                         "&eColor codes are possible with the usual color codes",
