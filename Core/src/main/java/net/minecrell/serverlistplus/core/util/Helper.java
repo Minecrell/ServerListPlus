@@ -33,12 +33,19 @@ import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 public class Helper {
     private Helper() {}
+
+    public final static Joiner NEWLINE_JOINER = Joiner.on('\n');
+
+    public static String joinLines(Object... lines) {
+        return NEWLINE_JOINER.join(lines);
+    }
 
     public static String ordinalNumber(int i) {
         return i + getOrdinalPrefix(i);

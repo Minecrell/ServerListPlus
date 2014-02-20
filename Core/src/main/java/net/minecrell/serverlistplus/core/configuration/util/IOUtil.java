@@ -43,11 +43,15 @@ public class IOUtil {
 
     public static final Charset CHARSET = StandardCharsets.UTF_8;
 
+    public static void newLine(BufferedWriter writer) throws IOException {
+        writer.write('\n');
+    }
+
     public static void writePrefixed(BufferedWriter writer, String prefix, String... lines) throws IOException {
         if (Helper.nullOrEmpty(lines)) return;
         for (String line : lines) {
             writer.write(prefix); writer.write(line);
-            writer.newLine();
+            newLine(writer);
         }
     }
 
@@ -81,12 +85,5 @@ public class IOUtil {
 
     public static BufferedWriter newBufferedWriter(Path path) throws IOException {
         return Files.newBufferedWriter(path, CHARSET);
-    }
-
-    public static void rewriteLines(BufferedReader reader, BufferedWriter writer) throws IOException {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            writer.write(line); writer.newLine();
-        }
     }
 }

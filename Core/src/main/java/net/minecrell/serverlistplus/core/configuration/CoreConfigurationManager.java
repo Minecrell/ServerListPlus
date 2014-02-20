@@ -37,11 +37,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
+import net.minecrell.serverlistplus.api.configuration.util.Registrar;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.configuration.util.NullSkippingRepresenter;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
@@ -59,7 +61,8 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 public class CoreConfigurationManager extends CoreServerListPlusManager implements ConfigurationManager {
-    public static String COMMENT_PREFIX = "# ";
+    public static final String COMMENT_PREFIX = "# ";
+    private static final Pattern LINE_START = Pattern.compile("(\n)(?=\\s*.)");
 
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
     private static final String BACKUP_FILENAME = "ServerListPlus.bak.yml";
@@ -68,7 +71,8 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     private final @Getter String[] header;
 
     private final Map<String, Class<? extends Configuration>> aliases = new HashMap<>();
-    private final ClassToInstanceMap<Configuration> defaultConfigs = Helper.createLinkedClassMap();
+    private final DefaultConfigurationRegistrar defaults = new DefaultConfigurationRegistrar();
+    private final Registrar<Configuration> examples = new ConfigurationRegistrar();
     private ClassToInstanceMap<Configuration> storage = Helper.createLinkedClassMap();
 
     private final Yaml yaml;
@@ -88,39 +92,35 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                 dumperOptions);
     }
 
-    @Override
-    public Configuration[] getDefault() {
-        return Helper.toConfigArray(defaultConfigs.values());
-    }
-
-    @Override
-    public <T extends Configuration> T getDefault(Class<T> configClass) {
-        return defaultConfigs.getInstance(configClass);
-    }
-
-    @Override
-    public <T extends Configuration> void registerDefault(Class<T> configClass, T defaultConfig) {
-        defaultConfigs.put(configClass, defaultConfig);
-        String name = Configuration.getUniqueName(configClass);
-        if (name != null && !aliases.containsKey(name)) {
-            aliases.put(name, configClass);
-            Tag tag = new Tag("!" + name);
-            yamlRepresenter.addClassTag(configClass, tag);
-            yamlConstructor.addTypeDescription(new TypeDescription(configClass, tag));
+    private class DefaultConfigurationRegistrar extends ConfigurationRegistrar {
+        @Override
+        public <V extends Configuration> void register(Class<V> configClass, V defaultConfig) {
+            super.register(configClass, defaultConfig);
+            String name = Configuration.getUniqueName(configClass);
+            if (name != null && !aliases.containsKey(name)) {
+                aliases.put(name, configClass);
+                Tag tag = new Tag("!" + name);
+                yamlRepresenter.addClassTag(configClass, tag);
+                yamlConstructor.addTypeDescription(new TypeDescription(configClass, tag));
+            }
+            if (!has(configClass)) set(configClass, defaultConfig);
         }
-        if (!this.has(configClass)) this.set(configClass, defaultConfig);
     }
 
     @Override
-    public boolean unregisterDefault(Class<? extends Configuration> configClass) {
-        // TODO: Unregister alias
-        return (defaultConfigs.remove(configClass) != null);
+    public Registrar<Configuration> getDefaults() {
+        return defaults;
+    }
+
+    @Override
+    public Registrar<Configuration> getExamples() {
+        return examples;
     }
 
     @Override
     public Configuration[] reset() {
         Configuration[] loaded = this.get();
-        this.storage = Helper.copyLinkedClassMap(defaultConfigs);
+        this.storage = Helper.copyLinkedClassMap(defaults.registrations);
         return loaded;
     }
 
@@ -188,7 +188,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
             this.getLogger().infoF("Loaded %d configurations.", newStorage.size());
             Configuration[] loaded = Helper.toConfigArray(newStorage.values());
 
-            int generated = Helper.mergeMaps(newStorage, defaultConfigs);
+            int generated = Helper.mergeMaps(newStorage, defaults.registrations);
             this.storage = newStorage;
 
             if (generated > 0) {
@@ -239,11 +239,17 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
 
                 // TODO: Split into multiple logical methods
                 for (Configuration config : storage.values()) {
-                    writer.newLine(); // Empty line before the next configuration
+                    IOUtil.newLine(writer); // Empty line before the next configuration
 
                     IOUtil.writePrefixed(writer, COMMENT_PREFIX, Configuration.getDescription(config));
                     writer.write("--- ");
-                    yaml.dump(config, writer);
+
+                    if (config.equals(this.getDefaults().get(config.getClass()))
+                            && examples.has(config.getClass())) {
+                        writer.write(LINE_START.matcher(yaml.dump(examples.get(config.getClass())))
+                                .replaceAll("$1" + COMMENT_PREFIX));
+                    } else
+                        yaml.dump(config, writer);
                 }
             }
 

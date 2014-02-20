@@ -39,6 +39,7 @@ import net.minecrell.serverlistplus.api.configuration.PluginConfiguration;
 import net.minecrell.serverlistplus.api.configuration.ServerListConfiguration;
 import net.minecrell.serverlistplus.api.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.core.configuration.ConfigurationExamples;
 import net.minecrell.serverlistplus.core.configuration.CoreConfiguration;
 import net.minecrell.serverlistplus.core.configuration.CoreConfigurationManager;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
@@ -63,9 +64,12 @@ public final class DefaultServerListPlusCore implements ServerListPlusCore {
         this.configManager = new CoreConfigurationManager(this);
 
         // Register default configurations
-        configManager.registerDefault(ServerListConfiguration.class, new ServerListConfiguration());
-        configManager.registerDefault(PluginConfiguration.class, new PluginConfiguration());
-        configManager.registerDefault(CoreConfiguration.class, new CoreConfiguration());
+        configManager.getDefaults().register(ServerListConfiguration.class, new ServerListConfiguration());
+        configManager.getExamples().register(ServerListConfiguration.class,
+                ConfigurationExamples.getServerListExample());
+
+        configManager.getDefaults().register(PluginConfiguration.class, new PluginConfiguration());
+        configManager.getDefaults().register(CoreConfiguration.class, new CoreConfiguration());
 
         this.reload(); // Load configuration
     }

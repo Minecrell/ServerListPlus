@@ -26,48 +26,30 @@ package net.minecrell.serverlistplus.api.configuration;
 
 import net.minecrell.serverlistplus.api.ServerListPlusClass;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
+import net.minecrell.serverlistplus.api.configuration.util.Registrar;
 
 /**
  * Represents the plugin configuration manager for the core. It will load the configuration to the memory,
  * store it and save it to the configuration file again if necessary.
  */
 public interface ConfigurationManager extends ServerListPlusClass {
-    // Default configuration stuff
+    /**
+     * Gets a registration manager for the default configuration values if a special configuration does not yet
+     * exist in a loaded or saved configuration.
+     * @return Registration manager for the default configurations.
+     */
+    Registrar<Configuration> getDefaults();
 
     /**
-     * Returns an array with all currently registered default configuration.
-     * @return An array with all registered default configurations.
+     * Gets a registration manager for the example configurations. Example configuration will be generated in the
+     * configuration file with comments - so they won't have any special effect and are just for the help.
+     * To get a example generated in the configuration the class has to have a registered default configuration aswell.
+     * @return Registration manager for the example configurations.
+     * @see #getDefaults()
      */
-    Configuration[] getDefault();
+    Registrar<Configuration> getExamples();
 
-    /**
-     * Gets the default configuration for a specified configuration class.
-     * @param configClass The configuration class.
-     * @param <T> The configuration type.
-     * @return The registered default configuration, or <code>null</code> if no default configuration for this
-     * configuration type is registered.
-     */
-    <T extends Configuration> T getDefault(Class<T> configClass);
-
-    /**
-     * Registers a default configuration for this configuration manager.
-     * If a default configuration is already specified for the configuration type,
-     * then it will be replaced by the new one.
-     * @param configClass The configuration class.
-     * @param defaultConfig The default configuration values.
-     * @param <T> The configuration type.
-     */
-    <T extends Configuration> void registerDefault(Class<T> configClass, T defaultConfig);
-
-    /**
-     * Unregisters a default configuration from this configuration manager.
-     * @param configClass The configuration class.
-     * @return Whether the configuration was registered as a default configuration before.
-     */
-    boolean unregisterDefault(Class<? extends Configuration> configClass);
-
-    // Loaded configuration stuff
-
+    // Loaded configuration
     /**
      * Resets the stored configurations back to their default values.
      * @return The previously stored configurations, or <code>null</code> if the storage was empty.
