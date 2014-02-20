@@ -46,8 +46,6 @@ import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 public final class DefaultServerListPlusCore implements ServerListPlusCore {
-    private static final Level DEFAULT_EXCEPTION_LEVEL = Level.SEVERE;
-
     private final @Getter ServerListPlusPlugin plugin;
     private final @Getter ServerListPlusLogger logger;
 
