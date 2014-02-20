@@ -41,7 +41,7 @@ import com.google.common.collect.MutableClassToInstanceMap;
 public class Helper {
     private Helper() {}
 
-    public final static Joiner NEWLINE_JOINER = Joiner.on('\n');
+    private final static Joiner NEWLINE_JOINER = Joiner.on('\n');
 
     public static String joinLines(Object... lines) {
         return NEWLINE_JOINER.join(lines);
