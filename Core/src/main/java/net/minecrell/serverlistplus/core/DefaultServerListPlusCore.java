@@ -45,7 +45,7 @@ import net.minecrell.serverlistplus.core.configuration.CoreConfigurationManager;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.util.Helper;
 
-public final class DefaultServerListPlusCore implements ServerListPlusCore {
+public class DefaultServerListPlusCore implements ServerListPlusCore {
     private final @Getter ServerListPlusPlugin plugin;
     private final @Getter ServerListPlusLogger logger;
 
