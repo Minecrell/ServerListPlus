@@ -44,6 +44,7 @@ import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
 import net.minecrell.serverlistplus.api.configuration.util.Registrar;
+import net.minecrell.serverlistplus.core.configuration.util.FieldOrderPropertyUtils;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.configuration.util.NullSkippingRepresenter;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
@@ -93,6 +94,8 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                 this.yamlConstructor = new EmptyConfigurationConstructor(core.getClass().getClassLoader()),
                 this.yamlRepresenter = new NullSkippingRepresenter(),
                 dumperOptions);
+
+        this.yamlRepresenter.setPropertyUtils(new FieldOrderPropertyUtils());
 
         try { // I don't care about extra properties...
             this.yamlRepresenter.getPropertyUtils().setSkipMissingProperties(true);
