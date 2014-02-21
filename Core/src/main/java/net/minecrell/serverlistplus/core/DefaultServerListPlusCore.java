@@ -143,10 +143,12 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
 
             // TODO: Improve performance
             if (config.PlayerTracking) {
+                String playerName = playerTracker.getIfPresent(client.getHostAddress());
+                if (playerName != null) playerName = dataProvider.getUnknownPlayerReplacement();
                 playerHover = playerHover.clone(); // :(
                 for (int i = 0; i < playerHover.length; i++) {
-                    playerHover[i] = PLAYER_PATTERN.matcher(playerHover[i]).replaceAll(dataProvider
-                            .getUnknownPlayerReplacement());
+
+                    playerHover[i] = PLAYER_PATTERN.matcher(playerHover[i]).replaceAll(playerName);
                 }
             }
 
