@@ -29,7 +29,6 @@ import lombok.Getter;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
