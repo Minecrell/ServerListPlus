@@ -97,6 +97,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
     public void reload() throws ServerListPlusException {
         configManager.reload();
         dataProvider.reload();
+        plugin.configurationReloaded();
     }
 
     @Override

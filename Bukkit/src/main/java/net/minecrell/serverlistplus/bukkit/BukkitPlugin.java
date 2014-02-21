@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
+import net.minecrell.serverlistplus.api.ServerPingResponse;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerType;
 import net.minecrell.serverlistplus.bukkit.util.AbstractBukkitPlugin;
@@ -37,9 +38,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerListPingEvent;
+
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.WrappedServerPing;
 
 public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerListPlusPlugin {
     private ServerListPlusCore core;
+
+    private PingEventListener eventListener;
+    private PingPacketListener packetListener;
 
     @Override
     public void onEnable() {
@@ -74,9 +88,58 @@ public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerLi
         }
     }
 
+    public final class PingEventListener implements Listener {
+        private PingEventListener() {}
+
+        @EventHandler
+        public void onServerListPing(final ServerListPingEvent event) {
+            core.processRequest(event.getAddress(), new ServerPingResponse() {
+                @Override
+                public void setDescription(String description) {
+                    event.setMotd(description);
+                }
+            }, ServerPingResponse.Modify.DESCRIPTION);
+        }
+    }
+
+    public final class PingPacketListener extends PacketAdapter {
+        private PingPacketListener() {
+            super(PacketAdapter.params(BukkitPlugin.this, PacketType.Status.Server.OUT_SERVER_INFO).optionAsync());
+        }
+
+        @Override // Server ping packet
+        public void onPacketSending(PacketEvent event) {
+            WrappedServerPing ping = event.getPacket().getServerPings().read(0);
+            // TODO: Add processing of player hover
+        }
+    }
+
     @Override
     public void configurationReloaded() {
         if (core == null) return;
+
+        if (core.getDataProvider().hasDescription()) {
+            if (eventListener == null) {
+                this.getServer().getPluginManager().registerEvents((this.eventListener = new PingEventListener()),
+                        this);
+                this.getLogger().info("Enabled ping event listener.");
+            }
+        } else if (eventListener != null) {
+            HandlerList.unregisterAll(eventListener);
+            this.eventListener = null;
+            this.getLogger().info("Disabled ping event listener.");
+        }
+
+        if (core.getDataProvider().hasPlayerHover()) {
+            if (packetListener == null) {
+                ProtocolLibrary.getProtocolManager().addPacketListener((this.packetListener = new PingPacketListener()));
+                this.getLogger().info("Enabled packet listener.");
+            }
+        } else if (packetListener != null) {
+            ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
+            this.packetListener = null;
+            this.getLogger().info("Disabled packet listener.");
+        }
     }
 
     @Override

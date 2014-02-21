@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
+import net.minecrell.serverlistplus.api.ServerPingResponse;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerType;
 import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
@@ -35,10 +36,16 @@ import net.minecrell.serverlistplus.core.DefaultServerListPlusCore;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 
 public final class BungeePlugin extends AbstractBungeePlugin implements ServerListPlusPlugin {
     private ServerListPlusCore core;
+
+    private PingListener pingListener;
 
     @Override
     public void onEnable() {
@@ -67,9 +74,35 @@ public final class BungeePlugin extends AbstractBungeePlugin implements ServerLi
         }
     }
 
+    public final class PingListener implements Listener {
+        private PingListener() {}
+
+        @EventHandler
+        public void onProxyPing(final ProxyPingEvent event) {
+            final ServerPing response = event.getResponse();
+            core.processRequest(event.getConnection().getAddress().getAddress(), new ServerPingResponse() {
+                @Override
+                public void setDescription(String description) {
+                    response.setDescription(description);
+                }
+            });
+        }
+    }
+
     @Override
     public void configurationReloaded() {
         if (core == null) return;
+
+        if (core.getDataProvider().hasDescription() || core.getDataProvider().hasPlayerHover()) {
+            if (pingListener == null) {
+                this.getProxy().getPluginManager().registerListener(this, (this.pingListener = new PingListener()));
+                this.getLogger().info("Enabled ping listener.");
+            }
+        } else if (pingListener != null) {
+            this.getProxy().getPluginManager().unregisterListener(pingListener);
+            this.pingListener = null;
+            this.getLogger().info("Disabled ping listener");
+        }
     }
 
     @Override
