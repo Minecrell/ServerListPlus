@@ -93,12 +93,13 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                 this.yamlConstructor = new EmptyConfigurationConstructor(core.getClass().getClassLoader()),
                 this.yamlRepresenter = new NullSkippingRepresenter(),
                 dumperOptions);
-        
-        try { // Haha, good way to see if the server is running an outdated YAML version with CraftBukkit :D
+
+        try { // I don't care about extra properties...
             this.yamlRepresenter.getPropertyUtils().setSkipMissingProperties(true);
         } catch (Throwable e) {
-            this.getLogger().log(Level.WARNING, "Your server is running with an outdated version of the YAML " +
-                    "library. The configuration might not be generated correctly.");
+            // Haha, good way to see if the server is running an outdated YAML version with CraftBukkit :D
+            this.getLogger().warning("Your server is running with an outdated version of the YAML library. The " +
+                    "configuration might not be generated correctly.");
             // Don't think I should suggest users to use Spigot instead, where it is fixed... :/
         }
     }
