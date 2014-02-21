@@ -68,6 +68,12 @@ public interface ServerListPlusCore {
     ConfigurationManager getConfigManager();
 
     /**
+     * Gets the server list data provider for this core.
+     * @return The data provider.
+     */
+    ServerListDataProvider getDataProvider();
+
+    /**
      * Gets a resource from the plugin package.
      * @param fileName The file name inside the plugin package.
      * @return An input stream of the requested resource, or <code>null</code> if it doesn't exist.

@@ -27,17 +27,18 @@ package net.minecrell.serverlistplus.core;
 import java.util.List;
 import java.util.Random;
 
+import net.minecrell.serverlistplus.api.ServerListDataProvider;
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.configuration.ServerListConfiguration;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
-public class ServerListManager extends CoreServerListPlusManager {
+public class CoreServerListDataProvider extends CoreServerListPlusManager implements ServerListDataProvider {
     private final Random random = new Random();
     private String[] descriptions;
     private String[][] playerHover;
 
-    public ServerListManager(ServerListPlusCore core) {
+    public CoreServerListDataProvider(ServerListPlusCore core) {
         super(core);
     }
 
@@ -62,9 +63,19 @@ public class ServerListManager extends CoreServerListPlusManager {
         } else this.playerHover = null;
     }
 
+    @Override
+    public boolean hasDescription() {
+        return descriptions != null;
+    }
+
     public String getDescription() {
         if (descriptions == null) return null;
         return Helper.nextEntry(random, descriptions);
+    }
+
+    @Override
+    public boolean hasPlayerHover() {
+        return playerHover != null;
     }
 
     public String[] getPlayerHover() {

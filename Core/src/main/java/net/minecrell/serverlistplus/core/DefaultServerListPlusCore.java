@@ -52,7 +52,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
     private final @Getter ServerListPlusLogger logger;
 
     private final @Getter ConfigurationManager configManager;
-    private final ServerListManager serverList = new ServerListManager(this);
+    private final @Getter CoreServerListDataProvider dataProvider = new CoreServerListDataProvider(this);
 
     private static final String INFO_COMMAND_FILENAME = "INFO";
     private final String[] infoCommand;
@@ -97,13 +97,13 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
     @Override
     public void reload() throws ServerListPlusException {
         configManager.reload();
-        serverList.reload();
+        dataProvider.reload();
     }
 
     @Override
     public void processRequest(InetAddress client, ServerPingResponse response, ServerPingResponse.Modify...
             modifications) {
-        this.processRequest(client, response, modifications);
+        this.processRequest(client, null, response, modifications);
     }
 
     @Override
@@ -111,19 +111,16 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
             .Modify... modifications) {
         EnumSet<ServerPingResponse.Modify> modify = Helper.getModifications(modifications);
 
-        if (modify.contains(ServerPingResponse.Modify.DESCRIPTION)) {
-            String description = serverList.getDescription();
-            if (description != null) {
-                // TODO: Player personalization
-                response.setDescription(description);
-            }
+        if (modify.contains(ServerPingResponse.Modify.DESCRIPTION)
+                && dataProvider.hasDescription()) {
+            // TODO: Player personalization
+            response.setDescription(dataProvider.getDescription());
         }
 
-        if (modify.contains(ServerPingResponse.Modify.PLAYER_HOVER)) {
-            String[] playerHover = serverList.getPlayerHover();
-            if (playerHover != null) {
-                // TODO: Change response
-            }
+        if (modify.contains(ServerPingResponse.Modify.PLAYER_HOVER)
+                && dataProvider.hasPlayerHover()) {
+            String[] playerHover = dataProvider.getPlayerHover();
+            // TODO: Change response
         }
     }
 
