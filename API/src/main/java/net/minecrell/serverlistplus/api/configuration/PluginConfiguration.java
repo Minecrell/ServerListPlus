@@ -35,10 +35,12 @@ import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 public class PluginConfiguration extends Configuration {
     public boolean Stats;
     public boolean PlayerTracking;
+    @Deprecated public String UnknownPlayerName;
 
     @Override
     public void setDefault() {
         this.Stats = true;
         this.PlayerTracking = true;
+        this.UnknownPlayerName = "player";
     }
 }
