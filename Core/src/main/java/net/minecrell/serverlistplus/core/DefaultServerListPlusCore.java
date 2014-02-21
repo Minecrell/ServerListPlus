@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.EnumSet;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
@@ -47,6 +48,8 @@ import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 public class DefaultServerListPlusCore implements ServerListPlusCore {
+    private static final Pattern PLAYER_PATTERN = Pattern.compile("%player%", Pattern.LITERAL);
+
     private final @Getter ServerListPlusPlugin plugin;
     private final @Getter ServerListPlusLogger logger;
 
@@ -119,8 +122,19 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
 
         if (modify.contains(ServerPingResponse.Modify.PLAYER_HOVER)
                 && dataProvider.hasPlayerHover()) {
+            PluginConfiguration config = this.getConfigManager().get(PluginConfiguration.class);
             String[] playerHover = dataProvider.getPlayerHover();
-            // TODO: Change response
+
+            // TODO: Improve performance
+            if (config.PlayerTracking) {
+                playerHover = playerHover.clone(); // :(
+                for (int i = 0; i < playerHover.length; i++) {
+                    playerHover[i] = PLAYER_PATTERN.matcher(playerHover[i]).replaceAll(dataProvider
+                            .getUnknownPlayerReplacement());
+                }
+            }
+
+            response.setPlayerHover(playerHover);
         }
     }
 

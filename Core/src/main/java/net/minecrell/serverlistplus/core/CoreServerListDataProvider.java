@@ -24,17 +24,22 @@
 
 package net.minecrell.serverlistplus.core;
 
+import lombok.Getter;
+
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
 
 import net.minecrell.serverlistplus.api.ServerListDataProvider;
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
+import net.minecrell.serverlistplus.api.configuration.PluginConfiguration;
 import net.minecrell.serverlistplus.api.configuration.ServerListConfiguration;
 import net.minecrell.serverlistplus.core.util.CoreServerListPlusManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 public class CoreServerListDataProvider extends CoreServerListPlusManager implements ServerListDataProvider {
     private final Random random = new Random();
+    private @Getter String unknownPlayerReplacement;
     private String[] descriptions;
     private String[][] playerHover;
 
@@ -61,6 +66,9 @@ public class CoreServerListDataProvider extends CoreServerListPlusManager implem
                         configPlayerHover.get(i)));
             this.playerHover = playerHover;
         } else this.playerHover = null;
+
+        this.unknownPlayerReplacement = Matcher.quoteReplacement(this.getCore().getConfigManager().get(PluginConfiguration.class)
+                .UnknownPlayerName);
     }
 
     @Override

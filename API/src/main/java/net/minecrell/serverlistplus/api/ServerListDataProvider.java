@@ -37,6 +37,12 @@ public interface ServerListDataProvider extends ServerListPlusClass {
     void reload() throws ServerListPlusException;
 
     /**
+     * Returns the name to be used when the player name of the client is unknown.
+     * @return The unknown player name.
+     */
+    String getUnknownPlayerReplacement();
+
+    /**
      * Returns whether this data provider has a server ping description set.
      * @return Whether the server ping description should be changed.
      */

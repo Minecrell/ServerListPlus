@@ -13,15 +13,15 @@ Core:
   - [DONE] Add exception handling
   - [DONE] Command handling
   - [DONE] Add configuration loading and processing
-  - [In Progress] Process server ping responses
-  - [Not Started] Player tracking
+  - [DONE] Process server ping responses
+  - [In Progress] Player tracking
   - [Not Started] Plugin statistics
 
 Bungee:
   - [DONE] Create basic plugin structure
   - [DONE] Load ServerListPlus core
   - [DONE] Command handling
-  - [In Progress] Server ping listening
+  - [DONE] Server ping listening
   - [Not Started] Player tracking
   - [Not Started] Plugin statistic implementation
 
@@ -29,6 +29,6 @@ Bukkit:
   - [DONE] Create basic plugin structure
   - [DONE] Load ServerListPlus core
   - [DONE] Command handling
-  - [In Progress] Server ping packet manipulation
+  - [DONE] Server ping packet manipulation
   - [Not Started] Player tracking
   - [Not Started] Plugin statistic implementation
