@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.EnumSet;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
@@ -158,7 +159,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
 
     @Override
     public void processLogin(String playerName, InetAddress client) {
-        playerTracker.put(client.getHostAddress(), playerName);
+        playerTracker.put(client.getHostAddress(), Matcher.quoteReplacement(playerName));
     }
 
     @Override // TODO: Implementation independent colored messages
