@@ -194,7 +194,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
             if (generated > 0) {
                 this.getLogger().infoF("Generated %d configurations.", generated);
                 if (!created)
-                    this.getLogger().warning((newStorage.size() - generated) + " configurations could not be read " +
+                    this.getLogger().warning(generated + " configurations could not be read " +
                             "from the configuration file. Your configuration might be outdated, " +
                             "or a part of it is not valid YAML syntax. To prevent data loss, " +
                             "the configuration is not saved automatically to add the generated configurations. Type " +
