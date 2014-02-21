@@ -35,25 +35,20 @@ import java.util.EnumSet;
  */
 public interface ServerPingResponse {
     public enum Modify {
+        ALL,
         DESCRIPTION,
+        PLAYERS, PLAYER_HOVER;
 
-        PLAYER_HOVER,
-        PLAYERS (EnumSet.of(PLAYER_HOVER)),
-
-        ALL (EnumSet.allOf(Modify.class));
-
-        private final EnumSet<Modify> children;
-
-        private Modify() {
-            this.children = EnumSet.noneOf(this.getDeclaringClass());
-        }
-
-        private Modify(EnumSet<Modify> children) {
-            this.children = children;
-        }
+        private EnumSet<Modify> children;
 
         public EnumSet<Modify> getChildren() {
-            return children;
+            if (children == null) {
+                switch (this) {
+                    case ALL: return this.children = EnumSet.allOf(this.getDeclaringClass());
+                    case PLAYERS: return this.children = EnumSet.of(PLAYERS, PLAYER_HOVER);
+                    default: return this.children = EnumSet.of(this);
+                }
+            } else return children;
         }
     }
 
