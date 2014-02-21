@@ -86,9 +86,10 @@ public interface ServerListPlusCore {
      *
      * @param client The IP address of the client. (Used for player tracking)
      * @param response An instance of the server ping wrapper to modify the response.
+     * @param modifications All modifications that should be made.
      * @see ServerPingResponse
      */
-    void processRequest(InetAddress client, ServerPingResponse response);
+    void processRequest(InetAddress client, ServerPingResponse response, ServerPingResponse.Modify... modifications);
 
     /**
      * Handles an server ping request with an specific hostname used to ping the server. This will modify the response
@@ -97,9 +98,11 @@ public interface ServerListPlusCore {
      * @param client The IP address of the client. (Used for player tracking)
      * @param host The hostname used by the client to ping the server.
      * @param response An instance of the server ping wrapper to modify the response.
+     * @param modifications All modifications that should be made.
      * @see ServerPingResponse
      */
-    void processRequest(InetAddress client, String host, ServerPingResponse response);
+    void processRequest(InetAddress client, String host, ServerPingResponse response,
+                        ServerPingResponse.Modify... modifications);
 
     /**
      * Handles the login of a player to the server. This is used by the player tracking to track the players with

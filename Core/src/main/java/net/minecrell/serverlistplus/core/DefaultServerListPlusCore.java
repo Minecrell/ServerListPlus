@@ -28,6 +28,7 @@ import lombok.Getter;
 
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.util.EnumSet;
 import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
@@ -99,14 +100,25 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
     }
 
     @Override
-    public void processRequest(InetAddress client, ServerPingResponse response) {
-        this.processRequest(client, null, response);
+    public void processRequest(InetAddress client, ServerPingResponse response, ServerPingResponse.Modify...
+            modifications) {
+        this.processRequest(client, response, modifications);
     }
 
     @Override
-    public void processRequest(InetAddress client, String host, ServerPingResponse response) {
+    public void processRequest(InetAddress client, String host, ServerPingResponse response, ServerPingResponse
+            .Modify... modifications) {
+        EnumSet<ServerPingResponse.Modify> modify = Helper.getModifications(modifications);
 
+        if (modify.contains(ServerPingResponse.Modify.DESCRIPTION)) {
+
+        }
+
+        if (modify.contains(ServerPingResponse.Modify.PLAYER_HOVER)) {
+
+        }
     }
+
 
     @Override
     public void processLogin(String playerName, InetAddress client) {

@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.api;
 
+import java.util.EnumSet;
+
 /**
  * Represents an completely prepared response on a server ping request to a client.
  * It is used to wrap the different APIs to have one class for the modifications.
@@ -32,5 +34,27 @@ package net.minecrell.serverlistplus.api;
  * @see <a href="http://wiki.vg/Server_List_Ping">Protocol description</a>
  */
 public interface ServerPingResponse {
+    public enum Modify {
+        DESCRIPTION,
+
+        PLAYER_HOVER,
+        PLAYERS (EnumSet.of(PLAYER_HOVER)),
+
+        ALL (EnumSet.allOf(Modify.class));
+
+        private final EnumSet<Modify> children;
+
+        private Modify() {
+            this.children = EnumSet.noneOf(this.getDeclaringClass());
+        }
+
+        private Modify(EnumSet<Modify> children) {
+            this.children = children;
+        }
+
+        public EnumSet<Modify> getChildren() {
+            return children;
+        }
+    }
     // TODO: Implement response wrapper
 }

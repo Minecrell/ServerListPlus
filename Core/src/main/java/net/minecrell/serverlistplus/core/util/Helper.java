@@ -25,11 +25,13 @@
 package net.minecrell.serverlistplus.core.util;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.minecrell.serverlistplus.api.ServerPingResponse;
 import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 
@@ -125,5 +127,14 @@ public class Helper {
                 main.put(entry.getKey(), entry.getValue()); counter++;
             }
         return counter;
+    }
+
+    public static EnumSet<ServerPingResponse.Modify> getModifications(ServerPingResponse.Modify... modifications) {
+        if (Helper.nullOrEmpty(modifications)) return EnumSet.allOf(ServerPingResponse.Modify.class);
+        EnumSet<ServerPingResponse.Modify> set = EnumSet.noneOf(ServerPingResponse.Modify.class);
+        for (ServerPingResponse.Modify modify : modifications) {
+            set.add(modify); set.addAll(modify.getChildren());
+            if (modify == ServerPingResponse.Modify.ALL) break;
+        } return set;
     }
 }
