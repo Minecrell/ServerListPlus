@@ -24,14 +24,29 @@
 
 package net.minecrell.serverlistplus.core.configuration;
 
+import lombok.EqualsAndHashCode;
+
 import net.minecrell.serverlistplus.api.configuration.Configuration;
+import net.minecrell.serverlistplus.api.configuration.ConfigurationPart;
 import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
 @UniqueName ("Core")
+@EqualsAndHashCode(callSuper = false)
 public class CoreConfiguration extends Configuration {
+    public CacheConfiguration Caches;
+
+    @EqualsAndHashCode (callSuper = false)
+    public static class CacheConfiguration extends ConfigurationPart {
+        public String PlayerTracking;
+
+        @Override
+        public void setDefault() {
+            this.PlayerTracking = "expireAfterWriter=2h";
+        }
+    }
 
     @Override
     public void setDefault() {
-        // Nothing to do here
+        this.Caches = new CacheConfiguration();
     }
 }

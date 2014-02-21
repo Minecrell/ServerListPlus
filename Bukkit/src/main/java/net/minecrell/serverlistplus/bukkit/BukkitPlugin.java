@@ -34,6 +34,7 @@ import net.minecrell.serverlistplus.api.AbstractServerPingResponse;
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.ServerPingResponse;
+import net.minecrell.serverlistplus.api.configuration.PluginConfiguration;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerType;
 import net.minecrell.serverlistplus.bukkit.util.AbstractBukkitPlugin;
@@ -46,6 +47,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
 import com.google.common.collect.UnmodifiableIterator;
@@ -60,6 +62,7 @@ import com.comphenix.protocol.wrappers.WrappedServerPing;
 public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerListPlusPlugin {
     private ServerListPlusCore core;
 
+    private LoginListener loginListener;
     private PingEventListener eventListener;
     private PingPacketListener packetListener;
 
@@ -93,6 +96,15 @@ public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerLi
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
             core.processCommand(new BukkitCommandSender(sender), cmd.getName(), label, args); return true;
+        }
+    }
+
+    public final class LoginListener implements Listener {
+        private LoginListener() {}
+
+        @EventHandler
+        public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
+            core.processLogin(event.getName(), event.getAddress());
         }
     }
 
@@ -152,6 +164,17 @@ public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerLi
             ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
             this.packetListener = null;
             this.getLogger().info("Disabled packet listener.");
+        }
+
+        if (core.getConfigManager().get(PluginConfiguration.class).PlayerTracking) {
+            if (loginListener == null) {
+                this.getServer().getPluginManager().registerEvents((this.loginListener = new LoginListener()), this);
+                this.getLogger().info("Enabled login listener.");
+            }
+        } else if (loginListener != null) {
+            HandlerList.unregisterAll(loginListener);
+            this.loginListener = null;
+            this.getLogger().info("Disabled login listener.");
         }
     }
 

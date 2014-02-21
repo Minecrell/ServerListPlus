@@ -29,7 +29,7 @@ import java.util.logging.Level;
 import net.minecrell.serverlistplus.api.AbstractServerPingResponse;
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
-import net.minecrell.serverlistplus.api.ServerPingResponse;
+import net.minecrell.serverlistplus.api.configuration.PluginConfiguration;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.api.plugin.ServerType;
 import net.minecrell.serverlistplus.bungee.util.AbstractBungeePlugin;
@@ -38,6 +38,7 @@ import net.minecrell.serverlistplus.core.DefaultServerListPlusCore;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
@@ -46,6 +47,7 @@ import net.md_5.bungee.event.EventHandler;
 public final class BungeePlugin extends AbstractBungeePlugin implements ServerListPlusPlugin {
     private ServerListPlusCore core;
 
+    private LoginListener loginListener;
     private PingListener pingListener;
 
     @Override
@@ -72,6 +74,15 @@ public final class BungeePlugin extends AbstractBungeePlugin implements ServerLi
         public void execute(CommandSender sender, String[] args) {
             // TODO: Unable to get the entered command in BungeeCord
             core.processCommand(new BungeeCommandSender(sender), this.getName(), this.getName(), args);
+        }
+    }
+
+    public final class LoginListener implements Listener {
+        private LoginListener() {}
+
+        @EventHandler
+        public void onPlayerLogin(LoginEvent event) {
+            core.processLogin(event.getConnection().getName(), event.getConnection().getAddress().getAddress());
         }
     }
 
@@ -111,7 +122,18 @@ public final class BungeePlugin extends AbstractBungeePlugin implements ServerLi
         } else if (pingListener != null) {
             this.getProxy().getPluginManager().unregisterListener(pingListener);
             this.pingListener = null;
-            this.getLogger().info("Disabled ping listener");
+            this.getLogger().info("Disabled ping listener.");
+        }
+
+        if (core.getConfigManager().get(PluginConfiguration.class).PlayerTracking) {
+            if (loginListener == null) {
+                this.getProxy().getPluginManager().registerListener(this, (this.loginListener = new LoginListener()));
+                this.getLogger().info("Enabled login listener.");
+            }
+        } else if (loginListener != null) {
+            this.getProxy().getPluginManager().unregisterListener(loginListener);
+            this.loginListener = null;
+            this.getLogger().info("Disabled login listener.");
         }
     }
 

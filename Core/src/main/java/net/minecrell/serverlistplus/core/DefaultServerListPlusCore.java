@@ -47,6 +47,9 @@ import net.minecrell.serverlistplus.core.configuration.CoreConfigurationManager;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
 import net.minecrell.serverlistplus.core.util.Helper;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 public class DefaultServerListPlusCore implements ServerListPlusCore {
     private static final Pattern PLAYER_PATTERN = Pattern.compile("%player%", Pattern.LITERAL);
 
@@ -55,6 +58,8 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
 
     private final @Getter ConfigurationManager configManager;
     private final @Getter CoreServerListDataProvider dataProvider = new CoreServerListDataProvider(this);
+
+    private final Cache<String, String> playerTracker;
 
     private static final String INFO_COMMAND_FILENAME = "INFO";
     private final String[] infoCommand;
@@ -78,6 +83,17 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
         configManager.getDefaults().register(CoreConfiguration.class, new CoreConfiguration());
 
         this.reload(); // Load configuration
+
+        Cache<String, String> playerTracker;
+        try {
+            playerTracker = CacheBuilder.from(configManager.get(CoreConfiguration.class).Caches.PlayerTracking).build();
+        } catch (Exception e) {
+            this.getLogger().log(Level.SEVERE, e, "Unable to parse player tracker configuration from the " +
+                    "configuration!");
+            playerTracker = CacheBuilder.from(new CoreConfiguration().Caches.PlayerTracking).build();
+        }
+
+        this.playerTracker = playerTracker;
         this.getLogger().info(this.getName() + " has been successfully initialized.");
     }
 
@@ -141,7 +157,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
 
     @Override
     public void processLogin(String playerName, InetAddress client) {
-
+        playerTracker.put(client.getHostAddress(), playerName);
     }
 
     @Override // TODO: Implementation independent colored messages
