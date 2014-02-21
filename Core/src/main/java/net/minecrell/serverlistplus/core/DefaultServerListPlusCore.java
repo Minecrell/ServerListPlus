@@ -147,7 +147,6 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
                 if (playerName != null) playerName = dataProvider.getUnknownPlayerReplacement();
                 playerHover = playerHover.clone(); // :(
                 for (int i = 0; i < playerHover.length; i++) {
-
                     playerHover[i] = PLAYER_PATTERN.matcher(playerHover[i]).replaceAll(playerName);
                 }
             }
