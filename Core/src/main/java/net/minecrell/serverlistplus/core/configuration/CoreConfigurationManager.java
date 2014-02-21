@@ -43,6 +43,7 @@ import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.configuration.ConfigurationManager;
+import net.minecrell.serverlistplus.api.configuration.ServerListConfiguration;
 import net.minecrell.serverlistplus.api.configuration.util.Registrar;
 import net.minecrell.serverlistplus.core.configuration.util.FieldOrderPropertyUtils;
 import net.minecrell.serverlistplus.core.configuration.util.IOUtil;
@@ -81,6 +82,8 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     private ClassToInstanceMap<Configuration> storage = Helper.createLinkedClassMap();
 
     private final Yaml yaml;
+    private final boolean outdatedYaml;
+    private final DumperOptions yamlDumperOptions;
     private final Constructor yamlConstructor;
     private final Representer yamlRepresenter;
 
@@ -89,26 +92,29 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
         this.header = loadHeader(core); // Try loading the configuration header
 
         // YAML settings
-        DumperOptions dumperOptions = new DumperOptions();
-        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        this.yaml = new Yaml(
-                this.yamlConstructor = new EmptyConfigurationConstructor(core.getClass().getClassLoader()),
-                this.yamlRepresenter = new NullSkippingRepresenter(),
-                dumperOptions);
+        this.yamlDumperOptions = new DumperOptions();
+        yamlDumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+        this.yamlConstructor = new EmptyConfigurationConstructor(core.getClass().getClassLoader());
+        this.yamlRepresenter = new NullSkippingRepresenter();
 
         this.yamlRepresenter.setPropertyUtils(new FieldOrderPropertyUtils());
+
+        boolean outdatedYaml = false;
 
         try { // I don't care about extra properties...
             this.yamlRepresenter.getPropertyUtils().setSkipMissingProperties(true);
         } catch (Throwable e) {
-            // Haha, good way to see if the server is running an outdated YAML version with CraftBukkit :D
-            this.getLogger().warning("Your server is running with an outdated version of the YAML library. The " +
-                    "configuration might not be generated correctly.");
-            // Don't think I should suggest users to use Spigot instead, where it is fixed... :/
+            outdatedYaml = true; // Thanks a lot, CraftBukkit!
+            this.getLogger().warning("Your server is running an outdated YAML version. The configuration might not be" +
+                    " generated correctly.");
         }
+
+        this.yaml = new Yaml(yamlConstructor, yamlRepresenter, yamlDumperOptions);
+        this.outdatedYaml = outdatedYaml;
     }
 
-    private final class EmptyConfigurationConstructor extends CustomClassLoaderConstructor {
+    private final static class EmptyConfigurationConstructor extends CustomClassLoaderConstructor {
         public EmptyConfigurationConstructor(ClassLoader loader) {
             super(loader);
             yamlClassConstructors.put(NodeId.scalar, new FixedConstructScalar());
@@ -296,12 +302,22 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                     IOUtil.writePrefixed(writer, COMMENT_PREFIX, descriptions.get(config.getClass()));
                     writer.write("--- ");
 
+                    boolean stupidFix = false;
+
+                    if (outdatedYaml && (config instanceof ServerListConfiguration)) {
+                        stupidFix = true;
+                        this.yamlRepresenter.setDefaultScalarStyle(DumperOptions.ScalarStyle.LITERAL); // Stupid fix
+                    }
+
                     if (config.equals(this.getDefaults().get(config.getClass()))
                             && examples.has(config.getClass())) {
                         writer.write(LINE_START.matcher(yaml.dump(examples.get(config.getClass())))
                                 .replaceAll("$1" + COMMENT_PREFIX));
                     } else
                         yaml.dump(config, writer);
+
+                    if (stupidFix)
+                        this.yamlRepresenter.setDefaultScalarStyle(yamlDumperOptions.getDefaultScalarStyle());
                 }
             }
 
