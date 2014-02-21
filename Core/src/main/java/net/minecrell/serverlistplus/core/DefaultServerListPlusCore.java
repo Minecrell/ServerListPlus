@@ -50,6 +50,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
     private final @Getter ServerListPlusLogger logger;
 
     private final @Getter ConfigurationManager configManager;
+    private final ServerListManager serverList = new ServerListManager(this);
 
     private static final String INFO_COMMAND_FILENAME = "INFO";
     private final String[] infoCommand;
@@ -57,8 +58,11 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
     public DefaultServerListPlusCore(ServerListPlusPlugin plugin) {
         this.plugin = plugin;
         this.logger = new CoreServerListPlusLogger(this);
-        this.infoCommand = this.loadInfoCommandLines();
 
+        this.getLogger().info("Initializing...");
+
+        this.infoCommand = this.loadInfoCommandLines();
+        this.getLogger().info("Loading configuration...");
         this.configManager = new CoreConfigurationManager(this);
 
         // Register default configurations
@@ -70,6 +74,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
         configManager.getDefaults().register(CoreConfiguration.class, new CoreConfiguration());
 
         this.reload(); // Load configuration
+        this.getLogger().info(this.getName() + " has been successfully initialized.");
     }
 
     @Override
@@ -90,11 +95,12 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
     @Override
     public void reload() throws ServerListPlusException {
         configManager.reload();
+        serverList.reload();
     }
 
     @Override
     public void processRequest(InetAddress client, ServerPingResponse response) {
-
+        this.processRequest(client, null, response);
     }
 
     @Override
@@ -124,7 +130,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
                 this.getLogger().info("Saving configuration per request by '" + sender + "'!");
 
                 try {
-                    // TODO: Add configuration saving
+                    this.getConfigManager().save();
                     this.sendColoredMessage(sender, "&aConfiguration successfully saved!");
                 } catch (ServerListPlusException e) {
                     this.sendColoredMessage(sender, "&cAn internal error occurred while saving the configuration.");

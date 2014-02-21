@@ -5,15 +5,15 @@
 API:
   - [DONE] Create base classes
   - [DONE] Command handling
-  - [In Progress] Add configuration API
+  - [DONE] Add configuration API
   - [Not Started] Add plugin statistic API
 
 Core:
   - [DONE] Create base classes
   - [DONE] Add exception handling
   - [DONE] Command handling
-  - [In Progress] Add configuration loading and processing
-  - [Not Started] Process server ping responses
+  - [Testing] Add configuration loading and processing
+  - [In Progress] Process server ping responses
   - [Not Started] Player tracking
   - [Not Started] Plugin statistics
 

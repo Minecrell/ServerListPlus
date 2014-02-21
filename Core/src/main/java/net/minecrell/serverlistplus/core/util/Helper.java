@@ -28,20 +28,28 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.plugin.ServerListPlusPlugin;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 public class Helper {
     private Helper() {}
 
+    private final static Splitter NEWLINE_SPLITTER = Splitter.on('\n');
     private final static Joiner NEWLINE_JOINER = Joiner.on('\n');
+
+    public static String[] splitLines(String lines) {
+        return Iterables.toArray(NEWLINE_SPLITTER.split(lines), String.class);
+    }
 
     public static String joinLines(Object... lines) {
         return NEWLINE_JOINER.join(lines);
@@ -77,12 +85,20 @@ public class Helper {
         return c.toArray(new String[c.size()]);
     }
 
-    public static <T> boolean nullOrEmpty(T[] array) {
+    public static boolean nullOrEmpty(Object[] array) {
         return (array == null || array.length == 0);
+    }
+
+    public static boolean nullOrEmpty(Collection<?> c) {
+        return (c == null || c.size() == 0);
     }
 
     public static <T> T[] nullWhenEmpty(T[] array) {
         return (!nullOrEmpty(array)) ? array : null;
+    }
+
+    public static <T> T nextEntry(Random random, T[] array) {
+        return array[random.nextInt(array.length)];
     }
 
     public static List<String> colorize(final ServerListPlusPlugin plugin, List<String> lines) {
