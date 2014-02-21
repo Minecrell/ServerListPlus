@@ -131,24 +131,31 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
             .Modify... modifications) {
         EnumSet<ServerPingResponse.Modify> modify = Helper.getModifications(modifications);
 
+        boolean playerTracking = this.getConfigManager().get(PluginConfiguration.class).PlayerTracking;
+
+        String playerName = null;
+        if (playerTracking) {
+            playerName = playerTracker.getIfPresent(client.getHostAddress());
+            if (playerName != null) playerName = dataProvider.getUnknownPlayerReplacement();
+        }
+
         if (modify.contains(ServerPingResponse.Modify.DESCRIPTION)
                 && dataProvider.hasDescription()) {
-            // TODO: Player personalization
-            response.setDescription(dataProvider.getDescription());
+            String description = dataProvider.getDescription();
+            if (playerTracking)
+                description = personalize(description, playerName);
+            response.setDescription(description);
         }
 
         if (modify.contains(ServerPingResponse.Modify.PLAYER_HOVER)
                 && dataProvider.hasPlayerHover()) {
-            PluginConfiguration config = this.getConfigManager().get(PluginConfiguration.class);
             String[] playerHover = dataProvider.getPlayerHover();
 
             // TODO: Improve performance
-            if (config.PlayerTracking) {
-                String playerName = playerTracker.getIfPresent(client.getHostAddress());
-                if (playerName != null) playerName = dataProvider.getUnknownPlayerReplacement();
+            if (playerTracking) {
                 playerHover = playerHover.clone(); // :(
                 for (int i = 0; i < playerHover.length; i++) {
-                    playerHover[i] = PLAYER_PATTERN.matcher(playerHover[i]).replaceAll(playerName);
+                    playerHover[i] = personalize(playerHover[i], playerName);
                 }
             }
 
@@ -156,6 +163,9 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
         }
     }
 
+    private static String personalize(String s, String playerName) {
+        return PLAYER_PATTERN.matcher(s).replaceAll(playerName);
+    }
 
     @Override
     public void processLogin(String playerName, InetAddress client) {
