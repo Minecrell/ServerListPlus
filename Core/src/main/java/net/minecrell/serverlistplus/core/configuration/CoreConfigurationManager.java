@@ -57,6 +57,9 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.NodeId;
+import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
@@ -87,12 +90,41 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
         DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         this.yaml = new Yaml(
-                this.yamlConstructor = new CustomClassLoaderConstructor(core.getClass().getClassLoader()),
+                this.yamlConstructor = new EmptyConfigurationConstructor(core.getClass().getClassLoader()),
                 this.yamlRepresenter = new NullSkippingRepresenter(),
                 dumperOptions);
     }
 
-    private class DefaultConfigurationRegistrar extends ConfigurationRegistrar {
+    private final class EmptyConfigurationConstructor extends CustomClassLoaderConstructor {
+        public EmptyConfigurationConstructor(ClassLoader loader) {
+            super(loader);
+            yamlClassConstructors.put(NodeId.scalar, new FixedConstructScalar());
+        }
+
+        private final class FixedConstructScalar extends ConstructScalar {
+
+            @Override
+            public Object construct(Node nnode) {
+                ScalarNode node = (ScalarNode) nnode;
+                Class<?> type = node.getType();
+
+                if (Configuration.class.isAssignableFrom(type)
+                        && ((String) constructScalar(node)).isEmpty()) {
+                    try {
+                        java.lang.reflect.Constructor<?> c = type.getDeclaredConstructor();
+                        c.setAccessible(true);
+                        return c.newInstance();
+                    } catch (Exception e) {
+                        throw new YAMLException(e);
+                    }
+                }
+
+                return super.construct(nnode);
+            }
+        }
+    }
+
+    private final class DefaultConfigurationRegistrar extends ConfigurationRegistrar {
         @Override
         public <V extends Configuration> void register(Class<V> configClass, V defaultConfig) {
             super.register(configClass, defaultConfig);
@@ -178,8 +210,9 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                                 this.getLogger().warningF("Unknown configuration type, skipping %s configuration: %s",
                                         Helper.ordinalNumber(counter), obj.getClass());
                         } catch (YAMLException e) {
-                            this.getLogger().logF(Level.WARNING, e, "Unable to parse the %s configuration. Make sure" +
-                                    " the YAML syntax is correct!", Helper.ordinalNumber(counter));
+                            this.getLogger().logF(Level.WARNING, e, "Unable to parse %s configuration from the " +
+                                    "configuration file. Make sure the YAML syntax is correct!",
+                                    Helper.ordinalNumber(counter));
                         }
                     }
                 }
@@ -198,7 +231,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                             "from the configuration file. Your configuration might be outdated, " +
                             "or a part of it is not valid YAML syntax. To prevent data loss, " +
                             "the configuration is not saved automatically to add the generated configurations. Type " +
-                            "'/ServerListPlus save to save the configuration and add the missing ones. All invalid" +
+                            "'/ServerListPlus save to save the configuration and add the missing ones. All invalid " +
                             "configuration parts will be deleted, as well as any custom made comments. A backup will " +
                             "be created for you.");
             }
