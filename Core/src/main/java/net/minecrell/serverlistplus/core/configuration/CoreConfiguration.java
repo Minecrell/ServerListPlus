@@ -41,7 +41,7 @@ public class CoreConfiguration extends Configuration {
 
         @Override
         public void setDefault() {
-            this.PlayerTracking = "expireAfterWriter=2h";
+            this.PlayerTracking = "expireAfterWrite=2h";
         }
     }
 
