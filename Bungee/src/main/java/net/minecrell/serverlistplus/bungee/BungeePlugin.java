@@ -26,6 +26,7 @@ package net.minecrell.serverlistplus.bungee;
 
 import java.util.logging.Level;
 
+import net.minecrell.serverlistplus.api.AbstractServerPingResponse;
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.ServerPingResponse;
@@ -69,7 +70,7 @@ public final class BungeePlugin extends AbstractBungeePlugin implements ServerLi
 
         @Override
         public void execute(CommandSender sender, String[] args) {
-            // TODO: Unable to get the entered comand in BungeeCord
+            // TODO: Unable to get the entered command in BungeeCord
             core.processCommand(new BungeeCommandSender(sender), this.getName(), this.getName(), args);
         }
     }
@@ -80,10 +81,19 @@ public final class BungeePlugin extends AbstractBungeePlugin implements ServerLi
         @EventHandler
         public void onProxyPing(final ProxyPingEvent event) {
             final ServerPing response = event.getResponse();
-            core.processRequest(event.getConnection().getAddress().getAddress(), new ServerPingResponse() {
+            core.processRequest(event.getConnection().getAddress().getAddress(), new AbstractServerPingResponse() {
                 @Override
                 public void setDescription(String description) {
                     response.setDescription(description);
+                }
+
+                @Override
+                public void setPlayerHover(String[] playerHover) {
+                    ServerPing.PlayerInfo[] sample = new ServerPing.PlayerInfo[playerHover.length];
+                    for (int i = 0; i < playerHover.length; i++) {
+                        sample[i] = new ServerPing.PlayerInfo(playerHover[i], ""); // Create a player with an empty ID
+                    }
+                    response.getPlayers().setSample(sample);
                 }
             });
         }

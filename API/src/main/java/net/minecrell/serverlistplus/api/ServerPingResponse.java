@@ -63,4 +63,10 @@ public interface ServerPingResponse {
      * @param description The server list description.
      */
     void setDescription(String description);
+
+    /**
+     * Sets the player hover messages for this response.
+     * @param playerHover The player hover messages.
+     */
+    void setPlayerHover(String[] playerHover);
 }

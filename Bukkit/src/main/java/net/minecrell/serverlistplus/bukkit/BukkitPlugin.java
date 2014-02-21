@@ -24,8 +24,13 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Iterator;
 import java.util.logging.Level;
 
+import net.minecrell.serverlistplus.api.AbstractServerPingResponse;
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.ServerPingResponse;
@@ -43,10 +48,13 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
+import com.google.common.collect.UnmodifiableIterator;
+
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 
 public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerListPlusPlugin {
@@ -93,7 +101,7 @@ public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerLi
 
         @EventHandler
         public void onServerListPing(final ServerListPingEvent event) {
-            core.processRequest(event.getAddress(), new ServerPingResponse() {
+            core.processRequest(event.getAddress(), new AbstractServerPingResponse() {
                 @Override
                 public void setDescription(String description) {
                     event.setMotd(description);
@@ -109,8 +117,13 @@ public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerLi
 
         @Override // Server ping packet
         public void onPacketSending(PacketEvent event) {
-            WrappedServerPing ping = event.getPacket().getServerPings().read(0);
-            // TODO: Add processing of player hover
+            final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
+            core.processRequest(event.getPlayer().getAddress().getAddress(), new AbstractServerPingResponse() {
+                @Override
+                public void setPlayerHover(String[] playerHover) {
+                    ping.setPlayers(new ProfileConversionIterable(playerHover));
+                }
+            }, ServerPingResponse.Modify.PLAYERS);
         }
     }
 
@@ -150,5 +163,27 @@ public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerLi
     @Override
     public String colorizeString(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    private final class ProfileConversionIterable implements Iterable<WrappedGameProfile> {
+        private final String[] lines;
+
+        @Override
+        public Iterator<WrappedGameProfile> iterator() {
+            return new UnmodifiableIterator<WrappedGameProfile>() {
+                private int pos = 0;
+
+                @Override
+                public boolean hasNext() {
+                    return pos < lines.length;
+                }
+
+                @Override
+                public WrappedGameProfile next() {
+                    return new WrappedGameProfile("", lines[pos++]); // Create a player with an empty ID
+                }
+            };
+        }
     }
 }
