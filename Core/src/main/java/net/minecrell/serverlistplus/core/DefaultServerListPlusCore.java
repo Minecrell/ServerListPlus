@@ -154,9 +154,8 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
             // TODO: Improve performance
             if (playerTracking) {
                 playerHover = playerHover.clone(); // :(
-                for (int i = 0; i < playerHover.length; i++) {
+                for (int i = 0; i < playerHover.length; i++)
                     playerHover[i] = personalize(playerHover[i], playerName);
-                }
             }
 
             response.setPlayerHover(playerHover);
