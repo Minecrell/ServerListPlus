@@ -28,18 +28,9 @@ import lombok.EqualsAndHashCode;
 
 import net.minecrell.serverlistplus.api.configuration.Configuration;
 import net.minecrell.serverlistplus.api.configuration.ConfigurationPart;
-import net.minecrell.serverlistplus.api.configuration.util.Description;
 import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
 @UniqueName ("Core")
-@Description({
-        "WARNING: Changing some of the values in this section can possibly",
-        "break the plugin or crash your server. Change them at your own risk",
-        "and only if you know what you're doing.",
-        "But if you're interested: by changing the cache the of the player",
-        "tracker, you can keep the players name in the server list for a",
-        "longer time. Just change the time below."
-})
 @EqualsAndHashCode(callSuper = false)
 public class CoreConfiguration extends Configuration {
     public CacheConfiguration Caches;

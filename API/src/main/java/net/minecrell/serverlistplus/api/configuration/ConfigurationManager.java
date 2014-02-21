@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.api.configuration;
 
+import java.util.Map;
+
 import net.minecrell.serverlistplus.api.ServerListPlusClass;
 import net.minecrell.serverlistplus.api.ServerListPlusException;
 import net.minecrell.serverlistplus.api.configuration.util.Registrar;
@@ -39,6 +41,12 @@ public interface ConfigurationManager extends ServerListPlusClass {
      * @return Registration manager for the default configurations.
      */
     Registrar<Configuration> getDefaults();
+
+    /**
+     * Gets a map managing the configuration descriptions. These will be added above the configuration as comments.
+     * @return A map containing the descriptions.
+     */
+    Map<Class<? extends Configuration>, String[]> getDescriptions();
 
     /**
      * Gets a registration manager for the example configurations. Example configuration will be generated in the

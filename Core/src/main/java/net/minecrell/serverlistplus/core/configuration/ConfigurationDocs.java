@@ -29,8 +29,20 @@ import java.util.Arrays;
 import net.minecrell.serverlistplus.api.configuration.ServerListConfiguration;
 import net.minecrell.serverlistplus.core.util.Helper;
 
-public class ConfigurationExamples {
-    private ConfigurationExamples() {}
+public class ConfigurationDocs {
+    private ConfigurationDocs() {}
+
+    public static final String[] SERVER_LIST_DESCRIPTION = new String[] {
+            "Customize your server ping here.",
+            "Up to now, you can only change the server description (MotD) and",
+            "add custom messages when a player hovers the player amount in the",
+            "server list. Randomizing is possible by adding multiple entries",
+            "in the correct section. You can personalize your server ping",
+            "by adding %player% to replace it with the player's name.",
+            "",
+            "Below is an example configuration. Remove the comment at the",
+            "beginning of the line and the space to test it."
+    };
 
     public static ServerListConfiguration getServerListExample() {
         ServerListConfiguration config = new ServerListConfiguration();
@@ -62,4 +74,22 @@ public class ConfigurationExamples {
 
         return config;
     }
+
+    public static final String[] PLUGIN_DESCRIPTION = new String[] {
+            "General options about the plugin.",
+            "You can disable the player tracking to save some performance if you",
+            "don't use it. By setting 'stats' to 'false' or 'off' you can disable",
+            "sending anonymous data to a plugin statistic service. The unknown",
+            "player name is used instead of the real player name if the player",
+            "has not yet logged in to you server yet, therefore his name is unknown."
+    };
+
+    public static final String[] CORE_DESCRIPTION = new String[] {
+            "WARNING: Changing some of the values in this section can possibly",
+            "break the plugin or crash your server. Change them at your own risk",
+            "and only if you know what you're doing.",
+            "But if you're interested: by changing the cache the of the player",
+            "tracker, you can keep the players name in the server list for a",
+            "longer time. Just change the time below."
+    };
 }

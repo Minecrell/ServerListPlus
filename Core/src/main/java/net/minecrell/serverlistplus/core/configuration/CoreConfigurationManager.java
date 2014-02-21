@@ -77,6 +77,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     private final Map<String, Class<? extends Configuration>> aliases = new HashMap<>();
     private final DefaultConfigurationRegistrar defaults = new DefaultConfigurationRegistrar();
     private final Registrar<Configuration> examples = new ConfigurationRegistrar();
+    private final Map<Class<? extends Configuration>, String[]> descriptions = new HashMap<>();
     private ClassToInstanceMap<Configuration> storage = Helper.createLinkedClassMap();
 
     private final Yaml yaml;
@@ -154,6 +155,11 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
     @Override
     public Registrar<Configuration> getDefaults() {
         return defaults;
+    }
+
+    @Override
+    public Map<Class<? extends Configuration>, String[]> getDescriptions() {
+        return descriptions;
     }
 
     @Override
@@ -287,7 +293,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                 for (Configuration config : storage.values()) {
                     IOUtil.newLine(writer); // Empty line before the next configuration
 
-                    IOUtil.writePrefixed(writer, COMMENT_PREFIX, Configuration.getDescription(config));
+                    IOUtil.writePrefixed(writer, COMMENT_PREFIX, descriptions.get(config.getClass()));
                     writer.write("--- ");
 
                     if (config.equals(this.getDefaults().get(config.getClass()))

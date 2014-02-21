@@ -24,7 +24,6 @@
 
 package net.minecrell.serverlistplus.api.configuration;
 
-import net.minecrell.serverlistplus.api.configuration.util.Description;
 import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
 /**
@@ -49,24 +48,5 @@ public abstract class Configuration extends ConfigurationPart {
      */
     public static String getUniqueName(Configuration config) {
         return getUniqueName(config.getClass());
-    }
-
-    /**
-     * Gets the description of a configuration part.
-     * @param configClass The configuration class.
-     * @return The description of the specified configuration part.
-     */
-    public static String[] getDescription(Class<? extends Configuration> configClass) {
-        Description description = configClass.getAnnotation(Description.class);
-        return (description != null) ? description.value() : null;
-    }
-
-    /**
-     * Gets the description of a configuration part.
-     * @param config A configuration instance.
-     * @return The description of the specified configuration part.
-     */
-    public static String[] getDescription(Configuration config) {
-        return getDescription(config.getClass());
     }
 }
