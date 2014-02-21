@@ -32,7 +32,14 @@ import net.minecrell.serverlistplus.api.configuration.util.Description;
 import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
 @UniqueName ("ServerList")
-@Description ("This is the server list configuration.")
+@Description ({
+        "Customize your server ping here.",
+        "Up to now, you can only change the server description (MotD) and",
+        "add custom messages when a player hovers the player amount in the",
+        "server list. Randomizing is possible by adding multiple entries",
+        "in the correct section. You can personalize your server ping",
+        "by adding %player% to replace it with the player's name."
+})
 @EqualsAndHashCode (callSuper = false)
 public class ServerListConfiguration extends Configuration {
     public List<String> Description;

@@ -30,7 +30,14 @@ import net.minecrell.serverlistplus.api.configuration.util.Description;
 import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 
 @UniqueName ("Plugin")
-@Description ("This is the plugin configuration.")
+@Description ({
+        "General options about the plugin.",
+        "You can disable the player tracking to save some performance if you",
+        "don't use it. By setting 'stats' to 'false' or 'off' you can disable",
+        "sending anonymous data to a plugin statistic service. The unknown",
+        "player name is used instead of the real player name if the player",
+        "has not yet logged in to you server yet, therefore his name is unknown."
+})
 @EqualsAndHashCode (callSuper = false)
 public class PluginConfiguration extends Configuration {
     public boolean Stats;
