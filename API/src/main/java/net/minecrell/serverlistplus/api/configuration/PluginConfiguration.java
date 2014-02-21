@@ -34,9 +34,11 @@ import net.minecrell.serverlistplus.api.configuration.util.UniqueName;
 @EqualsAndHashCode (callSuper = false)
 public class PluginConfiguration extends Configuration {
     public boolean Stats;
+    public boolean PlayerTracking;
 
     @Override
     public void setDefault() {
         this.Stats = true;
+        this.PlayerTracking = true;
     }
 }
