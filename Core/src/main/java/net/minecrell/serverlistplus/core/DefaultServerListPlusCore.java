@@ -136,7 +136,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
         String playerName = null;
         if (playerTracking) {
             playerName = playerTracker.getIfPresent(client.getHostAddress());
-            if (playerName != null) playerName = dataProvider.getUnknownPlayerReplacement();
+            if (playerName == null) playerName = dataProvider.getUnknownPlayerReplacement();
         }
 
         if (modify.contains(ServerPingResponse.Modify.DESCRIPTION)
