@@ -38,10 +38,10 @@ public class ConfigurationExamples {
         config.Description = Arrays.asList(
                 Helper.joinLines(
                         "&6This server is running &cServerListPlus&6.",
-                        "&eIf you add multiple entries here one will be randomly chosen."),
+                        "&eMinecraft 1.7"),
                 Helper.joinLines(
                         "&aThis is another random message.",
-                        "&4Up to 2 lines are possible. (&aper limitation of Minecraft&4)"
+                        "&4Up to 2 lines are possible."
                 ));
         config.Players = new ServerListConfiguration.PlayersConfiguration();
         config.Players.Hover = Arrays.asList(
