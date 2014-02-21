@@ -41,7 +41,7 @@ public class ConfigurationExamples {
                         "&eIf you add multiple entries here one will be randomly chosen."),
                 Helper.joinLines(
                         "&aThis is another random message.",
-                        "&4Up to 2 lines are possible (&aper limitation of Minecraft&4)"
+                        "&4Up to 2 lines are possible. (&aper limitation of Minecraft&4)"
                 ));
         config.Players = new ServerListConfiguration.PlayersConfiguration();
         config.Players.Hover = Arrays.asList(
