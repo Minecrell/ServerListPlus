@@ -29,6 +29,7 @@ import lombok.Getter;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
@@ -111,11 +112,18 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
         EnumSet<ServerPingResponse.Modify> modify = Helper.getModifications(modifications);
 
         if (modify.contains(ServerPingResponse.Modify.DESCRIPTION)) {
-
+            String description = serverList.getDescription();
+            if (description != null) {
+                // TODO: Player personalization
+                response.setDescription(description);
+            }
         }
 
         if (modify.contains(ServerPingResponse.Modify.PLAYER_HOVER)) {
-
+            String[] playerHover = serverList.getPlayerHover();
+            if (playerHover != null) {
+                // TODO: Change response
+            }
         }
     }
 

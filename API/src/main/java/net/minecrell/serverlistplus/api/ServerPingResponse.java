@@ -56,5 +56,11 @@ public interface ServerPingResponse {
             return children;
         }
     }
-    // TODO: Implement response wrapper
+
+
+    /**
+     * Sets the server list description (MotD) for this response.
+     * @param description The server list description.
+     */
+    void setDescription(String description);
 }
