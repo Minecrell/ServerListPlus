@@ -178,7 +178,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
         String subCommand = (args.length > 0) ? args[0] : null;
         if (subCommand != null) {
             if (subCommand.equalsIgnoreCase("reload")) {
-                this.getLogger().info("Reloading configuration per request by '" + sender + "'!");
+                this.getLogger().info("Reloading configuration per request by " + sender + "!");
 
                 try {
                     this.reload();
@@ -187,7 +187,7 @@ public class DefaultServerListPlusCore implements ServerListPlusCore {
                     this.sendColoredMessage(sender,"&cAn internal error occurred while reloading the configuration.");
                 } return;
             } else if (subCommand.equalsIgnoreCase("save")) {
-                this.getLogger().info("Saving configuration per request by '" + sender + "'!");
+                this.getLogger().info("Saving configuration per request by " + sender + "!");
 
                 try {
                     this.getConfigManager().save();
