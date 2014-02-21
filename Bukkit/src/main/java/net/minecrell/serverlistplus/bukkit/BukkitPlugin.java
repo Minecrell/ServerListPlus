@@ -49,7 +49,8 @@ public final class BukkitPlugin extends AbstractBukkitPlugin implements ServerLi
             this.getLogger().info("Please fix the error before restarting the server!");
             this.disablePlugin(); return;
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the ServerListPlus core!", e);
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the ServerListPlus " +
+                    "core!", e);
             this.disablePlugin(); return;
         }
 

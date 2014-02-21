@@ -47,7 +47,8 @@ public final class BungeePlugin extends AbstractBungeePlugin implements ServerLi
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!"); return;
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the ServerListPlus core!", e); return;
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the ServerListPlus " +
+                    "core!", e); return;
         }
 
         this.getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
