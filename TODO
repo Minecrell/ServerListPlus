@@ -21,7 +21,7 @@ Bungee:
   - [DONE] Create basic plugin structure
   - [DONE] Load ServerListPlus core
   - [DONE] Command handling
-  - [Not Started] Server ping listening
+  - [In Progress] Server ping listening
   - [Not Started] Player tracking
   - [Not Started] Plugin statistic implementation
 
@@ -29,6 +29,6 @@ Bukkit:
   - [DONE] Create basic plugin structure
   - [DONE] Load ServerListPlus core
   - [DONE] Command handling
-  - [Not Started] Server ping packet manipulation
+  - [In Progress] Server ping packet manipulation
   - [Not Started] Player tracking
   - [Not Started] Plugin statistic implementation
