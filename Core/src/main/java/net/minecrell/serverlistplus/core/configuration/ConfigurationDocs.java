@@ -36,12 +36,19 @@ public class ConfigurationDocs {
             "Customize your server ping here.",
             "Up to now, you can only change the server description (MotD) and",
             "add custom messages when a player hovers the player amount in the",
-            "server list. Randomizing is possible by adding multiple entries",
-            "in the correct section. You can personalize your server ping",
-            "by adding %player% to replace it with the player's name.",
-            "",
-            "Below is an example configuration. Remove the comment at the",
-            "beginning of the line and the space to test it."
+            "server list.",
+            " - Add multiple entries to let the plugin choose a random one.",
+            " - Save the file in valid UTF-8 format if you want to use special",
+            "   characters.",
+            " - Colors are possible using the usual color codes.",
+            "   http://minecraft.gamepedia.com/Formatting_codes",
+            " - The Minecraft client will only display the first 2 lines of the",
+            "   description. The player hover messages are not limited, but make",
+            "   sure it does also fit on smaller screens.",
+            " - You can personalize your server list by using '%player%' instead",
+            "   of the player name. It will be replaced by the player name or by",
+            "   the unknown name in the plugin configuration below if the user",
+            "   has not logged in to the server yet."
     };
 
     public static ServerListConfiguration getServerListExample() {
@@ -49,47 +56,50 @@ public class ConfigurationDocs {
 
         config.Description = Arrays.asList(
                 Helper.joinLines(
-                        "&6This server is running &cServerListPlus&6.",
-                        "&eMinecraft 1.7"),
+                        "&6Welcome back, %player%!",
+                        "&cServer Network &f| &eMinecraft 1.7"),
                 Helper.joinLines(
-                        "&aThis is another random message.",
-                        "&4Up to 2 lines are possible."
-                ));
+                        "&aWelcome to the &cServer Network, &a%player%!",
+                        "&6Today are 2 more kits playable for &2free&6!"));
         config.Players = new ServerListConfiguration.PlayersConfiguration();
         config.Players.Hover = Arrays.asList(
                 Helper.joinLines(
-                        "&6This messages will be displayed if a player",
-                        "&6hovers the player amount in the server list.",
-                        "&aThere is no real line limitation, but make sure",
-                        "&athat it's still visible completely in the client",
-                        "&aalso on smaller displays."),
+                        "&aHey, %player%!",
+                        "",
+                        "&eJoin our server today and play one of",
+                        "&eour amazing mini games!",
+                        " &a- Survival Games",
+                        " &a- Factions",
+                        " &a- PvP",
+                        " &a... and many more!"),
                 Helper.joinLines(
-                        "&cAs for the description, randomizing is possible by",
-                        "&cadding multiple entries here."),
-                Helper.joinLines(
-                        "&eColor codes are possible with the usual color codes",
-                        "&eusing & and the color code behind it.",
-                        "&4If you use special characters make sure saving",
-                        "&4the file in valid UTF-8 format."));
+                        "&6Have you tested the our new PvP kits, %player%?",
+                        "&aTodays free kits:",
+                        " - &eKangaroo",
+                        " - &eArcher",
+                        "&cOur Premium kits are &b25% off &ctoday!"
+                )
+        );
 
         return config;
     }
 
     public static final String[] PLUGIN_DESCRIPTION = new String[] {
             "General options about the plugin.",
-            "You can disable the player tracking to save some performance if you",
-            "don't use it. By setting 'stats' to 'false' or 'off' you can disable",
-            "sending anonymous data to a plugin statistic service. The unknown",
-            "player name is used instead of the real player name if the player",
-            "has not yet logged in to you server yet, therefore his name is unknown."
+            " - If you don't want the plugin to send anonymous plugin statistics",
+            "   to a service (PluginMetrics) you can disable them here.",
+            " - Set the player tracking to 'off' if you don't use it and want",
+            "   to save some performance.",
+            " - The unknown player name is used instead of the actual player name",
+            "   if the player has not logged in to the server yet."
     };
 
     public static final String[] CORE_DESCRIPTION = new String[] {
             "WARNING: Changing some of the values in this section can possibly",
             "break the plugin or crash your server. Change them at your own risk",
             "and only if you know what you're doing.",
-            "But if you're interested: by changing the cache the of the player",
-            "tracker, you can keep the players name in the server list for a",
-            "longer time. Just change the time below."
+            " - You can change the cache options for the player tracker if you",
+            "   want to keep the cached player names by their IP a little bit",
+            "   longer than by default."
     };
 }
