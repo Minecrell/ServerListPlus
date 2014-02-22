@@ -64,7 +64,7 @@ public class ConfigurationDocs {
         config.Players = new ServerListConfiguration.PlayersConfiguration();
         config.Players.Hover = Arrays.asList(
                 Helper.joinLines(
-                        "&aHey, %player%!",
+                        "&cHey, %player%!",
                         "",
                         "&eJoin our server today and play one of",
                         "&eour amazing mini games!",
