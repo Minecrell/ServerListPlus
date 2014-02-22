@@ -74,7 +74,7 @@ public class ConfigurationDocs {
                         " &a... and many more!"),
                 Helper.joinLines(
                         "&6Have you tested the our new PvP kits, %player%?",
-                        "&aTodays free kits:",
+                        "&aToday's free kits:",
                         " - &eKangaroo",
                         " - &eArcher",
                         "&cOur Premium kits are &b25% off &ctoday!"
