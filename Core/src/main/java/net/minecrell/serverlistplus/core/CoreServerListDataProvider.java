@@ -61,9 +61,16 @@ public class CoreServerListDataProvider extends CoreServerListPlusManager implem
         if (config.Players != null && !Helper.nullOrEmpty(config.Players.Hover)) {
             List<String> configPlayerHover = config.Players.Hover;
             String[][] playerHover = new String[configPlayerHover.size()][];
-            for (int i = 0; i < playerHover.length; i++)
+            for (int i = 0; i < playerHover.length; i++) {
                 playerHover[i] = Helper.splitLines(this.getCore().getPlugin().colorizeString(
                         configPlayerHover.get(i)));
+                // Fix empty lines
+                for (int line = 0; line < playerHover[i].length; line++) {
+                    if (playerHover[i][line].trim().isEmpty()) playerHover[i][line] = "\u00A7r";
+                }
+            }
+
+
             this.playerHover = playerHover;
         } else this.playerHover = null;
 
