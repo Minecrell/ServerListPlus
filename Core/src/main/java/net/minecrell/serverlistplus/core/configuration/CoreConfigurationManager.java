@@ -255,7 +255,7 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
                             "from the configuration file. Your configuration might be outdated, " +
                             "or a part of it is not valid YAML syntax. To prevent data loss, " +
                             "the configuration is not saved automatically to add the generated configurations. Type " +
-                            "'/ServerListPlus save to save the configuration and add the missing ones. All invalid " +
+                            "'/ServerListPlus save' to save the configuration and add the missing ones. All invalid " +
                             "configuration parts will be deleted, as well as any custom made comments. A backup will " +
                             "be created for you.");
             }
