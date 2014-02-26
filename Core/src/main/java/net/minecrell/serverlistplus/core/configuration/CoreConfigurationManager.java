@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecrell.serverlistplus.api.ServerListPlusCore;
@@ -311,8 +312,13 @@ public class CoreConfigurationManager extends CoreServerListPlusManager implemen
 
                     if (config.equals(this.getDefaults().get(config.getClass()))
                             && examples.has(config.getClass())) {
-                        writer.write(LINE_START.matcher(yaml.dump(examples.get(config.getClass())))
-                                .replaceAll("$1" + COMMENT_PREFIX));
+                        // TODO: Make example note optional
+                        writer.write(Helper.replaceFirstAndOthers(LINE_START, yaml.dump(examples.get(config.getClass())),
+                                Matcher.quoteReplacement(Helper.joinLines("", "", // Empty line
+                                        COMMENT_PREFIX + "- Example configuration: -",
+                                        COMMENT_PREFIX + "Remove the comment prefix (the '#' and the space) to " +
+                                                "test / modify it.", "" // Empty line
+                        )) + "$1" + COMMENT_PREFIX, "$1" + COMMENT_PREFIX));
                     } else
                         yaml.dump(config, writer);
 

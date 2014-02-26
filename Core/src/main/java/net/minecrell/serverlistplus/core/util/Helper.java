@@ -30,6 +30,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecrell.serverlistplus.api.ServerPingResponse;
 import net.minecrell.serverlistplus.api.configuration.Configuration;
@@ -101,6 +103,18 @@ public class Helper {
 
     public static <T> T nextEntry(Random random, T[] array) {
         return array[random.nextInt(array.length)];
+    }
+
+    public static String replaceFirstAndOthers(Pattern pattern, String s, String firstReplace, String replacement) {
+        Matcher matcher = pattern.matcher(s);
+        if (matcher.find()) {
+            StringBuffer sb = new StringBuffer();
+            matcher.appendReplacement(sb, firstReplace);
+            while (matcher.find())
+                matcher.appendReplacement(sb, replacement);
+            matcher.appendTail(sb);
+            return sb.toString();
+        } else return s;
     }
 
     public static List<String> colorize(final ServerListPlusPlugin plugin, List<String> lines) {
