@@ -21,8 +21,6 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 repositories {
     maven { url 'http://repo.bukkit.org/content/groups/public' }
     maven { url 'http://repo.comphenix.net/content/groups/public' }

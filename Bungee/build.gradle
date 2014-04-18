@@ -21,8 +21,6 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 repositories {
     maven { url 'https://oss.sonatype.org/content/groups/public' }
 }

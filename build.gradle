@@ -21,8 +21,6 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {

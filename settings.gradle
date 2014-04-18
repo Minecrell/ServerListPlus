@@ -21,8 +21,5 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 rootProject.name = 'ServerListPlus'
 include 'Core', 'Bungee', 'Bukkit', 'Universal'
-

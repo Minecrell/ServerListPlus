@@ -21,8 +21,6 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 dependencies {
     compile 'com.google.guava:guava:15.0',
             'org.yaml:snakeyaml:1.13',
