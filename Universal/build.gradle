@@ -21,10 +21,22 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
 
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class BukkitPlugin extends JavaPlugin {
+apply from: shadowScript
 
+dependencies {
+    compile project(':Bukkit'),
+            project(':Bungee')
+}
+
+shadow {
+    artifactSet {
+        include 'ServerListPlus:*'
+        exclude 'ServerListPlus:Core'
+    }
+
+    filter ('ServerListPlus:Bungee') {
+        exclude 'plugin.yml'
+    }
 }

@@ -1,6 +1,0 @@
-&6${project.pluginName} v${project.version}
-&cCopyright (C) ${project.inceptionYear}, ${project.author}
-&9${project.website}
------------------------------------------------
-&6/ServerListPlus reload &7- &rReload the configuration.
-&6/ServerListPlus save &7- &rSave the configuration.

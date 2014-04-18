@@ -21,10 +21,26 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.core.plugin;
 
-import org.bukkit.plugin.java.JavaPlugin;
+/**
+ * Represents the server implementation running the ServerListPlus plugin container.
+ */
+public enum ServerType {
+    BUKKIT ("Bukkit"),
+    BUNGEE ("Bungee"),
+    CUSTOM;
 
-public class BukkitPlugin extends JavaPlugin {
+    private final String displayName;
 
+    private ServerType() { this(null); }
+
+    private ServerType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public String toString() {
+        return (displayName != null) ? displayName : super.toString();
+    }
 }

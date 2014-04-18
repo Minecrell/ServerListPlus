@@ -21,10 +21,46 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
 
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class BukkitPlugin extends JavaPlugin {
+repositories {
+    maven { url 'http://repo.bukkit.org/content/groups/public' }
+    maven { url 'http://repo.comphenix.net/content/groups/public' }
+}
 
+apply from: shadowScript
+
+ext {
+    // TODO: Better fix?
+    resourceTokens = new LinkedHashMap<String, String>(resourceTokens)
+    pluginPackage = javaPackage + '.bukkit'
+}
+
+dependencies {
+    compile project(':Core')
+    provided 'org.bukkit:bukkit:1.7.2-R0.3',
+             'com.comphenix.protocol:ProtocolLib:3.3.1'
+}
+
+resourceTokens.put 'PluginClass', pluginPackage + '.BukkitPlugin'
+
+shadow {
+    artifactSet {
+        include 'ServerListPlus:Core'
+    }
+
+    relocation { // TODO: Replace with variable
+        pattern = 'net.minecrell.serverlistplus.core'
+        shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
+    }
+
+    // TODO: Use the libraries included in Minecraft for now
+    relocation {
+        pattern = 'com.google.common'
+        shadedPattern = 'net.minecraft.util.com.google.common'
+    }
+    relocation {
+        pattern = 'com.google.gson'
+        shadedPattern = 'net.minecraft.util.com.google.gson'
+    }
 }

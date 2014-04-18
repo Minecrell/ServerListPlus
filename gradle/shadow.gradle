@@ -21,10 +21,14 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
 
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class BukkitPlugin extends JavaPlugin {
+apply plugin: 'shadow'
 
+shadow {
+    artifactAttached = false
+}
+
+artifacts {
+    'default' shadowJar.outputJar
 }

@@ -21,10 +21,30 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.core.plugin;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-public class BukkitPlugin extends JavaPlugin {
+@RequiredArgsConstructor
+/**
+ * A base class that can be used to wrap the implementation specific command sender classes.
+ */
+public abstract class AbstractCommandSender<T> implements ServerCommandSender {
+    protected final @NonNull T sender;
 
+    @Override
+    public int hashCode() {
+        return sender.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || sender.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }

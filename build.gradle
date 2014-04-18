@@ -1,0 +1,74 @@
+/*
+ *       __                           __ _     _     ___ _
+ *      / _\ ___ _ ____   _____ _ __ / /(_)___| |_  / _ \ |_   _ ___
+ *      \ \ / _ \ '__\ \ / / _ \ '__/ / | / __| __|/ /_)/ | | | / __|
+ *      _\ \  __/ |   \ V /  __/ | / /__| \__ \ |_/ ___/| | |_| \__ \
+ *      \__/\___|_|    \_/ \___|_| \____/_|___/\__\/    |_|\__,_|___/
+ *
+ *  Copyright (C) 2014, Minecrell <https://github.com/Minecrell>
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+buildscript {
+    repositories { jcenter() }
+    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:0.8' }
+}
+
+allprojects {
+    version = '3.0-SNAPSHOT'
+}
+
+ext {
+    description = 'Customize your server ping!'
+    author = 'Minecrell <https://github.com/Minecrell>'
+
+    gradleDir = file 'gradle/'
+    shadowScript = new File(gradleDir, 'shadow.gradle')
+
+    javaPackage = 'net.minecrell.serverlistplus'
+    resourceTokens = [
+            'Name': rootProject.name,
+            'Description': description,
+            'Version': version,
+            'Author': author,
+            'Website': 'https://github.com/Minecrell/ServerListPlus'
+    ];
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    sourceCompatibility = 1.7
+
+    configurations { provided }
+    sourceSets { main { compileClasspath += configurations.provided } }
+
+    repositories { mavenCentral() }
+    dependencies {
+        provided 'org.projectlombok:lombok:1.12.6'
+    }
+
+    processResources {
+        filter ReplaceTokens, tokens: resourceTokens
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}

@@ -21,10 +21,42 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
 
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class BukkitPlugin extends JavaPlugin {
+repositories {
+    maven { url 'https://oss.sonatype.org/content/groups/public' }
+}
 
+apply from: shadowScript
+
+ext {
+    resourceTokens = new LinkedHashMap<String, String>(resourceTokens)
+    pluginPackage = javaPackage + '.bungee'
+}
+
+dependencies {
+    compile project(':Core')
+    provided 'net.md-5:bungeecord-api:1.7-SNAPSHOT'
+}
+
+resourceTokens.put 'PluginClass', pluginPackage + '.BungeePlugin'
+
+processResources << {
+    copy {
+        from destinationDir
+        into destinationDir
+        include 'plugin.yml'
+        rename 'plugin.yml', 'bungee.yml'
+    }
+}
+
+shadow {
+    artifactSet {
+        include 'ServerListPlus:Core'
+    }
+
+    relocation { // TODO: Replace with variable
+        pattern = 'net.minecrell.serverlistplus.core'
+        shadedPattern = 'net.minecrell.serverlistplus.bungee.core'
+    }
 }

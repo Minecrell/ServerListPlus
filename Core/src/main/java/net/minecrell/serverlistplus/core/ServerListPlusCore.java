@@ -21,10 +21,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.core;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
-public class BukkitPlugin extends JavaPlugin {
+public class ServerListPlusCore {
 
 }

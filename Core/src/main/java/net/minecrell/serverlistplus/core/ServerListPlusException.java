@@ -21,10 +21,25 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.core;
 
-import org.bukkit.plugin.java.JavaPlugin;
+/**
+ * Thrown if an exception is handled within the ServerListPlus core that has already been logged.
+ */
+public abstract class ServerListPlusException extends RuntimeException {
+    protected ServerListPlusException() {
+        super();
+    }
 
-public class BukkitPlugin extends JavaPlugin {
+    protected ServerListPlusException(String message) {
+        super(message);
+    }
 
+    protected ServerListPlusException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    protected ServerListPlusException(Throwable cause) {
+        super(cause);
+    }
 }
