@@ -67,34 +67,34 @@ The precise terms and conditions for copying, distribution and modification foll
 
 ### 0. Definitions.
 
-&ldquo;This License&rdquo; refers to version 3 of the GNU General Public License.
+_&ldquo;This License&rdquo;_ refers to version 3 of the GNU General Public License.
 
-&ldquo;Copyright&rdquo; also means copyright-like laws that apply to other kinds of
+_&ldquo;Copyright&rdquo;_ also means copyright-like laws that apply to other kinds of
 works, such as semiconductor masks.
 
-&ldquo;The Program&rdquo; refers to any copyrightable work licensed under this
-License. Each licensee is addressed as &ldquo;you&rdquo;. &ldquo;Licensees&rdquo; and
-&ldquo;recipients&rdquo; may be individuals or organizations.
+_&ldquo;The Program&rdquo;_ refers to any copyrightable work licensed under this
+License. Each licensee is addressed as _&ldquo;you&rdquo;_. _&ldquo;Licensees&rdquo;_ and
+_&ldquo;recipients&rdquo;_ may be individuals or organizations.
 
-To &ldquo;modify&rdquo; a work means to copy from or adapt all or part of the work in
+To _&ldquo;modify&rdquo;_ a work means to copy from or adapt all or part of the work in
 a fashion requiring copyright permission, other than the making of an exact copy. The
-resulting work is called a &ldquo;modified version&rdquo; of the earlier work or a
-work &ldquo;based on&rdquo; the earlier work.
+resulting work is called a _&ldquo;modified version&rdquo;_ of the earlier work or a
+work _&ldquo;based on&rdquo;_ the earlier work.
 
-A &ldquo;covered work&rdquo; means either the unmodified Program or a work based on
+A _&ldquo;covered work&rdquo;_ means either the unmodified Program or a work based on
 the Program.
 
-To &ldquo;propagate&rdquo; a work means to do anything with it that, without
+To _&ldquo;propagate&rdquo;_ a work means to do anything with it that, without
 permission, would make you directly or secondarily liable for infringement under
 applicable copyright law, except executing it on a computer or modifying a private
 copy. Propagation includes copying, distribution (with or without modification),
 making available to the public, and in some countries other activities as well.
 
-To &ldquo;convey&rdquo; a work means any kind of propagation that enables other
+To _&ldquo;convey&rdquo;_ a work means any kind of propagation that enables other
 parties to make or receive copies. Mere interaction with a user through a computer
 network, with no transfer of a copy, is not conveying.
 
-An interactive user interface displays &ldquo;Appropriate Legal Notices&rdquo; to the
+An interactive user interface displays _&ldquo;Appropriate Legal Notices&rdquo;_ to the
 extent that it includes a convenient and prominently visible feature that (1)
 displays an appropriate copyright notice, and (2) tells the user that there is no
 warranty for the work (except to the extent that warranties are provided), that
@@ -104,26 +104,26 @@ menu, a prominent item in the list meets this criterion.
 
 ### 1. Source Code.
 
-The &ldquo;source code&rdquo; for a work means the preferred form of the work for
-making modifications to it. &ldquo;Object code&rdquo; means any non-source form of a
+The _&ldquo;source code&rdquo;_ for a work means the preferred form of the work for
+making modifications to it. _&ldquo;Object code&rdquo;_ means any non-source form of a
 work.
 
-A &ldquo;Standard Interface&rdquo; means an interface that either is an official
+A _&ldquo;Standard Interface&rdquo;_ means an interface that either is an official
 standard defined by a recognized standards body, or, in the case of interfaces
 specified for a particular programming language, one that is widely used among
 developers working in that language.
 
-The &ldquo;System Libraries&rdquo; of an executable work include anything, other than
+The _&ldquo;System Libraries&rdquo;_ of an executable work include anything, other than
 the work as a whole, that (a) is included in the normal form of packaging a Major
 Component, but which is not part of that Major Component, and (b) serves only to
 enable use of the work with that Major Component, or to implement a Standard
 Interface for which an implementation is available to the public in source code form.
-A &ldquo;Major Component&rdquo;, in this context, means a major essential component
+A _&ldquo;Major Component&rdquo;_, in this context, means a major essential component
 (kernel, window system, and so on) of the specific operating system (if any) on which
 the executable work runs, or a compiler used to produce the work, or an object code
 interpreter used to run it.
 
-The &ldquo;Corresponding Source&rdquo; for a work in object code form means all the
+The _&ldquo;Corresponding Source&rdquo;_ for a work in object code form means all the
 source code needed to generate, install, and (for an executable work) run the object
 code and to modify the work, including scripts to control those activities. However,
 it does not include the work's System Libraries, or general-purpose tools or
@@ -197,7 +197,7 @@ you also meet all of these conditions:
 relevant date.
 * **b)** The work must carry prominent notices stating that it is released under this
 License and any conditions added under section 7. This requirement modifies the
-requirement in section 4 to &ldquo;keep intact all notices&rdquo;.
+requirement in section 4 to _&ldquo;keep intact all notices&rdquo;_.
 * **c)** You must license the entire work, as a whole, under this License to anyone who
 comes into possession of a copy. This License will therefore apply, along with any
 applicable section 7 additional terms, to the whole of the work, and all its parts,
@@ -211,7 +211,7 @@ Appropriate Legal Notices, your work need not make them do so.
 A compilation of a covered work with other separate and independent works, which are
 not by their nature extensions of the covered work, and which are not combined with
 it such as to form a larger program, in or on a volume of a storage or distribution
-medium, is called an &ldquo;aggregate&rdquo; if the compilation and its resulting
+medium, is called an _&ldquo;aggregate&rdquo;_ if the compilation and its resulting
 copyright are not used to limit the access or legal rights of the compilation's users
 beyond what the individual works permit. Inclusion of a covered work in an aggregate
 does not cause this License to apply to the other parts of the aggregate.
@@ -256,19 +256,19 @@ A separable portion of the object code, whose source code is excluded from the
 Corresponding Source as a System Library, need not be included in conveying the
 object code work.
 
-A &ldquo;User Product&rdquo; is either (1) a &ldquo;consumer product&rdquo;, which
+A _&ldquo;User Product&rdquo;_ is either (1) a _&ldquo;consumer product&rdquo;_, which
 means any tangible personal property which is normally used for personal, family, or
 household purposes, or (2) anything designed or sold for incorporation into a
 dwelling. In determining whether a product is a consumer product, doubtful cases
 shall be resolved in favor of coverage. For a particular product received by a
-particular user, &ldquo;normally used&rdquo; refers to a typical or common use of
+particular user, _&ldquo;normally used&rdquo;_ refers to a typical or common use of
 that class of product, regardless of the status of the particular user or of the way
 in which the particular user actually uses, or expects or is expected to use, the
 product. A product is a consumer product regardless of whether the product has
 substantial commercial, industrial or non-consumer uses, unless such uses represent
 the only significant mode of use of the product.
 
-&ldquo;Installation Information&rdquo; for a User Product means any methods,
+_&ldquo;Installation Information&rdquo;_ for a User Product means any methods,
 procedures, authorization keys, or other information required to install and execute
 modified versions of a covered work in that User Product from a modified version of
 its Corresponding Source. The information must suffice to ensure that the continued
@@ -298,7 +298,7 @@ special password or key for unpacking, reading or copying.
 
 ### 7. Additional Terms.
 
-&ldquo;Additional permissions&rdquo; are terms that supplement the terms of this
+_&ldquo;Additional permissions&rdquo;_ are terms that supplement the terms of this
 License by making exceptions from one or more of its conditions. Additional
 permissions that are applicable to the entire Program shall be treated as though they
 were included in this License, to the extent that they are valid under applicable
@@ -333,8 +333,8 @@ who conveys the material (or modified versions of it) with contractual assumptio
 liability to the recipient, for any liability that these contractual assumptions
 directly impose on those licensors and authors.
 
-All other non-permissive additional terms are considered &ldquo;further
-restrictions&rdquo; within the meaning of section 10. If the Program as you received
+All other non-permissive additional terms are considered _&ldquo;further
+restrictions&rdquo;_ within the meaning of section 10. If the Program as you received
 it, or any part of it, contains a notice stating that it is governed by this License
 along with a term that is a further restriction, you may remove that term. If a
 license document contains a further restriction but permits relicensing or conveying
@@ -391,7 +391,7 @@ from the original licensors, to run, modify and propagate that work, subject to 
 License. You are not responsible for enforcing compliance by third parties with this
 License.
 
-An &ldquo;entity transaction&rdquo; is a transaction transferring control of an
+An _&ldquo;entity transaction&rdquo;_ is a transaction transferring control of an
 organization, or substantially all assets of one, or subdividing an organization, or
 merging organizations. If propagation of a covered work results from an entity
 transaction, each party to that transaction who receives a copy of the work also
@@ -409,16 +409,16 @@ importing the Program or any portion of it.
 
 ### 11. Patents.
 
-A &ldquo;contributor&rdquo; is a copyright holder who authorizes use under this
+A _&ldquo;contributor&rdquo;_ is a copyright holder who authorizes use under this
 License of the Program or a work on which the Program is based. The work thus
-licensed is called the contributor's &ldquo;contributor version&rdquo;.
+licensed is called the contributor's _&ldquo;contributor version&rdquo;_.
 
-A contributor's &ldquo;essential patent claims&rdquo; are all patent claims owned or
+A contributor's _&ldquo;essential patent claims&rdquo;_ are all patent claims owned or
 controlled by the contributor, whether already acquired or hereafter acquired, that
 would be infringed by some manner, permitted by this License, of making, using, or
 selling its contributor version, but do not include claims that would be infringed
 only as a consequence of further modification of the contributor version. For
-purposes of this definition, &ldquo;control&rdquo; includes the right to grant patent
+purposes of this definition, _&ldquo;control&rdquo;_ includes the right to grant patent
 sublicenses in a manner consistent with the requirements of this License.
 
 Each contributor grants you a non-exclusive, worldwide, royalty-free patent license
@@ -426,10 +426,10 @@ under the contributor's essential patent claims, to make, use, sell, offer for s
 import and otherwise run, modify and propagate the contents of its contributor
 version.
 
-In the following three paragraphs, a &ldquo;patent license&rdquo; is any express
+In the following three paragraphs, a _&ldquo;patent license&rdquo;_ is any express
 agreement or commitment, however denominated, not to enforce a patent (such as an
 express permission to practice a patent or covenant not to sue for patent
-infringement). To &ldquo;grant&rdquo; such a patent license to a party means to make
+infringement). To _&ldquo;grant&rdquo;_ such a patent license to a party means to make
 such an agreement or commitment not to enforce a patent against the party.
 
 If you convey a covered work, knowingly relying on a patent license, and the
@@ -439,7 +439,7 @@ other readily accessible means, then you must either (1) cause the Corresponding
 Source to be so available, or (2) arrange to deprive yourself of the benefit of the
 patent license for this particular work, or (3) arrange, in a manner consistent with
 the requirements of this License, to extend the patent license to downstream
-recipients. &ldquo;Knowingly relying&rdquo; means you have actual knowledge that, but
+recipients. _&ldquo;Knowingly relying&rdquo;_ means you have actual knowledge that, but
 for the patent license, your conveying the covered work in a country, or your
 recipient's use of the covered work in a country, would infringe one or more
 identifiable patents in that country that you have reason to believe are valid.
@@ -451,7 +451,7 @@ propagate, modify or convey a specific copy of the covered work, then the patent
 license you grant is automatically extended to all recipients of the covered work and
 works based on it.
 
-A patent license is &ldquo;discriminatory&rdquo; if it does not include within the
+A patent license is _&ldquo;discriminatory&rdquo;_ if it does not include within the
 scope of its coverage, prohibits the exercise of, or is conditioned on the
 non-exercise of one or more of the rights that are specifically granted under this
 License. You may not convey a covered work if you are a party to an arrangement with
@@ -495,8 +495,8 @@ General Public License from time to time. Such new versions will be similar in s
 to the present version, but may differ in detail to address new problems or concerns.
 
 Each version is given a distinguishing version number. If the Program specifies that
-a certain numbered version of the GNU General Public License &ldquo;or any later
-version&rdquo; applies to it, you have the option of following the terms and
+a certain numbered version of the GNU General Public License _&ldquo;or any later
+version&rdquo;_ applies to it, you have the option of following the terms and
 conditions either of that numbered version or of any later version published by the
 Free Software Foundation. If the Program does not specify a version number of the GNU
 General Public License, you may choose any version ever published by the Free
@@ -514,7 +514,7 @@ your choosing to follow a later version.
 
 THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.
 EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-PROVIDE THE PROGRAM &ldquo;AS IS&rdquo; WITHOUT WARRANTY OF ANY KIND, EITHER
+PROVIDE THE PROGRAM _&ldquo;AS IS&rdquo;_ WITHOUT WARRANTY OF ANY KIND, EITHER
 EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
 MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE
 QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE
@@ -549,7 +549,7 @@ can redistribute and change under these terms.
 
 To do so, attach the following notices to the program. It is safest to attach them
 to the start of each source file to most effectively state the exclusion of warranty;
-and each file should have at least the &ldquo;copyright&rdquo; line and a pointer to
+and each file should have at least the _&ldquo;copyright&rdquo;_ line and a pointer to
 where the full notice is found.
 
     <one line to give the program's name and a brief idea of what it does.>
@@ -580,10 +580,10 @@ when it starts in an interactive mode:
 
 The hypothetical commands 'show w' and 'show c' should show the appropriate parts of
 the General Public License. Of course, your program's commands might be different;
-for a GUI interface, you would use an &ldquo;about box&rdquo;.
+for a GUI interface, you would use an _&ldquo;about box&rdquo;_.
 
 You should also get your employer (if you work as a programmer) or school, if any, to
-sign a &ldquo;copyright disclaimer&rdquo; for the program, if necessary. For more
+sign a _&ldquo;copyright disclaimer&rdquo;_ for the program, if necessary. For more
 information on this, and how to apply and follow the GNU GPL, see
 &lt;<http://www.gnu.org/licenses/>&gt;.
 
