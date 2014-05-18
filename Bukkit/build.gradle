@@ -35,7 +35,7 @@ ext {
 dependencies {
     compile project(':Core')
     provided 'org.bukkit:bukkit:1.7.9-R0.1',
-            'com.comphenix.protocol:ProtocolLib:3.3.1'
+             'com.comphenix.protocol:ProtocolLib:3.3.1'
 }
 
 resourceTokens.put 'BukkitClass', pluginPackage + '.BukkitPlugin'
