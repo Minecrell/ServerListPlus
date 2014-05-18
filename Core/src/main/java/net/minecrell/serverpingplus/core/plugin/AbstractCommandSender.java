@@ -23,6 +23,7 @@
 
 package net.minecrell.serverpingplus.core.plugin;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -32,15 +33,13 @@ import lombok.RequiredArgsConstructor;
  * sender classes.
  */
 public abstract class AbstractCommandSender<T> implements ServerCommandSender {
-    protected final @NonNull T sender;
-
-    public T getHandle() {
-        return sender;
-    }
+    protected final @Getter @NonNull T sender;
 
     @Override
-    public boolean equals(Object obj) {
-        return obj == this || sender.equals(obj);
+    public boolean equals(Object o) {
+        return this == o
+                || o instanceof AbstractCommandSender
+                && sender.equals(((AbstractCommandSender) o).sender);
     }
 
     @Override
