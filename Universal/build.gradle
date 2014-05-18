@@ -30,11 +30,11 @@ dependencies {
 
 shadow {
     artifactSet {
-        include 'ServerListPlus:*'
-        exclude 'ServerListPlus:Core'
+        include 'ServerPingPlus:*'
+        exclude 'ServerPingPlus:Core'
     }
 
-    filter ('ServerListPlus:Bungee') {
+    filter ('ServerPingPlus:Bungee') {
         exclude 'plugin.yml'
     }
 }
