@@ -61,7 +61,3 @@ subprojects {
         filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
     }
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.11'
-}
