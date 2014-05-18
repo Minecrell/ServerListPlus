@@ -28,8 +28,6 @@ repositories {
 apply from: rootProject.file('gradle/shadow.gradle')
 
 ext {
-    // TODO: Better fix?
-    resourceTokens = new LinkedHashMap<String, String>(resourceTokens)
     pluginPackage = javaPackage + '.bungee'
 }
 
@@ -38,7 +36,7 @@ dependencies {
     provided 'net.md-5:bungeecord-api:1.7-SNAPSHOT'
 }
 
-resourceTokens.put 'PluginClass', pluginPackage + '.BungeePlugin'
+resourceTokens.put 'BungeeClass', pluginPackage + '.BungeePlugin'
 
 processResources << {
     copy {
