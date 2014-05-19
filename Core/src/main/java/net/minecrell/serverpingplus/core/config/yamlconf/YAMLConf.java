@@ -118,14 +118,17 @@ public class YAMLConf {
 
     public <T extends Writer> T saveAll(T writer, String[] header, Object... confs) {
         try {
+            // Print header to the file if it is not empty
             if (!Helper.nullOrEmpty(header)) commentWriter.appendTo(writer, Iterators.forArray(header)).append(newLine);
 
             String[] description;
             for (Object conf : confs) {
                 writer.append(newLine);
-                description = ConfHelper.getDescription(conf);
+                description = ConfHelper.getDescription(conf); // Print section description
                 if (!Helper.nullOrEmpty(description)) commentWriter.appendTo(writer, Iterators.forArray(description));
+                // Start a new section
                 writer.append(DOCUMENT_START);
+                // Use singleton iterator to prevent creation of a new ArrayList with only one entry
                 snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
             }
 
