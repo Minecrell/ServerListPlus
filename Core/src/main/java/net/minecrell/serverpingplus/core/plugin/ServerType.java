@@ -24,8 +24,7 @@
 package net.minecrell.serverpingplus.core.plugin;
 
 /**
- * Represents the server implementation running the ServerPingPlus plugin
- * container.
+ * Represents the server implementation running the ServerPingPlus plugin container.
  */
 public enum ServerType {
     BUKKIT ("Bukkit"),

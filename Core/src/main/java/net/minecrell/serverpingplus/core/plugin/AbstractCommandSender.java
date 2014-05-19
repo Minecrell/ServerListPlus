@@ -29,8 +29,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 /**
- * A base class that can be used to wrap the implementation specific command
- * sender classes.
+ * A base class that can be used to wrap the implementation specific command sender classes.
  */
 public abstract class AbstractCommandSender<T> implements ServerCommandSender {
     protected final @Getter @NonNull T sender;
