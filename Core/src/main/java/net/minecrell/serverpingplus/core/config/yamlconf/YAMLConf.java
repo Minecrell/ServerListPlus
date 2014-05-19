@@ -23,42 +23,115 @@
 
 package net.minecrell.serverpingplus.core.config.yamlconf;
 
-import net.minecrell.serverpingplus.core.config.yamlconf.yaml.FieldOrderPropertyUtils;
-import net.minecrell.serverpingplus.core.config.yamlconf.yaml.NullSkippingRepresenter;
+import lombok.Getter;
+import lombok.NonNull;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+
+import net.minecrell.serverpingplus.core.util.Helper;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 public class YAMLConf {
     public static final String COMMENT_PREFIX = "# ";
-    public static final char NEWLINE = '\n';
+    public static final String DOCUMENT_START = "--- ";
 
-    private final Yaml yaml;
-    private final DumperOptions yamlDumper;
-    private final Constructor yamlConstructor;
-    private final Representer yamlRepresenter;
+    public static class SnakeYAML {
+        private final @Getter @NonNull Yaml yaml;
+        private final @Getter boolean outdated;
 
-    public YAMLConf() {
-        this.yamlDumper = new DumperOptions();
-        yamlDumper.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        yamlDumper.setLineBreak(DumperOptions.LineBreak.UNIX);
+        private final @Getter @NonNull DumperOptions dumperOptions;
+        private final @Getter @NonNull Constructor constructor;
+        private final @Getter @NonNull Representer representer;
 
-        this.yamlConstructor = new Constructor();
-        (this.yamlRepresenter = new NullSkippingRepresenter()).setPropertyUtils(new FieldOrderPropertyUtils());
-
-        this.yaml = new Yaml(yamlConstructor, yamlRepresenter, yamlDumper);
-    }
-
-    public String dump(String[] header, Object... confs) {
-        StringBuilder output = new StringBuilder();
-        for (String line : header) {
-            output.append(COMMENT_PREFIX).append(line).append(NEWLINE);
+        public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer) {
+            this(dumperOptions, constructor, representer, false);
         }
-        return output.append(yaml.dumpAll(Iterators.forArray(confs))).toString();
+
+        public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer, boolean outdated) {
+            this.yaml = new Yaml(constructor, representer, dumperOptions);
+            this.dumperOptions = dumperOptions;
+            this.constructor = constructor;
+            this.representer = representer;
+            this.outdated = outdated;
+        }
     }
 
+    private final @Getter @NonNull SnakeYAML snakeYAML;
+    private final String newLine;
+    private final Joiner commentWriter;
+
+    public YAMLConf(SnakeYAML snakeYAML) {
+        this.snakeYAML = Preconditions.checkNotNull(snakeYAML, "snakeYAML");
+        this.newLine = snakeYAML.getDumperOptions().getLineBreak().getString();
+        this.commentWriter = Joiner.on(newLine + COMMENT_PREFIX);
+    }
+
+    public String dump(Object conf) {
+        return dump(null, conf);
+    }
+
+    public <T extends Writer> T save(T writer, Object conf) {
+        return save(writer, null, conf);
+    }
+
+    public String dump(String[] header, Object conf) {
+        return save(new StringWriter(), header, conf).toString();
+    }
+
+    @SuppressWarnings("deprecation")
+    public <T extends Writer> T save(T writer, String[] header, Object conf) {
+        try {
+            if (!Helper.nullOrEmpty(header)) commentWriter.appendTo(writer, Iterators.forArray(header)).append(newLine);
+            Tag root = snakeYAML.getDumperOptions().getExplicitRoot();
+            snakeYAML.getDumperOptions().setExplicitRoot(Tag.MAP);
+            snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
+            snakeYAML.getDumperOptions().setExplicitRoot(root);
+            return writer;
+        } catch (IOException e) {
+            throw new YAMLException(e);
+        }
+    }
+
+    public String dumpAll(Object... confs) {
+        return dumpAll(null, confs);
+    }
+
+    public <T extends Writer> T saveAll(T writer, Object... confs) {
+        return saveAll(writer, null, confs);
+    }
+
+    public String dumpAll(String[] header, Object... confs) {
+        return saveAll(new StringWriter(), header, confs).toString();
+    }
+
+    public <T extends Writer> T saveAll(T writer, String[] header, Object... confs) {
+        try {
+            if (!Helper.nullOrEmpty(header)) commentWriter.appendTo(writer, Iterators.forArray(header)).append(newLine);
+
+            String[] description;
+            for (Object conf : confs) {
+                writer.append(newLine);
+                description = ConfHelper.getDescription(conf);
+                if (!Helper.nullOrEmpty(description)) commentWriter.appendTo(writer, Iterators.forArray(description));
+                writer.append(DOCUMENT_START);
+                snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
+            }
+
+            return writer;
+        } catch (IOException e) {
+            throw new YAMLException(e);
+        }
+    }
 }

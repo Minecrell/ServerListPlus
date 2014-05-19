@@ -21,25 +21,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverpingplus.core;
+package net.minecrell.serverpingplus.core.util;
 
-import lombok.Getter;
+public final class Helper {
+    private Helper() {}
 
-import java.util.logging.Logger;
-
-import net.minecrell.serverpingplus.core.plugin.ServerPingPlusPlugin;
-
-/**
- * Represents the core part of the ServerPingPlus plugin.
- */
-public class ServerPingPlusCore {
-    private final @Getter ServerPingPlusPlugin plugin;
-
-    public ServerPingPlusCore(ServerPingPlusPlugin plugin) {
-        this.plugin = plugin;
-    }
-
-    public Logger getLogger() {
-        return this.getPlugin().getLogger();
+    public static boolean nullOrEmpty(Object[] array) {
+        return array == null || array.length == 0;
     }
 }
