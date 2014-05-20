@@ -27,27 +27,17 @@ import java.util.List;
 
 @Description("Server List configuration")
 public class ServerListConf {
-    @Description("Could be also changed to Motd maybe")
     public List<String> Description;
-
-    @Description("Player configuration in server list")
     public PlayersConf Players;
-    @Description("Set version information here")
     public VersionConf Version;
 
     public static class PlayersConf {
-        @Description("Player hover message")
         public List<String> Hover;
-
-        @Description("Will probably not implement this..")
         public Integer Online, Max;
     }
 
     public static class VersionConf {
-        @Description("Version name")
         public String Name;
-
-        @Description("Protocol version")
         public Integer Protocol;
     }
 }
