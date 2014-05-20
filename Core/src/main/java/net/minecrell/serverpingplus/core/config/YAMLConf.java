@@ -82,16 +82,16 @@ public class YAMLConf {
         return dump(null, conf);
     }
 
-    public <T extends Writer> T save(T writer, Object conf) {
-        return save(writer, null, conf);
+    public <T extends Writer> T write(T writer, Object conf) {
+        return write(writer, null, conf);
     }
 
     public String dump(String[] header, Object conf) {
-        return save(new StringWriter(), header, conf).toString();
+        return write(new StringWriter(), header, conf).toString();
     }
 
     @SuppressWarnings("deprecation")
-    public <T extends Writer> T save(T writer, String[] header, Object conf) {
+    public <T extends Writer> T write(T writer, String[] header, Object conf) {
         try {
             writeComments(writer, header);
             // There is no dumpAsMap for writers
@@ -109,15 +109,15 @@ public class YAMLConf {
         return dumpAll(null, confs);
     }
 
-    public <T extends Writer> T saveAll(T writer, Object... confs) {
-        return saveAll(writer, null, confs);
+    public <T extends Writer> T writeAll(T writer, Object... confs) {
+        return writeAll(writer, null, confs);
     }
 
     public String dumpAll(String[] header, Object... confs) {
-        return saveAll(new StringWriter(), header, confs).toString();
+        return writeAll(new StringWriter(), header, confs).toString();
     }
 
-    public <T extends Writer> T saveAll(T writer, String[] header, Object... confs) {
+    public <T extends Writer> T writeAll(T writer, String[] header, Object... confs) {
         try {
             // Print header to the file if it is not empty
            writeComments(writer, header);
