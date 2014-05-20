@@ -93,7 +93,7 @@ public class YAMLConf {
     @SuppressWarnings("deprecation")
     public <T extends Writer> T save(T writer, String[] header, Object conf) {
         try {
-            if (!Helper.nullOrEmpty(header)) commentWriter.appendTo(writer, Iterators.forArray(header)).append(newLine);
+            writeComments(writer, header);
             // There is no dumpAsMap for writers
             Tag root = snakeYAML.getDumperOptions().getExplicitRoot();
             snakeYAML.getDumperOptions().setExplicitRoot(Tag.MAP);
@@ -120,13 +120,12 @@ public class YAMLConf {
     public <T extends Writer> T saveAll(T writer, String[] header, Object... confs) {
         try {
             // Print header to the file if it is not empty
-            if (!Helper.nullOrEmpty(header)) commentWriter.appendTo(writer, Iterators.forArray(header)).append(newLine);
+           writeComments(writer, header);
 
             String[] description;
             for (Object conf : confs) {
                 writer.append(newLine);
-                description = ConfHelper.getDescription(conf); // Print section description
-                if (!Helper.nullOrEmpty(description)) commentWriter.appendTo(writer, Iterators.forArray(description));
+                writeComments(writer, ConfHelper.getDescription(conf)); // Print section description
                 // Start a new section
                 writer.append(DOCUMENT_START);
                 dumpConf(conf, writer);
@@ -141,5 +140,10 @@ public class YAMLConf {
     private void dumpConf(Object conf, Writer writer) {
         // Use singleton iterator to prevent creation of a new ArrayList with only one entry
         snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
+    }
+
+    private void writeComments(Appendable appendable, String... comments) throws IOException {
+        if (!Helper.nullOrEmpty(comments))
+            commentWriter.appendTo(appendable, Iterators.forArray(comments)).append(newLine);
     }
 }
