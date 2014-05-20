@@ -23,16 +23,24 @@
 
 package net.minecrell.serverpingplus.core.util;
 
-import java.util.Collection;
+import java.util.logging.Logger;
 
-public final class Helper {
-    private Helper() {}
+import net.minecrell.serverpingplus.core.ServerPingPlusCore;
 
-    public static boolean nullOrEmpty(Object[] array) {
-        return array == null || array.length == 0;
+import com.google.common.base.Preconditions;
+
+public abstract class CoreManager {
+    protected final ServerPingPlusCore core;
+
+    protected CoreManager(ServerPingPlusCore core) {
+        this.core = Preconditions.checkNotNull(core, "core");
     }
 
-    public static String[] toStringArray(Collection<String> c) {
-        return c != null ? c.toArray(new String[c.size()]) : null;
+    public ServerPingPlusCore getCore() {
+        return core;
+    }
+
+    protected Logger getLogger() {
+        return core.getLogger();
     }
 }

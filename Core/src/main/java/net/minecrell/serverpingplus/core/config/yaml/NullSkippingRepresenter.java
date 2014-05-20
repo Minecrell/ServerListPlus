@@ -32,7 +32,6 @@ public class NullSkippingRepresenter extends Representer {
 
     @Override
     protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object value, Tag tag) {
-        if (value == null) return null;
-        return super.representJavaBeanProperty(javaBean, property, value, tag);
+        return value != null ? super.representJavaBeanProperty(javaBean, property, value, tag) : null;
     }
 }

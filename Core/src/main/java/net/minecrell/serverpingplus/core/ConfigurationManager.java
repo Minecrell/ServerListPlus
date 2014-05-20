@@ -21,18 +21,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverpingplus.core.util;
+package net.minecrell.serverpingplus.core;
 
-import java.util.Collection;
+import net.minecrell.serverpingplus.core.util.CoreManager;
 
-public final class Helper {
-    private Helper() {}
-
-    public static boolean nullOrEmpty(Object[] array) {
-        return array == null || array.length == 0;
-    }
-
-    public static String[] toStringArray(Collection<String> c) {
-        return c != null ? c.toArray(new String[c.size()]) : null;
+public class ConfigurationManager extends CoreManager {
+    public ConfigurationManager(ServerPingPlusCore core) {
+        super(core);
     }
 }
