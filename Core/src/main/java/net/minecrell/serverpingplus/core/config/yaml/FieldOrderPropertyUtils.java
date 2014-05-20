@@ -21,15 +21,23 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverpingplus.core.config.yamlconf;
+package net.minecrell.serverpingplus.core.config.yaml;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.beans.IntrospectionException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-@Target(ElementType.TYPE) // TODO: Implement field descriptions
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Description {
-    String[] value();
+import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
+
+public class FieldOrderPropertyUtils extends PropertyUtils {
+    public FieldOrderPropertyUtils() {
+        this.setBeanAccess(BeanAccess.FIELD);
+    }
+
+    @Override
+    protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
+        return new LinkedHashSet<>(this.getPropertiesMap(type, bAccess).values());
+    }
 }

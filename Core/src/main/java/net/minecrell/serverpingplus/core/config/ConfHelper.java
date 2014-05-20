@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverpingplus.core.config.yamlconf;
+package net.minecrell.serverpingplus.core.config;
 
 public final class ConfHelper {
     private ConfHelper() {}

@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverpingplus.core.config.yamlconf;
+package net.minecrell.serverpingplus.core.config;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -94,9 +94,10 @@ public class YAMLConf {
     public <T extends Writer> T save(T writer, String[] header, Object conf) {
         try {
             if (!Helper.nullOrEmpty(header)) commentWriter.appendTo(writer, Iterators.forArray(header)).append(newLine);
+            // There is no dumpAsMap for writers
             Tag root = snakeYAML.getDumperOptions().getExplicitRoot();
             snakeYAML.getDumperOptions().setExplicitRoot(Tag.MAP);
-            snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
+            dumpConf(conf, writer);
             snakeYAML.getDumperOptions().setExplicitRoot(root);
             return writer;
         } catch (IOException e) {
@@ -128,13 +129,17 @@ public class YAMLConf {
                 if (!Helper.nullOrEmpty(description)) commentWriter.appendTo(writer, Iterators.forArray(description));
                 // Start a new section
                 writer.append(DOCUMENT_START);
-                // Use singleton iterator to prevent creation of a new ArrayList with only one entry
-                snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
+                dumpConf(conf, writer);
             }
 
             return writer;
         } catch (IOException e) {
             throw new YAMLException(e);
         }
+    }
+
+    private void dumpConf(Object conf, Writer writer) {
+        // Use singleton iterator to prevent creation of a new ArrayList with only one entry
+        snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
     }
 }

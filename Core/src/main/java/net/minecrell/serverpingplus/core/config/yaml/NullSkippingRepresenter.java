@@ -21,33 +21,18 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverpingplus.core.config.yamlconf;
+package net.minecrell.serverpingplus.core.config.yaml;
 
-import java.util.List;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.nodes.NodeTuple;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
-@Description("Server List configuration")
-public class ServerListConf {
-    @Description("Could be also changed to Motd maybe")
-    public List<String> Description;
+public class NullSkippingRepresenter extends Representer {
 
-    @Description("Player configuration in server list")
-    public PlayersConf Players;
-    @Description("Set version information here")
-    public VersionConf Version;
-
-    public static class PlayersConf {
-        @Description("Player hover message")
-        public List<String> Hover;
-
-        @Description("Will probably not implement this..")
-        public Integer Online, Max;
-    }
-
-    public static class VersionConf {
-        @Description("Version name")
-        public String Name;
-
-        @Description("Protocol version")
-        public Integer Protocol;
+    @Override
+    protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object value, Tag tag) {
+        if (value == null) return null;
+        return super.representJavaBeanProperty(javaBean, property, value, tag);
     }
 }
