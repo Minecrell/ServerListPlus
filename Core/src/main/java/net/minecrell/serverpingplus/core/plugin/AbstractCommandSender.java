@@ -23,16 +23,21 @@
 
 package net.minecrell.serverpingplus.core.plugin;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import com.google.common.base.Preconditions;
 
-@RequiredArgsConstructor
 /**
  * A base class that can be used to wrap the implementation specific command sender classes.
  */
 public abstract class AbstractCommandSender<T> implements ServerCommandSender {
-    protected final @Getter @NonNull T sender;
+    protected final T sender;
+
+    protected AbstractCommandSender(T sender) {
+        this.sender = Preconditions.checkNotNull(sender, "sender");
+    }
+
+    public T getSender() {
+        return sender;
+    }
 
     @Override
     public boolean equals(Object o) {

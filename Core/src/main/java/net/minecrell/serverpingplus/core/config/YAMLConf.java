@@ -23,9 +23,6 @@
 
 package net.minecrell.serverpingplus.core.config;
 
-import lombok.Getter;
-import lombok.NonNull;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -47,35 +44,18 @@ public class YAMLConf {
     public static final String COMMENT_PREFIX = "# ";
     public static final String DOCUMENT_START = "--- ";
 
-    public static class SnakeYAML {
-        private final @Getter @NonNull Yaml yaml;
-        private final @Getter boolean outdated;
-
-        private final @Getter @NonNull DumperOptions dumperOptions;
-        private final @Getter @NonNull Constructor constructor;
-        private final @Getter @NonNull Representer representer;
-
-        public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer) {
-            this(dumperOptions, constructor, representer, false);
-        }
-
-        public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer, boolean outdated) {
-            this.yaml = new Yaml(constructor, representer, dumperOptions);
-            this.dumperOptions = dumperOptions;
-            this.constructor = constructor;
-            this.representer = representer;
-            this.outdated = outdated;
-        }
-    }
-
-    private final @Getter @NonNull SnakeYAML snakeYAML;
-    private final String newLine;
-    private final Joiner commentWriter;
+    protected final SnakeYAML snakeYAML;
+    protected final String newLine;
+    protected final Joiner commentWriter;
 
     public YAMLConf(SnakeYAML snakeYAML) {
         this.snakeYAML = Preconditions.checkNotNull(snakeYAML, "snakeYAML");
         this.newLine = snakeYAML.getDumperOptions().getLineBreak().getString();
         this.commentWriter = Joiner.on(newLine + COMMENT_PREFIX);
+    }
+
+    public SnakeYAML snakeYAML() {
+        return snakeYAML;
     }
 
     public String dump(Object conf) {
@@ -145,5 +125,46 @@ public class YAMLConf {
     private void writeComments(Appendable appendable, String... comments) throws IOException {
         if (!Helper.nullOrEmpty(comments))
             commentWriter.appendTo(appendable, Iterators.forArray(comments)).append(newLine);
+    }
+
+    public static class SnakeYAML {
+        private final Yaml yaml;
+        private final boolean outdated;
+
+        private final DumperOptions dumperOptions;
+        private final Constructor constructor;
+        private final Representer representer;
+
+        public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer) {
+            this(dumperOptions, constructor, representer, false);
+        }
+
+        public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer, boolean outdated) {
+            this.dumperOptions = Preconditions.checkNotNull(dumperOptions, "dumperOptions");
+            this.constructor = Preconditions.checkNotNull(constructor, "constructor");
+            this.representer = Preconditions.checkNotNull(representer, "representer");
+            this.outdated = outdated;
+            this.yaml = new Yaml(constructor, representer, dumperOptions);
+        }
+
+        public Yaml getYaml() {
+            return yaml;
+        }
+
+        public boolean isOutdated() {
+            return outdated;
+        }
+
+        public DumperOptions getDumperOptions() {
+            return dumperOptions;
+        }
+
+        public Constructor getConstructor() {
+            return constructor;
+        }
+
+        public Representer getRepresenter() {
+            return representer;
+        }
     }
 }

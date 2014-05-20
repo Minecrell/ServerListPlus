@@ -23,20 +23,24 @@
 
 package net.minecrell.serverpingplus.core;
 
-import lombok.Getter;
-
 import java.util.logging.Logger;
 
 import net.minecrell.serverpingplus.core.plugin.ServerPingPlusPlugin;
+
+import com.google.common.base.Preconditions;
 
 /**
  * Represents the core part of the ServerPingPlus plugin.
  */
 public class ServerPingPlusCore {
-    private final @Getter ServerPingPlusPlugin plugin;
+    private final ServerPingPlusPlugin plugin;
 
     public ServerPingPlusCore(ServerPingPlusPlugin plugin) {
-        this.plugin = plugin;
+        this.plugin = Preconditions.checkNotNull(plugin, "plugin");
+    }
+
+    public ServerPingPlusPlugin getPlugin() {
+        return plugin;
     }
 
     public Logger getLogger() {
