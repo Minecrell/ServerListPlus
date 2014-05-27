@@ -97,7 +97,7 @@ public class YAMLConf {
     public <T extends Writer> T writeAll(T writer, String[] header, Object... confs) {
         try {
             // Print header to the file if it is not empty
-           writeComments(writer, header);
+            writeComments(writer, header);
 
             String[] description;
             for (Object conf : confs) {
