@@ -1,5 +1,5 @@
 /*
- *        _____                     __    _     _   _____ _
+ * _____                     __    _     _   _____ _
  *       |   __|___ ___ _ _ ___ ___|  |  |_|___| |_|  _  | |_ _ ___
  *       |__   | -_|  _| | | -_|  _|  |__| |_ -|  _|   __| | | |_ -|
  *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
@@ -25,19 +25,22 @@ package net.minecrell.serverlistplus.core.config;
 
 import java.util.List;
 
-@Description("Server List configuration")
-public class ServerListConf {
-    public List<String> Description;
-    public PlayersConf Players;
-    public VersionConf Version;
+@Description({
+        "Server List configuration description.",
+        "- do this",
+        "- do that"
+})
+public class ServerStatusConf {
+    public StatusConf Default;
+    public StatusConf Personalized;
 
-    public static class PlayersConf {
-        public List<String> Hover;
-        public Integer Online, Max;
+    public static class StatusConf {
+        public List<String> Description;
+        public PlayersConf Players;
+
+        public static class PlayersConf {
+            public List<String> Hover;
+        }
     }
 
-    public static class VersionConf {
-        public String Name;
-        public Integer Protocol;
-    }
 }
