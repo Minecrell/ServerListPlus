@@ -21,24 +21,21 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.config;
+package net.minecrell.serverlistplus.core.config.yaml;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import net.minecrell.serverlistplus.core.config.help.ConfHelper;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;
 
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
 
 public class YAMLConf {
     public static final String COMMENT_PREFIX = "# ";
@@ -125,46 +122,5 @@ public class YAMLConf {
     private void writeComments(Appendable appendable, String... comments) throws IOException {
         if (!Helper.nullOrEmpty(comments))
             commentWriter.appendTo(appendable, Iterators.forArray(comments)).append(newLine);
-    }
-
-    public static class SnakeYAML {
-        private final Yaml yaml;
-        private final boolean outdated;
-
-        private final DumperOptions dumperOptions;
-        private final Constructor constructor;
-        private final Representer representer;
-
-        public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer) {
-            this(dumperOptions, constructor, representer, false);
-        }
-
-        public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer, boolean outdated) {
-            this.dumperOptions = Preconditions.checkNotNull(dumperOptions, "dumperOptions");
-            this.constructor = Preconditions.checkNotNull(constructor, "constructor");
-            this.representer = Preconditions.checkNotNull(representer, "representer");
-            this.outdated = outdated;
-            this.yaml = new Yaml(constructor, representer, dumperOptions);
-        }
-
-        public Yaml getYaml() {
-            return yaml;
-        }
-
-        public boolean isOutdated() {
-            return outdated;
-        }
-
-        public DumperOptions getDumperOptions() {
-            return dumperOptions;
-        }
-
-        public Constructor getConstructor() {
-            return constructor;
-        }
-
-        public Representer getRepresenter() {
-            return representer;
-        }
     }
 }

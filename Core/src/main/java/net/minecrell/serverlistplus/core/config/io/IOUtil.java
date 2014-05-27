@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.config;
+package net.minecrell.serverlistplus.core.config.io;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
