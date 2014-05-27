@@ -23,8 +23,6 @@
 
 package net.minecrell.serverlistplus.core;
 
-import java.util.logging.Logger;
-
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 
 import com.google.common.base.Preconditions;
