@@ -25,6 +25,8 @@ package net.minecrell.serverlistplus.core.config;
 
 import java.util.List;
 
+import net.minecrell.serverlistplus.core.config.help.Description;
+
 @Description({
         "Server List configuration description.",
         "- do this",
