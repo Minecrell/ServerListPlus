@@ -21,42 +21,16 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven { url 'http://repo.bukkit.org/content/groups/public' }
-    maven { url 'http://repo.comphenix.net/content/groups/public' }
-}
+package net.minecrell.serverlistplus.core.plugin;
 
-apply from: rootProject.file('gradle/shadow.gradle')
+import java.nio.file.Path;
+import java.util.logging.Logger;
 
-ext {
-    pluginPackage = javaPackage + '.bukkit'
-}
-
-dependencies {
-    compile project(':Core')
-    compile 'org.bukkit:bukkit:1.7.9-R0.1',
-            'com.comphenix.protocol:ProtocolLib:3.3.1'
-}
-
-resourceTokens.put 'BukkitClass', pluginPackage + '.BukkitPlugin'
-
-shadow {
-    artifactSet {
-        include 'ServerListPlus:Core'
-    }
-
-    relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverlistplus.core'
-        shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
-    }
-
-    // TODO: Use the libraries included in Minecraft for now
-    relocation {
-        pattern = 'com.google.common'
-        shadedPattern = 'net.minecraft.util.com.google.common'
-    }
-    relocation {
-        pattern = 'com.google.gson'
-        shadedPattern = 'net.minecraft.util.com.google.gson'
-    }
+/**
+ * Represents a plugin container running the ServerListPlus core.
+ */
+public interface ServerListPlusPlugin {
+    Logger getLogger();
+    ServerType getServerType();
+    Path getPluginFolder();
 }

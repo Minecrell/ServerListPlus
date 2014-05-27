@@ -21,42 +21,38 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven { url 'http://repo.bukkit.org/content/groups/public' }
-    maven { url 'http://repo.comphenix.net/content/groups/public' }
-}
+package net.minecrell.serverlistplus.core.plugin;
 
-apply from: rootProject.file('gradle/shadow.gradle')
+import com.google.common.base.Preconditions;
 
-ext {
-    pluginPackage = javaPackage + '.bukkit'
-}
+/**
+ * A base class that can be used to wrap the implementation specific command sender classes.
+ */
+public abstract class AbstractCommandSender<T> implements ServerCommandSender {
+    protected final T sender;
 
-dependencies {
-    compile project(':Core')
-    compile 'org.bukkit:bukkit:1.7.9-R0.1',
-            'com.comphenix.protocol:ProtocolLib:3.3.1'
-}
-
-resourceTokens.put 'BukkitClass', pluginPackage + '.BukkitPlugin'
-
-shadow {
-    artifactSet {
-        include 'ServerListPlus:Core'
+    protected AbstractCommandSender(T sender) {
+        this.sender = Preconditions.checkNotNull(sender, "sender");
     }
 
-    relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverlistplus.core'
-        shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
+    public T getSender() {
+        return sender;
     }
 
-    // TODO: Use the libraries included in Minecraft for now
-    relocation {
-        pattern = 'com.google.common'
-        shadedPattern = 'net.minecraft.util.com.google.common'
+    @Override
+    public boolean equals(Object o) {
+        return this == o
+                || o instanceof AbstractCommandSender
+                && sender.equals(((AbstractCommandSender) o).sender);
     }
-    relocation {
-        pattern = 'com.google.gson'
-        shadedPattern = 'net.minecraft.util.com.google.gson'
+
+    @Override
+    public int hashCode() {
+        return sender.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
     }
 }

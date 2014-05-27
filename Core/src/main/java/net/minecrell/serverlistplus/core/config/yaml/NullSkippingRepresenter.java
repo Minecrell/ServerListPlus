@@ -21,42 +21,17 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven { url 'http://repo.bukkit.org/content/groups/public' }
-    maven { url 'http://repo.comphenix.net/content/groups/public' }
-}
+package net.minecrell.serverlistplus.core.config.yaml;
 
-apply from: rootProject.file('gradle/shadow.gradle')
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.nodes.NodeTuple;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
-ext {
-    pluginPackage = javaPackage + '.bukkit'
-}
+public class NullSkippingRepresenter extends Representer {
 
-dependencies {
-    compile project(':Core')
-    compile 'org.bukkit:bukkit:1.7.9-R0.1',
-            'com.comphenix.protocol:ProtocolLib:3.3.1'
-}
-
-resourceTokens.put 'BukkitClass', pluginPackage + '.BukkitPlugin'
-
-shadow {
-    artifactSet {
-        include 'ServerListPlus:Core'
-    }
-
-    relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverlistplus.core'
-        shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
-    }
-
-    // TODO: Use the libraries included in Minecraft for now
-    relocation {
-        pattern = 'com.google.common'
-        shadedPattern = 'net.minecraft.util.com.google.common'
-    }
-    relocation {
-        pattern = 'com.google.gson'
-        shadedPattern = 'net.minecraft.util.com.google.gson'
+    @Override
+    protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object value, Tag tag) {
+        return value != null ? super.representJavaBeanProperty(javaBean, property, value, tag) : null;
     }
 }

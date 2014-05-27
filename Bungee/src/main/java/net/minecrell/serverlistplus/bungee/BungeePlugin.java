@@ -21,42 +21,25 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven { url 'http://repo.bukkit.org/content/groups/public' }
-    maven { url 'http://repo.comphenix.net/content/groups/public' }
-}
+package net.minecrell.serverlistplus.bungee;
 
-apply from: rootProject.file('gradle/shadow.gradle')
+import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.core.plugin.ServerType;
 
-ext {
-    pluginPackage = javaPackage + '.bukkit'
-}
+public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
 
-dependencies {
-    compile project(':Core')
-    compile 'org.bukkit:bukkit:1.7.9-R0.1',
-            'com.comphenix.protocol:ProtocolLib:3.3.1'
-}
+    @Override
+    public void onEnable() {
 
-resourceTokens.put 'BukkitClass', pluginPackage + '.BukkitPlugin'
-
-shadow {
-    artifactSet {
-        include 'ServerListPlus:Core'
     }
 
-    relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverlistplus.core'
-        shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
+    @Override
+    public void onDisable() {
+
     }
 
-    // TODO: Use the libraries included in Minecraft for now
-    relocation {
-        pattern = 'com.google.common'
-        shadedPattern = 'net.minecraft.util.com.google.common'
-    }
-    relocation {
-        pattern = 'com.google.gson'
-        shadedPattern = 'net.minecraft.util.com.google.gson'
+    @Override
+    public ServerType getServerType() {
+        return ServerType.BUNGEE;
     }
 }

@@ -1,10 +1,10 @@
 /*
- *       _____                     _____ _         _____ _
- *      |   __|___ ___ _ _ ___ ___|  _  |_|___ ___|  _  | |_ _ ___
- *      |__   | -_|  _| | | -_|  _|   __| |   | . |   __| | | |_ -|
- *      |_____|___|_|  \_/|___|_| |__|  |_|_|_|_  |__|  |_|___|___|
- *                                            |___|
- *  ServerPingPlus - Customize your server ping!
+ *        _____                     __    _     _   _____ _
+ *       |   __|___ ___ _ _ ___ ___|  |  |_|___| |_|  _  | |_ _ ___
+ *       |__   | -_|  _| | | -_|  _|  |__| |_ -|  _|   __| | | |_ -|
+ *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
+ *
+ *  ServerListPlus - Customize your server list ping!
  *  Copyright (C) 2014, Minecrell <https://github.com/Minecrell>
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ ext {
 
 dependencies {
     compile project(':Core')
-    provided 'net.md-5:bungeecord-api:1.7-SNAPSHOT'
+    compile 'net.md-5:bungeecord-api:1.7-SNAPSHOT'
 }
 
 resourceTokens.put 'BungeeClass', pluginPackage + '.BungeePlugin'
@@ -50,11 +50,11 @@ processResources << {
 
 shadow {
     artifactSet {
-        include 'ServerPingPlus:Core'
+        include 'ServerListPlus:Core'
     }
 
     relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverpingplus.core'
-        shadedPattern = 'net.minecrell.serverpingplus.bungee.core'
+        pattern = 'net.minecrell.serverlistplus.core'
+        shadedPattern = 'net.minecrell.serverlistplus.bungee.core'
     }
 }

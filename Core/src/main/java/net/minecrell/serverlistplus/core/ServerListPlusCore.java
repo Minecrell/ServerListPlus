@@ -21,42 +21,29 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven { url 'http://repo.bukkit.org/content/groups/public' }
-    maven { url 'http://repo.comphenix.net/content/groups/public' }
-}
+package net.minecrell.serverlistplus.core;
 
-apply from: rootProject.file('gradle/shadow.gradle')
+import java.util.logging.Logger;
 
-ext {
-    pluginPackage = javaPackage + '.bukkit'
-}
+import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 
-dependencies {
-    compile project(':Core')
-    compile 'org.bukkit:bukkit:1.7.9-R0.1',
-            'com.comphenix.protocol:ProtocolLib:3.3.1'
-}
+import com.google.common.base.Preconditions;
 
-resourceTokens.put 'BukkitClass', pluginPackage + '.BukkitPlugin'
+/**
+ * Represents the core part of the ServerListPlus plugin.
+ */
+public class ServerListPlusCore {
+    private final ServerListPlusPlugin plugin;
 
-shadow {
-    artifactSet {
-        include 'ServerListPlus:Core'
+    public ServerListPlusCore(ServerListPlusPlugin plugin) {
+        this.plugin = Preconditions.checkNotNull(plugin, "plugin");
     }
 
-    relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverlistplus.core'
-        shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
+    public ServerListPlusPlugin getPlugin() {
+        return plugin;
     }
 
-    // TODO: Use the libraries included in Minecraft for now
-    relocation {
-        pattern = 'com.google.common'
-        shadedPattern = 'net.minecraft.util.com.google.common'
-    }
-    relocation {
-        pattern = 'com.google.gson'
-        shadedPattern = 'net.minecraft.util.com.google.gson'
+    public Logger getLogger() {
+        return this.getPlugin().getLogger();
     }
 }

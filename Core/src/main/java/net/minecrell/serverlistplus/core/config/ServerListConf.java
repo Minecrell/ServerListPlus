@@ -21,42 +21,23 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-repositories {
-    maven { url 'http://repo.bukkit.org/content/groups/public' }
-    maven { url 'http://repo.comphenix.net/content/groups/public' }
-}
+package net.minecrell.serverlistplus.core.config;
 
-apply from: rootProject.file('gradle/shadow.gradle')
+import java.util.List;
 
-ext {
-    pluginPackage = javaPackage + '.bukkit'
-}
+@Description("Server List configuration")
+public class ServerListConf {
+    public List<String> Description;
+    public PlayersConf Players;
+    public VersionConf Version;
 
-dependencies {
-    compile project(':Core')
-    compile 'org.bukkit:bukkit:1.7.9-R0.1',
-            'com.comphenix.protocol:ProtocolLib:3.3.1'
-}
-
-resourceTokens.put 'BukkitClass', pluginPackage + '.BukkitPlugin'
-
-shadow {
-    artifactSet {
-        include 'ServerListPlus:Core'
+    public static class PlayersConf {
+        public List<String> Hover;
+        public Integer Online, Max;
     }
 
-    relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverlistplus.core'
-        shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
-    }
-
-    // TODO: Use the libraries included in Minecraft for now
-    relocation {
-        pattern = 'com.google.common'
-        shadedPattern = 'net.minecraft.util.com.google.common'
-    }
-    relocation {
-        pattern = 'com.google.gson'
-        shadedPattern = 'net.minecraft.util.com.google.gson'
+    public static class VersionConf {
+        public String Name;
+        public Integer Protocol;
     }
 }

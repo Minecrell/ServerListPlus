@@ -1,4 +1,4 @@
-ServerPingPlus
+ServerListPlus
 ==============
 
-Customize your server ping!
+Customize your server list ping!
