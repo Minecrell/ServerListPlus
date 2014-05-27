@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.bungee;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 
@@ -30,7 +31,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
-
+        new ServerListPlusCore(this);
     }
 
     @Override

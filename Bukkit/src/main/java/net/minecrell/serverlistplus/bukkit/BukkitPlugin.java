@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 
@@ -30,6 +31,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
+        new ServerListPlusCore(this);
         this.getLogger().info(this.getDisplayName() + " enabled.");
     }
 

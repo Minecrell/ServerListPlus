@@ -34,9 +34,17 @@ public class ServerListPlusCore {
     private final ServerListPlusPlugin plugin;
     private final ServerListPlusLogger logger;
 
-    public ServerListPlusCore(ServerListPlusPlugin plugin) {
+    private final ConfigurationManager configManager;
+
+    public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = new ServerListPlusLogger(this);
+        this.configManager = new ConfigurationManager(this);
+        this.reload();
+    }
+
+    public void reload() throws ServerListPlusException {
+        configManager.reload();
     }
 
     public ServerListPlusLogger getLogger() {
@@ -45,5 +53,9 @@ public class ServerListPlusCore {
 
     public ServerListPlusPlugin getPlugin() {
         return plugin;
+    }
+
+    public ConfigurationManager getConf() {
+        return configManager;
     }
 }
