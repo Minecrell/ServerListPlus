@@ -23,29 +23,23 @@
 
 package net.minecrell.serverlistplus.core;
 
-import java.util.logging.Logger;
-
-import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
-
-import com.google.common.base.Preconditions;
-
 /**
- * Represents the core part of the ServerListPlus plugin.
+ * Thrown if an exception is handled within the ServerListPlus core that has already been logged.
  */
-public class ServerListPlusCore {
-    private final ServerListPlusPlugin plugin;
-    private final ServerListPlusLogger logger;
-
-    public ServerListPlusCore(ServerListPlusPlugin plugin) {
-        this.plugin = Preconditions.checkNotNull(plugin, "plugin");
-        this.logger = new ServerListPlusLogger(this);
+public abstract class ServerListPlusException extends RuntimeException {
+    protected ServerListPlusException() {
+        super();
     }
 
-    public ServerListPlusLogger getLogger() {
-        return logger;
+    protected ServerListPlusException(String message) {
+        super(message);
     }
 
-    public ServerListPlusPlugin getPlugin() {
-        return plugin;
+    protected ServerListPlusException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    protected ServerListPlusException(Throwable cause) {
+        super(cause);
     }
 }

@@ -21,31 +21,21 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core;
+package net.minecrell.serverlistplus.core.util;
 
-import java.util.logging.Logger;
+import java.util.Map;
 
-import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
+import com.google.common.collect.ImmutableCollection;
 
-import com.google.common.base.Preconditions;
+public interface InstanceStorage<T> {
+    ImmutableCollection<T> get();
+    Map<Class<? extends T>, T> getMap();
 
-/**
- * Represents the core part of the ServerListPlus plugin.
- */
-public class ServerListPlusCore {
-    private final ServerListPlusPlugin plugin;
-    private final ServerListPlusLogger logger;
+    <V extends T> V get(Class<V> clazz);
+    boolean has(Class<? extends T> clazz);
+    <V extends T> void set(Class<V> clazz, V instance);
+    void setUnsafe(Class<? extends T> clazz, T instance);
+    boolean remove(Class<? extends T> clazz);
 
-    public ServerListPlusCore(ServerListPlusPlugin plugin) {
-        this.plugin = Preconditions.checkNotNull(plugin, "plugin");
-        this.logger = new ServerListPlusLogger(this);
-    }
-
-    public ServerListPlusLogger getLogger() {
-        return logger;
-    }
-
-    public ServerListPlusPlugin getPlugin() {
-        return plugin;
-    }
+    int count();
 }

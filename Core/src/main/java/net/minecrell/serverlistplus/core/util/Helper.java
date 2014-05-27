@@ -24,12 +24,28 @@
 package net.minecrell.serverlistplus.core.util;
 
 import java.util.Collection;
+import java.util.Map;
+
+import com.google.common.collect.Iterables;
 
 public final class Helper {
     private Helper() {}
 
     public static boolean nullOrEmpty(Object[] array) {
         return array == null || array.length == 0;
+    }
+
+    public static boolean nullOrEmpty(Iterable<?> iterable) {
+        return iterable == null || Iterables.isEmpty(iterable);
+    }
+
+    public static <K, V, T extends Map<K, V>> int mergeMaps(T main, Map<K, V> merge) {
+        int counter = 0;
+        for (Map.Entry<K, V> entry : merge.entrySet())
+            if (!main.containsKey(entry.getKey())) {
+                main.put(entry.getKey(), entry.getValue()); counter++;
+            }
+        return counter;
     }
 
     public static String[] toStringArray(Collection<String> c) {

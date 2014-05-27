@@ -23,29 +23,12 @@
 
 package net.minecrell.serverlistplus.core;
 
-import java.util.logging.Logger;
+import net.minecrell.serverlistplus.core.util.CoreManager;
 
-import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
-
-import com.google.common.base.Preconditions;
-
-/**
- * Represents the core part of the ServerListPlus plugin.
- */
-public class ServerListPlusCore {
-    private final ServerListPlusPlugin plugin;
-    private final ServerListPlusLogger logger;
-
-    public ServerListPlusCore(ServerListPlusPlugin plugin) {
-        this.plugin = Preconditions.checkNotNull(plugin, "plugin");
-        this.logger = new ServerListPlusLogger(this);
+public class ServerStatusManager extends CoreManager {
+    public ServerStatusManager(ServerListPlusCore core) {
+        super(core);
     }
 
-    public ServerListPlusLogger getLogger() {
-        return logger;
-    }
 
-    public ServerListPlusPlugin getPlugin() {
-        return plugin;
-    }
 }

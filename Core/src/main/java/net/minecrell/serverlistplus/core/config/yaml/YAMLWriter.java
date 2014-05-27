@@ -24,11 +24,18 @@
 package net.minecrell.serverlistplus.core.config.yaml;
 
 import java.io.IOException;
+import java.io.Writer;
+
+import net.minecrell.serverlistplus.core.config.help.ConfHelper;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
+
+import org.yaml.snakeyaml.TypeDescription;
+import org.yaml.snakeyaml.nodes.Tag;
 
 public class YAMLWriter {
     public static final String COMMENT_PREFIX = "# ";
@@ -38,17 +45,49 @@ public class YAMLWriter {
     protected final String newLine;
     protected final Joiner commentWriter;
 
+    protected final Iterable<String> header;
+
     public YAMLWriter(SnakeYAML snakeYAML) {
+        this(snakeYAML, null);
+    }
+
+    public YAMLWriter(SnakeYAML snakeYAML, Iterable<String> header) {
         this.snakeYAML = Preconditions.checkNotNull(snakeYAML, "snakeYAML");
         this.newLine = snakeYAML.getDumperOptions().getLineBreak().getString();
         this.commentWriter = Joiner.on(newLine + COMMENT_PREFIX);
+        this.header = header;
     }
 
     public SnakeYAML snakeYAML() {
         return snakeYAML;
     }
 
+    public Iterable<String> getHeader() {
+        return header;
+    }
 
+    public void registerAlias(Class<?> clazz, String alias) {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(alias), "empty alias");
+        Tag tag = new Tag("!" + alias);
+        snakeYAML.getRepresenter().addClassTag(clazz, tag);
+        snakeYAML.getConstructor().addTypeDescription(new TypeDescription(clazz, tag));
+    }
+
+    public <A extends Appendable> A newLine(A writer) throws IOException {
+        writer.append(newLine); return writer;
+    }
+
+    public void writeHeader(Appendable appendable) throws IOException {
+        if (!Helper.nullOrEmpty(header)) commentWriter.appendTo(appendable, header);
+    }
+
+    public void writeDocumented(Writer writer, Object conf) throws IOException {
+        // Write configuration description
+        writeComments(writer, ConfHelper.getDescription(conf));
+        writer.append(newLine).append(DOCUMENT_START);
+        snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
+        writer.append(newLine);
+    }
 
     private void writeComments(Appendable appendable, String... comments) throws IOException {
         if (!Helper.nullOrEmpty(comments))

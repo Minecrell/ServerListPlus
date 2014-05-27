@@ -23,9 +23,8 @@
 
 package net.minecrell.serverlistplus.core.util;
 
-import java.util.logging.Logger;
-
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.ServerListPlusLogger;
 
 import com.google.common.base.Preconditions;
 
@@ -40,7 +39,7 @@ public abstract class CoreManager {
         return core;
     }
 
-    protected Logger getLogger() {
+    protected ServerListPlusLogger getLogger() {
         return core.getLogger();
     }
 }
