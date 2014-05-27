@@ -61,7 +61,7 @@ public final class ServerListPlusYAML {
         try {
             header = IOUtil.readLines(core.getClass().getResourceAsStream(HEADER_FILENAME));
         } catch (IOException e) {
-            core.getLogger().log(Level.WARNING, "Unable to read configuration header!", e);
+            core.getLogger().log(Level.WARNING, e, "Unable to read configuration header!");
         }
 
         return new YAMLWriter(new SnakeYAML(dumperOptions, constructor, representer, outdatedYaml), header);
