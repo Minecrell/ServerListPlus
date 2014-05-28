@@ -26,6 +26,8 @@ package net.minecrell.serverlistplus.core.plugin;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+
 /**
  * Represents a plugin container running the ServerListPlus core.
  */
@@ -33,4 +35,7 @@ public interface ServerListPlusPlugin {
     Logger getLogger();
     ServerType getServerType();
     Path getPluginFolder();
+
+    void initialize(ServerListPlusCore core);
+    void configurationReloaded(ServerListPlusCore core);
 }

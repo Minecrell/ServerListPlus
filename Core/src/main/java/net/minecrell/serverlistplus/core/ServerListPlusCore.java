@@ -48,6 +48,7 @@ public class ServerListPlusCore {
         configManager.getDefaults().set(ServerStatusConf.class, ConfExamples.forServerStatus());
         configManager.getYAML().registerAlias(ServerStatusConf.class, "Status");
 
+        this.getPlugin().initialize(this);
         this.reload();
 
         this.getLogger().info("ServerListPlus has been successfully initialized.");
@@ -55,6 +56,7 @@ public class ServerListPlusCore {
 
     public void reload() throws ServerListPlusException {
         configManager.reload();
+        this.getPlugin().configurationReloaded(this);
     }
 
     public ServerListPlusLogger getLogger() {

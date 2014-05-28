@@ -47,4 +47,14 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     public ServerType getServerType() {
         return ServerType.BUNGEE;
     }
+
+    @Override
+    public void initialize(ServerListPlusCore core) {
+
+    }
+
+    @Override
+    public void configurationReloaded(ServerListPlusCore core) {
+
+    }
 }

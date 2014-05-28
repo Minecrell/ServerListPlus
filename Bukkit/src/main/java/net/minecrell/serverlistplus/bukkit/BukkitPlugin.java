@@ -56,4 +56,14 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     public ServerType getServerType() {
         return ServerType.BUKKIT;
     }
+
+    @Override
+    public void initialize(ServerListPlusCore core) {
+
+    }
+
+    @Override
+    public void configurationReloaded(ServerListPlusCore core) {
+
+    }
 }
