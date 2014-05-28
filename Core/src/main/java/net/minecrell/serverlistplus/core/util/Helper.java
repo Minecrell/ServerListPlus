@@ -24,7 +24,9 @@
 package net.minecrell.serverlistplus.core.util;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -58,5 +60,9 @@ public final class Helper {
 
     public static String[] toStringArray(Collection<String> c) {
         return c != null ? c.toArray(new String[c.size()]) : null;
+    }
+
+    public static <T> T nextEntry(Random random, List<T> list) {
+        return list.get(random.nextInt(list.size()));
     }
 }

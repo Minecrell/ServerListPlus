@@ -23,12 +23,103 @@
 
 package net.minecrell.serverlistplus.core;
 
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
+
+import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.util.CoreManager;
+import net.minecrell.serverlistplus.core.util.Helper;
+
+import com.google.common.collect.ImmutableList;
 
 public class ServerStatusManager extends CoreManager {
+    private static final Pattern PLAYER_PATTERN = Pattern.compile("%player%", Pattern.LITERAL);
+
+    private static class ServerStatus {
+        private final ImmutableList<String> description, playerHover;
+
+        private ServerStatus() {
+            this(null, null);
+        }
+
+        private ServerStatus(ImmutableList<String> description, ImmutableList<String> playerHover) {
+            this.description = description;
+            this.playerHover = playerHover;
+        }
+    }
+
+    private ServerStatus def, personalized;
+
     public ServerStatusManager(ServerListPlusCore core) {
         super(core);
     }
 
+    public void reload() {
+        ServerStatusConf conf = core.getConf().getStorage().get(ServerStatusConf.class);
+        if (conf != null) {
+            this.def = reload(conf.Default);
+            this.personalized = reload(conf.Personalized);
+        } else {
+            this.def = this.personalized = new ServerStatus();
+        }
+    }
 
+    private ServerStatus reload(ServerStatusConf.StatusConf conf) {
+        if (conf != null) {
+            String[] descriptions = null;
+            List<String> confDescriptions = conf.Description;
+            if (!Helper.nullOrEmpty(confDescriptions)) {
+                descriptions = new String[conf.Description.size()];
+                for (int i = 0; i < descriptions.length; i++)
+                    descriptions[i] = core.getPlugin().colorize(confDescriptions.get(i));
+            }
+
+            String[] playerHover = null;
+            if (conf.Players != null) {
+                List<String> confPlayerHover = conf.Players.Hover;
+                if (!Helper.nullOrEmpty(confPlayerHover)) {
+                    playerHover = new String[confPlayerHover.size()];
+                    for (int i = 0; i < playerHover.length; i++) {
+                        playerHover[i] = core.getPlugin().colorize(confPlayerHover.get(i));
+                        // Fix empty messages
+                        if (playerHover[i].trim().isEmpty()) playerHover[i] = "\u00A7r";
+                    }
+                }
+            }
+
+            return new ServerStatus(descriptions != null ? ImmutableList.copyOf(descriptions) : null,
+                    playerHover != null ? ImmutableList.copyOf(playerHover) : null);
+        } else return new ServerStatus();
+    }
+
+    private static String personalize(String s, String playerName) {
+        return PLAYER_PATTERN.matcher(s).replaceAll(playerName);
+    }
+
+    public boolean hasDescription() {
+        return def.description != null || personalized.description != null;
+    }
+
+    public String getDescription() {
+        return def.description != null ? Helper.nextEntry(ThreadLocalRandom.current(), def.description) : null;
+    }
+
+    public String getDescription(String playerName) {
+        return personalized.description != null ? personalize(Helper.nextEntry(ThreadLocalRandom.current(),
+                personalized.description), playerName) : this.getDescription();
+    }
+
+    public boolean hasPlayerHover() {
+        return def.playerHover != null || personalized.playerHover != null;
+    }
+
+    public String getPlayerHover() {
+        return def.playerHover != null ? Helper.nextEntry(ThreadLocalRandom.current(), def.playerHover) : null;
+    }
+
+    public String getPlayerHover(String playerName) {
+        return personalized.playerHover != null ? personalize(Helper.nextEntry(ThreadLocalRandom.current(),
+                personalized.playerHover), playerName) : this.getPlayerHover();
+    }
 }

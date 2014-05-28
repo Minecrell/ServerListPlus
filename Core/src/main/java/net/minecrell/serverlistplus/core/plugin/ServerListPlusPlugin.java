@@ -36,6 +36,8 @@ public interface ServerListPlusPlugin {
     ServerType getServerType();
     Path getPluginFolder();
 
+    String colorize(String s);
+
     void initialize(ServerListPlusCore core);
     void configurationReloaded(ServerListPlusCore core);
 }
