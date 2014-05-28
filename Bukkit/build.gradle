@@ -29,6 +29,8 @@ repositories {
 apply from: rootProject.file('gradle/shadow.gradle')
 
 ext {
+    // TODO: Better fix?
+    resourceTokens = new LinkedHashMap<String, String>(resourceTokens)
     pluginPackage = javaPackage + '.bukkit'
 }
 
@@ -38,7 +40,7 @@ dependencies {
             'com.comphenix.protocol:ProtocolLib:3.3.1'
 }
 
-resourceTokens.put 'BukkitClass', pluginPackage + '.BukkitPlugin'
+resourceTokens.put 'PluginClass', pluginPackage + '.BukkitPlugin'
 
 shadow {
     artifactSet {
