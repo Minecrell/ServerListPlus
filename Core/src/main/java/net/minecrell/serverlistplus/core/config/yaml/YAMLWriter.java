@@ -29,7 +29,6 @@ import java.io.Writer;
 import net.minecrell.serverlistplus.core.config.help.ConfHelper;
 import net.minecrell.serverlistplus.core.util.Helper;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
@@ -43,18 +42,16 @@ public class YAMLWriter {
 
     protected final SnakeYAML snakeYAML;
     protected final String newLine;
-    protected final Joiner commentWriter;
 
-    protected final Iterable<String> header;
+    protected final String[] header;
 
     public YAMLWriter(SnakeYAML snakeYAML) {
         this(snakeYAML, null);
     }
 
-    public YAMLWriter(SnakeYAML snakeYAML, Iterable<String> header) {
+    public YAMLWriter(SnakeYAML snakeYAML, String[] header) {
         this.snakeYAML = Preconditions.checkNotNull(snakeYAML, "snakeYAML");
         this.newLine = snakeYAML.getDumperOptions().getLineBreak().getString();
-        this.commentWriter = Joiner.on(newLine + COMMENT_PREFIX);
         this.header = header;
     }
 
@@ -62,7 +59,7 @@ public class YAMLWriter {
         return snakeYAML;
     }
 
-    public Iterable<String> getHeader() {
+    public String[] getHeader() {
         return header;
     }
 
@@ -78,7 +75,7 @@ public class YAMLWriter {
     }
 
     public void writeHeader(Appendable appendable) throws IOException {
-        if (!Helper.nullOrEmpty(header)) commentWriter.appendTo(appendable, header);
+        writeComments(appendable, header);
     }
 
     public void writeDocumented(Writer writer, Object conf) throws IOException {
@@ -91,6 +88,7 @@ public class YAMLWriter {
 
     private void writeComments(Appendable appendable, String... comments) throws IOException {
         if (!Helper.nullOrEmpty(comments))
-            commentWriter.appendTo(appendable, Iterators.forArray(comments)).append(newLine);
+            for (String line : comments)
+                appendable.append(COMMENT_PREFIX).append(line).append(newLine);
     }
 }

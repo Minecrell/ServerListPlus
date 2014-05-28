@@ -57,9 +57,9 @@ public final class ServerListPlusYAML {
                     "working incorrectly.");
         }
 
-        Iterable<String> header = null;
+        String[] header = null;
         try {
-            header = IOUtil.readLines(core.getClass().getResourceAsStream(HEADER_FILENAME));
+            header = IOUtil.readLineArray(core.getClass().getClassLoader().getResourceAsStream(HEADER_FILENAME));
         } catch (IOException e) {
             core.getLogger().log(Level.WARNING, e, "Unable to read configuration header!");
         }

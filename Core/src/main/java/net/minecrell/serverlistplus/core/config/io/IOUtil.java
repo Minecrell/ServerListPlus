@@ -37,20 +37,18 @@ import java.util.List;
 
 import net.minecrell.serverlistplus.core.util.Helper;
 
-import com.google.common.collect.ImmutableList;
-
 public final class IOUtil {
     private IOUtil() {}
 
     public static final Charset CHARSET = StandardCharsets.UTF_8;
 
-    public static ImmutableList<String> readLines(InputStream in) throws IOException {
+    public static List<String> readLines(InputStream in) throws IOException {
         if (in == null) return null;
         BufferedReader reader = newBufferedReader(in);
         String line; List<String> result = new ArrayList<>();
         while ((line = reader.readLine()) != null)
             result.add(line);
-        return ImmutableList.copyOf(result);
+        return result;
     }
 
     public static BufferedReader newBufferedReader(InputStream in) {
