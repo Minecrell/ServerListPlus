@@ -85,12 +85,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (status.hasChanges()) {
             if (pingListener == null) {
                 this.registerListener(this.pingListener = new PingListener());
-                this.getLogger().info("Enabled proxy ping listener.");
+                this.getLogger().info("Registered proxy ping listener.");
             }
         } else if (pingListener != null) {
             this.unregisterListener(pingListener);
             this.pingListener = null;
-            this.getLogger().info("Disabled proxy ping listener.");
+            this.getLogger().info("Unregistered proxy ping listener.");
         }
     }
 }

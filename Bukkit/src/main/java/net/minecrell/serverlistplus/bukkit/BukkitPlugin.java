@@ -113,23 +113,23 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         if (status.hasDescription()) {
             if (pingListener == null) {
                 this.registerListener(this.pingListener = new PingEventListener());
-                this.getLogger().info("Enabled ping event listener.");
+                this.getLogger().info("Registered server ping listener.");
             }
         } else if (pingListener != null) {
             this.unregisterListener(pingListener);
             this.pingListener = null;
-            this.getLogger().info("Disabled ping event listener.");
+            this.getLogger().info("Unregistered server ping listener.");
         }
 
         if (status.hasPlayerHover()) {
             if (packetListener == null) {
                 ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener = new StatusPacketListener());
-                this.getLogger().info("Enabled status packet listener.");
+                this.getLogger().info("Registered status packet listener.");
             }
         } else if (packetListener != null) {
             ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
             this.packetListener = null;
-            this.getLogger().info("Disabled status packet listener.");
+            this.getLogger().info("Unregistered status packet listener.");
         }
     }
 
