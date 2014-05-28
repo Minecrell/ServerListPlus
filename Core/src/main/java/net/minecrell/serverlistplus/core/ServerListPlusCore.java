@@ -59,7 +59,7 @@ public class ServerListPlusCore {
     public void reload() throws ServerListPlusException {
         configManager.reload();
         statusManager.reload();
-        this.getPlugin().statusReloaded(statusManager);
+        this.getPlugin().statusChanged(statusManager);
     }
 
     public ServerListPlusLogger getLogger() {

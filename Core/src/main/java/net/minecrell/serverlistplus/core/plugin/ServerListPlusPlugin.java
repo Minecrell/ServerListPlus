@@ -40,5 +40,5 @@ public interface ServerListPlusPlugin {
     String colorize(String s);
 
     void initialize(ServerListPlusCore core);
-    void statusReloaded(ServerStatusManager status);
+    void statusChanged(ServerStatusManager status);
 }

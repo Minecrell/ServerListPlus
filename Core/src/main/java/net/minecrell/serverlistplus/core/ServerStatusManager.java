@@ -24,6 +24,7 @@
 package net.minecrell.serverlistplus.core;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -35,6 +36,8 @@ import com.google.common.collect.ImmutableList;
 
 public class ServerStatusManager extends CoreManager {
     private static final Pattern PLAYER_PATTERN = Pattern.compile("%player%", Pattern.LITERAL);
+    public static final String EMPTY_ID = "0-0-0-0-0";
+    public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
 
     private static class ServerStatus {
         private final ImmutableList<String> description, playerHover;
@@ -80,11 +83,8 @@ public class ServerStatusManager extends CoreManager {
                 List<String> confPlayerHover = conf.Players.Hover;
                 if (!Helper.nullOrEmpty(confPlayerHover)) {
                     playerHover = new String[confPlayerHover.size()];
-                    for (int i = 0; i < playerHover.length; i++) {
+                    for (int i = 0; i < playerHover.length; i++)
                         playerHover[i] = core.getPlugin().colorize(confPlayerHover.get(i));
-                        // Fix empty messages
-                        if (playerHover[i].trim().isEmpty()) playerHover[i] = "\u00A7r";
-                    }
                 }
             }
 
@@ -95,6 +95,10 @@ public class ServerStatusManager extends CoreManager {
 
     private static String personalize(String s, String playerName) {
         return PLAYER_PATTERN.matcher(s).replaceAll(playerName);
+    }
+
+    public boolean hasChanges() {
+        return hasDescription() || hasPlayerHover();
     }
 
     public boolean hasDescription() {

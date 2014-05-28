@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
@@ -32,13 +33,25 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 
 import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerListPingEvent;
+
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
+    private ServerListPlusCore core;
+    private PingEventListener pingListener;
+    private StatusPacketListener packetListener;
 
     @Override
     public void onEnable() {
         try {
-            new ServerListPlusCore(this);
+            this.core = new ServerListPlusCore(this);
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!");
             this.disablePlugin(); return;
@@ -53,6 +66,31 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void onDisable() {
         this.getLogger().info(this.getDisplayName() + " disabled.");
+    }
+
+    public final class PingEventListener implements Listener {
+        private PingEventListener() {}
+
+        @EventHandler
+        public void onServerListPing(ServerListPingEvent event) {
+            String description = core.getStatus().getDescription();
+            if (description != null) event.setMotd(description);
+        }
+    }
+
+    public final class StatusPacketListener extends PacketAdapter {
+        public StatusPacketListener() {
+            super(PacketAdapter.params(BukkitPlugin.this, PacketType.Status.Server.OUT_SERVER_INFO).optionAsync());
+        }
+
+        @Override // Server status packet
+        public void onPacketSending(PacketEvent event) {
+            String playerHover = core.getStatus().getPlayerHover();
+            if (playerHover != null) {
+                event.getPacket().getServerPings().read(0).setPlayers(
+                        Arrays.asList(new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, playerHover)));
+            }
+        }
     }
 
     @Override
@@ -71,8 +109,28 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void statusReloaded(ServerStatusManager status) {
+    public void statusChanged(ServerStatusManager status) {
+        if (status.hasDescription()) {
+            if (pingListener == null) {
+                this.registerListener(this.pingListener = new PingEventListener());
+                this.getLogger().info("Enabled ping event listener.");
+            }
+        } else if (pingListener != null) {
+            this.unregisterListener(pingListener);
+            this.pingListener = null;
+            this.getLogger().info("Disabled ping event listener.");
+        }
 
+        if (status.hasPlayerHover()) {
+            if (packetListener == null) {
+                ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener = new StatusPacketListener());
+                this.getLogger().info("Enabled status packet listener.");
+            }
+        } else if (packetListener != null) {
+            ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
+            this.packetListener = null;
+            this.getLogger().info("Disabled status packet listener.");
+        }
     }
 
 

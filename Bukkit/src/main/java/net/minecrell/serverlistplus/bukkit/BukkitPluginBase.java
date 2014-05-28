@@ -25,6 +25,8 @@ package net.minecrell.serverlistplus.bukkit;
 
 import java.nio.file.Path;
 
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class BukkitPluginBase extends JavaPlugin {
@@ -42,5 +44,13 @@ public abstract class BukkitPluginBase extends JavaPlugin {
 
     protected void disablePlugin() {
         this.getServer().getPluginManager().disablePlugin(this);
+    }
+
+    protected void registerListener(Listener listener) {
+        this.getServer().getPluginManager().registerEvents(listener, this);
+    }
+
+    protected void unregisterListener(Listener listener) {
+        HandlerList.unregisterAll(listener);
     }
 }

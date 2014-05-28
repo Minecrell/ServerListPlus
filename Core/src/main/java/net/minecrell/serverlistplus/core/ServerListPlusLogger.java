@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 public class ServerListPlusLogger {
     private static final Level DEFAULT_EXCEPTION_LEVEL = Level.SEVERE;
+    private static final String PREFIX = "[Core] ";
 
     private final ServerListPlusCore core;
 
@@ -45,7 +46,7 @@ public class ServerListPlusLogger {
     }
 
     public void log(Level level, String message) {
-        this.getLogger().log(level, message);
+        this.getLogger().log(level, PREFIX + message);
     }
 
     public void logF(Level level, String message, Object... args) {
@@ -62,7 +63,7 @@ public class ServerListPlusLogger {
 
     public boolean log(Level level, Exception e, String message) {
         if (!checkException(e)) return false;
-        this.getLogger().log(level, message, e); return true;
+        this.getLogger().log(level, PREFIX + message, e); return true;
     }
 
     public boolean logF(Level level, Exception e, String message, Object... args) {

@@ -25,6 +25,7 @@ package net.minecrell.serverlistplus.bungee;
 
 import java.nio.file.Path;
 
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public abstract class BungeePluginBase extends Plugin {
@@ -43,5 +44,13 @@ public abstract class BungeePluginBase extends Plugin {
 
     public Path getPluginFolder() {
         return this.getDataFolder().toPath();
+    }
+
+    protected void registerListener(Listener listener) {
+        this.getProxy().getPluginManager().registerListener(this, listener);
+    }
+
+    protected void unregisterListener(Listener listener) {
+        this.getProxy().getPluginManager().unregisterListener(listener);
     }
 }

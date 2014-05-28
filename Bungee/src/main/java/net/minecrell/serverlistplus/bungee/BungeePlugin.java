@@ -32,17 +32,36 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.event.ProxyPingEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
+    private ServerListPlusCore core;
+    private PingListener pingListener;
 
     @Override
     public void onEnable() {
         try {
-            new ServerListPlusCore(this);
+            this.core = new ServerListPlusCore(this);
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!"); return;
         } catch (Exception e) {
             this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the core.", e); return;
+        }
+    }
+
+    public final class PingListener implements Listener {
+        private PingListener() {}
+
+        @EventHandler
+        public void onProxyPing(ProxyPingEvent event) {
+            String tmp = core.getStatus().getDescription();
+            if (tmp != null) event.getResponse().setDescription(tmp);
+            tmp = core.getStatus().getPlayerHover();
+            if (tmp != null) event.getResponse().getPlayers().setSample(new ServerPing.PlayerInfo[] {
+                    new ServerPing.PlayerInfo(tmp, ServerStatusManager.EMPTY_ID) });
         }
     }
 
@@ -62,7 +81,16 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void statusReloaded(ServerStatusManager status) {
-
+    public void statusChanged(ServerStatusManager status) {
+        if (status.hasChanges()) {
+            if (pingListener == null) {
+                this.registerListener(this.pingListener = new PingListener());
+                this.getLogger().info("Enabled proxy ping listener.");
+            }
+        } else if (pingListener != null) {
+            this.unregisterListener(pingListener);
+            this.pingListener = null;
+            this.getLogger().info("Disabled proxy ping listener.");
+        }
     }
 }
