@@ -52,8 +52,6 @@ subprojects {
     configurations { provided }
     sourceSets { main { compileClasspath += configurations.provided } }
 
-    jar.baseName = rootProject.name + name
-
     repositories { mavenCentral() }
 }
 
