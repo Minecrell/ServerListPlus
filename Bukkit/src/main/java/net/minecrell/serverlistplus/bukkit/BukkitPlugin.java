@@ -23,7 +23,10 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
+import java.util.logging.Level;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 
@@ -31,7 +34,16 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
-        new ServerListPlusCore(this);
+        try {
+            new ServerListPlusCore(this);
+        } catch (ServerListPlusException e) {
+            this.getLogger().info("Please fix the error before restarting the server!");
+            this.disablePlugin(); return;
+        } catch (Exception e) {
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the core!", e);
+            this.disablePlugin(); return;
+        }
+
         this.getLogger().info(this.getDisplayName() + " enabled.");
     }
 

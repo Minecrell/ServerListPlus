@@ -81,7 +81,7 @@ public class YAMLWriter {
     public void writeDocumented(Writer writer, Object conf) throws IOException {
         // Write configuration description
         writeComments(writer, ConfHelper.getDescription(conf));
-        writer.append(newLine).append(DOCUMENT_START);
+        writer.append(DOCUMENT_START);
         snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
         writer.append(newLine);
     }

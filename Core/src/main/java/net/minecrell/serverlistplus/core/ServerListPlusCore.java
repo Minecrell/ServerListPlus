@@ -23,6 +23,8 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.config.ServerStatusConf;
+import net.minecrell.serverlistplus.core.config.help.ConfExamples;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 
 import com.google.common.base.Preconditions;
@@ -39,8 +41,16 @@ public class ServerListPlusCore {
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = new ServerListPlusLogger(this);
+
+        this.getLogger().info("Initializing...");
+
         this.configManager = new ConfigurationManager(this);
+        configManager.getDefaults().set(ServerStatusConf.class, ConfExamples.forServerStatus());
+        configManager.getYAML().registerAlias(ServerStatusConf.class, "Status");
+
         this.reload();
+
+        this.getLogger().info("ServerListPlus has been successfully initialized.");
     }
 
     public void reload() throws ServerListPlusException {

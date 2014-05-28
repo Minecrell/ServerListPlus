@@ -149,11 +149,10 @@ public class ConfigurationManager extends CoreManager {
             // TODO: Stupid fix for CraftBukkit?
             try (BufferedWriter writer = IOUtil.newBufferedWriter(configPath)) {
                 yaml.writeHeader(writer);
-                yaml.newLine(writer); yaml.newLine(writer);
+                yaml.newLine(writer);
 
                 for (Object config : storage.get()) {
                     yaml.writeDocumented(writer, config);
-                    yaml.newLine(writer);
                 }
             }
 

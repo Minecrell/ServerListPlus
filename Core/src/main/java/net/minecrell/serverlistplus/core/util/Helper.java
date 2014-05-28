@@ -26,10 +26,18 @@ package net.minecrell.serverlistplus.core.util;
 import java.util.Collection;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 
 public final class Helper {
     private Helper() {}
+
+    private final static Joiner NEWLINE_JOINER = Joiner.on('\n');
+
+    public static String lines(String... lines) {
+        return NEWLINE_JOINER.join(Iterators.forArray(lines));
+    }
 
     public static boolean nullOrEmpty(Object[] array) {
         return array == null || array.length == 0;
