@@ -23,14 +23,14 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
-import java.util.Arrays;
-import java.util.logging.Level;
-
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+
+import java.util.Arrays;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;

@@ -23,11 +23,11 @@
 
 package net.minecrell.serverlistplus.core.plugin;
 
-import java.nio.file.Path;
-import java.util.logging.Logger;
-
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
+
+import java.nio.file.Path;
+import java.util.logging.Logger;
 
 /**
  * Represents a plugin container running the ServerListPlus core.

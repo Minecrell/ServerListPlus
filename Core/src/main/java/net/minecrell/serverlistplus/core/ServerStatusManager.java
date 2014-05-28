@@ -23,14 +23,14 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.config.ServerStatusConf;
+import net.minecrell.serverlistplus.core.util.CoreManager;
+import net.minecrell.serverlistplus.core.util.Helper;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
-
-import net.minecrell.serverlistplus.core.config.ServerStatusConf;
-import net.minecrell.serverlistplus.core.util.CoreManager;
-import net.minecrell.serverlistplus.core.util.Helper;
 
 import com.google.common.collect.ImmutableList;
 

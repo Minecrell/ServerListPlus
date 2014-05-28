@@ -23,10 +23,10 @@
 
 package net.minecrell.serverlistplus.core.config.help;
 
-import java.util.Arrays;
-
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.util.Helper;
+
+import java.util.Arrays;
 
 public final class ConfExamples {
     private ConfExamples() {}

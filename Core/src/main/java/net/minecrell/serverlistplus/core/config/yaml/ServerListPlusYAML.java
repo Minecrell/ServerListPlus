@@ -23,11 +23,11 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import java.io.IOException;
-import java.util.logging.Level;
-
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
+
+import java.io.IOException;
+import java.util.logging.Level;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.constructor.Constructor;

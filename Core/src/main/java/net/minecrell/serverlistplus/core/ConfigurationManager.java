@@ -23,6 +23,14 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.config.io.IOUtil;
+import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
+import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
+import net.minecrell.serverlistplus.core.util.ClassToInstanceStorage;
+import net.minecrell.serverlistplus.core.util.CoreManager;
+import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.util.InstanceStorage;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -31,14 +39,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 import java.util.logging.Level;
-
-import net.minecrell.serverlistplus.core.config.io.IOUtil;
-import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
-import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
-import net.minecrell.serverlistplus.core.util.ClassToInstanceStorage;
-import net.minecrell.serverlistplus.core.util.CoreManager;
-import net.minecrell.serverlistplus.core.util.Helper;
-import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import org.yaml.snakeyaml.error.YAMLException;
 

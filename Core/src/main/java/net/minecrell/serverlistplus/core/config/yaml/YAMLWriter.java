@@ -23,11 +23,11 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import net.minecrell.serverlistplus.core.config.help.ConfHelper;
 import net.minecrell.serverlistplus.core.util.Helper;
+
+import java.io.IOException;
+import java.io.Writer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

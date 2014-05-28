@@ -23,6 +23,8 @@
 
 package net.minecrell.serverlistplus.core.config.io;
 
+import net.minecrell.serverlistplus.core.util.Helper;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -34,8 +36,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecrell.serverlistplus.core.util.Helper;
 
 public final class IOUtil {
     private IOUtil() {}
