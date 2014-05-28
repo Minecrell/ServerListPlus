@@ -42,6 +42,11 @@ dependencies {
 
 resourceTokens.put 'PluginClass', pluginPackage + '.BukkitPlugin'
 
+processResources {
+    include 'plugin.yml'
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
+}
+
 shadow {
     artifactSet {
         include 'ServerListPlus:Core'

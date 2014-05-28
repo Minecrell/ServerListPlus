@@ -27,6 +27,11 @@ dependencies {
             'com.google.code.gson:gson:2.2.4'
 }
 
+processResources {
+    include 'HEADER'
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
+}
+
 processResources << {
     copy {
         from rootProject.projectDir

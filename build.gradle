@@ -53,10 +53,6 @@ subprojects {
     sourceSets { main { compileClasspath += configurations.provided } }
 
     repositories { mavenCentral() }
-
-    processResources {
-        filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
-    }
 }
 
 task wrapper(type: Wrapper) {

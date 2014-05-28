@@ -41,6 +41,11 @@ dependencies {
 
 resourceTokens.put 'PluginClass', pluginPackage + '.BungeePlugin'
 
+processResources {
+    include 'plugin.yml'
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
+}
+
 processResources << {
     copy {
         from destinationDir
