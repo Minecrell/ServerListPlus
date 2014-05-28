@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.ServerStatusManager;
 
 /**
  * Represents a plugin container running the ServerListPlus core.
@@ -39,5 +40,5 @@ public interface ServerListPlusPlugin {
     String colorize(String s);
 
     void initialize(ServerListPlusCore core);
-    void configurationReloaded(ServerListPlusCore core);
+    void statusReloaded(ServerStatusManager status);
 }

@@ -27,8 +27,11 @@ import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
+import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+
+import org.bukkit.ChatColor;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
 
@@ -58,12 +61,19 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public String colorize(String s) {
+        return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    @Override
     public void initialize(ServerListPlusCore core) {
 
     }
 
     @Override
-    public void configurationReloaded(ServerListPlusCore core) {
+    public void statusReloaded(ServerStatusManager status) {
 
     }
+
+
 }

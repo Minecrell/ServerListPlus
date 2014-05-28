@@ -37,6 +37,7 @@ public class ServerListPlusCore {
     private final ServerListPlusLogger logger;
 
     private final ConfigurationManager configManager;
+    private final ServerStatusManager statusManager;
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
@@ -44,6 +45,7 @@ public class ServerListPlusCore {
 
         this.getLogger().info("Initializing...");
 
+        this.statusManager = new ServerStatusManager(this);
         this.configManager = new ConfigurationManager(this);
         configManager.getDefaults().set(ServerStatusConf.class, ConfExamples.forServerStatus());
         configManager.getYAML().registerAlias(ServerStatusConf.class, "Status");
@@ -56,7 +58,8 @@ public class ServerListPlusCore {
 
     public void reload() throws ServerListPlusException {
         configManager.reload();
-        this.getPlugin().configurationReloaded(this);
+        statusManager.reload();
+        this.getPlugin().statusReloaded(statusManager);
     }
 
     public ServerListPlusLogger getLogger() {
@@ -69,5 +72,9 @@ public class ServerListPlusCore {
 
     public ConfigurationManager getConf() {
         return configManager;
+    }
+
+    public ServerStatusManager getStatus() {
+        return statusManager;
     }
 }
