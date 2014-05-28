@@ -44,11 +44,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void onDisable() {
-
-    }
-
-    @Override
     public ServerType getServerType() {
         return ServerType.BUNGEE;
     }
