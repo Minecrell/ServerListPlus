@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
+import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
 import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
 import net.minecrell.serverlistplus.core.util.ClassToInstanceStorage;
 import net.minecrell.serverlistplus.core.util.CoreManager;
@@ -52,6 +53,7 @@ public class ConfigurationManager extends CoreManager {
 
     public ConfigurationManager(ServerListPlusCore core) {
         super(core);
+        this.yaml = ServerListPlusYAML.createWriter(core);
     }
 
     protected Path getPluginFolder() {
