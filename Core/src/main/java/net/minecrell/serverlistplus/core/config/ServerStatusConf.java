@@ -32,7 +32,7 @@ import java.util.List;
         "Currently, you can change the status description (MotD) and add custom messages",
         "when a player hovers the player amount in the server list.",
         " - Add multiple entries for random messages.",
-        " - Save the file in valid UTF-8 format for special characters.",
+        " - Save the file with valid UTF-8 encoding for special characters.",
         " - Color codes are possible using the usual color codes.",
         " - The default status is used when the player name is unknown, in the personalized",
         "   status you can use '%player' to replace it with the player's name."
