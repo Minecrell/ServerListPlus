@@ -27,6 +27,6 @@ import net.minecrell.serverlistplus.core.config.help.Description;
 
 @Description("TODO")
 public class PluginConf {
-    public boolean Statistics = true;
+    public boolean Stats = true;
     public boolean PlayerTracking = true;
 }
