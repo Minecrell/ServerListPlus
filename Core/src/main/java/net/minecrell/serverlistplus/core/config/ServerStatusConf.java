@@ -27,11 +27,7 @@ import net.minecrell.serverlistplus.core.config.help.Description;
 
 import java.util.List;
 
-@Description({
-        "Server List configuration description.",
-        "- do this",
-        "- do that"
-})
+@Description("TODO")
 public class ServerStatusConf {
     public StatusConf Default;
     public StatusConf Personalized;
