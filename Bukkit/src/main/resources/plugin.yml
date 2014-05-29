@@ -28,7 +28,7 @@ description: "@Description@"
 author: '@Author@'
 website: '@Website@'
 
-softdepend: [ProtocolLib]
+depend: [ProtocolLib]
 
 permissions:
   ServerListPlus.Admin:
