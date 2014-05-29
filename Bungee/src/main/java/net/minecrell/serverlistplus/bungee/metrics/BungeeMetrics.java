@@ -64,8 +64,7 @@ public class BungeeMetrics {
     }
 
     public void start() {
-        if (guid == null || guid.equalsIgnoreCase("null")) return;
-        if (task != null) return;
+        if (task != null || guid == null || guid.equalsIgnoreCase("null")) return;
 
         this.task = new TimerTask() {
             private boolean firstPost = true;
