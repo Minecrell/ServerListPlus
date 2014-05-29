@@ -31,7 +31,7 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -119,7 +119,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             String playerHover = core.getStatus().getPlayerHover(player);
             if (playerHover != null) {
                 event.getPacket().getServerPings().read(0).setPlayers(
-                        Arrays.asList(new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, playerHover)));
+                        Collections.singleton(new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, playerHover)));
             }
         }
     }
