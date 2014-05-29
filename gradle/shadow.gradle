@@ -25,7 +25,7 @@ apply plugin: 'shadow'
 
 shadow {
     artifactAttached = false
-    outputFile = new File(shadowJar.parent, rootProject.name + shadowJar.name)
+    baseName = rootProject.name + project.name
 }
 
 artifacts {
