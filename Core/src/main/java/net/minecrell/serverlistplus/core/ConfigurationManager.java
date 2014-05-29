@@ -48,7 +48,7 @@ public class ConfigurationManager extends CoreManager {
     protected YAMLWriter yaml;
 
     protected InstanceStorage<Object> storage = ClassToInstanceStorage.createLinked();
-    protected final InstanceStorage<Object> defaults = ClassToInstanceStorage.create();
+    protected final InstanceStorage<Object> defaults = ClassToInstanceStorage.createLinked();
 
     public ConfigurationManager(ServerListPlusCore core) {
         super(core);
