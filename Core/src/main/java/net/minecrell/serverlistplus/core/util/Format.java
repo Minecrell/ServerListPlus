@@ -55,10 +55,6 @@ public enum Format {
         this.format = new String(new char[] { FORMAT_CHAR, code });
     }
 
-    public String getFormat() {
-        return format;
-    }
-
     @Override
     public String toString() {
         return format;
