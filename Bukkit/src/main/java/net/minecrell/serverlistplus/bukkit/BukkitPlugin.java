@@ -31,7 +31,6 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
 
