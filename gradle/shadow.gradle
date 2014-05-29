@@ -28,6 +28,7 @@ shadow {
     baseName = rootProject.name + project.name
 }
 
+// TODO: Shouldn't this be done by setting artifactAttached to true already?
 artifacts {
     'default' shadowJar.outputJar
 }
