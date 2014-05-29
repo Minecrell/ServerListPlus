@@ -38,7 +38,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
-import java.util.logging.Level;
 
 import org.yaml.snakeyaml.error.YAMLException;
 
@@ -93,8 +92,8 @@ public class ConfigurationManager extends CoreManager {
                             newStorage.setUnsafe(obj.getClass(), obj);
                             this.getLogger().info("Loaded configuration: " + obj.getClass().getSimpleName());
                         } catch (YAMLException e) {
-                            this.getLogger().log(Level.WARNING, e, "Unable to parse configuration part from the " +
-                                    "configuration file. Make sure the YAML syntax is valid!");
+                            this.getLogger().warning(e, "Unable to parse configuration part from the configuration file. " +
+                                    "Make sure the YAML syntax is valid!");
                         }
                     }
                 }
@@ -120,6 +119,7 @@ public class ConfigurationManager extends CoreManager {
             } catch (ServerListPlusException ignored) {
             }
 
+            core.getPlugin().configChanged(storage);
             this.getLogger().info("Configuration reload complete.");
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "Unable to parse the configuration. Make sure it is valid YAML syntax.");

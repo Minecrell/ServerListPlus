@@ -26,19 +26,23 @@ package net.minecrell.serverlistplus.bungee;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
+import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.util.logging.Level;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
+    private LoginListener loginListener;
     private PingListener pingListener;
 
     @Override
@@ -52,14 +56,26 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         }
     }
 
+    public final class LoginListener implements Listener {
+        private LoginListener() {}
+
+        @EventHandler
+        public void onPlayerLogin(LoginEvent event) {
+            core.addClient(event.getConnection().getName(), event.getConnection().getAddress().getAddress());
+        }
+    }
+
     public final class PingListener implements Listener {
         private PingListener() {}
 
         @EventHandler
         public void onProxyPing(ProxyPingEvent event) {
-            String tmp = core.getStatus().getDescription();
+            String player = loginListener != null ? core.resolveClient(event.getConnection().getAddress().getAddress()) :
+                    null;
+
+            String tmp = core.getStatus().getDescription(player);
             if (tmp != null) event.getResponse().setDescription(tmp);
-            tmp = core.getStatus().getPlayerHover();
+            tmp = core.getStatus().getPlayerHover(player);
             if (tmp != null) event.getResponse().getPlayers().setSample(new ServerPing.PlayerInfo[] {
                     new ServerPing.PlayerInfo(tmp, ServerStatusManager.EMPTY_ID) });
         }
@@ -78,6 +94,20 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void initialize(ServerListPlusCore core) {
 
+    }
+
+    @Override
+    public void configChanged(InstanceStorage<Object> confs) {
+        if (confs.get(PluginConf.class).PlayerTracking) {
+            if (loginListener == null) {
+                this.registerListener(this.loginListener = new LoginListener());
+                this.getLogger().info("Registered proxy player tracking listener.");
+            }
+        } else if (loginListener != null) {
+            this.unregisterListener(loginListener);
+            this.loginListener = null;
+            this.getLogger().info("Unregistered proxy player tracking listener.");
+        }
     }
 
     @Override

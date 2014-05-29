@@ -27,7 +27,6 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -61,7 +60,7 @@ public final class ServerListPlusYAML {
         try {
             header = IOUtil.readLineArray(core.getClass().getClassLoader().getResourceAsStream(HEADER_FILENAME));
         } catch (IOException e) {
-            core.getLogger().log(Level.WARNING, e, "Unable to read configuration header!");
+            core.getLogger().warning(e, "Unable to read configuration header!");
         }
 
         return new YAMLWriter(new SnakeYAML(dumperOptions, constructor, representer, outdatedYaml), header);

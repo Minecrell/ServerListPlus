@@ -23,6 +23,8 @@
 
 package net.minecrell.serverlistplus.core.config.help;
 
+import net.minecrell.serverlistplus.core.config.CoreConf;
+import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.util.Helper;
 
@@ -69,5 +71,13 @@ public final class ConfExamples {
         );
 
         return conf;
+    }
+
+    public static PluginConf forPlugin() {
+        return new PluginConf();
+    }
+
+    public static CoreConf forCore() {
+        return new CoreConf();
     }
 }

@@ -25,24 +25,48 @@ public class ServerListPlusLogger {
         this.log(Level.INFO, message);
     }
 
+    public void info(Exception e, String message) {
+        this.log(Level.INFO, e, message);
+    }
+
     public void infoF(String message, Object... args) {
         this.logF(Level.INFO, message, args);
+    }
+
+    public void infoF(Exception e, String message, Object... args) {
+        this.logF(Level.INFO, e, message, args);
     }
 
     public void warning(String message) {
         this.log(Level.WARNING, message);
     }
 
+    public void warning(Exception e, String message) {
+        this.log(Level.WARNING, e, message);
+    }
+
     public void warningF(String message, Object... args) {
         this.logF(Level.WARNING, message, args);
+    }
+
+    public void warningF(Exception e, String message, Object... args) {
+        this.logF(Level.WARNING, e, message, args);
     }
 
     public void severe(String message) {
         this.log(Level.SEVERE, message);
     }
 
+    public void severe(Exception e, String message) {
+        this.log(Level.SEVERE, e, message);
+    }
+
     public void severeF(String message, Object... args) {
         this.logF(Level.SEVERE, message, args);
+    }
+
+    public void severeF(Exception e, String message, Object... args) {
+        this.logF(Level.SEVERE, e, message, args);
     }
 
     public void log(Level level, String message) {
@@ -70,15 +94,14 @@ public class ServerListPlusLogger {
         return this.log(level, e, this.formatMessage(message, args));
     }
 
+
     public ServerListPlusException process(Exception e, String message) {
         return this.process(DEFAULT_EXCEPTION_LEVEL, e, message);
     }
 
-
     public ServerListPlusException processF(Exception e, String message, Object... args) {
         return this.processF(DEFAULT_EXCEPTION_LEVEL, e, message, args);
     }
-
 
     public ServerListPlusException process(Level level, Exception e, String message) {
         return this.log(level, e, message) ? new CoreServerListPlusException(message, e) : (ServerListPlusException) e;

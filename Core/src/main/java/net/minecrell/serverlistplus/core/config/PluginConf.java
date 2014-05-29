@@ -21,26 +21,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.plugin;
+package net.minecrell.serverlistplus.core.config;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.ServerStatusManager;
-import net.minecrell.serverlistplus.core.util.InstanceStorage;
+import net.minecrell.serverlistplus.core.config.help.Description;
 
-import java.nio.file.Path;
-import java.util.logging.Logger;
-
-/**
- * Represents a plugin container running the ServerListPlus core.
- */
-public interface ServerListPlusPlugin {
-    Logger getLogger();
-    ServerType getServerType();
-    Path getPluginFolder();
-
-    String colorize(String s);
-
-    void initialize(ServerListPlusCore core);
-    void configChanged(InstanceStorage<Object> confs);
-    void statusChanged(ServerStatusManager status);
+@Description("TODO")
+public class PluginConf {
+    public boolean Statistics = true;
+    public boolean PlayerTracking = true;
 }

@@ -26,8 +26,10 @@ package net.minecrell.serverlistplus.bukkit;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
+import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -35,6 +37,7 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
 import com.comphenix.protocol.PacketType;
@@ -45,6 +48,7 @@ import com.comphenix.protocol.wrappers.WrappedGameProfile;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
+    private LoginListener loginListener;
     private PingEventListener pingListener;
     private StatusPacketListener packetListener;
 
@@ -68,12 +72,22 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         this.getLogger().info(this.getDisplayName() + " disabled.");
     }
 
+    public final class LoginListener implements Listener {
+        private LoginListener() {}
+
+        @EventHandler
+        public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
+            core.addClient(event.getName(), event.getAddress());
+        }
+    }
+
     public final class PingEventListener implements Listener {
         private PingEventListener() {}
 
         @EventHandler
         public void onServerListPing(ServerListPingEvent event) {
-            String description = core.getStatus().getDescription();
+            String player = loginListener != null ? core.resolveClient(event.getAddress()) : null;
+            String description = core.getStatus().getDescription(player);
             if (description != null) event.setMotd(description);
         }
     }
@@ -85,7 +99,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @Override // Server status packet
         public void onPacketSending(PacketEvent event) {
-            String playerHover = core.getStatus().getPlayerHover();
+            String player = loginListener != null ? core.resolveClient(event.getPlayer().getAddress().getAddress()) : null;
+            String playerHover = core.getStatus().getPlayerHover(player);
             if (playerHover != null) {
                 event.getPacket().getServerPings().read(0).setPlayers(
                         Arrays.asList(new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, playerHover)));
@@ -106,6 +121,20 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void initialize(ServerListPlusCore core) {
 
+    }
+
+    @Override
+    public void configChanged(InstanceStorage<Object> confs) {
+        if (confs.get(PluginConf.class).PlayerTracking) {
+            if (loginListener == null) {
+                this.registerListener(this.loginListener = new LoginListener());
+                this.getLogger().info("Registered player tracking listener.");
+            }
+        } else if (loginListener != null) {
+            this.unregisterListener(loginListener);
+            this.loginListener = null;
+            this.getLogger().info("Unregistered player tracking listener.");
+        }
     }
 
     @Override
@@ -132,6 +161,4 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.getLogger().info("Unregistered status packet listener.");
         }
     }
-
-
 }

@@ -112,6 +112,7 @@ public class ServerStatusManager extends CoreManager {
     }
 
     public String getDescription(String playerName) {
+        if (playerName == null) return this.getDescription();
         return personalized.description != null ? personalize(Helper.nextEntry(ThreadLocalRandom.current(),
                 personalized.description), playerName) : this.getDescription();
     }
@@ -125,6 +126,7 @@ public class ServerStatusManager extends CoreManager {
     }
 
     public String getPlayerHover(String playerName) {
+        if (playerName == null) return this.getPlayerHover();
         return personalized.playerHover != null ? personalize(Helper.nextEntry(ThreadLocalRandom.current(),
                 personalized.playerHover), playerName) : this.getPlayerHover();
     }

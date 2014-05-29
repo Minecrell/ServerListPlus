@@ -23,11 +23,17 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.config.CoreConf;
+import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.ConfExamples;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 
+import java.net.InetAddress;
+
 import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * Represents the core part of the ServerListPlus plugin.
@@ -39,6 +45,9 @@ public class ServerListPlusCore {
     private final ConfigurationManager configManager;
     private final ServerStatusManager statusManager;
 
+    private Cache<String, String> playerTracker;
+    private String playerTrackerConf;
+
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = new ServerListPlusLogger(this);
@@ -47,8 +56,10 @@ public class ServerListPlusCore {
 
         this.statusManager = new ServerStatusManager(this);
         this.configManager = new ConfigurationManager(this);
-        configManager.getDefaults().set(ServerStatusConf.class, ConfExamples.forServerStatus());
-        configManager.getYAML().registerAlias(ServerStatusConf.class, "Status");
+
+        this.registerConf(ServerStatusConf.class, ConfExamples.forServerStatus(), "Status");
+        this.registerConf(PluginConf.class, ConfExamples.forPlugin(), "Plugin");
+        this.registerConf(CoreConf.class, ConfExamples.forCore(), "Core");
 
         this.getPlugin().initialize(this);
         this.reload();
@@ -56,9 +67,52 @@ public class ServerListPlusCore {
         this.getLogger().info("ServerListPlus has been successfully initialized.");
     }
 
+    public <T> void registerConf(Class<T> clazz, T def, String alias) {
+        configManager.getDefaults().set(clazz, def);
+        configManager.getYAML().registerAlias(clazz, alias);
+    }
+
+    private void reloadCaches() {
+        CoreConf conf = this.getConf(CoreConf.class);
+        boolean enabled = this.getConf(PluginConf.class).PlayerTracking;
+
+        if (enabled &&
+                (playerTrackerConf != null && conf.Caches != null && playerTrackerConf.equals(conf.Caches.PlayerTracking)))
+            return;
+
+        if (playerTracker != null) {
+            this.getLogger().info("Deleting old player tracking cache due to configuration changes.");
+            playerTracker.invalidateAll();
+            playerTracker.cleanUp();
+            this.playerTracker = null;
+        }
+
+        if (enabled) {
+            this.getLogger().info("Creating new player tracking cache...");
+
+            try {
+                this.playerTrackerConf = this.getConf(CoreConf.class).Caches.PlayerTracking;
+                this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
+            } catch (Exception e) {
+                this.getLogger().severe(e, "Unable to parse player tracker cache configuration.");
+                this.playerTrackerConf = this.getDefaultConf(CoreConf.class).Caches.PlayerTracking;
+                this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
+            }
+        }
+    }
+
     public void reload() throws ServerListPlusException {
         configManager.reload();
+        this.reloadCaches();
         statusManager.reload();
+    }
+
+    public void addClient(String playerName, InetAddress client) {
+        if (this.playerTracker != null) playerTracker.put(client.getHostAddress(), playerName);
+    }
+
+    public String resolveClient(InetAddress client) {
+        return playerTracker.getIfPresent(client.getHostAddress());
     }
 
     public ServerListPlusLogger getLogger() {
@@ -71,6 +125,14 @@ public class ServerListPlusCore {
 
     public ConfigurationManager getConf() {
         return configManager;
+    }
+
+    public <T> T getConf(Class<T> clazz) {
+        return this.getConf().getStorage().get(clazz);
+    }
+
+    public <T> T getDefaultConf(Class<T> clazz) {
+        return this.getConf().getDefaults().get(clazz);
     }
 
     public ServerStatusManager getStatus() {
