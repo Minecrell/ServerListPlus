@@ -31,6 +31,7 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
 
@@ -48,12 +49,15 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import org.mcstats.MetricsLite;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
     private LoginListener loginListener;
     private PingEventListener pingListener;
     private StatusPacketListener packetListener;
+
+    private MetricsLite metrics;
 
     @Override
     public void onEnable() {
@@ -148,6 +152,23 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.loginListener = null;
             this.getLogger().info("Unregistered player tracking listener.");
         }
+
+        if (confs.get(PluginConf.class).Stats) {
+            if (metrics == null)
+                try {
+                    this.metrics = new MetricsLite(this);
+                    metrics.enable();
+                    metrics.start();
+                } catch (Throwable e) {
+                    this.getLogger().warning("Failed to enable plugin statistics: " + e.getMessage());
+                }
+        } else if (metrics != null)
+            try {
+                metrics.disable();
+                this.metrics = null;
+            } catch (Exception e) {
+                this.getLogger().warning("Failed to disable plugin statistics: " + e.getMessage());
+            }
     }
 
     @Override

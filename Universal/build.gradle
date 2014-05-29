@@ -23,6 +23,10 @@
 
 apply from: rootProject.file('gradle/shadow.gradle')
 
+configurations.all {
+    transitive = false
+}
+
 dependencies {
     compile project(':Bukkit'),
             project(':Bungee')

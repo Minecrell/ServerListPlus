@@ -49,9 +49,6 @@ subprojects {
 
     sourceCompatibility = 1.7
 
-    configurations { provided }
-    sourceSets { main { compileClasspath += configurations.provided } }
-
     repositories { mavenCentral() }
 }
 

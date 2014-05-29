@@ -24,6 +24,7 @@
 repositories {
     maven { url 'http://repo.bukkit.org/content/groups/public' }
     maven { url 'http://repo.comphenix.net/content/groups/public' }
+    maven { url 'http://repo.mcstats.org/content/repositories/public' }
 }
 
 apply from: rootProject.file('gradle/shadow.gradle')
@@ -36,8 +37,9 @@ ext {
 
 dependencies {
     compile project(':Core')
-    provided 'org.bukkit:bukkit:1.7.9-R0.1',
-            'com.comphenix.protocol:ProtocolLib:3.3.1'
+    compile 'org.bukkit:bukkit:1.7.9-R0.1',
+            'com.comphenix.protocol:ProtocolLib:3.3.1',
+            'org.mcstats.bukkit:metrics-lite:R7'
 }
 
 resourceTokens.put 'PluginClass', pluginPackage + '.BukkitPlugin'
@@ -50,11 +52,17 @@ processResources {
 shadow {
     artifactSet {
         include 'ServerListPlus:Core'
+        include 'org.mcstats.bukkit:metrics-lite'
     }
 
     relocation { // TODO: Replace with variable
         pattern = 'net.minecrell.serverlistplus.core'
         shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
+    }
+
+    relocation {
+        pattern = 'org.mcstats'
+        shadedPattern = 'net.minecrell.serverlistplus.bukkit.metrics'
     }
 
     // TODO: Use the libraries included in Minecraft for now
