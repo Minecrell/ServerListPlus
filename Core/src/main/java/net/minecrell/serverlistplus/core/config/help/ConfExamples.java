@@ -34,39 +34,48 @@ public final class ConfExamples {
     private ConfExamples() {}
 
     public static ServerStatusConf forServerStatus() {
+        // Feel free to add / improve some more examples
         ServerStatusConf conf = new ServerStatusConf();
         conf.Default = new ServerStatusConf.StatusConf();
         conf.Default.Description = Arrays.asList(
                 Helper.lines(
-                        "A Minecraft Server.",
-                        "&c(Actually a very boring one...)"
-                ), "A Minecrell Server."
+                        "&cA Minecraft Server.",
+                        "&cCurrently running &e1.7&c."
+                ), "Single lines are also possible."
         );
         conf.Default.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Default.Players.Hover = Arrays.asList(
                 Helper.lines(
-                        "Notch",
-                        "Dinnerbone",
-                        "EvilSeph"
+                        "&cOur server is currently still",
+                        "&cunder construction. We will",
+                        "&crelease it soon!"
                 ), Helper.lines(
-                        "Minecrell",
-                        "someone else"
+                        "&aWhat does our server offer?",
+                        "&6We have:",
+                        "  - &6Survival Games",
+                        "  - &6Skyblock",
+                        "  - &6and much more!"
                 )
         );
 
         conf.Personalized = new ServerStatusConf.StatusConf();
         conf.Personalized.Description = Arrays.asList(
                 Helper.lines(
-                        "Ohai, %player%!",
+                        "Hello, %player%!",
                         "How are you?"
-                ), "A %player% Server."
+                ), Helper.lines(
+                        "&cA Minecraft Server.",
+                        "&eCome and play on our server, %player%!"
+                )
         );
         conf.Personalized.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Personalized.Players.Hover = Arrays.asList(
                 Helper.lines(
-                        "%player%",
-                        "%player%",
-                        "%player%"
+                        "&aYou are not %player%?",
+                        "&aWell that's bad then something went wrong!",
+                        "&aYou're probably using the same IP-Address",
+                        "&alike someone else playing on our server.",
+                        "&eThere is no way to fix this, sorry!"
                 )
         );
 
