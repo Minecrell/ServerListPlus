@@ -27,7 +27,16 @@ import net.minecrell.serverlistplus.core.config.help.Description;
 
 import java.util.List;
 
-@Description("TODO")
+@Description({
+        "Customize your server list status here.",
+        "Currently, you can change the status description (MotD) and add custom messages",
+        "when a player hovers the player amount in the server list.",
+        " - Add multiple entries for random messages.",
+        " - Save the file in valid UTF-8 format for special characters.",
+        " - Color codes are possible using the usual color codes.",
+        " - The default status is used when the player name is unknown, in the personalized",
+        "   status you can use '%player' to replace it with the player's name."
+})
 public class ServerStatusConf {
     public StatusConf Default;
     public StatusConf Personalized;

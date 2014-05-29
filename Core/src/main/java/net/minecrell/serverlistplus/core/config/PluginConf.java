@@ -25,7 +25,11 @@ package net.minecrell.serverlistplus.core.config;
 
 import net.minecrell.serverlistplus.core.config.help.Description;
 
-@Description("TODO")
+@Description({
+        "General options about the plugin.",
+        "Stats: Enable/disable sending plugin statistics.",
+        "PlayerTracking: Enable/disable tracking of player names and their IP-Addresses."
+})
 public class PluginConf {
     public boolean Stats = true;
     public boolean PlayerTracking = true;
