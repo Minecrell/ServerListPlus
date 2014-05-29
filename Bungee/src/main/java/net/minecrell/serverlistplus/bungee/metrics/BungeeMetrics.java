@@ -37,6 +37,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 
 import com.google.gson.Gson;
@@ -116,7 +117,7 @@ public class BungeeMetrics {
                 "UTF-8")));
         URLConnection con = url.openConnection();
 
-        byte[] data = json.getBytes();
+        byte[] data = json.getBytes(Charsets.UTF_8);
         byte[] gzip = null;
 
         try {
@@ -141,8 +142,7 @@ public class BungeeMetrics {
             out.flush();
         }
 
-        String response = null;
-
+        String response;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
             response = reader.readLine();
         }
