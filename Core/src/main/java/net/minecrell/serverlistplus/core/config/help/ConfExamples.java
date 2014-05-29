@@ -41,7 +41,7 @@ public final class ConfExamples {
                 Helper.lines(
                         "&cA Minecraft Server.",
                         "&cCurrently running &e1.7&c."
-                ), "Single lines are also possible."
+                ), "&aSingle lines are also possible."
         );
         conf.Default.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Default.Players.Hover = Arrays.asList(
