@@ -35,6 +35,9 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -64,12 +67,22 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.disablePlugin(); return;
         }
 
+        this.getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
         this.getLogger().info(this.getDisplayName() + " enabled.");
     }
 
     @Override
     public void onDisable() {
         this.getLogger().info(this.getDisplayName() + " disabled.");
+    }
+
+    public final class ServerListPlusCommand implements CommandExecutor {
+        private ServerListPlusCommand() {}
+
+        @Override
+        public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+            core.executeCommand(new BukkitCommandSender(sender), cmd.getName(), args); return true;
+        }
     }
 
     public final class LoginListener implements Listener {

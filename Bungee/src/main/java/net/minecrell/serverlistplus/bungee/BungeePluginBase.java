@@ -38,10 +38,6 @@ public abstract class BungeePluginBase extends Plugin {
         return this.getDescription().getVersion();
     }
 
-    public String getDisplayName() {
-        return this.getName() + " v" + this.getVersion();
-    }
-
     public Path getPluginFolder() {
         return this.getDataFolder().toPath();
     }

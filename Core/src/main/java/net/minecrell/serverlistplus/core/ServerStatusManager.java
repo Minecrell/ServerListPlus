@@ -99,12 +99,16 @@ public class ServerStatusManager extends CoreManager {
         return PLAYER_PATTERN.matcher(s).replaceAll(playerName);
     }
 
+    public boolean isEnabled() {
+        return core.getProfiles().isEnabled();
+    }
+
     public boolean hasChanges() {
-        return hasDescription() || hasPlayerHover();
+        return isEnabled() && (hasDescription() || hasPlayerHover());
     }
 
     public boolean hasDescription() {
-        return def.description != null || personalized.description != null;
+        return isEnabled() && (def.description != null || personalized.description != null);
     }
 
     public String getDescription() {
@@ -118,7 +122,7 @@ public class ServerStatusManager extends CoreManager {
     }
 
     public boolean hasPlayerHover() {
-        return def.playerHover != null || personalized.playerHover != null;
+        return isEnabled() && (def.playerHover != null || personalized.playerHover != null);
     }
 
     public String getPlayerHover() {

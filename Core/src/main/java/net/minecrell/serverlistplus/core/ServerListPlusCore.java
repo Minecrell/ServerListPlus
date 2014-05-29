@@ -27,7 +27,9 @@ import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.ConfExamples;
+import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.core.util.Format;
 
 import java.net.InetAddress;
 
@@ -39,10 +41,13 @@ import com.google.common.cache.CacheBuilder;
  * Represents the core part of the ServerListPlus plugin.
  */
 public class ServerListPlusCore {
+    private final CoreDescription info;
+
     private final ServerListPlusPlugin plugin;
     private final ServerListPlusLogger logger;
 
     private final ConfigurationManager configManager;
+    private final ProfileManager profileManager;
     private final ServerStatusManager statusManager;
 
     private Cache<String, String> playerTracker;
@@ -53,6 +58,7 @@ public class ServerListPlusCore {
         this.logger = new ServerListPlusLogger(this);
 
         this.getLogger().info("Initializing...");
+        this.info = CoreDescription.load(this);
 
         this.statusManager = new ServerStatusManager(this);
         this.configManager = new ConfigurationManager(this);
@@ -60,6 +66,8 @@ public class ServerListPlusCore {
         this.registerConf(ServerStatusConf.class, ConfExamples.forServerStatus(), "Status");
         this.registerConf(PluginConf.class, ConfExamples.forPlugin(), "Plugin");
         this.registerConf(CoreConf.class, ConfExamples.forCore(), "Core");
+
+        this.profileManager = new ProfileManager(this);
 
         this.getPlugin().initialize(this);
         this.reload();
@@ -104,6 +112,7 @@ public class ServerListPlusCore {
     public void reload() throws ServerListPlusException {
         configManager.reload();
         this.reloadCaches();
+        this.profileManager.reload();
         statusManager.reload();
     }
 
@@ -115,12 +124,79 @@ public class ServerListPlusCore {
         return playerTracker.getIfPresent(client.getHostAddress());
     }
 
+    public void executeCommand(ServerCommandSender sender, String cmd, String[] args) {
+        String sub = (args.length > 0) ? args[0] : null;
+        if (sub != null) {
+            if (sub.equalsIgnoreCase("reload")) {
+                this.getLogger().infoF("Reloading configuration per request by %s!", sender);
+                sender.sendMessages(Format.GREEN + "Reloading configuration...");
+
+                try {
+                    this.reload();
+                    sender.sendMessages(Format.GREEN + "Configuration successfully reloaded!");
+                } catch (ServerListPlusException e) {
+                    sender.sendMessages(Format.RED + "An internal error occurred while reloading the configuration.");
+                }
+
+                return;
+            } else if (sub.equalsIgnoreCase("save")) {
+                this.getLogger().infoF("Saving configuration per request by %s!", sender);
+                sender.sendMessages(Format.GREEN + "Saving configuration...");
+
+                try {
+                    configManager.save();
+                    sender.sendMessages(Format.GREEN + "Configuration successfully saved.");
+                } catch (ServerListPlusException e) {
+                    sender.sendMessages(Format.RED + "An internal error occurred while saving the configuration.");
+                }
+            } else if (sub.equalsIgnoreCase("enable") || sub.equalsIgnoreCase("disable")) {
+                boolean enable = sub.equalsIgnoreCase("enable");
+                String tmp = enable ? "Enabling" : "Disabling";
+                this.getLogger().infoF("%s ServerListPlus per request of %s...", tmp, sender);
+                sender.sendMessages(Format.GREEN + tmp + " ServerListPlus...");
+
+                try {
+                    profileManager.setEnabled(enable);
+                    sender.sendMessages(Format.GREEN + "ServerListPlus has been successfully " + (enable ? "enabled" :
+                            "disabled") + "!");
+                } catch (ServerListPlusException e) {
+                    sender.sendMessages(Format.RED + "An internal error occurred while " + (enable ? "enabling" :
+                            "disabling") + " ServerListPlus.");
+                }
+
+                return;
+            }
+        }
+
+        sender.sendMessages(Format.GOLD + info.getDisplayName());
+        if (info.getDescription() != null) sender.sendMessages(Format.GRAY + info.getDescription());
+        if (info.getAuthor() != null) sender.sendMessages(Format.GOLD + "Author: " + Format.GRAY + info.getAuthor());
+        if (info.getWebsite() != null) sender.sendMessages(Format.GOLD + "Website: " + Format.GRAY + info.getWebsite());
+
+        sender.sendMessages(
+                Format.GOLD + "Commands:",
+                buildCommandHelp("", "Display this information page."),
+                buildCommandHelp("reload", "Reload the ServerListPlus configuration."),
+                buildCommandHelp("save", "Save the ServerListPlus configuration."),
+                buildCommandHelp("enable", "Enable the ServerListPlus plugin."),
+                buildCommandHelp("disable", "Disable the ServerListPlus plugin.")
+        );
+    }
+
+    private static String buildCommandHelp(String cmd, String description) {
+        return Format.RED + "/serverlistplus " + cmd + Format.WHITE + " - " + Format.GRAY + description;
+    }
+
     public ServerListPlusLogger getLogger() {
         return logger;
     }
 
     public ServerListPlusPlugin getPlugin() {
         return plugin;
+    }
+
+    public CoreDescription getInfo() {
+        return info;
     }
 
     public ConfigurationManager getConf() {
@@ -133,6 +209,10 @@ public class ServerListPlusCore {
 
     public <T> T getDefaultConf(Class<T> clazz) {
         return this.getConf().getDefaults().get(clazz);
+    }
+
+    public ProfileManager getProfiles() {
+        return profileManager;
     }
 
     public ServerStatusManager getStatus() {

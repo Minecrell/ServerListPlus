@@ -29,3 +29,21 @@ author: '@Author@'
 website: '@Website@'
 
 softdepend: [ProtocolLib]
+
+permissions:
+  ServerListPlus.Admin:
+    description: Allows you to access the ServerListPlus commands.
+    default: op
+commands:
+  serverlistplus:
+    description: "@Description@"
+    aliases:
+      - 'serverlist+'
+      - 'serverlist'
+      - 'slp'
+      - 'sl+'
+      - 's++'
+      - 'serverping+'
+      - 'serverping'
+      - 'spp'
+    permission: ServerListPlus.Admin

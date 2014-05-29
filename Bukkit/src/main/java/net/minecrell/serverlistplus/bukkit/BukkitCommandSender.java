@@ -38,7 +38,7 @@ public class BukkitCommandSender extends AbstractCommandSender<CommandSender> {
     }
 
     @Override
-    public void sendMessage(String message) {
-        sender.sendMessage(message);
+    public void sendMessages(String... messages) {
+        sender.sendMessage(messages);
     }
 }

@@ -34,9 +34,11 @@ import net.minecrell.serverlistplus.core.util.InstanceStorage;
 import java.util.logging.Level;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
+import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -53,6 +55,20 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.getLogger().info("Please fix the error before restarting the server!"); return;
         } catch (Exception e) {
             this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the core.", e); return;
+        }
+
+        this.getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
+    }
+
+    public final class ServerListPlusCommand extends Command {
+        private ServerListPlusCommand() {
+            super("serverlistplus", "ServerListPlus.Admin", "serverlist+", "serverlist", "slp", "sl+", "s++",
+                    "serverping+", "serverping", "spp");
+        }
+
+        @Override
+        public void execute(CommandSender sender, String[] args) {
+            core.executeCommand(new BungeeCommandSender(sender), this.getName(), args);
         }
     }
 

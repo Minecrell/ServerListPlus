@@ -21,12 +21,46 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.plugin;
+package net.minecrell.serverlistplus.core.util;
 
-/**
- * Represents the sender of an executed command.
- */
-public interface ServerCommandSender {
-    String getName();
-    void sendMessages(String... messages);
+public enum Format {
+    BLACK ('0'),
+    DARK_BLUE ('1'),
+    DARK_GREEN ('2'),
+    DARK_AQUA ('3'),
+    DARK_RED ('4'),
+    DARK_PURPLE ('5'),
+    GOLD ('6'),
+    GRAY ('7'),
+    DARK_GRAY ('8'),
+    BLUE ('9'),
+    GREEN ('a'),
+    AQUA ('b'),
+    RED ('c'),
+    LIGHT_PURPLE ('d'),
+    YELLOW ('e'),
+    WHITE ('f'),
+
+    OBFUSCATED ('k'),
+    BOLD ('l'),
+    STRIKETHROUGH ('m'),
+    UNDERLINE ('n'),
+    ITALIC ('o'),
+    RESET ('r');
+
+    public final static char FORMAT_CHAR = '\u00A7';
+    private final String format;
+
+    private Format(char code) {
+        this.format = new String(new char[] { FORMAT_CHAR, code });
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    @Override
+    public String toString() {
+        return format;
+    }
 }
