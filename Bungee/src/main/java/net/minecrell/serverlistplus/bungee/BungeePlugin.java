@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.bungee;
 
+import net.minecrell.serverlistplus.bungee.metrics.BungeeMetrics;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
@@ -46,6 +47,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     private ServerListPlusCore core;
     private LoginListener loginListener;
     private PingListener pingListener;
+
+    private BungeeMetrics metrics;
 
     @Override
     public void onEnable() {
@@ -124,6 +127,22 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.loginListener = null;
             this.getLogger().info("Unregistered proxy player tracking listener.");
         }
+
+        if (confs.get(PluginConf.class).Stats) {
+            if (metrics == null)
+                try {
+                    this.metrics = new BungeeMetrics(this);
+                    metrics.start();
+                } catch (Throwable e) {
+                    this.getLogger().warning("Failed to enable plugin statistics: " + e.getMessage());
+                }
+        } else if (metrics != null)
+            try {
+                metrics.stop();
+                this.metrics = null;
+            } catch (Throwable e) {
+                this.getLogger().warning("Failed to disable plugin statistics: " + e.getMessage());
+            }
     }
 
     @Override

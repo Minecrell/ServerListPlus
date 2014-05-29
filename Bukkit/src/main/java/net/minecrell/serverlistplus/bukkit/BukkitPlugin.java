@@ -165,7 +165,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             try {
                 metrics.disable();
                 this.metrics = null;
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 this.getLogger().warning("Failed to disable plugin statistics: " + e.getMessage());
             }
     }
