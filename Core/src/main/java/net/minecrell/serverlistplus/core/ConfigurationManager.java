@@ -45,7 +45,7 @@ public class ConfigurationManager extends CoreManager {
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
     protected static final String BACKUP_FILENAME = "ServerListPlus.bak.yml";
 
-    protected YAMLWriter yaml;
+    protected final YAMLWriter yaml;
 
     protected InstanceStorage<Object> storage = ClassToInstanceStorage.createLinked();
     protected final InstanceStorage<Object> defaults = ClassToInstanceStorage.createLinked();
