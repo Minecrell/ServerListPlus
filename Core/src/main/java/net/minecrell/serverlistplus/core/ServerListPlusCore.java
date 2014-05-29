@@ -113,6 +113,8 @@ public class ServerListPlusCore {
         configManager.reload();
         this.reloadCaches();
         this.profileManager.reload();
+        if (!profileManager.isEnabled())
+            this.getLogger().warning("ServerListPlus profile is not enabled, nothing will be changed on the server!");
         statusManager.reload();
     }
 
