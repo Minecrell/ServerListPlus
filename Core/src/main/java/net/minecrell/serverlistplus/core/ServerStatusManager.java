@@ -66,6 +66,8 @@ public class ServerStatusManager extends CoreManager {
         } else {
             this.def = this.personalized = new ServerStatus();
         }
+
+        core.getPlugin().statusChanged(this);
     }
 
     private ServerStatus reload(ServerStatusConf.StatusConf conf) {
