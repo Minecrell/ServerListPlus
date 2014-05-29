@@ -184,8 +184,8 @@ nb-configuration.xml
 
 ## File-based project format
 *.ipr
-*.iws
 *.iml
+*.iws
 
 ## Additional for IntelliJ
 out/
@@ -228,4 +228,9 @@ hs_err_pid*
 
 .gradle
 build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Allow Gradle wrapper JAR
 !gradle-wrapper.jar
