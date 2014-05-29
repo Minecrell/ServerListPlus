@@ -71,8 +71,8 @@ public class YAMLWriter {
         snakeYAML.getConstructor().addTypeDescription(new TypeDescription(clazz, tag));
     }
 
-    public <A extends Appendable> A newLine(A writer) throws IOException {
-        writer.append(newLine); return writer;
+    public void newLine(Appendable writer) throws IOException {
+        writer.append(newLine);
     }
 
     public void writeHeader(Appendable appendable) throws IOException {
@@ -87,7 +87,7 @@ public class YAMLWriter {
         writer.append(newLine);
     }
 
-    private void writeComments(Appendable appendable, String... comments) throws IOException {
+    public void writeComments(Appendable appendable, String... comments) throws IOException {
         if (!Helper.nullOrEmpty(comments))
             for (String line : comments)
                 appendable.append(COMMENT_PREFIX).append(line).append(newLine);
