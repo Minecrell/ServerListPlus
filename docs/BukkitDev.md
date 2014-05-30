@@ -20,9 +20,10 @@ Upcoming Features
 Installation
 ---------------------
 1.  Download the plugin and copy the plugin JAR to your CraftBukkit/Spigot or BungeeCord server.
-2.  Restart your server to load the plugin.
-3.  Go into the plugin folder, open the configuration file `ServerListPlus.yml` and change the status configuration to your likings. You can find more information about the configuration on the [GitHub wiki](https://github.com/Minecrell/ServerListPlus/wiki).
-4.  Enable the plugin by typing `/serverlistplus enable` on your console. Now ServerListPlus will modify your status ping with your configured values.
+2.  CraftBukkit/Spigot only: Download [ProtocolLib](http://dev.bukkit.org/bukkit-plugins/protocollib/) if you haven't installed it on your server already.
+3.  Restart your server to load the plugin.
+4.  Go into the plugin folder, open the configuration file `ServerListPlus.yml` and change the status configuration to your likings. You can find more information about the configuration on the [GitHub wiki](https://github.com/Minecrell/ServerListPlus/wiki).
+5.  Enable the plugin by typing `/serverlistplus enable` on your console. Now ServerListPlus will modify your status ping with your configured values.
 
 Development Builds
 ---------------------
