@@ -16,13 +16,17 @@ Upcoming Features
 ---------------------
 [ServerListPlus](https://github.com/Minecrell/ServerListPlus) is not yet complete. You can find a lot of upcoming and/or planned features on the GitHub issue tracker.
 
+
 Installation
 ---------------------
-1.  Download [ServerListPlus](https://github.com/Minecrell/ServerListPlus) from one of the locations listed above.
-2.  Copy the plugin JAR to your CraftBukkit/Spigot or BungeeCord server.
-3.  Restart your server to load the plugin.
-4.  Go into the plugin folder, open the configuration file `ServerListPlus.yml` and change the status configuration to your likings. You can find more information about the configuration on the [GitHub wiki](https://github.com/Minecrell/ServerListPlus/wiki).
-5.  Enable the plugin by typing `/serverlistplus enable` on your console. Now ServerListPlus will modify your status ping with your configured values.
+1.  Download the plugin and copy the plugin JAR to your CraftBukkit/Spigot or BungeeCord server.
+2.  Restart your server to load the plugin.
+3.  Go into the plugin folder, open the configuration file `ServerListPlus.yml` and change the status configuration to your likings. You can find more information about the configuration on the [GitHub wiki](https://github.com/Minecrell/ServerListPlus/wiki).
+4.  Enable the plugin by typing `/serverlistplus enable` on your console. Now ServerListPlus will modify your status ping with your configured values.
+
+Development Builds
+---------------------
+You can download unsupported development builds on the [Jenkins server](http://ci.minecrell.net/job/ServerListPlus/). Use them at your own risk.
 
 Configuration
 ---------------------
@@ -36,7 +40,7 @@ Commands & Permissions
 - `/serverlistplus enable` - Enable the plugin and start modifying the status ping.
 - `/serverlistplus disable` - Disable the plugin and stop modifying the status ping.
 
-Permission for all commands is `ServerListPlus.Admin`.
+The permission for all commands is `ServerListPlus.Admin`.
 
 Source
 ---------------------
