@@ -177,11 +177,11 @@ public class ServerListPlusCore {
 
         sender.sendMessages(
                 Format.GOLD + "Commands:",
-                buildCommandHelp("", "Display this information page."),
-                buildCommandHelp("reload", "Reload the ServerListPlus configuration."),
-                buildCommandHelp("save", "Save the ServerListPlus configuration."),
-                buildCommandHelp("enable", "Enable the ServerListPlus plugin."),
-                buildCommandHelp("disable", "Disable the ServerListPlus plugin.")
+                buildCommandHelp("", "Display an information page about the plugin and list all available commands."),
+                buildCommandHelp("reload", "Reload the plugin configuration."),
+                buildCommandHelp("save", "Save the plugin configuration."),
+                buildCommandHelp("enable", "Enable the plugin and start modifying the status ping."),
+                buildCommandHelp("disable", "Disable the plugin and stop modifying the status ping.")
         );
     }
 
