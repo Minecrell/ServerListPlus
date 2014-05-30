@@ -33,5 +33,10 @@ Installation
 1.  Download [ServerListPlus](https://github.com/Minecrell/ServerListPlus) from one of the locations listed above.
 2.  Copy the plugin JAR to your CraftBukkit/Spigot or BungeeCord server.
 3.  Restart your server to load the plugin.
-4.  Go into the plugin folder, open the configuration file `ServerListPlus.yml` and change the status configuration to your likings. You can find more information about the configuration on the GitHub wiki.
+4.  Go into the plugin folder, open the configuration file `ServerListPlus.yml` and change the status configuration to your likings. You can find more information about the configuration on the [GitHub wiki](https://github.com/Minecrell/ServerListPlus/wiki).
 5.  Enable the plugin by typing `/serverlistplus enable` on your console. Now ServerListPlus will modify your status ping with your configured values.
+6.  You can find a list of all commands, permissions and more information about the configuration on the [GitHub wiki](https://github.com/Minecrell/ServerListPlus/wiki)
+
+Source
+---------------------
+The plugin is completely open source and released under the terms and conditions of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0). You are free to redistribute or modify it to your likings, but please add a link to the [GitHub page](https://github.com/Minecrell/ServerListPlus) of the plugin, thanks!
