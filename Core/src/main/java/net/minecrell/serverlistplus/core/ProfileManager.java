@@ -72,7 +72,7 @@ public class ProfileManager extends CoreManager {
                 else
                     this.getLogger().info("ServerListPlus profile is disabled.");
             } else
-                this.getLogger().info("Profile configuration not found, assuming it's disabled.");
+                this.getLogger().info("Profile configuration not found, assuming the profile is disabled.");
         } catch (JsonSyntaxException e) {
             throw this.getLogger().process(e, "Unable to parse profile configuration, have you changed it?");
         } catch (IOException | JsonIOException e) {
