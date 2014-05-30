@@ -43,7 +43,7 @@ Commands & Permissions
 - `/serverlistplus enable` - Enable the plugin and start modifying the status ping.
 - `/serverlistplus disable` - Disable the plugin and stop modifying the status ping.
 
-The permission for all commands is `ServerListPlus.Admin`.
+The permission for all commands is `serverlistplus.admin`.
 
 Source
 ---------------------

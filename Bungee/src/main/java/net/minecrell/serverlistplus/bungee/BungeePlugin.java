@@ -65,7 +65,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     public final class ServerListPlusCommand extends Command {
         private ServerListPlusCommand() {
-            super("serverlistplus", "ServerListPlus.Admin", "serverlist+", "serverlist", "slp", "sl+", "s++",
+            super("serverlistplus", "serverlistplus.admin", "serverlist+", "serverlist", "slp", "sl+", "s++",
                     "serverping+", "serverping", "spp");
         }
 

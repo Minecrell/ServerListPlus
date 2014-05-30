@@ -31,7 +31,7 @@ website: '@Website@'
 depend: [ProtocolLib]
 
 permissions:
-  ServerListPlus.Admin:
+  serverlistplus.admin:
     description: Allows you to access the ServerListPlus commands.
     default: op
 commands:
@@ -46,4 +46,4 @@ commands:
       - 'serverping+'
       - 'serverping'
       - 'spp'
-    permission: ServerListPlus.Admin
+    permission: serverlistplus.admin
