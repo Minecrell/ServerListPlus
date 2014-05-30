@@ -33,7 +33,7 @@ Commands & Permissions
 - `/serverlistplus` - Display an information page about the plugin and list all available commands.
 - `/serverlistplus reload` - Reload the plugin configuration.
 - `/serverlistplus save` - Save the plugin configuration.
-- `/serverlistplus enable` - Enable the plugin and modify the status ping.
+- `/serverlistplus enable` - Enable the plugin and start modifying the status ping.
 - `/serverlistplus disable` - Disable the plugin and stop modifying the status ping.
 
 Permission for all commands is `ServerListPlus.Admin`.
