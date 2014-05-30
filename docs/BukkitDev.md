@@ -14,7 +14,7 @@ Features
 
 Upcoming Features
 ---------------------
-[ServerListPlus](https://github.com/Minecrell/ServerListPlus) is not yet complete. You can find a lot of upcoming and/or planned features on the GitHub issue tracker.
+[ServerListPlus](https://github.com/Minecrell/ServerListPlus) is not yet complete. You can find a lot of upcoming and/or planned features on the [GitHub issue tracker](https://github.com/Minecrell/ServerListPlus/issues).
 
 
 Installation
