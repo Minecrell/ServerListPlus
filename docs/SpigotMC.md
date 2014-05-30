@@ -16,18 +16,6 @@ Upcoming Features
 ---------------------
 [ServerListPlus](https://github.com/Minecrell/ServerListPlus) is not yet complete. You can find a lot of upcoming and/or planned features on the GitHub issue tracker.
 
-Download
----------------------
-There are multiple locations where you can download [ServerListPlus](https://github.com/Minecrell/ServerListPlus):
-- [GitHub Releases](https://github.com/Minecrell/ServerListPlus/releases)
-- [SpigotMC](www.spigotmc.org/resources/serverlistplus.241/)
-- [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/)
-- [Development Builds](http://ci.minecrell.net/job/ServerListPlus/)
-
-Compilation
----------------------
-You can also compile it yourself by cloning the repository from [GitHub](https://github.com/Minecrell/ServerListPlus) and executing the following command on the command line: `gradlew clean build shadowJar`
-
 Installation
 ---------------------
 1.  Download [ServerListPlus](https://github.com/Minecrell/ServerListPlus) from one of the locations listed above.
@@ -35,7 +23,20 @@ Installation
 3.  Restart your server to load the plugin.
 4.  Go into the plugin folder, open the configuration file `ServerListPlus.yml` and change the status configuration to your likings. You can find more information about the configuration on the [GitHub wiki](https://github.com/Minecrell/ServerListPlus/wiki).
 5.  Enable the plugin by typing `/serverlistplus enable` on your console. Now ServerListPlus will modify your status ping with your configured values.
-6.  You can find a list of all commands, permissions and more information about the configuration on the [GitHub wiki](https://github.com/Minecrell/ServerListPlus/wiki)
+
+Configuration
+---------------------
+All configuration of the plugin is done inside the `ServerListPlus.yml` file. There will be also a `Profiles.json` file in your plugin folder, but that's only used by the plugin, you do not need to edit something there. Most parts of the configuration are explained inside the configuration, but if you need some more help with it you can take a look at our [Github wiki](https://github.com/Minecrell/ServerListPlus/wiki), it is explained more detailed there.
+
+Commands & Permissions
+---------------------
+- `/serverlistplus` - Display an information page about the plugin and list all available commands.
+- `/serverlistplus reload` - Reload the plugin configuration.
+- `/serverlistplus save` - Save the plugin configuration.
+- `/serverlistplus enable` - Enable the plugin and modify the status ping.
+- `/serverlistplus disable` - Disable the plugin and stop modifying the status ping.
+
+Permission for all commands is `ServerListPlus.Admin`.
 
 Source
 ---------------------
