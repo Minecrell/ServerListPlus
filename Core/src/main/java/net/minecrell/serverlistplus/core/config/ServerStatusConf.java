@@ -35,7 +35,7 @@ import java.util.List;
         " - Save the file with valid UTF-8 encoding for special characters.",
         " - Color codes are possible using the usual color codes.",
         " - The default status is used when the player name is unknown, in the personalized",
-        "   status you can use '%player' to replace it with the player's name."
+        "   status you can use '%player%' to replace it with the player's name."
 })
 public class ServerStatusConf {
     public StatusConf Default;
