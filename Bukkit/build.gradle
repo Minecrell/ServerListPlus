@@ -37,7 +37,7 @@ ext {
 
 dependencies {
     compile project(':Core')
-    compile 'org.bukkit:bukkit:1.7.9-R0.1',
+    compile 'org.bukkit:bukkit:1.7.9-R0.2',
             'com.comphenix.protocol:ProtocolLib:3.3.1',
             'org.mcstats.bukkit:metrics-lite:R7'
 }
