@@ -95,8 +95,16 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             String tmp = core.getStatus().getDescription(player);
             if (tmp != null) event.getResponse().setDescription(tmp);
             tmp = core.getStatus().getPlayerHover(player);
-            if (tmp != null) event.getResponse().getPlayers().setSample(new ServerPing.PlayerInfo[] {
-                    new ServerPing.PlayerInfo(tmp, ServerStatusManager.EMPTY_ID) });
+            if (tmp != null) {
+                ServerPing.PlayerInfo info;
+                try {
+                    info = new ServerPing.PlayerInfo(tmp, ServerStatusManager.EMPTY_UUID);
+                } catch (Throwable e) {
+                    info = new ServerPing.PlayerInfo(tmp, ServerStatusManager.EMPTY_ID);
+                }
+
+                event.getResponse().getPlayers().setSample(new ServerPing.PlayerInfo[] { info });
+            }
         }
     }
 
