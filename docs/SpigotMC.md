@@ -31,7 +31,7 @@ You can download unsupported development builds on the [Jenkins server](http://c
 
 Configuration
 ---------------------
-All configuration of the plugin is done inside the `ServerListPlus.yml` file. There will be also a `Profiles.json` file in your plugin folder, but that's only used by the plugin, you do not need to edit something there. Most parts of the configuration are explained inside the configuration, but if you need some more help with it you can take a look at our [GitHub Wiki](https://github.com/Minecrell/ServerListPlus/wiki), it is explained more detailed there.
+All configuration of the plugin is done inside the `ServerListPlus.yml` file. There will be also a `Profiles.json` file in your plugin folder, but that's only used by the plugin, you do not need to edit something there. Most parts of the configuration are explained inside the configuration, but if you need some more help you can take a look at our [GitHub Wiki](https://github.com/Minecrell/ServerListPlus/wiki) where it is explained more detailed.
 
 Commands & Permissions
 ---------------------
@@ -45,4 +45,4 @@ The permission for all commands is `serverlistplus.admin`.
 
 Source
 ---------------------
-The plugin is completely open source and released under the terms and conditions of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0). You are free to redistribute or modify it to your likings, but please add a link to the [GitHub Page](https://github.com/Minecrell/ServerListPlus) of the plugin, thanks!
+The plugin is completely open source and released under the terms and conditions of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0). You are free to redistribute or modify it to your likings, but please add a link to the [GitHub Page](https://github.com/Minecrell/ServerListPlus) of the plugin and redistribute it under a compatible license.
