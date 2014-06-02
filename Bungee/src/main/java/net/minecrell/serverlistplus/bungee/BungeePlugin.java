@@ -89,6 +89,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onProxyPing(ProxyPingEvent event) {
+            if (event.getResponse() == null) return;
             String player = loginListener != null ? core.resolveClient(event.getConnection().getAddress().getAddress()) :
                     null;
 
@@ -96,14 +97,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             if (tmp != null) event.getResponse().setDescription(tmp);
             tmp = core.getStatus().getPlayerHover(player);
             if (tmp != null) {
-                ServerPing.PlayerInfo info;
-                try {
-                    info = new ServerPing.PlayerInfo(tmp, ServerStatusManager.EMPTY_UUID);
-                } catch (Throwable e) {
-                    info = new ServerPing.PlayerInfo(tmp, ServerStatusManager.EMPTY_ID);
-                }
-
-                event.getResponse().getPlayers().setSample(new ServerPing.PlayerInfo[] { info });
+                event.getResponse().getPlayers().setSample(new ServerPing.PlayerInfo[] { new ServerPing.PlayerInfo(tmp,
+                        ServerStatusManager.EMPTY_UUID) });
             }
         }
     }
