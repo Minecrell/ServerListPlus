@@ -45,4 +45,4 @@ The permission for all commands is `serverlistplus.admin`.
 
 Source
 ---------------------
-The plugin is completely open source and released under the terms and conditions of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0). You are free to redistribute or modify it to your likings, but please add a link to the [GitHub Page](https://github.com/Minecrell/ServerListPlus) of the plugin and redistribute it under a compatible license.
+The plugin is completely open source and released under the terms and conditions of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0). You are free to redistribute and/or modify it to your likings, but please add a link to the [GitHub Page](https://github.com/Minecrell/ServerListPlus) of the plugin and redistribute it under a compatible license.
