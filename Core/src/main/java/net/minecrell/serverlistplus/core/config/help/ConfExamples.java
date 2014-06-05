@@ -34,7 +34,7 @@ public final class ConfExamples {
     private ConfExamples() {}
 
     public static ServerStatusConf forServerStatus() {
-        // Feel free to add / improve some more examples
+        // Feel free to improve the examples
         ServerStatusConf conf = new ServerStatusConf();
         conf.Default = new ServerStatusConf.StatusConf();
         conf.Default.Description = Arrays.asList(

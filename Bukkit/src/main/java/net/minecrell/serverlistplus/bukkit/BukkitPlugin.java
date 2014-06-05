@@ -41,19 +41,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.server.ServerListPingEvent;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.comphenix.protocol.wrappers.WrappedServerPing;
 import org.mcstats.MetricsLite;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
     private LoginListener loginListener;
-    private PingEventListener pingListener;
     private StatusPacketListener packetListener;
 
     private MetricsLite metrics;
@@ -97,30 +96,49 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         }
     }
 
-    public final class PingEventListener implements Listener {
-        private PingEventListener() {}
-
-        @EventHandler
-        public void onServerListPing(ServerListPingEvent event) {
-            String player = loginListener != null ? core.resolveClient(event.getAddress()) : null;
-            String description = core.getStatus().getDescription(player);
-            if (description != null) event.setMotd(description);
-        }
-    }
-
     public final class StatusPacketListener extends PacketAdapter {
         public StatusPacketListener() {
             super(PacketAdapter.params(BukkitPlugin.this, PacketType.Status.Server.OUT_SERVER_INFO).optionAsync());
         }
 
         @Override // Server status packet
-        public void onPacketSending(PacketEvent event) {
-            String player = loginListener != null ? core.resolveClient(event.getPlayer().getAddress().getAddress()) : null;
-            String playerHover = core.getStatus().getPlayerHover(player);
-            if (playerHover != null) {
-                event.getPacket().getServerPings().read(0).setPlayers(
-                        Collections.singleton(new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, playerHover)));
+        public void onPacketSending(final PacketEvent event) {
+            final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
+            boolean playersHidden = ping.isPlayersVisible();
+
+            ServerStatusManager.Response response = core.getStatus().createResponse(event.getPlayer().getAddress()
+                    .getAddress(), playersHidden ? new ServerStatusManager.ResponseFetcher() :
+                    new ServerStatusManager.ResponseFetcher() {
+
+                @Override
+                public Integer fetchPlayersOnline() {
+                    return ping.getPlayersOnline();
+                }
+
+                @Override
+                public Integer fetchMaxPlayers() {
+                    return ping.getPlayersMaximum();
+                }
+            });
+
+            String message = response.getDescription();
+            if (message != null) ping.setMotD(message);
+
+            if (!playersHidden) {
+                Integer count = response.getPlayersOnline();
+                if (count != null) ping.setPlayersOnline(count);
+                count = response.getMaxPlayers();
+                if (count != null) ping.setPlayersMaximum(count);
+
+                message = response.getPlayerHover();
+                if (message != null) ping.setPlayers(Collections.singleton(new WrappedGameProfile(ServerStatusManager
+                        .EMPTY_UUID, message)));
             }
+
+            message = response.getVersion();
+            if (message != null) ping.setVersionName(message);
+            Integer protocol = response.getProtocol();
+            if (protocol != null) ping.setVersionProtocol(protocol);
         }
     }
 
@@ -172,18 +190,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void statusChanged(ServerStatusManager status) {
-        if (status.hasDescription()) {
-            if (pingListener == null) {
-                this.registerListener(this.pingListener = new PingEventListener());
-                this.getLogger().info("Registered server ping listener.");
-            }
-        } else if (pingListener != null) {
-            this.unregisterListener(pingListener);
-            this.pingListener = null;
-            this.getLogger().info("Unregistered server ping listener.");
-        }
-
-        if (status.hasPlayerHover()) {
+        if (status.hasChanges()) {
             if (packetListener == null) {
                 ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener = new StatusPacketListener());
                 this.getLogger().info("Registered status packet listener.");

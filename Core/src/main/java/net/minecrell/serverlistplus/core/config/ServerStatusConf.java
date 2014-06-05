@@ -47,11 +47,12 @@ public class ServerStatusConf {
         public VersionConf Version;
 
         public static class PlayersConf {
+            public List<Integer> Online, Max;
             public List<String> Hover;
         }
 
         public static class VersionConf {
-            public String Name;
+            public List<String> Name;
             public Integer Protocol;
         }
     }

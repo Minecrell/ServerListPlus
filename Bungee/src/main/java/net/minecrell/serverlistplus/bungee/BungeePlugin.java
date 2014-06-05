@@ -90,15 +90,44 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         @EventHandler
         public void onProxyPing(ProxyPingEvent event) {
             if (event.getResponse() == null) return;
-            String player = loginListener != null ? core.resolveClient(event.getConnection().getAddress().getAddress()) :
-                    null;
+            final ServerPing ping = event.getResponse();
+            final ServerPing.Players players = ping.getPlayers();
 
-            String tmp = core.getStatus().getDescription(player);
-            if (tmp != null) event.getResponse().setDescription(tmp);
-            tmp = core.getStatus().getPlayerHover(player);
-            if (tmp != null) {
-                event.getResponse().getPlayers().setSample(new ServerPing.PlayerInfo[] { new ServerPing.PlayerInfo(tmp,
+            ServerStatusManager.Response response = core.getStatus().createResponse(event.getConnection().getAddress()
+                            .getAddress(), players == null ? new ServerStatusManager.ResponseFetcher() :
+                    new ServerStatusManager.ResponseFetcher() {
+
+                @Override
+                public Integer fetchPlayersOnline() {
+                    return players.getOnline();
+                }
+
+                @Override
+                public Integer fetchMaxPlayers() {
+                    return players.getMax();
+                }
+            });
+
+            String message = response.getDescription();
+            if (message != null) ping.setDescription(message);
+
+            if (players != null) {
+                Integer count = response.getPlayersOnline();
+                if (count != null) players.setOnline(count);
+                count = response.getMaxPlayers();
+                if (count != null) players.setMax(count);
+
+                message = response.getPlayerHover();
+                if (message != null) players.setSample(new ServerPing.PlayerInfo[]{ new ServerPing.PlayerInfo(message,
                         ServerStatusManager.EMPTY_UUID) });
+            }
+
+            ServerPing.Protocol version = ping.getVersion();
+            if (version != null) {
+                message = response.getVersion();
+                if (message != null) version.setName(message);
+                Integer protocol = response.getProtocol();
+                if (protocol != null) version.setProtocol(protocol);
             }
         }
     }

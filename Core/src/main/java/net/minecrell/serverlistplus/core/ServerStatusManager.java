@@ -24,79 +24,100 @@
 package net.minecrell.serverlistplus.core;
 
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
+import net.minecrell.serverlistplus.core.replacer.DynamicReplacer;
+import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
 import net.minecrell.serverlistplus.core.util.CoreManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Pattern;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 
 public class ServerStatusManager extends CoreManager {
-    private static final Pattern PLAYER_PATTERN = Pattern.compile("%player%", Pattern.LITERAL);
     public static final String EMPTY_ID = "0-0-0-0-0";
     public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
 
     private static class ServerStatus {
         private final ImmutableList<String> description, playerHover;
+        private final ImmutableList<Integer> online, max;
+        private final ImmutableList<String> version;
+        private final Integer protocol;
 
-        private ServerStatus() {
-            this(null, null);
-        }
-
-        private ServerStatus(ImmutableList<String> description, ImmutableList<String> playerHover) {
+        private ServerStatus(ImmutableList<String> description, ImmutableList<String> playerHover,
+                             ImmutableList<Integer> online, ImmutableList<Integer> max, ImmutableList<String> version,
+                             Integer protocol) {
             this.description = description;
             this.playerHover = playerHover;
+            this.online = online;
+            this.max = max;
+            this.version = version;
+            this.protocol = protocol;
         }
     }
 
     private ServerStatus def, personalized;
+    private Multimap<String, DynamicReplacer> replacers;
 
     public ServerStatusManager(ServerListPlusCore core) {
         super(core);
     }
 
     public void reload() {
+        if (replacers != null)
+            replacers.clear();
+        this.replacers = HashMultimap.create();
+
         ServerStatusConf conf = core.getConf().getStorage().get(ServerStatusConf.class);
         if (conf != null) {
             this.def = reload(conf.Default);
             this.personalized = reload(conf.Personalized);
         } else {
-            this.def = this.personalized = new ServerStatus();
+            this.def = this.personalized = null;
         }
 
         core.getPlugin().statusChanged(this);
     }
 
-    private ServerStatus reload(ServerStatusConf.StatusConf conf) {
-        if (conf != null) {
-            String[] descriptions = null;
-            List<String> confDescriptions = conf.Description;
-            if (!Helper.nullOrEmpty(confDescriptions)) {
-                descriptions = new String[conf.Description.size()];
-                for (int i = 0; i < descriptions.length; i++)
-                    descriptions[i] = core.getPlugin().colorize(confDescriptions.get(i));
-            }
+    private ImmutableList<String> readMessages(List<String> messages) {
+        String[] result = null;
+        if (!Helper.nullOrEmpty(messages)) {
+            result = new String[messages.size()];
+            for (int i = 0; i < result.length; i++)
+                result[i] = ReplacementManager.replaceStatic(core, messages.get(i));
+            for (String s : result)
+                replacers.putAll(s, ReplacementManager.findDynamic(s));
+        }
 
-            String[] playerHover = null;
-            if (conf.Players != null) {
-                List<String> confPlayerHover = conf.Players.Hover;
-                if (!Helper.nullOrEmpty(confPlayerHover)) {
-                    playerHover = new String[confPlayerHover.size()];
-                    for (int i = 0; i < playerHover.length; i++)
-                        playerHover[i] = core.getPlugin().colorize(confPlayerHover.get(i));
-                }
-            }
-
-            return new ServerStatus(descriptions != null ? ImmutableList.copyOf(descriptions) : null,
-                    playerHover != null ? ImmutableList.copyOf(playerHover) : null);
-        } else return new ServerStatus();
+        return Helper.makeImmutable(result);
     }
 
-    private static String personalize(String s, String playerName) {
-        return PLAYER_PATTERN.matcher(s).replaceAll(playerName);
+    private ServerStatus reload(ServerStatusConf.StatusConf conf) {
+        if (conf != null) {
+            ImmutableList<String> descriptions = readMessages(conf.Description), playerHover = null;
+            ImmutableList<Integer> online = null, max = null;
+            ImmutableList<String> version = null; Integer protocol = null;
+
+            if (conf.Players != null) {
+                playerHover = readMessages(conf.Players.Hover);
+                online = Helper.makeImmutable(conf.Players.Online);
+                max = Helper.makeImmutable(conf.Players.Max);
+            }
+
+            if (conf.Version != null) {
+                version = readMessages(conf.Version.Name);
+                protocol = conf.Version.Protocol;
+            }
+
+            if (descriptions == null && playerHover == null && online == null && max == null && version == null &&
+                    protocol == null) return null;
+            return new ServerStatus(descriptions, playerHover, online, max, version, protocol);
+        } else return null;
     }
 
     public boolean isEnabled() {
@@ -104,34 +125,109 @@ public class ServerStatusManager extends CoreManager {
     }
 
     public boolean hasChanges() {
-        return isEnabled() && (hasDescription() || hasPlayerHover());
+        return isEnabled() && (def != null || personalized != null);
     }
 
-    public boolean hasDescription() {
-        return isEnabled() && (def.description != null || personalized.description != null);
+    public Response createResponse(InetAddress client, ResponseFetcher fetcher) {
+        return this.createResponse(core.resolveClient(client), fetcher);
     }
 
-    public String getDescription() {
-        return def.description != null ? Helper.nextEntry(ThreadLocalRandom.current(), def.description) : null;
+    public Response createResponse(String playerName, ResponseFetcher fetcher) {
+        return new Response(playerName, fetcher);
     }
 
-    public String getDescription(String playerName) {
-        if (playerName == null) return this.getDescription();
-        return personalized.description != null ? personalize(Helper.nextEntry(ThreadLocalRandom.current(),
-                personalized.description), playerName) : this.getDescription();
+    public static class ResponseFetcher {
+
+        public Integer fetchPlayersOnline() {
+            return null;
+        }
+
+        public Integer fetchMaxPlayers() {
+            return null;
+        }
     }
 
-    public boolean hasPlayerHover() {
-        return isEnabled() && (def.playerHover != null || personalized.playerHover != null);
+    public class Response {
+        private final ResponseFetcher fetcher;
+        private final String playerName;
+        private Integer online, max;
+
+        private Response(String playerName, ResponseFetcher fetcher) {
+            this.fetcher = Preconditions.checkNotNull(fetcher, "fetcher");
+            this.playerName = personalized != null ? playerName : null;
+        }
+
+        public ServerListPlusCore getCore() {
+            return core;
+        }
+
+        public String getPlayerName() {
+            return playerName;
+        }
+
+        public Integer fetchPlayersOnline() {
+            if (online == null) {
+                // First try to get it from the configuration
+                this.online = this.getPlayersOnline();
+                if (online == null)
+                    // Ok, let's get it from the response instead
+                    this.online = fetcher.fetchPlayersOnline();
+            }
+
+            return online;
+        }
+
+        public Integer getPlayersOnline() {
+            if (online == null)
+                this.online = random(playerName != null && personalized.online != null ? personalized.online : def.online);
+            return online;
+        }
+
+        public Integer fetchMaxPlayers() {
+            if (max == null) {
+                // First try to get it from the configuration
+                this.max = this.getMaxPlayers();
+                if (max == null)
+                    // Ok, let's get it from the response instead
+                    this.max = fetcher.fetchMaxPlayers();
+            }
+
+            return max;
+        }
+
+        public Integer getMaxPlayers() {
+            if (max == null)
+                this.max = random(playerName != null && personalized.max != null ? personalized.max : def.max);
+            return max;
+        }
+
+        public String getDescription() {
+            return prepareRandom(this, playerName != null && personalized.description != null ? personalized.description :
+                    def.description);
+        }
+
+        public String getPlayerHover() {
+            return prepareRandom(this, playerName != null && personalized.playerHover != null ? personalized.playerHover :
+                    def.playerHover);
+        }
+
+        public String getVersion() {
+            return prepareRandom(this, playerName != null && personalized.version != null ? personalized.version :
+                    def.version);
+        }
+
+        public Integer getProtocol() {
+            return playerName != null && personalized.protocol != null ? personalized.protocol : def.protocol;
+        }
     }
 
-    public String getPlayerHover() {
-        return def.playerHover != null ? Helper.nextEntry(ThreadLocalRandom.current(), def.playerHover) : null;
+    private String prepareRandom(Response response, List<String> list) {
+        String s = random(list);
+        return s != null ? ReplacementManager.replaceDynamic(response, s, replacers.get(s)) : null;
     }
 
-    public String getPlayerHover(String playerName) {
-        if (playerName == null) return this.getPlayerHover();
-        return personalized.playerHover != null ? personalize(Helper.nextEntry(ThreadLocalRandom.current(),
-                personalized.playerHover), playerName) : this.getPlayerHover();
+    private static <T> T random(List<T> list) {
+        if (list == null) return null;
+        return list.size() > 1 ? Helper.nextEntry(ThreadLocalRandom.current(), list) : list.get(0);
     }
 }

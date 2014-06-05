@@ -123,7 +123,7 @@ public class ServerListPlusCore {
     }
 
     public String resolveClient(InetAddress client) {
-        return playerTracker.getIfPresent(client.getHostAddress());
+        return this.playerTracker != null ? playerTracker.getIfPresent(client.getHostAddress()) : null;
     }
 
     public void executeCommand(ServerCommandSender sender, String cmd, String[] args) {

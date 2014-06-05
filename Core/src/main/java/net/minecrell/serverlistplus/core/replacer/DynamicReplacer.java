@@ -21,19 +21,11 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.config;
+package net.minecrell.serverlistplus.core.replacer;
 
-import net.minecrell.serverlistplus.core.config.help.Description;
+import net.minecrell.serverlistplus.core.ServerStatusManager;
 
-@Description({
-        "General options about the plugin.",
-        "Stats: Enable/disable sending plugin statistics.",
-        "PlayerTracking: Enable/disable tracking of player names and their IP-Addresses.",
-        "UnknownPlayerName: The player name that is used to replace '%player%' in the",
-        "                   default profile."
-})
-public class PluginConf {
-    public boolean Stats = true;
-    public boolean PlayerTracking = true;
-    public String UnknownPlayerName = "player";
+public interface DynamicReplacer extends StaticReplacer {
+    boolean find(String s);
+    String replace(ServerStatusManager.Response response, String s);
 }

@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 
@@ -47,6 +48,16 @@ public final class Helper {
 
     public static boolean nullOrEmpty(Iterable<?> iterable) {
         return iterable == null || Iterables.isEmpty(iterable);
+    }
+
+    public static <T> ImmutableList<T> makeImmutable(T[] elements) {
+        if (nullOrEmpty(elements)) return null;
+        return ImmutableList.copyOf(elements);
+    }
+
+    public static <T> ImmutableList<T> makeImmutable(Collection<T> elements) {
+        if (nullOrEmpty(elements)) return null;
+        return ImmutableList.copyOf(elements);
     }
 
     public static <K, V, T extends Map<K, V>> int mergeMaps(T main, Map<K, V> merge) {
