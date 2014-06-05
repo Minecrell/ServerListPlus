@@ -50,7 +50,7 @@ Statistics
 ---------------------
 The plugin is collecting some information about your server only for **statistical purposes**. It uses the [MCStats / Plugin Metrics](http://mcstats.org/learn-more/) system to provide the collected information for everyone at the [ServerListPlus page on MCStats](http://mcstats.org/plugin/ServerListPlus). It is **not** possible to track a special server from the collected data. This is enabled by default so if you do *not* want the plugin to collect information about your server, you can disable it in the plugin configuration section by setting `Stats` to `false`.
 
-This is the statistical information collected from your server:
+These are the statistical information collected from your server:
 
 - The version of the Metrics implementation used by the plugin.
 - Plugin and Server version.
