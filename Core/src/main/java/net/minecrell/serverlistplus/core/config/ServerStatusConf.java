@@ -30,12 +30,15 @@ import java.util.List;
 @Description({
         "Customize your server list status here.",
         "Currently, you can change the status description (MotD) and add custom messages",
-        "when a player hovers the player amount in the server list.",
+        "when a player hovers the player amount in the server list. As of 3.1, changing",
+        "the version name that is displayed when an outdated client pings your server",
+        "is also possible. This can be also used for colored slots.",
         " - Add multiple entries for random messages.",
         " - Save the file with valid UTF-8 encoding for special characters.",
         " - Color codes are possible using the usual color codes.",
         " - The default status is used when the player name is unknown, in the personalized",
-        "   status you can use '%player%' to replace it with the player's name."
+        "   status you can use '%player%' to replace it with the player's name.",
+        " - Information about colored slots: <TODO>"
 })
 public class ServerStatusConf {
     public StatusConf Default;
