@@ -49,6 +49,10 @@ public class ServerStatusManager extends CoreManager {
         private final ImmutableList<String> version;
         private final Integer protocol;
 
+        private ServerStatus() {
+            this(null, null, null, null, null, null);
+        }
+
         private ServerStatus(ImmutableList<String> description, ImmutableList<String> playerHover,
                              ImmutableList<Integer> online, ImmutableList<Integer> max, ImmutableList<String> version,
                              Integer protocol) {
@@ -58,6 +62,11 @@ public class ServerStatusManager extends CoreManager {
             this.max = max;
             this.version = version;
             this.protocol = protocol;
+        }
+
+        private boolean hasChanges() {
+            return description != null || playerHover != null || online != null || max != null || version != null ||
+                    protocol != null;
         }
     }
 
@@ -78,7 +87,7 @@ public class ServerStatusManager extends CoreManager {
             this.def = reload(conf.Default);
             this.personalized = reload(conf.Personalized);
         } else {
-            this.def = this.personalized = null;
+            this.def = this.personalized = new ServerStatus();
         }
 
         core.getPlugin().statusChanged(this);
@@ -114,10 +123,8 @@ public class ServerStatusManager extends CoreManager {
                 protocol = conf.Version.Protocol;
             }
 
-            if (descriptions == null && playerHover == null && online == null && max == null && version == null &&
-                    protocol == null) return null;
             return new ServerStatus(descriptions, playerHover, online, max, version, protocol);
-        } else return null;
+        } else return new ServerStatus();
     }
 
     public boolean isEnabled() {
@@ -125,7 +132,7 @@ public class ServerStatusManager extends CoreManager {
     }
 
     public boolean hasChanges() {
-        return isEnabled() && (def != null || personalized != null);
+        return isEnabled() && ((def != null && def.hasChanges()) || (personalized != null && personalized.hasChanges()));
     }
 
     public Response createResponse(InetAddress client, ResponseFetcher fetcher) {
@@ -154,7 +161,7 @@ public class ServerStatusManager extends CoreManager {
 
         private Response(String playerName, ResponseFetcher fetcher) {
             this.fetcher = Preconditions.checkNotNull(fetcher, "fetcher");
-            this.playerName = personalized != null ? playerName : null;
+            this.playerName = playerName;
         }
 
         public ServerListPlusCore getCore() {
