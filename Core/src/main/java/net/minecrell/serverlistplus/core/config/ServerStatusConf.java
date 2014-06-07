@@ -38,7 +38,8 @@ import java.util.List;
         " - Color codes are possible using the usual color codes.",
         " - The default status is used when the player name is unknown, in the personalized",
         "   status you can use '%player%' to replace it with the player's name.",
-        " - Information about colored slots: http://git.io/M66qiw"
+        " - Additional placeholders: '%online%', '%max%' player count",
+        " - More information about colored slots: http://git.io/M66qiw"
 })
 public class ServerStatusConf {
     public StatusConf Default;
