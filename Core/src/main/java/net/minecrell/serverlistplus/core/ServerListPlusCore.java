@@ -172,7 +172,7 @@ public class ServerListPlusCore {
             }
         }
 
-        sender.sendMessages(Format.GOLD + info.getDisplayName());
+        sender.sendMessages(Format.GOLD + info.getName() + plugin.getServerType() + " v" + info.getVersion());
         if (info.getDescription() != null)
             sender.sendMessages(Format.GRAY + info.getDescription());
         if (info.getAuthor() != null)

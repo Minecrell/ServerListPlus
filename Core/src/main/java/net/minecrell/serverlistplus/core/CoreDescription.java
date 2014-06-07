@@ -50,10 +50,6 @@ public class CoreDescription {
         return version;
     }
 
-    public String getDisplayName() {
-        return name + " v" + version;
-    }
-
     public String getDescription() {
         return description;
     }
