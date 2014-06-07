@@ -54,7 +54,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
-            return this.replace(s, UNKNOWN);
+            return this.replace(s, core.getConf(PluginConf.class).UnknownPlayerCount);
         }
     },
     MAX_PLAYERS ("%max%") {
@@ -66,11 +66,9 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
-            return this.replace(s, UNKNOWN);
+            return this.replace(s, core.getConf(PluginConf.class).UnknownPlayerCount);
         }
     };
-
-    private static final String UNKNOWN = "???";
 
     private final Pattern pattern;
 
