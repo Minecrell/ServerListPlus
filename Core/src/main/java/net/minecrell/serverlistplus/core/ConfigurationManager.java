@@ -93,8 +93,8 @@ public class ConfigurationManager extends CoreManager {
                             newStorage.setUnsafe(obj.getClass(), obj);
                             this.getLogger().info("Loaded configuration: " + obj.getClass().getSimpleName());
                         } catch (YAMLException e) {
-                            this.getLogger().warning(e, "Unable to parse configuration part from the configuration file. " +
-                                    "Make sure the YAML syntax is valid!");
+                            this.getLogger().warning(e, "Unable to parse configuration part from the " +
+                                    "configuration file. Make sure the YAML syntax is valid!");
                         }
                     }
                 }
@@ -108,10 +108,11 @@ public class ConfigurationManager extends CoreManager {
             if (generated > 0) {
                 this.getLogger().infoF("Generated %d configurations.", generated);
                 if (confExists)
-                    this.getLogger().warning(generated + " configurations could not be found in the configuration file. " +
-                            "Your configuration might be outdated, or it contains invalid YAML syntax. If you want to " +
-                            "regenerate the missing configuration parts type '/ServerListPlus save'. Please not that this " +
-                            "will delete all invalid configuration parts as well as any custom comments. A backup will be " +
+                    this.getLogger().warning(generated + " configurations could not be found in the " +
+                            "configuration file. Your configuration might be outdated, " +
+                            "or it contains invalid YAML syntax. If you want to regenerate the missing " +
+                            "configuration parts type '/ServerListPlus save'. Please not that this will delete " +
+                            "all invalid configuration parts as well as any custom comments. A backup will be " +
                             "created automatically.");
             }
 
@@ -123,10 +124,12 @@ public class ConfigurationManager extends CoreManager {
             core.getPlugin().configChanged(storage);
             this.getLogger().info("Configuration reload complete.");
         } catch (YAMLException e) {
-            throw this.getLogger().process(e, "Unable to parse the configuration. Make sure it is valid YAML syntax.");
+            throw this.getLogger().process(e, "Unable to parse the configuration. Make sure it is valid YAML " +
+                    "syntax.");
         } catch (IOException e) {
-            throw this.getLogger().processF(e, "Unable to access the configuration file. Make sure that it is saved using " +
-                    "the correct charset (%s) and accessible by the server.", IOUtil.CHARSET.displayName());
+            throw this.getLogger().processF(e, "Unable to access the configuration file. Make sure that it is " +
+                    "saved using the correct charset (%s) and accessible by the server.",
+                    IOUtil.CHARSET.displayName());
         } catch (Exception e) {
             throw this.getLogger().process(e, "An internal error occurred while reloading the configuration!");
         }
@@ -173,8 +176,8 @@ public class ConfigurationManager extends CoreManager {
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "An error occurred while generating the YAML configuration!");
         } catch (IOException e) {
-            throw this.getLogger().processF(e, "Unable to access the configuration file. Make sure that it is accessible " +
-                    "by the server.", IOUtil.CHARSET.displayName());
+            throw this.getLogger().processF(e, "Unable to access the configuration file. Make sure that it is " +
+                    "accessible by the server.", IOUtil.CHARSET.displayName());
         } catch (Exception e) {
             throw this.getLogger().process(e, "An internal error occurred while saving the configuration!");
         }

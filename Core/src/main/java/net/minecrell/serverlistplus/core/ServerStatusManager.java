@@ -54,8 +54,8 @@ public class ServerStatusManager extends CoreManager {
         }
 
         private ServerStatus(ImmutableList<String> description, ImmutableList<String> playerHover,
-                             ImmutableList<Integer> online, ImmutableList<Integer> max, ImmutableList<String> version,
-                             Integer protocol) {
+                             ImmutableList<Integer> online, ImmutableList<Integer> max,
+                             ImmutableList<String> version, Integer protocol) {
             this.description = description;
             this.playerHover = playerHover;
             this.online = online;
@@ -65,8 +65,8 @@ public class ServerStatusManager extends CoreManager {
         }
 
         private boolean hasChanges() {
-            return description != null || playerHover != null || online != null || max != null || version != null ||
-                    protocol != null;
+            return description != null || playerHover != null || online != null || max != null ||
+                    version != null || protocol != null;
         }
     }
 
@@ -132,7 +132,8 @@ public class ServerStatusManager extends CoreManager {
     }
 
     public boolean hasChanges() {
-        return isEnabled() && ((def != null && def.hasChanges()) || (personalized != null && personalized.hasChanges()));
+        return isEnabled() && ((def != null && def.hasChanges()) || (personalized != null && personalized
+                .hasChanges()));
     }
 
     public Response createResponse(InetAddress client, ResponseFetcher fetcher) {
@@ -186,7 +187,8 @@ public class ServerStatusManager extends CoreManager {
 
         public Integer getPlayersOnline() {
             if (online == null)
-                this.online = random(playerName != null && personalized.online != null ? personalized.online : def.online);
+                this.online = random(playerName != null && personalized.online != null ? personalized.online :
+                        def.online);
             return online;
         }
 
@@ -209,18 +211,18 @@ public class ServerStatusManager extends CoreManager {
         }
 
         public String getDescription() {
-            return prepareRandom(this, playerName != null && personalized.description != null ? personalized.description :
-                    def.description);
+            return prepareRandom(this, playerName != null && personalized.description != null ?
+                    personalized.description : def.description);
         }
 
         public String getPlayerHover() {
-            return prepareRandom(this, playerName != null && personalized.playerHover != null ? personalized.playerHover :
-                    def.playerHover);
+            return prepareRandom(this, playerName != null && personalized.playerHover != null ?
+                    personalized.playerHover : def.playerHover);
         }
 
         public String getVersion() {
-            return prepareRandom(this, playerName != null && personalized.version != null ? personalized.version :
-                    def.version);
+            return prepareRandom(this, playerName != null && personalized.version != null ?
+                    personalized.version : def.version);
         }
 
         public Integer getProtocol() {

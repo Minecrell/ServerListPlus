@@ -104,7 +104,8 @@ public class ServerListPlusLogger {
     }
 
     public ServerListPlusException process(Level level, Exception e, String message) {
-        return this.log(level, e, message) ? new CoreServerListPlusException(message, e) : (ServerListPlusException) e;
+        return this.log(level, e, message) ? new CoreServerListPlusException(message, e)
+                : (ServerListPlusException) e;
     }
 
     public ServerListPlusException processF(Level level, Exception e, String message, Object... args) {

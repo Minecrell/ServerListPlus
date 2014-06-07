@@ -42,7 +42,8 @@ public class SnakeYAML {
         this(dumperOptions, constructor, representer, false);
     }
 
-    public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer, boolean outdated) {
+    public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer,
+                     boolean outdated) {
         this.dumperOptions = Preconditions.checkNotNull(dumperOptions, "dumperOptions");
         this.constructor = Preconditions.checkNotNull(constructor, "constructor");
         this.representer = Preconditions.checkNotNull(representer, "representer");

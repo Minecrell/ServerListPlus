@@ -73,7 +73,8 @@ public class CoreDescription {
             Properties about = new Properties();
             about.load(core.getClass().getClassLoader().getResourceAsStream(ABOUT_FILE));
             return new CoreDescription(about.getProperty("Name"), about.getProperty("Version"),
-                    about.getProperty("Description"), about.getProperty("Author"), new URL(about.getProperty("Website")));
+                    about.getProperty("Description"), about.getProperty("Author"),
+                    new URL(about.getProperty("Website")));
         } catch (Exception e) {
             core.getLogger().severe(e, "Unable to load core info!");
             return new CoreDescription("ServerListPlus", "Unknown", null, null, null);

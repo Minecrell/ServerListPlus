@@ -57,7 +57,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!"); return;
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the core.", e); return;
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the core.", e);
+            return;
         }
 
         this.getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
@@ -93,8 +94,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             final ServerPing ping = event.getResponse();
             final ServerPing.Players players = ping.getPlayers();
 
-            ServerStatusManager.Response response = core.getStatus().createResponse(event.getConnection().getAddress()
-                            .getAddress(), players == null ? new ServerStatusManager.ResponseFetcher() :
+            ServerStatusManager.Response response = core.getStatus().createResponse(event.getConnection().
+                    getAddress().getAddress(), players == null ? new ServerStatusManager.ResponseFetcher() :
                     new ServerStatusManager.ResponseFetcher() {
 
                 @Override
@@ -118,8 +119,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                 if (count != null) players.setMax(count);
 
                 message = response.getPlayerHover();
-                if (message != null) players.setSample(new ServerPing.PlayerInfo[]{ new ServerPing.PlayerInfo(message,
-                        ServerStatusManager.EMPTY_UUID) });
+                if (message != null) players.setSample(new ServerPing.PlayerInfo[]{
+                        new ServerPing.PlayerInfo(message, ServerStatusManager.EMPTY_UUID) });
             }
 
             ServerPing.Protocol version = ping.getVersion();

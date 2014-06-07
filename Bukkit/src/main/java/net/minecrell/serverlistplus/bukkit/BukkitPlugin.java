@@ -131,8 +131,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                 if (count != null) ping.setPlayersMaximum(count);
 
                 message = response.getPlayerHover();
-                if (message != null) ping.setPlayers(Collections.singleton(new WrappedGameProfile(ServerStatusManager
-                        .EMPTY_UUID, message)));
+                if (message != null) ping.setPlayers(Collections.singleton(
+                        new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, message)));
             }
 
             message = response.getVersion();
@@ -192,7 +192,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     public void statusChanged(ServerStatusManager status) {
         if (status.hasChanges()) {
             if (packetListener == null) {
-                ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener = new StatusPacketListener());
+                ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener =
+                        new StatusPacketListener());
                 this.getLogger().info("Registered status packet listener.");
             }
         } else if (packetListener != null) {

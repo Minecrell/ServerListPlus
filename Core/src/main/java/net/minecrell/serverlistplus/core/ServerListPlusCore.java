@@ -84,8 +84,8 @@ public class ServerListPlusCore {
         CoreConf conf = this.getConf(CoreConf.class);
         boolean enabled = this.getConf(PluginConf.class).PlayerTracking;
 
-        if (enabled &&
-                (playerTrackerConf != null && conf.Caches != null && playerTrackerConf.equals(conf.Caches.PlayerTracking)))
+        if (enabled && (playerTrackerConf != null && conf.Caches != null && playerTrackerConf.equals(conf.Caches
+                .PlayerTracking)))
             return;
 
         if (playerTracker != null) {
@@ -114,7 +114,8 @@ public class ServerListPlusCore {
         this.reloadCaches();
         this.profileManager.reload();
         if (!profileManager.isEnabled())
-            this.getLogger().warning("ServerListPlus profile is not enabled, nothing will be changed on the server!");
+            this.getLogger().warning("ServerListPlus profile is not enabled, nothing will be changed on the " +
+                    "server!");
         statusManager.reload();
     }
 
@@ -137,7 +138,8 @@ public class ServerListPlusCore {
                     this.reload();
                     sender.sendMessages(Format.GREEN + "Configuration successfully reloaded!");
                 } catch (ServerListPlusException e) {
-                    sender.sendMessages(Format.RED + "An internal error occurred while reloading the configuration.");
+                    sender.sendMessages(Format.RED + "An internal error occurred while reloading the " +
+                            "configuration.");
                 }
 
                 return;
@@ -159,8 +161,8 @@ public class ServerListPlusCore {
 
                 try {
                     profileManager.setEnabled(enable);
-                    sender.sendMessages(Format.GREEN + "ServerListPlus has been successfully " + (enable ? "enabled" :
-                            "disabled") + "!");
+                    sender.sendMessages(Format.GREEN + "ServerListPlus has been successfully " + (enable ?
+                            "enabled" : "disabled") + "!");
                 } catch (ServerListPlusException e) {
                     sender.sendMessages(Format.RED + "An internal error occurred while " + (enable ? "enabling" :
                             "disabling") + " ServerListPlus.");
@@ -171,13 +173,17 @@ public class ServerListPlusCore {
         }
 
         sender.sendMessages(Format.GOLD + info.getDisplayName());
-        if (info.getDescription() != null) sender.sendMessages(Format.GRAY + info.getDescription());
-        if (info.getAuthor() != null) sender.sendMessages(Format.GOLD + "Author: " + Format.GRAY + info.getAuthor());
-        if (info.getWebsite() != null) sender.sendMessages(Format.GOLD + "Website: " + Format.GRAY + info.getWebsite());
+        if (info.getDescription() != null)
+            sender.sendMessages(Format.GRAY + info.getDescription());
+        if (info.getAuthor() != null)
+            sender.sendMessages(Format.GOLD + "Author: " + Format.GRAY + info.getAuthor());
+        if (info.getWebsite() != null)
+            sender.sendMessages(Format.GOLD + "Website: " + Format.GRAY + info.getWebsite());
 
         sender.sendMessages(
                 Format.GOLD + "Commands:",
-                buildCommandHelp("", "Display an information page about the plugin and list all available commands."),
+                buildCommandHelp("", "Display an information page about the plugin and list all available " +
+                        "commands."),
                 buildCommandHelp("reload", "Reload the plugin configuration."),
                 buildCommandHelp("save", "Save the plugin configuration."),
                 buildCommandHelp("enable", "Enable the plugin and start modifying the status ping."),

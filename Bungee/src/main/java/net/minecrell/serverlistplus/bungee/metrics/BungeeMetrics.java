@@ -98,7 +98,8 @@ public class BungeeMetrics {
         jsonData.addProperty("plugin_version", plugin.getDescription().getVersion());
         jsonData.addProperty("server_version", plugin.getProxy().getVersion());
 
-        jsonData.addProperty("auth_mode", plugin.getProxy().getConfigurationAdapter().getBoolean("online_mode", true) ? 1 : 0);
+        jsonData.addProperty("auth_mode", plugin.getProxy().getConfigurationAdapter().getBoolean("online_mode",
+                true) ? 1 : 0);
         jsonData.addProperty("players_online", plugin.getProxy().getOnlineCount());
 
         // New data as of R6

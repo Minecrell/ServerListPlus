@@ -52,8 +52,8 @@ public final class ServerListPlusYAML {
             representer.getPropertyUtils().setSkipMissingProperties(true);
         } catch (Throwable e) {
             outdatedYaml = true; // Meh, CraftBukkit is using an outdated SnakeYAML version
-            core.getLogger().warning("Your server is running an outdated YAML version. The configuration loading might be " +
-                    "working incorrectly.");
+            core.getLogger().warning("Your server is running an outdated YAML version. The configuration loading" +
+                    " might be working incorrectly.");
         }
 
         String[] header = null;
