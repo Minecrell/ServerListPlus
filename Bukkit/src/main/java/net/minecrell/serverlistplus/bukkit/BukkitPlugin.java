@@ -104,7 +104,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         @Override // Server status packet
         public void onPacketSending(final PacketEvent event) {
             final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
-            boolean playersHidden = ping.isPlayersVisible();
+            boolean playersHidden = !ping.isPlayersVisible();
 
             ServerStatusManager.Response response = core.getStatus().createResponse(event.getPlayer().getAddress()
                     .getAddress(), playersHidden ? new ServerStatusManager.ResponseFetcher() :
