@@ -69,6 +69,7 @@ public class BungeeMetrics {
 
         this.task = new TimerTask() {
             private boolean firstPost = true;
+            private boolean errorReported = false;
 
             @Override
             public void run() {
@@ -76,7 +77,10 @@ public class BungeeMetrics {
                     postPlugin(!firstPost);
                     firstPost = false;
                 } catch (Throwable e) {
-                    plugin.getLogger().warning("Failed to submit plugin statistics: " + e.getMessage());
+                    if (!errorReported) {
+                        plugin.getLogger().warning("Failed to submit plugin statistics: " + e.getMessage());
+                        errorReported = true;
+                    }
                 }
             }
         };
