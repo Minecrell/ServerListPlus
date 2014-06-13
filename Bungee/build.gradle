@@ -22,8 +22,7 @@
  */
 
 repositories {
-    // TODO: Change back to HTTPS once it is working again
-    maven { url 'http://oss.sonatype.org/content/groups/public' }
+    maven { url 'https://oss.sonatype.org/content/groups/public' }
 }
 
 apply from: rootProject.file('gradle/shadow.gradle')
