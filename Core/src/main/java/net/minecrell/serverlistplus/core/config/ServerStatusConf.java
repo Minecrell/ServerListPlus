@@ -49,7 +49,7 @@ public class ServerStatusConf {
         public List<String> Description;
         public PlayersConf Players;
         public VersionConf Version;
-        public FaviconConf Favicon;
+        public List<String> Favicon;
 
         public static class PlayersConf {
             public List<Integer> Online, Max;
@@ -59,12 +59,6 @@ public class ServerStatusConf {
         public static class VersionConf {
             public List<String> Name;
             public Integer Protocol;
-        }
-
-        public static class FaviconConf {
-            public List<String> Files;
-            public List<String> Folders;
-            public List<String> URLs;
         }
     }
 }
