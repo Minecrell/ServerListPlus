@@ -31,8 +31,10 @@ apply from: rootProject.file('gradle/shadow.gradle')
 
 ext {
     // TODO: Better fix?
-    resourceTokens = new LinkedHashMap<String, String>(resourceTokens)
+    resourceTokens = resourceTokens.clone()
     pluginPackage = javaPackage + '.bukkit'
+    pluginClass = pluginPackage + '.BukkitPlugin'
+    resourceTokens.PluginClass = pluginClass
 }
 
 dependencies {
@@ -41,8 +43,6 @@ dependencies {
             'com.comphenix.protocol:ProtocolLib:3.4.0',
             'org.mcstats.bukkit:metrics-lite:R7'
 }
-
-resourceTokens.put 'PluginClass', pluginPackage + '.BukkitPlugin'
 
 processResources {
     include 'plugin.yml'
