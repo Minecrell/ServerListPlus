@@ -36,6 +36,6 @@ public class CoreConf {
     public CachesConf Caches = new CachesConf();
 
     public static class CachesConf {
-        public String PlayerTracking = "expireAfterWrite=2h";
+        public String PlayerTracking = "";
     }
 }
