@@ -153,15 +153,6 @@ public class ConfigurationManager extends CoreManager {
             // TODO: Stupid fix for CraftBukkit?
             try (BufferedWriter writer = IOUtil.newBufferedWriter(configPath)) {
                 yaml.writeHeader(writer);
-
-                if (yaml.snakeYAML().isOutdated())
-                    yaml.writeComments(writer,
-                            "WARNING: The YAML version on your server is out of date.",
-                            "To generate the configuration still correctly, ServerListPlus generated",
-                            "the configuration in compatibility mode. There might be errors when",
-                            "the server tries loading the configuration again."
-                    );
-
                 yaml.newLine(writer);
 
                 for (Object config : storage.get()) {
