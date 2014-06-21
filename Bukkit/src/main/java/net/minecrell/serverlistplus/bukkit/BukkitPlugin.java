@@ -27,6 +27,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
+import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -180,8 +181,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource,
                     WrappedServerPing.CompressedImage>() {
                 @Override
-                public WrappedServerPing.CompressedImage load(FaviconSource key) throws Exception {
-                    return WrappedServerPing.CompressedImage.fromPng(key.getLoader().load(core, key.getSource()));
+                public WrappedServerPing.CompressedImage load(FaviconSource source) throws Exception {
+                    return WrappedServerPing.CompressedImage.fromPng(FaviconHelper.loadFavicon(core, source));
                 }
             });
         } else {

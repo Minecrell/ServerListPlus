@@ -28,6 +28,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
+import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -171,8 +172,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (spec != null) {
             this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource, Favicon>() {
                 @Override
-                public Favicon load(FaviconSource key) throws Exception {
-                    return Favicon.create(key.getLoader().load(core, key.getSource()));
+                public Favicon load(FaviconSource source) throws Exception {
+                    return Favicon.create(FaviconHelper.loadFavicon(core, source));
                 }
             });
         } else {

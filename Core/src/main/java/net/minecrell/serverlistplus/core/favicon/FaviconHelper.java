@@ -23,6 +23,8 @@
 
 package net.minecrell.serverlistplus.core.favicon;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,5 +40,9 @@ public final class FaviconHelper {
 
     public static BufferedImage fromURL(URL url) throws IOException {
         return ImageIO.read(url);
+    }
+
+    public static BufferedImage loadFavicon(ServerListPlusCore core, FaviconSource source) throws IOException {
+        return source.getLoader().load(core, source.getSource());
     }
 }
