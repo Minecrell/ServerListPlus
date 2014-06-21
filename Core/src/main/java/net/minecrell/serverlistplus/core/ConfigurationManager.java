@@ -150,7 +150,6 @@ public class ConfigurationManager extends CoreManager {
                 Files.createDirectories(configPath.getParent());
             }
 
-            // TODO: Stupid fix for CraftBukkit?
             try (BufferedWriter writer = IOUtil.newBufferedWriter(configPath)) {
                 yaml.writeHeader(writer);
                 yaml.newLine(writer);
