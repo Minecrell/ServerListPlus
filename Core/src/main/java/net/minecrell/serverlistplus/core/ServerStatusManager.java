@@ -39,7 +39,6 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.EnumSet;
@@ -147,11 +146,10 @@ public class ServerStatusManager extends CoreManager {
 
     private Set<String> findFolderFavicons(List<String> folders) {
         if (Helper.nullOrEmpty(folders)) return null;
-        final Path faviconFolder = core.getPlugin().getPluginFolder();
         final Set<String> favicons = new LinkedHashSet<>();
         boolean recursive = core.getConf(PluginConf.class).RecursiveFolderSearch;
         for (String folderPath : folders) {
-            Path folder = Paths.get(folderPath);
+            Path folder = core.getPlugin().getPluginFolder().resolve(folderPath);
             if (!Files.isDirectory(folder)) {
                 core.getLogger().warning("Invalid favicon folder in configuration: " + folder);
                 continue;
@@ -164,7 +162,7 @@ public class ServerStatusManager extends CoreManager {
                                 @Override
                                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                                     if (file.getFileName().endsWith(".png")) {
-                                        favicons.add(faviconFolder.relativize(file).toString());
+                                        favicons.add(file.toString());
                                     }
 
                                     return FileVisitResult.CONTINUE;
@@ -176,7 +174,7 @@ public class ServerStatusManager extends CoreManager {
             else
                 try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, "*.png")) {
                     for (Path file : dir) {
-                        favicons.add(faviconFolder.relativize(file).toString());
+                        favicons.add(file.toString());
                     }
                 } catch (IOException e) {
                     core.getLogger().warning(e, "Unable to get directory listing for " + folder);
