@@ -31,7 +31,6 @@ import net.minecrell.serverlistplus.core.util.InstanceStorage;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.LoadingCache;
 
