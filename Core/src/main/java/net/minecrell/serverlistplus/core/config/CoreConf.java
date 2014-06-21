@@ -28,14 +28,13 @@ import net.minecrell.serverlistplus.core.config.help.Description;
 @Description({
         "WARNING: Changes in this section can possibly damage your server!",
         "PlayerTracking Cache: Change settings here if you want to change the behaviour",
-        "   of the player tracking cache. For example if you set it to '' then it will",
-        "   not delete entries after a player was 2 hours offline from a server.",
-        "   More information: http://goo.gl/oYVk0F"
+        "   of the player tracking cache. Possible settings: http://goo.gl/oYVk0F",
 })
 public class CoreConf {
     public CachesConf Caches = new CachesConf();
 
     public static class CachesConf {
         public String PlayerTracking = "";
+        public String Favicon = "";
     }
 }
