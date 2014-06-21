@@ -183,6 +183,7 @@ public class ServerStatusManager extends CoreManager {
 
     private void addFavicons(ImmutableList.Builder<FaviconSource> list, Iterable<String> favicons,
                              FaviconLoader loader) {
+        if (Helper.nullOrEmpty(favicons)) return;
         for (String favicon : favicons)
             list.add(new FaviconSource(favicon, loader));
     }
