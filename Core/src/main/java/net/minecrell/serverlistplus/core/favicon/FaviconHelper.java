@@ -42,7 +42,7 @@ public final class FaviconHelper {
         return ImageIO.read(url);
     }
 
-    public static BufferedImage loadFavicon(ServerListPlusCore core, FaviconSource source) throws IOException {
+    public static BufferedImage load(ServerListPlusCore core, FaviconSource source) throws IOException {
         return source.getLoader().load(core, source.getSource());
     }
 }

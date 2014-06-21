@@ -173,7 +173,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource, Favicon>() {
                 @Override
                 public Favicon load(FaviconSource source) throws Exception {
-                    return Favicon.create(FaviconHelper.loadFavicon(core, source));
+                    return Favicon.create(FaviconHelper.load(core, source));
                 }
             });
         } else {

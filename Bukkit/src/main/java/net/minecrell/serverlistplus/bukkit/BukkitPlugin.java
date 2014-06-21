@@ -182,7 +182,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                     WrappedServerPing.CompressedImage>() {
                 @Override
                 public WrappedServerPing.CompressedImage load(FaviconSource source) throws Exception {
-                    return WrappedServerPing.CompressedImage.fromPng(FaviconHelper.loadFavicon(core, source));
+                    return WrappedServerPing.CompressedImage.fromPng(FaviconHelper.load(core, source));
                 }
             });
         } else {
