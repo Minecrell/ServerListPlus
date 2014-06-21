@@ -146,6 +146,10 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (message != null) ping.setVersionName(message);
             Integer protocol = response.getProtocol();
             if (protocol != null) ping.setVersionProtocol(protocol);
+
+            // TODO: Catch exceptions
+            FaviconSource favicon = response.getFavicon();
+            if (favicon != null) ping.setFavicon(faviconCache.getUnchecked(favicon));
         }
     }
 

@@ -324,6 +324,16 @@ public class ServerStatusManager extends CoreManager {
         public Integer getProtocol() {
             return playerName != null && personalized.protocol != null ? personalized.protocol : def.protocol;
         }
+
+        public FaviconSource getFavicon() {
+            FaviconSource favicon = random(playerName != null && personalized.favicon != null ?
+                    personalized.favicon : def.favicon);
+            if (favicon == null) return null;
+            Collection<DynamicReplacer> replacer = replacers.get(favicon.getSource());
+            if (replacer.size() > 0) return favicon.withSource(ReplacementManager.replaceDynamic(this,
+                    favicon.getSource(), replacer));
+            return favicon;
+        }
     }
 
     private String prepareRandom(Response response, List<String> list) {

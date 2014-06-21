@@ -138,6 +138,10 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                 Integer protocol = response.getProtocol();
                 if (protocol != null) version.setProtocol(protocol);
             }
+
+            // TODO: Catch exceptions
+            FaviconSource favicon = response.getFavicon();
+            if (favicon != null) ping.setFavicon(faviconCache.getUnchecked(favicon));
         }
     }
 
