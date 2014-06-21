@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.LoadingCache;
 
 /**
@@ -47,7 +48,7 @@ public interface ServerListPlusPlugin {
     String colorize(String s);
 
     void initialize(ServerListPlusCore core);
-    void reloadFaviconCache(CacheBuilder<Object, Object> builder);
+    void reloadFaviconCache(CacheBuilderSpec spec);
     void configChanged(InstanceStorage<Object> confs);
     void statusChanged(ServerStatusManager status);
 }

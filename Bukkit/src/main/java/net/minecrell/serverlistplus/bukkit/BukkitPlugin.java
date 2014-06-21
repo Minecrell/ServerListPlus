@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.logging.Level;
 
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
@@ -174,9 +175,10 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilder<Object, Object> builder) {
-        if (builder != null) {
-            this.faviconCache = builder.build(new CacheLoader<FaviconSource, WrappedServerPing.CompressedImage>() {
+    public void reloadFaviconCache(CacheBuilderSpec spec) {
+        if (spec != null) {
+            this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource,
+                    WrappedServerPing.CompressedImage>() {
                 @Override
                 public WrappedServerPing.CompressedImage load(FaviconSource key) throws Exception {
                     return WrappedServerPing.CompressedImage.fromPng(key.getLoader().load(core, key.getSource()));

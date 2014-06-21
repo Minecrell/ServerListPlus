@@ -36,6 +36,7 @@ import java.net.InetAddress;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheBuilderSpec;
 
 /**
  * Represents the core part of the ServerListPlus plugin.
@@ -128,11 +129,11 @@ public class ServerListPlusCore {
                 try {
                     Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
                     this.faviconCacheConf = conf.Caches.Favicon;
-                    plugin.reloadFaviconCache(CacheBuilder.from(faviconCacheConf));
+                    plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 } catch (IllegalArgumentException e) {
                     this.getLogger().severe(e, "Unable to create favicon cache using configuration settings.");
                     this.faviconCacheConf = this.getDefaultConf(CoreConf.class).Caches.Favicon;
-                    plugin.reloadFaviconCache(CacheBuilder.from(playerTrackerConf));
+                    plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 }
             } else
                 faviconCacheConf = null;

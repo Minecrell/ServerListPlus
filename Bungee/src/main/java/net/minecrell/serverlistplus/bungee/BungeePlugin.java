@@ -36,6 +36,7 @@ import net.minecrell.serverlistplus.core.util.InstanceStorage;
 import java.util.logging.Level;
 
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
@@ -166,9 +167,9 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilder<Object, Object> builder) {
-        if (builder != null) {
-            this.faviconCache = builder.build(new CacheLoader<FaviconSource, Favicon>() {
+    public void reloadFaviconCache(CacheBuilderSpec spec) {
+        if (spec != null) {
+            this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource, Favicon>() {
                 @Override
                 public Favicon load(FaviconSource key) throws Exception {
                     return Favicon.create(key.getLoader().load(core, key.getSource()));
