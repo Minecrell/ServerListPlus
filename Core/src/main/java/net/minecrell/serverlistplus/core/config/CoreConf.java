@@ -26,9 +26,8 @@ package net.minecrell.serverlistplus.core.config;
 import net.minecrell.serverlistplus.core.config.help.Description;
 
 @Description({
-        "WARNING: Changes in this section can possibly damage your server!",
-        "Caches: Here you can change the behaviour of the caches used by the plugin.",
-        "    You can find all possible settings here: http://goo.gl/oYVk0F"
+        "WARNING: Changes in this section can possibly break the plugin!",
+        "Caches: Change the behaviour of the caches: http://goo.gl/oYVk0F",
 })
 public class CoreConf {
     public CachesConf Caches = new CachesConf();

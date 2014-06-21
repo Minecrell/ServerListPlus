@@ -26,11 +26,11 @@ package net.minecrell.serverlistplus.core.config;
 import net.minecrell.serverlistplus.core.config.help.Description;
 
 @Description({
-        "General options about the plugin.",
+        "General plugin options:",
         "Stats: Enable/disable sending plugin statistics.",
-        "PlayerTracking: Enable/disable tracking of player names and their IP-Addresses.",
-        "Unknown: The values that are used to replace the placeholders if the real",
-        "    value is unknown."
+        "PlayerTracking: Enable/disable tracking of player names to their IP-Addresses.",
+        "Unknown: Placeholder replacement if real value is unknown.",
+        "RecursiveFolderSearch: Also search for favicons in sub directories."
 })
 public class PluginConf {
     public boolean Stats = true;

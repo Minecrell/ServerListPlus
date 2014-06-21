@@ -27,19 +27,21 @@ import net.minecrell.serverlistplus.core.config.help.Description;
 
 import java.util.List;
 
+
 @Description({
-        "Customize your server status ping here.",
-        "Currently, you can change the status description (MotD) and add custom messages",
-        "when a player hovers the player amount in the server list. As of 3.1, changing",
-        "the version name that is displayed when an outdated client pings your server",
-        "is also possible. This can be also used for colored slots.",
+        "Customize your server status ping here. Currently changeable:",
+        " - Description (MotD)",
+        " - Message when a player hovers the player count",
+        " - Displayed outdated version, can be also used for colored slots: http://git.io/M66qiw",
+        " - Favicon",
+        "Usage:",
         " - Add multiple entries for random messages.",
         " - Save the file with valid UTF-8 encoding for special characters.",
-        " - Color codes are possible using the usual color codes.",
-        " - The default status is used when the player name is unknown, in the personalized",
-        "   status you can use '%player%' to replace it with the player's name.",
-        " - Additional placeholders: '%online%', '%max%' player count",
-        " - More information about colored slots: http://git.io/M66qiw"
+        " - Color codes are possible using the usual color codes: &c &4 and so on.",
+        " - The default status is used when the player name is unknown, the personalized is used",
+        "   when the player has already joined the server.",
+        " - Use placeholders to make your status more dynamic: '%player%', '%online%' or '%max%'.",
+        "Please look at the GitHub Wiki for more help and examples: TODO"
 })
 public class ServerStatusConf {
     public StatusConf Default;
