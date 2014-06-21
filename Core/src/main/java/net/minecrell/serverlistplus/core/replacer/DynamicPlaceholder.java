@@ -23,6 +23,4 @@
 
 package net.minecrell.serverlistplus.core.replacer;
 
-public interface DynamicPlaceholder extends StaticPlaceholder, DynamicReplacer {
-
-}
+public interface DynamicPlaceholder extends StaticPlaceholder, DynamicReplacer {}
