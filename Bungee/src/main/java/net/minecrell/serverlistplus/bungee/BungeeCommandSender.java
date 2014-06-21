@@ -38,6 +38,11 @@ public class BungeeCommandSender extends AbstractCommandSender<CommandSender> {
     }
 
     @Override
+    public void sendMessage(String message) {
+        sender.sendMessage(message);
+    }
+
+    @Override
     public void sendMessages(String... messages) {
         // Deprecated, but compatibility with older BungeeCord versions
         sender.sendMessages(messages);

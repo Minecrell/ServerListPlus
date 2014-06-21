@@ -28,5 +28,6 @@ package net.minecrell.serverlistplus.core.plugin;
  */
 public interface ServerCommandSender {
     String getName();
+    void sendMessage(String message);
     void sendMessages(String... messages);
 }

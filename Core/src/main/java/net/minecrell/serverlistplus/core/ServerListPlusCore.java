@@ -163,39 +163,39 @@ public class ServerListPlusCore {
         if (sub != null) {
             if (sub.equalsIgnoreCase("reload")) {
                 this.getLogger().infoF("Reloading configuration per request by %s!", sender);
-                sender.sendMessages(Format.GREEN + "Reloading configuration...");
+                sender.sendMessage(Format.GREEN + "Reloading configuration...");
 
                 try {
                     this.reload();
-                    sender.sendMessages(Format.GREEN + "Configuration successfully reloaded!");
+                    sender.sendMessage(Format.GREEN + "Configuration successfully reloaded!");
                 } catch (ServerListPlusException e) {
-                    sender.sendMessages(Format.RED + "An internal error occurred while reloading the " +
+                    sender.sendMessage(Format.RED + "An internal error occurred while reloading the " +
                             "configuration.");
                 }
 
                 return;
             } else if (sub.equalsIgnoreCase("save")) {
                 this.getLogger().infoF("Saving configuration per request by %s!", sender);
-                sender.sendMessages(Format.GREEN + "Saving configuration...");
+                sender.sendMessage(Format.GREEN + "Saving configuration...");
 
                 try {
                     configManager.save();
-                    sender.sendMessages(Format.GREEN + "Configuration successfully saved.");
+                    sender.sendMessage(Format.GREEN + "Configuration successfully saved.");
                 } catch (ServerListPlusException e) {
-                    sender.sendMessages(Format.RED + "An internal error occurred while saving the configuration.");
+                    sender.sendMessage(Format.RED + "An internal error occurred while saving the configuration.");
                 }
             } else if (sub.equalsIgnoreCase("enable") || sub.equalsIgnoreCase("disable")) {
                 boolean enable = sub.equalsIgnoreCase("enable");
                 String tmp = enable ? "Enabling" : "Disabling";
                 this.getLogger().infoF("%s ServerListPlus per request of %s...", tmp, sender);
-                sender.sendMessages(Format.GREEN + tmp + " ServerListPlus...");
+                sender.sendMessage(Format.GREEN + tmp + " ServerListPlus...");
 
                 try {
                     profileManager.setEnabled(enable);
-                    sender.sendMessages(Format.GREEN + "ServerListPlus has been successfully " + (enable ?
+                    sender.sendMessage(Format.GREEN + "ServerListPlus has been successfully " + (enable ?
                             "enabled" : "disabled") + "!");
                 } catch (ServerListPlusException e) {
-                    sender.sendMessages(Format.RED + "An internal error occurred while " + (enable ? "enabling" :
+                    sender.sendMessage(Format.RED + "An internal error occurred while " + (enable ? "enabling" :
                             "disabling") + " ServerListPlus.");
                 }
 
@@ -203,13 +203,13 @@ public class ServerListPlusCore {
             }
         }
 
-        sender.sendMessages(Format.GOLD + info.getName() + plugin.getServerType() + " v" + info.getVersion());
+        sender.sendMessage(Format.GOLD + info.getName() + plugin.getServerType() + " v" + info.getVersion());
         if (info.getDescription() != null)
-            sender.sendMessages(Format.GRAY + info.getDescription());
+            sender.sendMessage(Format.GRAY + info.getDescription());
         if (info.getAuthor() != null)
-            sender.sendMessages(Format.GOLD + "Author: " + Format.GRAY + info.getAuthor());
+            sender.sendMessage(Format.GOLD + "Author: " + Format.GRAY + info.getAuthor());
         if (info.getWebsite() != null)
-            sender.sendMessages(Format.GOLD + "Website: " + Format.GRAY + info.getWebsite());
+            sender.sendMessage(Format.GOLD + "Website: " + Format.GRAY + info.getWebsite());
 
         sender.sendMessages(
                 Format.GOLD + "Commands:",
