@@ -21,33 +21,42 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.plugin;
+package net.minecrell.serverlistplus.core.favicon;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.ServerStatusManager;
-import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.util.InstanceStorage;
+import com.google.common.base.Preconditions;
 
-import java.nio.file.Path;
-import java.util.logging.Logger;
+public class FaviconSource {
+    private final String source;
+    private final FaviconLoader loader;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.LoadingCache;
+    public FaviconSource(String source, FaviconLoader loader) {
+        this.source = source;
+        this.loader = Preconditions.checkNotNull(loader);
+    }
 
-/**
- * Represents a plugin container running the ServerListPlus core.
- */
-public interface ServerListPlusPlugin {
-    Logger getLogger();
-    ServerType getServerType();
-    Path getPluginFolder();
+    public String getSource() {
+        return source;
+    }
 
-    LoadingCache<FaviconSource, ?> getFaviconCache();
+    public FaviconLoader getLoader() {
+        return loader;
+    }
 
-    String colorize(String s);
+    public FaviconSource withSource(String source) {
+        return new FaviconSource(source, loader);
+    }
 
-    void initialize(ServerListPlusCore core);
-    void reloadFaviconCache(CacheBuilder<Object, Object> builder);
-    void configChanged(InstanceStorage<Object> confs);
-    void statusChanged(ServerStatusManager status);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FaviconSource)) return false;
+        FaviconSource that = (FaviconSource) o;
+        return loader.equals(that.loader) && !(source != null ? !source.equals(that.source) : that.source != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * (source != null ? source.hashCode() : 0) + loader.hashCode();
+    }
 }

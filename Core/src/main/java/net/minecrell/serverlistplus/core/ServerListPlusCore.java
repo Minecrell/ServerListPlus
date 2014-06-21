@@ -53,6 +53,8 @@ public class ServerListPlusCore {
     private Cache<String, String> playerTracker;
     private String playerTrackerConf;
 
+    private String faviconCacheConf;
+
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = new ServerListPlusLogger(this);
@@ -69,7 +71,7 @@ public class ServerListPlusCore {
 
         this.profileManager = new ProfileManager(this);
 
-        this.getPlugin().initialize(this);
+        plugin.initialize(this);
         this.reload();
 
         this.getLogger().info("ServerListPlus has been successfully initialized.");
@@ -84,39 +86,67 @@ public class ServerListPlusCore {
         CoreConf conf = this.getConf(CoreConf.class);
         boolean enabled = this.getConf(PluginConf.class).PlayerTracking;
 
-        if (enabled && (playerTrackerConf != null && conf.Caches != null && playerTrackerConf.equals(conf.Caches
-                .PlayerTracking)))
-            return;
+        if (!enabled || (playerTrackerConf == null || conf.Caches == null
+                || !playerTrackerConf.equals(conf.Caches.PlayerTracking))) {
 
-        if (playerTracker != null) {
-            this.getLogger().info("Deleting old player tracking cache due to configuration changes.");
-            playerTracker.invalidateAll();
-            playerTracker.cleanUp();
-            this.playerTracker = null;
+            if (playerTracker != null) {
+                this.getLogger().info("Deleting old player tracking cache due to configuration changes.");
+                playerTracker.invalidateAll();
+                playerTracker.cleanUp();
+                this.playerTracker = null;
+            }
+
+            if (enabled) {
+                this.getLogger().info("Creating new player tracking cache...");
+
+                try {
+                    Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
+                    this.playerTrackerConf = conf.Caches.PlayerTracking;
+                    this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
+                } catch (IllegalArgumentException e) {
+                    this.getLogger().severe(e, "Unable to create player tracker cache using configuration " +
+                            "settings.");
+                    this.playerTrackerConf = this.getDefaultConf(CoreConf.class).Caches.PlayerTracking;
+                    this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
+                }
+            } else
+                playerTrackerConf = null;
         }
 
-        if (enabled) {
-            this.getLogger().info("Creating new player tracking cache...");
+        enabled = statusManager.hasFavicon();
 
-            try {
-                this.playerTrackerConf = this.getConf(CoreConf.class).Caches.PlayerTracking;
-                this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
-            } catch (Exception e) {
-                this.getLogger().severe(e, "Unable to parse player tracker cache configuration.");
-                this.playerTrackerConf = this.getDefaultConf(CoreConf.class).Caches.PlayerTracking;
-                this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
+        if (!enabled || (faviconCacheConf == null || conf.Caches == null
+                || !faviconCacheConf.equals(conf.Caches.Favicon))) {
+            if (plugin.getFaviconCache() != null) {
+                this.getLogger().info("Deleting old favicon cache due to configuration changes.");
+                plugin.reloadFaviconCache(null);
             }
+
+            if (enabled) {
+                this.getLogger().info("Creating new favicon cache...");
+
+                try {
+                    Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
+                    this.faviconCacheConf = conf.Caches.Favicon;
+                    plugin.reloadFaviconCache(CacheBuilder.from(faviconCacheConf));
+                } catch (IllegalArgumentException e) {
+                    this.getLogger().severe(e, "Unable to create favicon cache using configuration settings.");
+                    this.faviconCacheConf = this.getDefaultConf(CoreConf.class).Caches.Favicon;
+                    plugin.reloadFaviconCache(CacheBuilder.from(playerTrackerConf));
+                }
+            } else
+                faviconCacheConf = null;
         }
     }
 
     public void reload() throws ServerListPlusException {
         configManager.reload();
-        this.reloadCaches();
         this.profileManager.reload();
         if (!profileManager.isEnabled())
             this.getLogger().warning("ServerListPlus profile is not enabled, nothing will be changed on the " +
                     "server!");
         statusManager.reload();
+        this.reloadCaches();
     }
 
     public void addClient(String playerName, InetAddress client) {

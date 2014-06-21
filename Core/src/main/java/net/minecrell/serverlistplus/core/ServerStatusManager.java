@@ -27,6 +27,7 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.favicon.DefaultFaviconLoader;
 import net.minecrell.serverlistplus.core.favicon.FaviconLoader;
+import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.replacer.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
 import net.minecrell.serverlistplus.core.util.CoreManager;
@@ -41,23 +42,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collection;
 import java.util.EnumSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.common.base.Function;
-import com.google.common.base.Functions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 public class ServerStatusManager extends CoreManager {
@@ -68,7 +65,7 @@ public class ServerStatusManager extends CoreManager {
         private final List<String> description, playerHover;
         private final List<Integer> online, max;
         private final List<String> version; private final Integer protocol;
-        private final Map<String, FaviconLoader> favicons;
+        private final List<FaviconSource> favicon;
 
         private ServerStatus() {
             this(
@@ -82,18 +79,18 @@ public class ServerStatusManager extends CoreManager {
         private ServerStatus(List<String> description, List<String> playerHover,
                              List<Integer> online, List<Integer> max,
                              List<String> version, Integer protocol,
-                             Map<String, FaviconLoader> favicons) {
+                             List<FaviconSource> favicon) {
             this.description = description; this.playerHover = playerHover;
             this.online = online; this.max = max;
             this.version = version; this.protocol = protocol;
-            this.favicons = favicons;
+            this.favicon = favicon;
         }
 
         private boolean hasChanges() {
             return description != null || playerHover != null
                     || online != null || max != null
                     || version != null || protocol != null
-                    || favicons != null;
+                    || favicon != null;
         }
     }
 
@@ -139,9 +136,9 @@ public class ServerStatusManager extends CoreManager {
         return ImmutableList.copyOf(Collections2.transform(messages, prepareFunc));
     }
 
-    private Set<String> readFavicons(List<String> favicons) {
+    private Collection<String> readFavicons(List<String> favicons) {
         if (Helper.nullOrEmpty(favicons)) return null;
-        return ImmutableSet.copyOf(Collections2.transform(favicons, prepareFunc));
+        return Collections2.transform(favicons, prepareFunc);
     }
 
     private Set<String> findFolderFavicons(List<String> folders) {
@@ -184,9 +181,10 @@ public class ServerStatusManager extends CoreManager {
         return Helper.makeImmutableSet(favicons);
     }
 
-    private void putFavicons(Map<String, FaviconLoader> tmp, Set<String> favicons, FaviconLoader loader) {
-        if (favicons == null) return;
-        tmp.putAll(Maps.asMap(favicons, Functions.constant(loader)));
+    private void addFavicons(ImmutableList.Builder<FaviconSource> list, Iterable<String> favicons,
+                             FaviconLoader loader) {
+        for (String favicon : favicons)
+            list.add(new FaviconSource(favicon, loader));
     }
 
     private ServerStatus reload(ServerStatusConf.StatusConf conf) {
@@ -194,7 +192,7 @@ public class ServerStatusManager extends CoreManager {
             List<String> descriptions = readMessages(conf.Description), playerHover = null;
             List<Integer> online = null, max = null;
             List<String> version = null; Integer protocol = null;
-            Map<String, FaviconLoader> favicons = null;
+            List<FaviconSource> favicons = null;
 
             if (conf.Players != null) {
                 playerHover = readMessages(conf.Players.Hover);
@@ -208,12 +206,12 @@ public class ServerStatusManager extends CoreManager {
             }
 
             if (conf.Favicon != null) {
-                favicons = new LinkedHashMap<>();
-                putFavicons(favicons, readFavicons(conf.Favicon.Files), DefaultFaviconLoader.FILE);
-                putFavicons(favicons, findFolderFavicons(conf.Favicon.Folders), DefaultFaviconLoader.FILE);
-                putFavicons(favicons, readFavicons(conf.Favicon.URLs), DefaultFaviconLoader.URL);
-                putFavicons(favicons, readFavicons(conf.Favicon.Encoded), DefaultFaviconLoader.BASE64);
-                favicons = Helper.makeImmutableMap(favicons);
+                ImmutableList.Builder<FaviconSource> builder = ImmutableList.builder();
+                addFavicons(builder, readFavicons(conf.Favicon.Files), DefaultFaviconLoader.FILE);
+                addFavicons(builder, findFolderFavicons(conf.Favicon.Folders), DefaultFaviconLoader.FILE);
+                addFavicons(builder, readFavicons(conf.Favicon.URLs), DefaultFaviconLoader.URL);
+                addFavicons(builder, readFavicons(conf.Favicon.Encoded), DefaultFaviconLoader.BASE64);
+                favicons = builder.build();
             }
 
             return new ServerStatus(descriptions, playerHover, online, max, version, protocol, favicons);
@@ -225,8 +223,13 @@ public class ServerStatusManager extends CoreManager {
     }
 
     public boolean hasChanges() {
-        return isEnabled() && ((def != null && def.hasChanges()) || (personalized != null && personalized
-                .hasChanges()));
+        return isEnabled() && ((def != null && def.hasChanges())
+                || (personalized != null && personalized.hasChanges()));
+    }
+
+    public boolean hasFavicon() {
+        return isEnabled() && ((def != null && def.favicon != null)
+                || (personalized != null && personalized.favicon != null));
     }
 
     public Response createResponse(InetAddress client, ResponseFetcher fetcher) {

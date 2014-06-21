@@ -27,12 +27,17 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
+import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.util.Collections;
 import java.util.logging.Level;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -52,6 +57,8 @@ import org.mcstats.MetricsLite;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
+    private LoadingCache<FaviconSource, WrappedServerPing.CompressedImage> faviconCache;
+
     private LoginListener loginListener;
     private StatusPacketListener packetListener;
 
@@ -148,6 +155,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public LoadingCache<FaviconSource, WrappedServerPing.CompressedImage> getFaviconCache() {
+        return faviconCache;
+    }
+
+    @Override
     public String colorize(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
@@ -155,6 +167,22 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void initialize(ServerListPlusCore core) {
 
+    }
+
+    @Override
+    public void reloadFaviconCache(CacheBuilder<Object, Object> builder) {
+        if (builder != null) {
+            this.faviconCache = builder.build(new CacheLoader<FaviconSource, WrappedServerPing.CompressedImage>() {
+                @Override
+                public WrappedServerPing.CompressedImage load(FaviconSource key) throws Exception {
+                    return WrappedServerPing.CompressedImage.fromPng(key.getLoader().load(core, key.getSource()));
+                }
+            });
+        } else {
+            faviconCache.invalidateAll();
+            faviconCache.cleanUp();
+            this.faviconCache = null;
+        }
     }
 
     @Override

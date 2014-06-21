@@ -28,14 +28,20 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
+import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.util.logging.Level;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
@@ -45,6 +51,8 @@ import net.md_5.bungee.event.EventHandler;
 
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
+    private LoadingCache<FaviconSource, Favicon> faviconCache;
+
     private LoginListener loginListener;
     private PingListener pingListener;
 
@@ -139,6 +147,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public LoadingCache<FaviconSource, Favicon> getFaviconCache() {
+        return faviconCache;
+    }
+
+    @Override
     public String colorize(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
@@ -146,6 +159,22 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void initialize(ServerListPlusCore core) {
 
+    }
+
+    @Override
+    public void reloadFaviconCache(CacheBuilder<Object, Object> builder) {
+        if (builder != null) {
+            this.faviconCache = builder.build(new CacheLoader<FaviconSource, Favicon>() {
+                @Override
+                public Favicon load(FaviconSource key) throws Exception {
+                    return Favicon.create(key.getLoader().load(core, key.getSource()));
+                }
+            });
+        } else {
+            faviconCache.invalidateAll();
+            faviconCache.cleanUp();
+            this.faviconCache = null;
+        }
     }
 
     @Override
