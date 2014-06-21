@@ -65,6 +65,7 @@ public class ServerStatusConf {
             public List<String> Files;
             public List<String> Folders;
             public List<String> URLs;
+            public List<String> Encoded;
         }
     }
 }
