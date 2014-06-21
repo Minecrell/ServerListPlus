@@ -158,8 +158,9 @@ public class ServerStatusManager extends CoreManager {
                     Files.walkFileTree(folder, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
                             new SimpleFileVisitor<Path>() {
                                 @Override
-                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                    if (file.getFileName().endsWith(".png")) {
+                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                                        throws IOException {
+                                    if (file.getFileName().toString().endsWith(".png")) {
                                         favicons.add(pluginFolder.relativize(file).toString());
                                     }
 
