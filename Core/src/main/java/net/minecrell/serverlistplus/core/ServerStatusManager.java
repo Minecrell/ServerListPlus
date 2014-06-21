@@ -143,6 +143,7 @@ public class ServerStatusManager extends CoreManager {
 
     private Set<String> findFolderFavicons(List<String> folders) {
         if (Helper.nullOrEmpty(folders)) return null;
+        final Path pluginFolder = core.getPlugin().getPluginFolder();
         final Set<String> favicons = new LinkedHashSet<>();
         boolean recursive = core.getConf(PluginConf.class).RecursiveFolderSearch;
         for (String folderPath : folders) {
@@ -159,7 +160,7 @@ public class ServerStatusManager extends CoreManager {
                                 @Override
                                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                                     if (file.getFileName().endsWith(".png")) {
-                                        favicons.add(file.toString());
+                                        favicons.add(pluginFolder.relativize(file).toString());
                                     }
 
                                     return FileVisitResult.CONTINUE;
@@ -171,7 +172,7 @@ public class ServerStatusManager extends CoreManager {
             else
                 try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, "*.png")) {
                     for (Path file : dir) {
-                        favicons.add(file.toString());
+                        favicons.add(pluginFolder.relativize(file).toString());
                     }
                 } catch (IOException e) {
                     core.getLogger().warning(e, "Unable to get directory listing for " + folder);
