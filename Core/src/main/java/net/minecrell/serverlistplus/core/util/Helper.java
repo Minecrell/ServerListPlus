@@ -30,6 +30,8 @@ import java.util.Random;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 
@@ -50,14 +52,23 @@ public final class Helper {
         return iterable == null || Iterables.isEmpty(iterable);
     }
 
-    public static <T> ImmutableList<T> makeImmutable(T[] elements) {
+    public static boolean nullOrEmpty(Map<?, ?> map) {
+        return map == null || map.size() == 0;
+    }
+
+    public static <T> ImmutableList<T> makeImmutableList(Collection<T> elements) {
         if (nullOrEmpty(elements)) return null;
         return ImmutableList.copyOf(elements);
     }
 
-    public static <T> ImmutableList<T> makeImmutable(Collection<T> elements) {
+    public static <T> ImmutableSet<T> makeImmutableSet(Collection<T> elements) {
         if (nullOrEmpty(elements)) return null;
-        return ImmutableList.copyOf(elements);
+        return ImmutableSet.copyOf(elements);
+    }
+
+    public static <K, V> ImmutableMap<K, V> makeImmutableMap(Map<K, V> map) {
+        if (nullOrEmpty(map)) return null;
+        return ImmutableMap.copyOf(map);
     }
 
     public static <K, V, T extends Map<K, V>> int mergeMaps(T main, Map<K, V> merge) {

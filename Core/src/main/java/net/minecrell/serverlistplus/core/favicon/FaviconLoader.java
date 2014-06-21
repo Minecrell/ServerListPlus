@@ -21,25 +21,13 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.config;
+package net.minecrell.serverlistplus.core.favicon;
 
-import net.minecrell.serverlistplus.core.config.help.Description;
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
 
-@Description({
-        "General options about the plugin.",
-        "Stats: Enable/disable sending plugin statistics.",
-        "PlayerTracking: Enable/disable tracking of player names and their IP-Addresses.",
-        "Unknown: The values that are used to replace the placeholders if the real",
-        "    value is unknown."
-})
-public class PluginConf {
-    public boolean Stats = true;
-    public boolean PlayerTracking = true;
-    public UnknownConf Unknown = new UnknownConf();
-    public boolean RecursiveFolderSearch = false;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-    public static class UnknownConf {
-        public String PlayerName = "player";
-        public String PlayerCount = "???";
-    }
+public interface FaviconLoader {
+    public BufferedImage load(ServerListPlusCore core, String source) throws IOException;
 }

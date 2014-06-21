@@ -23,20 +23,42 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
+import net.minecrell.serverlistplus.core.favicon.DefaultFaviconLoader;
+import net.minecrell.serverlistplus.core.favicon.FaviconLoader;
 import net.minecrell.serverlistplus.core.replacer.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
 import net.minecrell.serverlistplus.core.util.CoreManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 public class ServerStatusManager extends CoreManager {
@@ -44,29 +66,35 @@ public class ServerStatusManager extends CoreManager {
     public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
 
     private static class ServerStatus {
-        private final ImmutableList<String> description, playerHover;
-        private final ImmutableList<Integer> online, max;
-        private final ImmutableList<String> version;
-        private final Integer protocol;
+        private final List<String> description, playerHover;
+        private final List<Integer> online, max;
+        private final List<String> version; private final Integer protocol;
+        private final Map<String, FaviconLoader> favicons;
 
         private ServerStatus() {
-            this(null, null, null, null, null, null);
+            this(
+                    null, null,
+                    null, null,
+                    null, null,
+                    null
+            );
         }
 
-        private ServerStatus(ImmutableList<String> description, ImmutableList<String> playerHover,
-                             ImmutableList<Integer> online, ImmutableList<Integer> max,
-                             ImmutableList<String> version, Integer protocol) {
-            this.description = description;
-            this.playerHover = playerHover;
-            this.online = online;
-            this.max = max;
-            this.version = version;
-            this.protocol = protocol;
+        private ServerStatus(List<String> description, List<String> playerHover,
+                             List<Integer> online, List<Integer> max,
+                             List<String> version, Integer protocol,
+                             Map<String, FaviconLoader> favicons) {
+            this.description = description; this.playerHover = playerHover;
+            this.online = online; this.max = max;
+            this.version = version; this.protocol = protocol;
+            this.favicons = favicons;
         }
 
         private boolean hasChanges() {
-            return description != null || playerHover != null || online != null || max != null ||
-                    version != null || protocol != null;
+            return description != null || playerHover != null
+                    || online != null || max != null
+                    || version != null || protocol != null
+                    || favicons != null;
         }
     }
 
@@ -93,29 +121,87 @@ public class ServerStatusManager extends CoreManager {
         core.getPlugin().statusChanged(this);
     }
 
+    private String prepare(String s) {
+        s = ReplacementManager.replaceStatic(core, s);
+        replacers.putAll(s, ReplacementManager.findDynamic(s));
+        return s;
+    }
+
+    // TODO: Java 8 would be great here ;)
+    private final Function<String, String> prepareFunc = new Function<String, String>() {
+        @Override
+        public String apply(String input) {
+            return prepare(input);
+        }
+    };
+
     private ImmutableList<String> readMessages(List<String> messages) {
-        String[] result = null;
-        if (!Helper.nullOrEmpty(messages)) {
-            result = new String[messages.size()];
-            for (int i = 0; i < result.length; i++)
-                result[i] = ReplacementManager.replaceStatic(core, messages.get(i));
-            for (String s : result)
-                replacers.putAll(s, ReplacementManager.findDynamic(s));
+        if (Helper.nullOrEmpty(messages)) return null;
+        return ImmutableList.copyOf(Collections2.transform(messages, prepareFunc));
+    }
+
+    private Set<String> readFavicons(List<String> favicons) {
+        if (Helper.nullOrEmpty(favicons)) return null;
+        return ImmutableSet.copyOf(Collections2.transform(favicons, prepareFunc));
+    }
+
+    private Set<String> findFolderFavicons(List<String> folders) {
+        if (Helper.nullOrEmpty(folders)) return null;
+        final Path faviconFolder = core.getPlugin().getPluginFolder();
+        final Set<String> favicons = new LinkedHashSet<>();
+        boolean recursive = core.getConf(PluginConf.class).RecursiveFolderSearch;
+        for (String folderPath : folders) {
+            Path folder = Paths.get(folderPath);
+            if (!Files.isDirectory(folder)) {
+                core.getLogger().warning("Invalid favicon folder in configuration: " + folder);
+                continue;
+            }
+
+            if (recursive)
+                try {
+                    Files.walkFileTree(folder, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
+                            new SimpleFileVisitor<Path>() {
+                                @Override
+                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                                    if (file.getFileName().endsWith(".png")) {
+                                        favicons.add(faviconFolder.relativize(file).toString());
+                                    }
+
+                                    return FileVisitResult.CONTINUE;
+                                }
+                            });
+                } catch (IOException e) {
+                    core.getLogger().warning(e, "Unable to walk through file tree for " + folder);
+                }
+            else
+                try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, "*.png")) {
+                    for (Path file : dir) {
+                        favicons.add(faviconFolder.relativize(file).toString());
+                    }
+                } catch (IOException e) {
+                    core.getLogger().warning(e, "Unable to get directory listing for " + folder);
+                }
         }
 
-        return Helper.makeImmutable(result);
+        return Helper.makeImmutableSet(favicons);
+    }
+
+    private void putFavicons(Map<String, FaviconLoader> tmp, Set<String> favicons, FaviconLoader loader) {
+        if (favicons == null) return;
+        tmp.putAll(Maps.asMap(favicons, Functions.constant(loader)));
     }
 
     private ServerStatus reload(ServerStatusConf.StatusConf conf) {
         if (conf != null) {
-            ImmutableList<String> descriptions = readMessages(conf.Description), playerHover = null;
-            ImmutableList<Integer> online = null, max = null;
-            ImmutableList<String> version = null; Integer protocol = null;
+            List<String> descriptions = readMessages(conf.Description), playerHover = null;
+            List<Integer> online = null, max = null;
+            List<String> version = null; Integer protocol = null;
+            Map<String, FaviconLoader> favicons = null;
 
             if (conf.Players != null) {
                 playerHover = readMessages(conf.Players.Hover);
-                online = Helper.makeImmutable(conf.Players.Online);
-                max = Helper.makeImmutable(conf.Players.Max);
+                online = Helper.makeImmutableList(conf.Players.Online);
+                max = Helper.makeImmutableList(conf.Players.Max);
             }
 
             if (conf.Version != null) {
@@ -123,7 +209,16 @@ public class ServerStatusManager extends CoreManager {
                 protocol = conf.Version.Protocol;
             }
 
-            return new ServerStatus(descriptions, playerHover, online, max, version, protocol);
+            if (conf.Favicon != null) {
+                favicons = new LinkedHashMap<>();
+                putFavicons(favicons, readFavicons(conf.Favicon.Files), DefaultFaviconLoader.FILE);
+                putFavicons(favicons, findFolderFavicons(conf.Favicon.Folders), DefaultFaviconLoader.FILE);
+                putFavicons(favicons, readFavicons(conf.Favicon.URLs), DefaultFaviconLoader.URL);
+                putFavicons(favicons, readFavicons(conf.Favicon.Encoded), DefaultFaviconLoader.BASE64);
+                favicons = Helper.makeImmutableMap(favicons);
+            }
+
+            return new ServerStatus(descriptions, playerHover, online, max, version, protocol, favicons);
         } else return new ServerStatus();
     }
 

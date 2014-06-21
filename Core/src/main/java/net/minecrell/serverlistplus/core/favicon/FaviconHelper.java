@@ -21,25 +21,22 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.config;
+package net.minecrell.serverlistplus.core.favicon;
 
-import net.minecrell.serverlistplus.core.config.help.Description;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import javax.imageio.ImageIO;
 
-@Description({
-        "General options about the plugin.",
-        "Stats: Enable/disable sending plugin statistics.",
-        "PlayerTracking: Enable/disable tracking of player names and their IP-Addresses.",
-        "Unknown: The values that are used to replace the placeholders if the real",
-        "    value is unknown."
-})
-public class PluginConf {
-    public boolean Stats = true;
-    public boolean PlayerTracking = true;
-    public UnknownConf Unknown = new UnknownConf();
-    public boolean RecursiveFolderSearch = false;
+public final class FaviconHelper {
+    private FaviconHelper() {}
 
-    public static class UnknownConf {
-        public String PlayerName = "player";
-        public String PlayerCount = "???";
+    public static BufferedImage fromStream(InputStream in) throws IOException {
+        return ImageIO.read(in);
+    }
+
+    public static BufferedImage fromURL(URL url) throws IOException {
+        return ImageIO.read(url);
     }
 }
