@@ -29,14 +29,16 @@ import net.minecrell.serverlistplus.core.config.help.Description;
         "General options about the plugin.",
         "Stats: Enable/disable sending plugin statistics.",
         "PlayerTracking: Enable/disable tracking of player names and their IP-Addresses.",
-        "UnknownPlayerName: The player name that is used to replace '%player%' in the",
-        "   default profile.",
-        "UnknownPlayerCount: The player count used for replacing '%online%' and '%max%'",
-        "   if we can't get the correct count for some reason."
+        "Unknown: The values that are used to replace the placeholders if the real",
+        "    value is unknown."
 })
 public class PluginConf {
     public boolean Stats = true;
     public boolean PlayerTracking = true;
-    public String UnknownPlayerName = "player";
-    public String UnknownPlayerCount = "???";
+    public UnknownConf Unknown = new UnknownConf();
+
+    public static class UnknownConf {
+        public String PlayerName = "player";
+        public String PlayerCount = "???";
+    }
 }
