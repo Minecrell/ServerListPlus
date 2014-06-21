@@ -30,10 +30,10 @@ import java.util.List;
 
 @Description({
         "Customize your server status ping here. Currently changeable:",
-        " - Description (MotD)",
-        " - Message when a player hovers the player count",
+        " - Description (MotD): TODO",
+        " - Message when a player hovers the player count: TODO",
         " - Displayed outdated version, can be also used for colored slots: http://git.io/M66qiw",
-        " - Favicon",
+        " - Favicon: TODO",
         "Usage:",
         " - Add multiple entries for random messages.",
         " - Save the file with valid UTF-8 encoding for special characters.",
