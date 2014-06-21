@@ -213,6 +213,7 @@ public class ServerStatusManager extends CoreManager {
                 addFavicons(builder, readFavicons(conf.Favicon.URLs), DefaultFaviconLoader.URL);
                 addFavicons(builder, readFavicons(conf.Favicon.Encoded), DefaultFaviconLoader.BASE64);
                 favicons = builder.build();
+                if (favicons.size() == 0) favicons = null;
             }
 
             return new ServerStatus(descriptions, playerHover, online, max, version, protocol, favicons);
