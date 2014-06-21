@@ -44,7 +44,7 @@ public final class ServerListPlusYAML {
 
         Constructor constructor = new CustomClassLoaderConstructor(core.getClass().getClassLoader());
         Representer representer = new NullSkippingRepresenter();
-        representer.setPropertyUtils(new FieldOrderPropertyUtils());
+        representer.setPropertyUtils(new ConfigurationPropertyUtils(core));
 
         boolean outdatedYaml = false;
 

@@ -23,21 +23,35 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+
 import java.beans.IntrospectionException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.yaml.snakeyaml.introspector.MissingProperty;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
 
-public class FieldOrderPropertyUtils extends PropertyUtils {
-    public FieldOrderPropertyUtils() {
+public class ConfigurationPropertyUtils extends PropertyUtils {
+    private final ServerListPlusCore core;
+
+    public ConfigurationPropertyUtils(ServerListPlusCore core) {
+        this.core = core;
         this.setBeanAccess(BeanAccess.FIELD);
     }
 
     @Override
     protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
         return new LinkedHashSet<>(this.getPropertiesMap(type, bAccess).values());
+    }
+
+    @Override
+    public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
+        Property p = super.getProperty(type, name, bAccess);
+        if (p instanceof MissingProperty)
+            core.getLogger().warningF("Unknown configuration property: %s @ %s", name, type.getName());
+        return p;
     }
 }
