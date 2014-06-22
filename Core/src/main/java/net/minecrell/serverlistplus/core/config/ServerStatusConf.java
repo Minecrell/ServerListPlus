@@ -30,10 +30,10 @@ import java.util.List;
 
 @Description({
         "Customize your server status ping here. Currently changeable:",
-        " - Description (MotD): TODO",
-        " - Message when a player hovers the player count: TODO",
+        " - Description (MotD)",
+        " - Message when a player hovers the player count",
         " - Displayed outdated version, can be also used for colored slots: http://git.io/M66qiw",
-        " - Favicon: TODO",
+        " - Favicon: http://git.io/oMhJlg",
         "Usage:",
         " - Add multiple entries for random messages.",
         " - Save the file with valid UTF-8 encoding for special characters.",
@@ -41,7 +41,7 @@ import java.util.List;
         " - The default status is used when the player name is unknown, the personalized is used",
         "   when the player has already joined the server.",
         " - Use placeholders to make your status more dynamic: '%player%', '%online%' or '%max%'.",
-        "Please look at the GitHub Wiki for more help and examples: TODO"
+        "Please look at the GitHub Wiki for more help and examples: http://git.io/slp-wiki"
 })
 public class ServerStatusConf {
     public StatusConf Default;
