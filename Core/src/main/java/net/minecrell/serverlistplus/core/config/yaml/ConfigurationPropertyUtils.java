@@ -51,7 +51,7 @@ public class ConfigurationPropertyUtils extends PropertyUtils {
     public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
         Property p = super.getProperty(type, name, bAccess);
         if (p instanceof MissingProperty)
-            core.getLogger().warningF("Unknown configuration property: %s @ %s", name, type.getSimpleName());
+            core.getLogger().warningF("Unknown configuration property: %s @ %s", name, type.getName());
         return p;
     }
 }
