@@ -153,9 +153,8 @@ public class ConfigurationManager extends CoreManager {
                 yaml.writeHeader(writer);
                 yaml.newLine(writer);
 
-                for (Object config : storage.get()) {
+                for (Object config : storage.get())
                     yaml.writeDocumented(writer, config);
-                }
             }
 
             this.getLogger().info("Configuration saving complete.");
