@@ -210,6 +210,8 @@ public class ServerListPlusCore {
             sender.sendMessage(Format.GOLD + "Author: " + Format.GRAY + info.getAuthor());
         if (info.getWebsite() != null)
             sender.sendMessage(Format.GOLD + "Website: " + Format.GRAY + info.getWebsite());
+        if (info.getWiki() != null)
+            sender.sendMessage(Format.GOLD + "Wiki: " + Format.GRAY + info.getWiki());
 
         sender.sendMessages(
                 Format.GOLD + "Commands:",

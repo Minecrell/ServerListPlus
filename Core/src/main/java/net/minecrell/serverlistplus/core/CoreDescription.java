@@ -32,14 +32,15 @@ public class CoreDescription {
     private final String name, version;
     private final String description;
     private final String author;
-    private final URL website;
+    private final URL website, wiki;
 
-    public CoreDescription(String name, String version, String description, String author, URL website) {
+    public CoreDescription(String name, String version, String description, String author, URL website, URL wiki) {
         this.name = Preconditions.checkNotNull(name, "name");
         this.version = Preconditions.checkNotNull(version, "version");
         this.description = description;
         this.author = author;
         this.website = website;
+        this.wiki = wiki;
     }
 
     public String getName() {
@@ -62,6 +63,10 @@ public class CoreDescription {
         return website;
     }
 
+    public URL getWiki() {
+        return wiki;
+    }
+
     private static final String ABOUT_FILE = "ABOUT";
 
     public static CoreDescription load(ServerListPlusCore core) {
@@ -70,10 +75,10 @@ public class CoreDescription {
             about.load(core.getClass().getClassLoader().getResourceAsStream(ABOUT_FILE));
             return new CoreDescription(about.getProperty("Name"), about.getProperty("Version"),
                     about.getProperty("Description"), about.getProperty("Author"),
-                    new URL(about.getProperty("Website")));
+                    new URL(about.getProperty("Website")), new URL(about.getProperty("Wiki")));
         } catch (Exception e) {
             core.getLogger().severe(e, "Unable to load core info!");
-            return new CoreDescription("ServerListPlus", "Unknown", null, null, null);
+            return new CoreDescription("ServerListPlus", "Unknown", null, null, null, null);
         }
     }
 }
