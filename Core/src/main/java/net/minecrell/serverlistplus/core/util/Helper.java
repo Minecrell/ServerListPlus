@@ -51,10 +51,6 @@ public final class Helper {
         return iterable == null || Iterables.isEmpty(iterable);
     }
 
-    public static boolean nullOrEmpty(Map<?, ?> map) {
-        return map == null || map.size() == 0;
-    }
-
     public static <T> ImmutableList<T> makeImmutableList(Collection<T> elements) {
         if (nullOrEmpty(elements)) return null;
         return ImmutableList.copyOf(elements);
