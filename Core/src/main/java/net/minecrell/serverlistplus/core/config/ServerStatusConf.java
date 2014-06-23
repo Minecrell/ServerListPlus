@@ -40,8 +40,7 @@ import java.util.List;
         " - Color codes are possible using the usual color codes: &c &4 and so on.",
         " - The default status is used when the player name is unknown, the personalized is used",
         "   when the player has already joined the server.",
-        " - Use placeholders to make your status more dynamic: '%player%', '%online%' or '%max%'.",
-        "Please look at the GitHub Wiki for more help and examples: http://git.io/slp-wiki"
+        " - Use placeholders to make your status more dynamic: '%player%', '%online%' or '%max%'."
 })
 public class ServerStatusConf {
     public StatusConf Default;

@@ -40,7 +40,8 @@ ext {
             'Description': description,
             'Version': version,
             'Author': author,
-            'Website': 'https://github.com/Minecrell/ServerListPlus'
+            'Website': 'http://git.io/slp',
+            'Wiki': 'http://git.io/slp-wiki'
     ];
 }
 
