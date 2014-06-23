@@ -92,7 +92,7 @@ public class ConfigurationManager extends CoreManager {
                             newStorage.setUnsafe(obj.getClass(), obj);
                             this.getLogger().info("Loaded configuration: " + obj.getClass().getSimpleName());
                         } catch (YAMLException e) {
-                            this.getLogger().warning(e, "Unable to parse configuration part from the " +
+                            this.getLogger().warning(e, "Unable to parse a configuration part from the " +
                                     "configuration file. Make sure the YAML syntax is valid!");
                         }
                     }
