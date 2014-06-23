@@ -33,9 +33,11 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
+import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.logging.Level;
 
+import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
@@ -59,7 +61,7 @@ import org.mcstats.MetricsLite;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
-    private LoadingCache<FaviconSource, WrappedServerPing.CompressedImage> faviconCache;
+    private LoadingCache<FaviconSource, Optional<WrappedServerPing.CompressedImage>> faviconCache;
 
     private LoginListener loginListener;
     private StatusPacketListener packetListener;
@@ -151,7 +153,10 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
             // TODO: Catch exceptions
             FaviconSource favicon = response.getFavicon();
-            if (favicon != null) ping.setFavicon(faviconCache.getUnchecked(favicon));
+            if (favicon != null) {
+                Optional<WrappedServerPing.CompressedImage> icon = faviconCache.getUnchecked(favicon);
+                if (icon.isPresent()) ping.setFavicon(icon.get());
+            }
         }
     }
 
@@ -161,7 +166,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public LoadingCache<FaviconSource, WrappedServerPing.CompressedImage> getFaviconCache() {
+    public LoadingCache<FaviconSource, Optional<WrappedServerPing.CompressedImage>> getFaviconCache() {
         return faviconCache;
     }
 
@@ -179,10 +184,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     public void reloadFaviconCache(CacheBuilderSpec spec) {
         if (spec != null) {
             this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource,
-                    WrappedServerPing.CompressedImage>() {
+                    Optional<WrappedServerPing.CompressedImage>>() {
                 @Override
-                public WrappedServerPing.CompressedImage load(FaviconSource source) throws Exception {
-                    return WrappedServerPing.CompressedImage.fromPng(FaviconHelper.load(core, source));
+                public Optional<WrappedServerPing.CompressedImage> load(FaviconSource source) throws Exception {
+                    BufferedImage image = FaviconHelper.loadSafely(core, source);
+                    if (image == null) return Optional.absent();
+                    else return Optional.of(WrappedServerPing.CompressedImage.fromPng(image));
                 }
             });
         } else {

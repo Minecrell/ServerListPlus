@@ -34,8 +34,10 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
+import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 
+import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
@@ -53,7 +55,7 @@ import net.md_5.bungee.event.EventHandler;
 
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
-    private LoadingCache<FaviconSource, Favicon> faviconCache;
+    private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
 
     private LoginListener loginListener;
     private PingListener pingListener;
@@ -143,7 +145,10 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
             // TODO: Catch exceptions
             FaviconSource favicon = response.getFavicon();
-            if (favicon != null) ping.setFavicon(faviconCache.getUnchecked(favicon));
+            if (favicon != null) {
+                Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
+                if (icon.isPresent()) ping.setFavicon(icon.get());
+            }
         }
     }
 
@@ -153,7 +158,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public LoadingCache<FaviconSource, Favicon> getFaviconCache() {
+    public LoadingCache<FaviconSource, Optional<Favicon>> getFaviconCache() {
         return faviconCache;
     }
 
@@ -170,10 +175,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void reloadFaviconCache(CacheBuilderSpec spec) {
         if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource, Favicon>() {
+            this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource, Optional<Favicon>>() {
                 @Override
-                public Favicon load(FaviconSource source) throws Exception {
-                    return Favicon.create(FaviconHelper.load(core, source));
+                public Optional<Favicon> load(FaviconSource source) throws Exception {
+                    BufferedImage image = FaviconHelper.loadSafely(core, source);
+                    if (image == null) return Optional.absent();
+                    else return Optional.of(Favicon.create(image));
                 }
             });
         } else {

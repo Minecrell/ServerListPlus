@@ -45,4 +45,14 @@ public final class FaviconHelper {
     public static BufferedImage load(ServerListPlusCore core, FaviconSource source) throws IOException {
         return source.getLoader().load(core, source.getSource());
     }
+
+    public static BufferedImage loadSafely(ServerListPlusCore core, FaviconSource source) {
+        try {
+            return load(core, source);
+        } catch (IOException e) {
+            core.getLogger().warningF(e, "Unable to load favicon from %s: %s", source.getLoader().toString(),
+                    source.getSource());
+            return null;
+        }
+    }
 }
