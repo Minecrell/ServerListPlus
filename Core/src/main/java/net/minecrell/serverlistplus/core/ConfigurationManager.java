@@ -23,7 +23,6 @@
 
 package net.minecrell.serverlistplus.core;
 
-import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
 import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
@@ -155,10 +154,7 @@ public class ConfigurationManager extends CoreManager {
                 yaml.newLine(writer);
 
                 for (Object config : storage.get()) {
-                    boolean stupidFix = yaml.snakeYAML().isOutdated() && (config instanceof ServerStatusConf);
-                    if (stupidFix) yaml.applyStupidFix();
                     yaml.writeDocumented(writer, config);
-                    if (stupidFix) yaml.revertStupidFix();
                 }
             }
 

@@ -33,7 +33,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
 
-import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.nodes.Tag;
 
@@ -91,13 +90,5 @@ public class YAMLWriter {
         if (!Helper.nullOrEmpty(comments))
             for (String line : comments)
                 appendable.append(COMMENT_PREFIX).append(line).append(newLine);
-    }
-
-    public void applyStupidFix() {
-        snakeYAML.getRepresenter().setDefaultScalarStyle(DumperOptions.ScalarStyle.LITERAL);
-    }
-
-    public void revertStupidFix() {
-        snakeYAML.getRepresenter().setDefaultScalarStyle(snakeYAML.getDumperOptions().getDefaultScalarStyle());
     }
 }
