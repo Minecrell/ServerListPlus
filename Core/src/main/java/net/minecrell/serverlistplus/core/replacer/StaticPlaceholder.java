@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public interface StaticPlaceholder extends StaticReplacer {
-    // TODO: Java 8's default interface implementations could really help here..
+    // Java 8's default interface implementations could really help here..
     Pattern pattern();
     Matcher matcher(String s);
     String replace(String s, String replacement);

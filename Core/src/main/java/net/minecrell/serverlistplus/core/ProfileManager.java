@@ -60,7 +60,7 @@ public class ProfileManager extends CoreManager {
 
         try {
             if (Files.exists(profilePath)) {
-                // TODO: Serialize / deserialize objects instead
+                // TODO: Deserialize objects instead
                 try (BufferedReader reader = IOUtil.newBufferedReader(profilePath)) {
                     JsonObject obj = JSON.fromJson(reader, JsonObject.class);
                     obj = obj.getAsJsonObject(DEFAULT_PROFILE);
@@ -92,7 +92,7 @@ public class ProfileManager extends CoreManager {
                 Files.createDirectories(profilePath.getParent());
             }
 
-            // TODO: Serialize / deserialize objects instead
+            // TODO: Serialize objects instead
             try (BufferedWriter writer = IOUtil.newBufferedWriter(profilePath)) {
                 JsonObject profile = new JsonObject();
                 profile.addProperty("Enabled", this.enabled);

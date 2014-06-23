@@ -123,7 +123,7 @@ public class ServerStatusManager extends CoreManager {
         return s;
     }
 
-    // TODO: Java 8 would be great here ;)
+    // Java 8 would be nice here ;)
     private final Function<String, String> prepareFunc = new Function<String, String>() {
         @Override
         public String apply(String input) {
