@@ -117,8 +117,7 @@ public class ConfigurationManager extends CoreManager {
 
             if (!confExists) try {
                 this.save();
-            } catch (ServerListPlusException ignored) {
-            }
+            } catch (ServerListPlusException ignored) {}
 
             core.getPlugin().configChanged(storage);
             this.getLogger().info("Configuration reload complete.");
