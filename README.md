@@ -28,7 +28,7 @@ There are multiple locations where you can download [ServerListPlus](https://git
 
 Compilation
 ---------------------
-You can also compile it yourself by cloning the repository from [GitHub](https://github.com/Minecrell/ServerListPlus) and executing the following command on the command line: `gradlew clean build shadowJar`
+You can also compile it yourself by cloning the repository from [GitHub](https://github.com/Minecrell/ServerListPlus) and executing the following command on the command line: `gradlew clean shadowJar`
 
 Installation
 ---------------------
