@@ -53,6 +53,7 @@ public class ServerListPlusLogger {
             if (!Files.isDirectory(logFile.getParent())) Files.createDirectories(logFile.getParent());
             FileHandler handler = new FileHandler(logFile.toString(),
                     1024 * 1024 /* 1 MB */, 1, true /* append */);
+            handler.setLevel(Level.ALL);
             handler.setFormatter(new LogFormatter());
             this.getLogger().addHandler(handler);
         } catch (IOException e) {
