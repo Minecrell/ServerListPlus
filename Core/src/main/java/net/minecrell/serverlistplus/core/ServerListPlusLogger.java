@@ -63,10 +63,9 @@ public class ServerListPlusLogger {
                 // Register the file handler for the logger
                 Path logFile = core.getPlugin().getPluginFolder().resolve(LOG_FILE);
                 if (!Files.isDirectory(logFile.getParent())) Files.createDirectories(logFile.getParent());
-                if (Files.isWritable(logFile))
-                    Files.write(logFile, Collections.singleton(
+                Files.write(logFile, Collections.singleton(
                             "--- # " + DATE_FORMAT.format(System.currentTimeMillis())
-                    ), IOUtil.CHARSET, StandardOpenOption.APPEND);
+                    ), IOUtil.CHARSET, StandardOpenOption.APPEND, StandardOpenOption.CREATE);
 
                 FileHandler handler = new FileHandler(logFile.toString(),
                         1024 * 1024 /* 1 MB */, 1, true /* append */);
