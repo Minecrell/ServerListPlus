@@ -36,12 +36,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import static java.util.logging.Level.*;
-
 public class ServerListPlusLogger {
     private static final String LOG_FILE = "ServerListPlus.log";
 
-    private static final Level DEFAULT_EXCEPTION_LEVEL = SEVERE;
+    private static final Level DEFAULT_EXCEPTION_LEVEL = Level.SEVERE;
     private static final String PREFIX = "[Core] ";
 
     private final ServerListPlusCore core;
@@ -58,7 +56,7 @@ public class ServerListPlusLogger {
             handler.setFormatter(new LogFormatter());
             this.getLogger().addHandler(handler);
         } catch (IOException e) {
-            this.log(WARNING, e, "Unable to register file handler for the logger!");
+            this.warning(e, "Unable to register file handler for the logger!");
         }
     }
 
@@ -68,6 +66,54 @@ public class ServerListPlusLogger {
 
     public String formatMessage(String message, Object... args) {
         return String.format(message, args);
+    }
+
+    public void info(String message) {
+        this.log(Level.INFO, message);
+    }
+
+    public void info(Exception e, String message) {
+        this.log(Level.INFO, e, message);
+    }
+
+    public void infoF(String message, Object... args) {
+        this.logF(Level.INFO, message, args);
+    }
+
+    public void infoF(Exception e, String message, Object... args) {
+        this.logF(Level.INFO, e, message, args);
+    }
+
+    public void warning(String message) {
+        this.log(Level.WARNING, message);
+    }
+
+    public void warning(Exception e, String message) {
+        this.log(Level.WARNING, e, message);
+    }
+
+    public void warningF(String message, Object... args) {
+        this.logF(Level.WARNING, message, args);
+    }
+
+    public void warningF(Exception e, String message, Object... args) {
+        this.logF(Level.WARNING, e, message, args);
+    }
+
+    public void severe(String message) {
+        this.log(Level.SEVERE, message);
+    }
+
+    public void severe(Exception e, String message) {
+        this.log(Level.SEVERE, e, message);
+    }
+
+    public void severeF(String message, Object... args) {
+        this.logF(Level.SEVERE, message, args);
+    }
+
+    public void severeF(Exception e, String message, Object... args) {
+        this.logF(Level.SEVERE, e, message, args);
     }
 
     public void log(Level level, String message) {

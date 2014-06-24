@@ -28,8 +28,6 @@ import java.util.Properties;
 
 import com.google.common.base.Preconditions;
 
-import static java.util.logging.Level.*;
-
 public class CoreDescription {
     private final String name, version;
     private final String description;
@@ -79,7 +77,7 @@ public class CoreDescription {
                     about.getProperty("Description"), about.getProperty("Author"),
                     new URL(about.getProperty("Website")), new URL(about.getProperty("Wiki")));
         } catch (Exception e) {
-            core.getLogger().log(e, "Unable to load core info!");
+            core.getLogger().severe(e, "Unable to load core info!");
             return new CoreDescription("ServerListPlus", "Unknown", null, null, null, null);
         }
     }

@@ -57,8 +57,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 
-import static java.util.logging.Level.*;
-
 public class ServerStatusManager extends CoreManager {
     public static final String EMPTY_ID = "0-0-0-0-0";
     public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
@@ -151,7 +149,7 @@ public class ServerStatusManager extends CoreManager {
         for (String folderPath : folders) {
             Path folder = core.getPlugin().getPluginFolder().resolve(folderPath);
             if (!Files.isDirectory(folder)) {
-                core.getLogger().log(WARNING, "Invalid favicon folder in configuration: " + folder);
+                core.getLogger().warning("Invalid favicon folder in configuration: " + folder);
                 continue;
             }
 
@@ -170,7 +168,7 @@ public class ServerStatusManager extends CoreManager {
                                 }
                             });
                 } catch (IOException e) {
-                    core.getLogger().log(WARNING, e, "Unable to walk through file tree for " + folder);
+                    core.getLogger().warning(e, "Unable to walk through file tree for " + folder);
                 }
             else
                 try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, "*.png")) {
@@ -178,7 +176,7 @@ public class ServerStatusManager extends CoreManager {
                         favicons.add(pluginFolder.relativize(file).toString());
                     }
                 } catch (IOException e) {
-                    core.getLogger().log(WARNING, e, "Unable to get directory listing for " + folder);
+                    core.getLogger().warning(e, "Unable to get directory listing for " + folder);
                 }
         }
 

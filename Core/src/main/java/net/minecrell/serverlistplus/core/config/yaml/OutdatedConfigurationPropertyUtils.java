@@ -32,8 +32,6 @@ import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.Property;
 
-import static java.util.logging.Level.*;
-
 public class OutdatedConfigurationPropertyUtils extends FieldOrderPropertyUtils {
     private final ServerListPlusCore core;
 
@@ -46,7 +44,7 @@ public class OutdatedConfigurationPropertyUtils extends FieldOrderPropertyUtils 
         Map<String, Property> properties = getPropertiesMap(type, bAccess);
         Property property = properties.get(name);
         if (property == null) {
-            core.getLogger().logF(WARNING, "Unknown configuration property: %s @ %s", name, type.getSimpleName());
+            core.getLogger().warningF("Unknown configuration property: %s @ %s", name, type.getSimpleName());
             return new OutdatedMissingProperty(name);
         }
 

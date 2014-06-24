@@ -37,8 +37,6 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import static java.util.logging.Level.*;
-
 public class ProfileManager extends CoreManager {
     private static final String DEFAULT_PROFILE = "ServerListPlus";
 
@@ -58,7 +56,7 @@ public class ProfileManager extends CoreManager {
 
     public void reload() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
-        this.getLogger().log(INFO, "Reloading profiles from: " + profilePath);
+        this.getLogger().info("Reloading profiles from: " + profilePath);
 
         try {
             if (Files.exists(profilePath)) {
@@ -70,11 +68,11 @@ public class ProfileManager extends CoreManager {
                 }
 
                 if (enabled)
-                    this.getLogger().log(INFO, "ServerListPlus profile is enabled.");
+                    this.getLogger().info("ServerListPlus profile is enabled.");
                 else
-                    this.getLogger().log(INFO, "ServerListPlus profile is disabled.");
+                    this.getLogger().info("ServerListPlus profile is disabled.");
             } else
-                this.getLogger().log(INFO, "Profile configuration not found, assuming the profile is disabled.");
+                this.getLogger().info("Profile configuration not found, assuming the profile is disabled.");
         } catch (JsonSyntaxException e) {
             throw this.getLogger().process(e, "Unable to parse profile configuration, have you changed it?");
         } catch (IOException | JsonIOException e) {
@@ -86,7 +84,7 @@ public class ProfileManager extends CoreManager {
 
     public void save() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
-        this.getLogger().log(INFO, "Saving profiles to: " + profilePath);
+        this.getLogger().info("Saving profiles to: " + profilePath);
 
         try {
             if (Files.notExists(profilePath)) {
