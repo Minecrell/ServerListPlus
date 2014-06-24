@@ -47,17 +47,24 @@ public class ServerListPlusLogger {
     public ServerListPlusLogger(ServerListPlusCore core) {
         this.core = core;
 
-        try {
-            // Register the file handler for the logger
-            Path logFile = core.getPlugin().getPluginFolder().resolve(LOG_FILE);
-            if (!Files.isDirectory(logFile.getParent())) Files.createDirectories(logFile.getParent());
-            FileHandler handler = new FileHandler(logFile.toString(),
-                    1024 * 1024 /* 1 MB */, 1, true /* append */);
-            handler.setLevel(Level.ALL);
-            handler.setFormatter(new LogFormatter());
-            this.getLogger().addHandler(handler);
-        } catch (IOException e) {
-            this.warning(e, "Unable to register file handler for the logger!");
+        System.out.println(this.getLogger().getLevel().getLocalizedName());
+
+        // Register a file handler for the logger but only if it has a parent to have compatibility with older
+        // BungeeCord versions.
+
+        if (this.getLogger().getParent() != null) {
+            try {
+                // Register the file handler for the logger
+                Path logFile = core.getPlugin().getPluginFolder().resolve(LOG_FILE);
+                if (!Files.isDirectory(logFile.getParent())) Files.createDirectories(logFile.getParent());
+                FileHandler handler = new FileHandler(logFile.toString(),
+                        1024 * 1024 /* 1 MB */, 1, true /* append */);
+                handler.setLevel(Level.ALL);
+                handler.setFormatter(new LogFormatter());
+                this.getLogger().addHandler(handler);
+            } catch (IOException e) {
+                this.warning(e, "Unable to register file handler for the logger!");
+            }
         }
     }
 
