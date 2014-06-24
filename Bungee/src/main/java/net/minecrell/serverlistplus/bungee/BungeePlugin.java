@@ -143,7 +143,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                 if (protocol != null) version.setProtocol(protocol);
             }
 
-            // TODO: Catch exceptions
             FaviconSource favicon = response.getFavicon();
             if (favicon != null) {
                 Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
