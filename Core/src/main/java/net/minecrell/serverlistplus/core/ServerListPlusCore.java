@@ -189,7 +189,7 @@ public class ServerListPlusCore {
             } else if (sub.equalsIgnoreCase("enable") || sub.equalsIgnoreCase("disable")) {
                 boolean enable = sub.equalsIgnoreCase("enable");
                 String tmp = enable ? "Enabling" : "Disabling";
-                this.getLogger().infoF("%s ServerListPlus per request of %s...", tmp, sender);
+                this.getLogger().infoF("%s ServerListPlus at request of %s...", tmp, sender);
                 sender.sendMessage(Format.GREEN + tmp + " ServerListPlus...");
 
                 try {
