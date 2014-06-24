@@ -160,7 +160,7 @@ public class ConfigurationManager extends CoreManager {
                     yaml.writeDocumented(writer, config);
             }
 
-            this.getLogger().info("Configuration successfully saved.");
+            this.getLogger().info("Configuration successfully saved!");
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "An error occurred while generating the YAML configuration!");
         } catch (IOException e) {
