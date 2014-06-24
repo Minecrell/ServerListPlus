@@ -31,6 +31,8 @@ import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.MissingProperty;
 import org.yaml.snakeyaml.introspector.Property;
 
+import static java.util.logging.Level.*;
+
 public class ConfigurationPropertyUtils extends FieldOrderPropertyUtils {
     private final ServerListPlusCore core;
 
@@ -43,7 +45,7 @@ public class ConfigurationPropertyUtils extends FieldOrderPropertyUtils {
     public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
         Property p = super.getProperty(type, name, bAccess);
         if (p instanceof MissingProperty)
-            core.getLogger().warningF("Unknown configuration property: %s @ %s", name, type.getSimpleName());
+            core.getLogger().logF(WARNING, "Unknown configuration property: %s @ %s", name, type.getSimpleName());
         return p;
     }
 }

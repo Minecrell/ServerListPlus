@@ -31,6 +31,8 @@ import java.io.InputStream;
 import java.net.URL;
 import javax.imageio.ImageIO;
 
+import static java.util.logging.Level.*;
+
 public final class FaviconHelper {
     private FaviconHelper() {}
 
@@ -50,7 +52,7 @@ public final class FaviconHelper {
         try {
             return load(core, source);
         } catch (IOException e) {
-            core.getLogger().warningF(e, "Unable to load favicon from %s: %s", source.getLoader().toString(),
+            core.getLogger().logF(WARNING, e, "Unable to load favicon from %s: %s", source.getLoader().toString(),
                     source.getSource());
             return null;
         }
