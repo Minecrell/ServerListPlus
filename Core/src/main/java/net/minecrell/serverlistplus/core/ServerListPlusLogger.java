@@ -47,8 +47,6 @@ public class ServerListPlusLogger {
     public ServerListPlusLogger(ServerListPlusCore core) {
         this.core = core;
 
-        System.out.println(this.getLogger().getLevel().getLocalizedName());
-
         // Register a file handler for the logger but only if it has a parent to have compatibility with older
         // BungeeCord versions.
         if (this.getLogger().getParent() != null) {
