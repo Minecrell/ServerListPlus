@@ -58,7 +58,7 @@ public class ServerListPlusLogger {
 
         // Register a file handler for the logger but only if it has a parent to have compatibility with older
         // BungeeCord versions.
-        if (this.getLogger().getParent() != null) {
+        if (this.getLogger().getParent() != null)
             try {
                 // Register the file handler for the logger
                 Path logFile = core.getPlugin().getPluginFolder().resolve(LOG_FILE);
@@ -76,7 +76,7 @@ public class ServerListPlusLogger {
             } catch (IOException e) {
                 this.warning(e, "Unable to register file handler for the logger!");
             }
-        }
+        else this.getLogger().setLevel(Level.ALL); // Print it to console at least
     }
 
     private Logger getLogger() {
