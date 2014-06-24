@@ -68,6 +68,22 @@ public class ServerListPlusLogger {
         return String.format(message, args);
     }
 
+    public void debug(String message) {
+        this.log(Level.FINE, message);
+    }
+
+    public void debug(Exception e, String message) {
+        this.log(Level.FINE, e, message);
+    }
+
+    public void debugF(String message, Object... args) {
+        this.logF(Level.FINE, message, args);
+    }
+
+    public void debugF(Exception e, String message, Object... args) {
+        this.logF(Level.FINE, e, message, args);
+    }
+
     public void info(String message) {
         this.log(Level.INFO, message);
     }
