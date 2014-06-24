@@ -107,7 +107,7 @@ public class ConfigurationManager extends CoreManager {
             this.storage = newStorage;
 
             if (generated > 0) {
-                this.getLogger().debugF("Generated %d configurations.", generated);
+                this.getLogger().debugF("Using %d default configurations.", generated);
                 if (confExists)
                     this.getLogger().warning(generated + " configurations could not be found in the " +
                             "configuration file. Your configuration might be outdated, " +

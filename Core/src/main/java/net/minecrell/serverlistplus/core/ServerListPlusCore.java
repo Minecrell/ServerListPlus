@@ -60,7 +60,7 @@ public class ServerListPlusCore {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = new ServerListPlusLogger(this);
 
-        this.getLogger().info("Loading Core...");
+        plugin.getLogger().info("Loading core...");
         this.info = CoreDescription.load(this);
 
         this.statusManager = new ServerStatusManager(this);
@@ -75,7 +75,7 @@ public class ServerListPlusCore {
         plugin.initialize(this);
         this.reload();
 
-        this.getLogger().info("Core was successfully loaded.");
+        plugin.getLogger().info("Core was successfully loaded!");
     }
 
     public <T> void registerConf(Class<T> clazz, T def, String alias) {

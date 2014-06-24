@@ -23,6 +23,8 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.plugin.ServerType;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -57,7 +59,7 @@ public class ServerListPlusLogger {
                 FileHandler handler = new FileHandler(logFile.toString(),
                         1024 * 1024 /* 1 MB */, 1, true /* append */);
                 handler.setLevel(Level.ALL);
-                handler.setFormatter(new LogFormatter());
+                handler.setFormatter(new LogFormatter(core.getPlugin().getServerType()));
                 this.getLogger().addHandler(handler);
             } catch (IOException e) {
                 this.warning(e, "Unable to register file handler for the logger!");
@@ -192,16 +194,30 @@ public class ServerListPlusLogger {
 
     public static class LogFormatter extends Formatter {
         private static final DateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        private static final String LOG_PREFIX = "[ServerListPlus] ";
+
+        private final String pluginPrefix;
+
+        private LogFormatter(ServerType type) {
+            this.pluginPrefix = "[" + type + "] ";
+        }
 
         @Override
         public String format(LogRecord record) {
             StringBuilder formatted = new StringBuilder()
                     .append(date.format(record.getMillis()))
                     .append(" [")
-                    .append(record.getLevel().getLocalizedName())
-                    .append("] ")
-                    .append(formatMessage(record))
-                    .append('\n');
+                    .append(record.getLevel().getName())
+                    .append("] ");
+
+            String message = formatMessage(record);
+            if (message.startsWith(LOG_PREFIX))
+                message = message.substring(LOG_PREFIX.length());
+
+            if (!message.startsWith(PREFIX))
+                formatted.append(pluginPrefix);
+
+            formatted.append(message).append('\n');
 
             if (record.getThrown() != null) {
                 StringWriter writer = new StringWriter();
