@@ -51,7 +51,6 @@ public class ServerListPlusLogger {
 
         // Register a file handler for the logger but only if it has a parent to have compatibility with older
         // BungeeCord versions.
-
         if (this.getLogger().getParent() != null) {
             try {
                 // Register the file handler for the logger

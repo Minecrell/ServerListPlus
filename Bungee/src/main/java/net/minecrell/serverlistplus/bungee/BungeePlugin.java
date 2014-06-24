@@ -69,7 +69,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!"); return;
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the core.", e);
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while loading the core.", e);
             return;
         }
 
@@ -195,12 +195,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
                 this.registerListener(this.loginListener = new LoginListener());
-                this.getLogger().info("Registered proxy player tracking listener.");
+                this.getLogger().fine("Registered proxy player tracking listener.");
             }
         } else if (loginListener != null) {
             this.unregisterListener(loginListener);
             this.loginListener = null;
-            this.getLogger().info("Unregistered proxy player tracking listener.");
+            this.getLogger().fine("Unregistered proxy player tracking listener.");
         }
 
         if (confs.get(PluginConf.class).Stats) {
@@ -209,14 +209,14 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     this.metrics = new BungeeMetrics(this);
                     metrics.start();
                 } catch (Throwable e) {
-                    this.getLogger().warning("Failed to enable plugin statistics: " + e.getMessage());
+                    this.getLogger().info("Failed to enable plugin statistics: " + e.getMessage());
                 }
         } else if (metrics != null)
             try {
                 metrics.stop();
                 this.metrics = null;
             } catch (Throwable e) {
-                this.getLogger().warning("Failed to disable plugin statistics: " + e.getMessage());
+                this.getLogger().info("Failed to disable plugin statistics: " + e.getMessage());
             }
     }
 
@@ -225,12 +225,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (status.hasChanges()) {
             if (pingListener == null) {
                 this.registerListener(this.pingListener = new PingListener());
-                this.getLogger().info("Registered proxy ping listener.");
+                this.getLogger().fine("Registered proxy ping listener.");
             }
         } else if (pingListener != null) {
             this.unregisterListener(pingListener);
             this.pingListener = null;
-            this.getLogger().info("Unregistered proxy ping listener.");
+            this.getLogger().fine("Unregistered proxy ping listener.");
         }
     }
 }

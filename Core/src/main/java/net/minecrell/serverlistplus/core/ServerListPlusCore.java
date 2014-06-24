@@ -91,25 +91,26 @@ public class ServerListPlusCore {
                 || !playerTrackerConf.equals(conf.Caches.PlayerTracking))) {
 
             if (playerTracker != null) {
-                this.getLogger().info("Deleting old player tracking cache due to configuration changes.");
+                this.getLogger().debug("Deleting old player tracking cache due to configuration changes.");
                 playerTracker.invalidateAll();
                 playerTracker.cleanUp();
                 this.playerTracker = null;
             }
 
             if (enabled) {
-                this.getLogger().info("Creating new player tracking cache...");
+                this.getLogger().debug("Creating new player tracking cache...");
 
                 try {
                     Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
                     this.playerTrackerConf = conf.Caches.PlayerTracking;
                     this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
                 } catch (IllegalArgumentException e) {
-                    this.getLogger().severe(e, "Unable to create player tracker cache using configuration " +
-                            "settings.");
+                    this.getLogger().log(e, "Unable to create player tracker cache using configuration settings.");
                     this.playerTrackerConf = this.getDefaultConf(CoreConf.class).Caches.PlayerTracking;
                     this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
                 }
+
+                this.getLogger().debug("Player tracking cache created.");
             } else
                 playerTrackerConf = null;
         }
@@ -119,22 +120,24 @@ public class ServerListPlusCore {
         if (!enabled || (faviconCacheConf == null || conf.Caches == null
                 || !faviconCacheConf.equals(conf.Caches.Favicon))) {
             if (plugin.getFaviconCache() != null) {
-                this.getLogger().info("Deleting old favicon cache due to configuration changes.");
+                this.getLogger().debug("Deleting old favicon cache due to configuration changes.");
                 plugin.reloadFaviconCache(null);
             }
 
             if (enabled) {
-                this.getLogger().info("Creating new favicon cache...");
+                this.getLogger().debug("Creating new favicon cache...");
 
                 try {
-                    Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
+                    Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found!");
                     this.faviconCacheConf = conf.Caches.Favicon;
                     plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 } catch (IllegalArgumentException e) {
-                    this.getLogger().severe(e, "Unable to create favicon cache using configuration settings.");
+                    this.getLogger().log(e, "Unable to create favicon cache using configuration settings.");
                     this.faviconCacheConf = this.getDefaultConf(CoreConf.class).Caches.Favicon;
                     plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 }
+
+                this.getLogger().debug("Favicon cache created.");
             } else
                 faviconCacheConf = null;
         }
@@ -144,8 +147,7 @@ public class ServerListPlusCore {
         configManager.reload();
         this.profileManager.reload();
         if (!profileManager.isEnabled())
-            this.getLogger().warning("ServerListPlus profile is not enabled, nothing will be changed on the " +
-                    "server!");
+            this.getLogger().warning("Configuration is not enabled, nothing will be changed on the server!");
         statusManager.reload();
         this.reloadCaches();
     }
@@ -162,7 +164,7 @@ public class ServerListPlusCore {
         String sub = (args.length > 0) ? args[0] : null;
         if (sub != null) {
             if (sub.equalsIgnoreCase("reload")) {
-                this.getLogger().infoF("Reloading configuration per request by %s!", sender);
+                this.getLogger().infoF("Reloading configuration at request of %s!", sender);
                 sender.sendMessage(Format.GREEN + "Reloading configuration...");
 
                 try {
@@ -175,7 +177,7 @@ public class ServerListPlusCore {
 
                 return;
             } else if (sub.equalsIgnoreCase("save")) {
-                this.getLogger().infoF("Saving configuration per request by %s!", sender);
+                this.getLogger().infoF("Saving configuration at request of %s!", sender);
                 sender.sendMessage(Format.GREEN + "Saving configuration...");
 
                 try {

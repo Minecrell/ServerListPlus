@@ -77,7 +77,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.getLogger().info("Please fix the error before restarting the server!");
             this.disablePlugin(); return;
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "An internal error occurred while initializing the core!", e);
+            this.getLogger().log(Level.SEVERE, "An internal error occurred while loading the core!", e);
             this.disablePlugin(); return;
         }
 
@@ -208,12 +208,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
                 this.registerListener(this.loginListener = new LoginListener());
-                this.getLogger().info("Registered player tracking listener.");
+                this.getLogger().fine("Registered player tracking listener.");
             }
         } else if (loginListener != null) {
             this.unregisterListener(loginListener);
             this.loginListener = null;
-            this.getLogger().info("Unregistered player tracking listener.");
+            this.getLogger().fine("Unregistered player tracking listener.");
         }
 
         if (confs.get(PluginConf.class).Stats) {
@@ -223,14 +223,14 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                     metrics.enable();
                     metrics.start();
                 } catch (Throwable e) {
-                    this.getLogger().warning("Failed to enable plugin statistics: " + e.getMessage());
+                    this.getLogger().info("Failed to enable plugin statistics: " + e.getMessage());
                 }
         } else if (metrics != null)
             try {
                 metrics.disable();
                 this.metrics = null;
             } catch (Throwable e) {
-                this.getLogger().warning("Failed to disable plugin statistics: " + e.getMessage());
+                this.getLogger().info("Failed to disable plugin statistics: " + e.getMessage());
             }
     }
 
@@ -240,12 +240,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (packetListener == null) {
                 ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener =
                         new StatusPacketListener());
-                this.getLogger().info("Registered status packet listener.");
+                this.getLogger().fine("Registered status packet listener.");
             }
         } else if (packetListener != null) {
             ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
             this.packetListener = null;
-            this.getLogger().info("Unregistered status packet listener.");
+            this.getLogger().fine("Unregistered status packet listener.");
         }
     }
 }

@@ -56,7 +56,7 @@ public class ProfileManager extends CoreManager {
 
     public void reload() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
-        this.getLogger().info("Reloading profiles from: " + profilePath);
+        this.getLogger().debug("Reloading profiles from: " + profilePath);
 
         try {
             if (Files.exists(profilePath)) {
@@ -68,11 +68,11 @@ public class ProfileManager extends CoreManager {
                 }
 
                 if (enabled)
-                    this.getLogger().info("ServerListPlus profile is enabled.");
+                    this.getLogger().debug("ServerListPlus profile is enabled.");
                 else
-                    this.getLogger().info("ServerListPlus profile is disabled.");
+                    this.getLogger().debug("ServerListPlus profile is disabled.");
             } else
-                this.getLogger().info("Profile configuration not found, assuming the profile is disabled.");
+                this.getLogger().debug("Profile configuration not found, assuming the profile is disabled.");
         } catch (JsonSyntaxException e) {
             throw this.getLogger().process(e, "Unable to parse profile configuration, have you changed it?");
         } catch (IOException | JsonIOException e) {
@@ -84,7 +84,7 @@ public class ProfileManager extends CoreManager {
 
     public void save() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
-        this.getLogger().info("Saving profiles to: " + profilePath);
+        this.getLogger().debug("Saving profiles to: " + profilePath);
 
         try {
             if (Files.notExists(profilePath)) {
@@ -100,6 +100,8 @@ public class ProfileManager extends CoreManager {
                 obj.add(DEFAULT_PROFILE, profile);
                 JSON.toJson(obj, writer);
             }
+
+            this.getLogger().debug("Successfully saved profiles to the storage.");
         } catch (IOException | JsonIOException e) {
             throw this.getLogger().process(e, "Unable to access profile configuration.");
         } catch (Exception e) {

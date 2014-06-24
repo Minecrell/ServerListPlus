@@ -77,7 +77,7 @@ public class CoreDescription {
                     about.getProperty("Description"), about.getProperty("Author"),
                     new URL(about.getProperty("Website")), new URL(about.getProperty("Wiki")));
         } catch (Exception e) {
-            core.getLogger().severe(e, "Unable to load core info!");
+            core.getLogger().log(e, "Unable to load core info!");
             return new CoreDescription("ServerListPlus", "Unknown", null, null, null, null);
         }
     }
