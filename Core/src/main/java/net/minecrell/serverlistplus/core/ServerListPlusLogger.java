@@ -23,10 +23,22 @@
 
 package net.minecrell.serverlistplus.core;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class ServerListPlusLogger {
+    private static final String LOG_FILE = "ServerListPlus.log";
+
     private static final Level DEFAULT_EXCEPTION_LEVEL = Level.SEVERE;
     private static final String PREFIX = "[Core] ";
 
@@ -34,6 +46,17 @@ public class ServerListPlusLogger {
 
     public ServerListPlusLogger(ServerListPlusCore core) {
         this.core = core;
+
+        try {
+            // Register the file handler for the logger
+            Path logFile = core.getPlugin().getPluginFolder().resolve(LOG_FILE);
+            if (!Files.isDirectory(logFile.getParent())) Files.createDirectories(logFile.getParent());
+            FileHandler handler = new FileHandler(core.getPlugin().getPluginFolder().resolve(LOG_FILE).toString());
+            handler.setFormatter(new LogFormatter());
+            this.getLogger().addHandler(handler);
+        } catch (IOException e) {
+            this.warning(e, "Unable to register file handler for the logger!");
+        }
     }
 
     private Logger getLogger() {
@@ -142,6 +165,29 @@ public class ServerListPlusLogger {
     private static final class CoreServerListPlusException extends ServerListPlusException {
         private CoreServerListPlusException(String message, Throwable cause) {
             super(message, cause);
+        }
+    }
+
+    public static class LogFormatter extends Formatter {
+        private static final DateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        @Override
+        public String format(LogRecord record) {
+            StringBuilder formatted = new StringBuilder()
+                    .append(date.format(record.getMillis()))
+                    .append(" [")
+                    .append(record.getLevel().getLocalizedName())
+                    .append("] ")
+                    .append(formatMessage(record))
+                    .append('\n');
+
+            if (record.getThrown() != null) {
+                StringWriter writer = new StringWriter();
+                record.getThrown().printStackTrace(new PrintWriter(writer));
+                formatted.append(writer);
+            }
+
+            return formatted.toString();
         }
     }
 }

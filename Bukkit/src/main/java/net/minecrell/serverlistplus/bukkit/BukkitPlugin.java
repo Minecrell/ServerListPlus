@@ -35,6 +35,7 @@ import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
 import java.util.Collections;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 
 import com.google.common.base.Optional;
@@ -87,6 +88,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void onDisable() {
         this.getLogger().info(this.getDisplayName() + " disabled.");
+        // BungeeCord closes the log handlers automatically, but Bukkit does not
+        for (Handler handler : this.getLogger().getHandlers())
+            handler.close();
     }
 
     public final class ServerListPlusCommand implements CommandExecutor {
