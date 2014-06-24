@@ -78,7 +78,7 @@ public class BungeeMetrics {
                     firstPost = false;
                 } catch (Throwable e) {
                     if (!errorReported) {
-                        plugin.getLogger().warning("Failed to submit plugin statistics: " + e.getMessage());
+                        plugin.getLogger().fine("Failed to submit plugin statistics: " + e.getMessage());
                         errorReported = true;
                     }
                 }
