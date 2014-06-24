@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 
 import java.io.IOException;
@@ -30,8 +31,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -39,10 +42,14 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class ServerListPlusLogger {
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private static final String LOG_PREFIX = "[Core] ";
+    private static final String PLUGIN_PREFIX = "[ServerListPlus] ";
+
     private static final String LOG_FILE = "ServerListPlus.log";
 
     private static final Level DEFAULT_EXCEPTION_LEVEL = Level.SEVERE;
-    private static final String PREFIX = "[Core] ";
 
     private final ServerListPlusCore core;
 
@@ -56,8 +63,14 @@ public class ServerListPlusLogger {
                 // Register the file handler for the logger
                 Path logFile = core.getPlugin().getPluginFolder().resolve(LOG_FILE);
                 if (!Files.isDirectory(logFile.getParent())) Files.createDirectories(logFile.getParent());
+                if (Files.isWritable(logFile))
+                    Files.write(logFile, Collections.singleton(
+                            "--- # " + DATE_FORMAT.format(System.currentTimeMillis())
+                    ), IOUtil.CHARSET, StandardOpenOption.APPEND);
+
                 FileHandler handler = new FileHandler(logFile.toString(),
                         1024 * 1024 /* 1 MB */, 1, true /* append */);
+                handler.setEncoding(IOUtil.CHARSET.name());
                 handler.setLevel(Level.ALL);
                 handler.setFormatter(new LogFormatter(core.getPlugin().getServerType()));
                 this.getLogger().addHandler(handler);
@@ -140,7 +153,7 @@ public class ServerListPlusLogger {
     }
 
     public void log(Level level, String message) {
-        this.getLogger().log(level, PREFIX + message);
+        this.getLogger().log(level, LOG_PREFIX + message);
     }
 
     public void logF(Level level, String message, Object... args) {
@@ -157,7 +170,7 @@ public class ServerListPlusLogger {
 
     public boolean log(Level level, Exception e, String message) {
         if (!checkException(e)) return false;
-        this.getLogger().log(level, PREFIX + message, e); return true;
+        this.getLogger().log(level, LOG_PREFIX + message, e); return true;
     }
 
     public boolean logF(Level level, Exception e, String message, Object... args) {
@@ -193,9 +206,6 @@ public class ServerListPlusLogger {
     }
 
     public static class LogFormatter extends Formatter {
-        private static final DateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        private static final String LOG_PREFIX = "[ServerListPlus] ";
-
         private final String pluginPrefix;
 
         private LogFormatter(ServerType type) {
@@ -204,17 +214,14 @@ public class ServerListPlusLogger {
 
         @Override
         public String format(LogRecord record) {
-            StringBuilder formatted = new StringBuilder()
-                    .append(date.format(record.getMillis()))
-                    .append(" [")
-                    .append(record.getLevel().getName())
-                    .append("] ");
+            StringBuilder formatted = new StringBuilder().append(DATE_FORMAT.format(record.getMillis()))
+                    .append(" [").append(record.getLevel().getName()).append("] ");
 
             String message = formatMessage(record);
-            if (message.startsWith(LOG_PREFIX))
-                message = message.substring(LOG_PREFIX.length());
+            if (message.startsWith(PLUGIN_PREFIX))
+                message = message.substring(PLUGIN_PREFIX.length());
 
-            if (!message.startsWith(PREFIX))
+            if (!message.startsWith(LOG_PREFIX))
                 formatted.append(pluginPrefix);
 
             formatted.append(message).append('\n');
