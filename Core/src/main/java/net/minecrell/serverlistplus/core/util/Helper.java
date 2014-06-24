@@ -64,7 +64,9 @@ public final class Helper {
     public static <K, V, T extends Map<K, V>> int mergeMaps(T main, Map<K, V> merge) {
         int counter = 0;
         for (Map.Entry<K, V> entry : merge.entrySet())
+            // Check if map contains the key...
             if (!main.containsKey(entry.getKey())) {
+                // And if not, create it!
                 main.put(entry.getKey(), entry.getValue()); counter++;
             }
         return counter;

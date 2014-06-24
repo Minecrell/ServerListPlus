@@ -36,6 +36,8 @@ public final class ConfExamples {
     public static ServerStatusConf forServerStatus() {
         // Feel free to improve the examples
         ServerStatusConf conf = new ServerStatusConf();
+
+        // Description
         conf.Default = new ServerStatusConf.StatusConf();
         conf.Default.Description = Arrays.asList(
                 Helper.lines(
@@ -43,6 +45,8 @@ public final class ConfExamples {
                         "&cCurrently running &e1.7&c."
                 ), "&aSingle lines are also possible."
         );
+
+        // Player hover
         conf.Default.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Default.Players.Hover = Arrays.asList(
                 Helper.lines(
@@ -58,6 +62,8 @@ public final class ConfExamples {
                 )
         );
 
+        // Personalized
+        // Description
         conf.Personalized = new ServerStatusConf.StatusConf();
         conf.Personalized.Description = Arrays.asList(
                 Helper.lines(
@@ -68,6 +74,8 @@ public final class ConfExamples {
                         "&eCome and play on our server, %player%!"
                 )
         );
+
+        // Player hover
         conf.Personalized.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Personalized.Players.Hover = Arrays.asList(
                 Helper.lines(

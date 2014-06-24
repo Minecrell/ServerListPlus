@@ -36,7 +36,7 @@ public class FieldOrderPropertyUtils extends PropertyUtils {
         this.setBeanAccess(BeanAccess.FIELD);
     }
 
-    @Override
+    @Override // Order properties in the configuration as defined in the source code
     protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
         return new LinkedHashSet<>(this.getPropertiesMap(type, bAccess).values());
     }

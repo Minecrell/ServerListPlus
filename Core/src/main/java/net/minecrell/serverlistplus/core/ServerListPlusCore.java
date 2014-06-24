@@ -63,34 +63,39 @@ public class ServerListPlusCore {
         plugin.getLogger().info("Loading core...");
         this.info = CoreDescription.load(this);
 
+        // Initialize configuration and status manager, but not yet load it
         this.statusManager = new ServerStatusManager(this);
         this.configManager = new ConfigurationManager(this);
 
+        // Register the configurations
         this.registerConf(ServerStatusConf.class, ConfExamples.forServerStatus(), "Status");
         this.registerConf(PluginConf.class, ConfExamples.forPlugin(), "Plugin");
         this.registerConf(CoreConf.class, ConfExamples.forCore(), "Core");
 
+        // Initialize the profile manager
         this.profileManager = new ProfileManager(this);
 
         plugin.initialize(this);
-        this.reload();
+        this.reload(); // Now load the configuration!
 
         plugin.getLogger().info("Core was successfully loaded!");
     }
 
     public <T> void registerConf(Class<T> clazz, T def, String alias) {
-        configManager.getDefaults().set(clazz, def);
-        configManager.getYAML().registerAlias(clazz, alias);
+        configManager.getDefaults().set(clazz, def); // Set default configuration
+        configManager.getYAML().registerAlias(clazz, alias); // Register alias of the configuration
     }
 
     private void reloadCaches() {
         CoreConf conf = this.getConf(CoreConf.class);
         boolean enabled = this.getConf(PluginConf.class).PlayerTracking;
 
+        // Check if player tracker configuration has been changed
         if (!enabled || (playerTrackerConf == null || conf.Caches == null
                 || !playerTrackerConf.equals(conf.Caches.PlayerTracking))) {
 
             if (playerTracker != null) {
+                // Delete the player tracker
                 this.getLogger().debug("Deleting old player tracking cache due to configuration changes.");
                 playerTracker.invalidateAll();
                 playerTracker.cleanUp();
@@ -112,16 +117,17 @@ public class ServerListPlusCore {
 
                 this.getLogger().debug("Player tracking cache created.");
             } else
-                playerTrackerConf = null;
+                playerTrackerConf = null; // Not enabled, so there is also no cache
         }
 
         enabled = statusManager.hasFavicon();
 
+        // Check if favicon cache configuration has been changed
         if (!enabled || (faviconCacheConf == null || conf.Caches == null
                 || !faviconCacheConf.equals(conf.Caches.Favicon))) {
             if (plugin.getFaviconCache() != null) {
                 this.getLogger().debug("Deleting old favicon cache due to configuration changes.");
-                plugin.reloadFaviconCache(null);
+                plugin.reloadFaviconCache(null); // Delete the old favicon cache
             }
 
             if (enabled) {
@@ -139,17 +145,17 @@ public class ServerListPlusCore {
 
                 this.getLogger().debug("Favicon cache created.");
             } else
-                faviconCacheConf = null;
+                faviconCacheConf = null; // Not used, so there is also no cache
         }
     }
 
     public void reload() throws ServerListPlusException {
-        configManager.reload();
-        this.profileManager.reload();
+        configManager.reload(); // Reload configuration from disk
+        this.profileManager.reload(); // Reload profile storage from disk
         if (!profileManager.isEnabled())
             this.getLogger().warning("Configuration is not enabled, nothing will be changed on the server!");
-        statusManager.reload();
-        this.reloadCaches();
+        statusManager.reload(); // Now actually read and process the configuration
+        this.reloadCaches(); // Check for cache setting changes
     }
 
     public void addClient(String playerName, InetAddress client) {
@@ -167,7 +173,7 @@ public class ServerListPlusCore {
                 this.getLogger().infoF("Reloading configuration at request of %s!", sender);
                 sender.sendMessage(Format.GREEN + "Reloading configuration...");
 
-                try {
+                try { // Reload the configuration
                     this.reload();
                     sender.sendMessage(Format.GREEN + "Configuration successfully reloaded!");
                 } catch (ServerListPlusException e) {
@@ -180,7 +186,7 @@ public class ServerListPlusCore {
                 this.getLogger().infoF("Saving configuration at request of %s!", sender);
                 sender.sendMessage(Format.GREEN + "Saving configuration...");
 
-                try {
+                try { // Save the configuration
                     configManager.save();
                     sender.sendMessage(Format.GREEN + "Configuration successfully saved.");
                 } catch (ServerListPlusException e) {
@@ -192,7 +198,7 @@ public class ServerListPlusCore {
                 this.getLogger().infoF("%s ServerListPlus at request of %s...", tmp, sender);
                 sender.sendMessage(Format.GREEN + tmp + " ServerListPlus...");
 
-                try {
+                try { // Enable / disable the ServerListPlus profile
                     profileManager.setEnabled(enable);
                     sender.sendMessage(Format.GREEN + "ServerListPlus has been successfully " + (enable ?
                             "enabled" : "disabled") + "!");
@@ -205,6 +211,7 @@ public class ServerListPlusCore {
             }
         }
 
+        // Send the sender some information about the plugin
         sender.sendMessage(Format.GOLD + info.getName() + plugin.getServerType() + " v" + info.getVersion());
         if (info.getDescription() != null)
             sender.sendMessage(Format.GRAY + info.getDescription());
@@ -215,6 +222,7 @@ public class ServerListPlusCore {
         if (info.getWiki() != null)
             sender.sendMessage(Format.GOLD + "Wiki: " + Format.GRAY + info.getWiki());
 
+        // Command help
         sender.sendMessages(
                 Format.GOLD + "Commands:",
                 buildCommandHelp("", "Display an information page about the plugin and list all available " +

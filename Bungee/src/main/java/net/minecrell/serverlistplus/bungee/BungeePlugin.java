@@ -64,7 +64,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
-        try {
+        try { // Load the core first
             this.core = new ServerListPlusCore(this);
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!"); return;
@@ -73,9 +73,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             return;
         }
 
+        // Register commands
         this.getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
     }
 
+    // Commands
     public final class ServerListPlusCommand extends Command {
         private ServerListPlusCommand() {
             super("serverlistplus", "serverlistplus.admin", "serverlist+", "serverlist", "slp", "sl+", "s++",
@@ -88,6 +90,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         }
     }
 
+    // Player tracking
     public final class LoginListener implements Listener {
         private LoginListener() {}
 
@@ -97,18 +100,21 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         }
     }
 
+    // Status listener
     public final class PingListener implements Listener {
         private PingListener() {}
 
         @EventHandler
         public void onProxyPing(ProxyPingEvent event) {
-            if (event.getResponse() == null) return;
+            if (event.getResponse() == null) return; // Check if response is not empty
             final ServerPing ping = event.getResponse();
             final ServerPing.Players players = ping.getPlayers();
 
             ServerStatusManager.Response response = core.getStatus().createResponse(event.getConnection().
-                    getAddress().getAddress(), players == null ? new ServerStatusManager.ResponseFetcher() :
-                    new ServerStatusManager.ResponseFetcher() {
+                    getAddress().getAddress(),
+                    // Return unknown player counts if it has been hidden
+                    players == null ? new ServerStatusManager.ResponseFetcher() :
+                            new ServerStatusManager.ResponseFetcher() {
 
                 @Override
                 public Integer fetchPlayersOnline() {
@@ -121,15 +127,19 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                 }
             });
 
+            // Description
             String message = response.getDescription();
             if (message != null) ping.setDescription(message);
 
             if (players != null) {
+                // Online players
                 Integer count = response.getPlayersOnline();
                 if (count != null) players.setOnline(count);
+                // Max players
                 count = response.getMaxPlayers();
                 if (count != null) players.setMax(count);
 
+                // Player hover
                 message = response.getPlayerHover();
                 if (message != null) players.setSample(new ServerPing.PlayerInfo[]{
                         new ServerPing.PlayerInfo(message, ServerStatusManager.EMPTY_UUID) });
@@ -137,12 +147,15 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
             ServerPing.Protocol version = ping.getVersion();
             if (version != null) {
+                // Version name
                 message = response.getVersion();
                 if (message != null) version.setName(message);
+                // Protocol version
                 Integer protocol = response.getProtocol();
                 if (protocol != null) version.setProtocol(protocol);
             }
 
+            // Favicon
             FaviconSource favicon = response.getFavicon();
             if (favicon != null) {
                 Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
@@ -168,7 +181,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void initialize(ServerListPlusCore core) {
-
+        // Nothing to do at the moment
     }
 
     @Override
@@ -177,12 +190,14 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource, Optional<Favicon>>() {
                 @Override
                 public Optional<Favicon> load(FaviconSource source) throws Exception {
+                    // Try loading the favicon
                     BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.absent();
-                    else return Optional.of(Favicon.create(image));
+                    if (image == null) return Optional.absent(); // Favicon loading failed
+                    else return Optional.of(Favicon.create(image)); // Success!
                 }
             });
         } else {
+            // Delete favicon cache
             faviconCache.invalidateAll();
             faviconCache.cleanUp();
             this.faviconCache = null;
@@ -191,6 +206,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void configChanged(InstanceStorage<Object> confs) {
+        // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
                 this.registerListener(this.loginListener = new LoginListener());
@@ -202,6 +218,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.getLogger().fine("Unregistered proxy player tracking listener.");
         }
 
+        // Plugin statistics
         if (confs.get(PluginConf.class).Stats) {
             if (metrics == null)
                 try {
@@ -221,6 +238,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void statusChanged(ServerStatusManager status) {
+        // Status listener
         if (status.hasChanges()) {
             if (pingListener == null) {
                 this.registerListener(this.pingListener = new PingListener());

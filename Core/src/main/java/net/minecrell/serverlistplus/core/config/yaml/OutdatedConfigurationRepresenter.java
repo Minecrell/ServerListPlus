@@ -31,6 +31,7 @@ public class OutdatedConfigurationRepresenter extends NullSkippingRepresenter {
     @Override
     protected Node representScalar(Tag tag, String value, Character style) {
         if (style == null && value != null && value.indexOf('\n') > -1)
+            // Use literal style to generate nice output for multiple lines on CraftBukkit
             style = DumperOptions.ScalarStyle.LITERAL.getChar();
         return super.representScalar(tag, value, style);
     }

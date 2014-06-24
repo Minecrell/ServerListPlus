@@ -30,7 +30,7 @@ import org.yaml.snakeyaml.representer.Representer;
 
 public class NullSkippingRepresenter extends Representer {
 
-    @Override
+    @Override // Skip null values for configuration generating
     protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object value, Tag tag) {
         return value != null ? super.representJavaBeanProperty(javaBean, property, value, tag) : null;
     }

@@ -33,7 +33,11 @@ public class CoreConf {
     public CachesConf Caches = new CachesConf();
 
     public static class CachesConf {
-        public String PlayerTracking = "";
+        /**
+         * @deprecated The cache can always only count the time from the login, but not from the logout,
+         * that's why we need something different here...
+         */
+        @Deprecated public String PlayerTracking = "";
         public String Favicon = "maximumSize=256";
     }
 }

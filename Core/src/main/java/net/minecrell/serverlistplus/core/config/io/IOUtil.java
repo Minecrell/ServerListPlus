@@ -46,6 +46,7 @@ public final class IOUtil {
         if (in == null) return null;
         BufferedReader reader = newBufferedReader(in);
         String line; List<String> result = new ArrayList<>();
+        // Add all lines to the result list
         while ((line = reader.readLine()) != null)
             result.add(line);
         return result;

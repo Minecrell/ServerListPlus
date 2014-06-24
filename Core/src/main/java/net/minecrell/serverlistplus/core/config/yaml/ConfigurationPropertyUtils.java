@@ -36,13 +36,13 @@ public class ConfigurationPropertyUtils extends FieldOrderPropertyUtils {
 
     public ConfigurationPropertyUtils(ServerListPlusCore core) {
         this.core = core;
-        this.setSkipMissingProperties(true);
+        this.setSkipMissingProperties(true); // Will throw NoSuchMethodError on CraftBukkit
     }
 
     @Override
     public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
         Property p = super.getProperty(type, name, bAccess);
-        if (p instanceof MissingProperty)
+        if (p instanceof MissingProperty) // Check if property was missing and notify user if necessary
             core.getLogger().warningF("Unknown configuration property: %s @ %s", name, type.getSimpleName());
         return p;
     }

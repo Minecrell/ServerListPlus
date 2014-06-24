@@ -43,17 +43,18 @@ public class OutdatedConfigurationPropertyUtils extends FieldOrderPropertyUtils 
     public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
         Map<String, Property> properties = getPropertiesMap(type, bAccess);
         Property property = properties.get(name);
-        if (property == null) {
+        if (property == null) { // Check if property was missing and notify user if necessary
             core.getLogger().warningF("Unknown configuration property: %s @ %s", name, type.getSimpleName());
             return new OutdatedMissingProperty(name);
         }
 
-        if (!property.isWritable())
+        if (!property.isWritable()) // Throw exception from super method
             throw new YAMLException("Unable to find writable property '" + name + "' on class: " + type.getName());
 
         return property;
     }
 
+    // Adapted from newer SnakeYAML source ;)
     public static class OutdatedMissingProperty extends Property {
         public OutdatedMissingProperty(String name) {
             super(name, Object.class);

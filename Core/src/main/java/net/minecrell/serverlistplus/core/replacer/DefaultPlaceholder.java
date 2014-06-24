@@ -42,6 +42,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
+            // Use unknown player name
             return this.replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
         }
     },
@@ -54,6 +55,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
+            // Use unknown player count
             return this.replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
         }
     },
@@ -66,6 +68,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
+            // Use unknown player count
             return this.replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
         }
     };

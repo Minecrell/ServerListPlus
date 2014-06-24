@@ -82,6 +82,7 @@ public class ConfigurationManager extends CoreManager {
         this.getLogger().debug("Configuration location: " + configPath);
 
         try {
+            // Create new storage, will replace the other one when finished loading
             ClassToInstanceStorage<Object> newStorage = ClassToInstanceStorage.createLinked();
             final boolean confExists = Files.exists(configPath);
 
@@ -90,7 +91,9 @@ public class ConfigurationManager extends CoreManager {
                     Iterator<Object> itr = yaml.snakeYAML().getYaml().loadAll(reader).iterator();
                     while (itr.hasNext()) {
                         try {
+                            // Read one configuration from the file
                             Object obj = itr.next();
+                            // Add it to the storage
                             newStorage.setUnsafe(obj.getClass(), obj);
                             this.getLogger().info("Loaded configuration: " + obj.getClass().getSimpleName());
                         } catch (YAMLException e) {
@@ -103,6 +106,7 @@ public class ConfigurationManager extends CoreManager {
 
             this.getLogger().info(newStorage.count() + " configurations loaded.");
 
+            // Add missing configurations from default values
             int generated = Helper.mergeMaps(newStorage.getMap(), defaults.getMap());
             this.storage = newStorage;
 
@@ -118,10 +122,10 @@ public class ConfigurationManager extends CoreManager {
             }
 
             if (!confExists) try {
-                this.save();
+                this.save(); // Save it if it doesn't exist
             } catch (ServerListPlusException ignored) {}
 
-            core.getPlugin().configChanged(storage);
+            core.getPlugin().configChanged(storage); // Call plugin handlers
             this.getLogger().info("Configuration successfully reloaded!");
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "Unable to parse the configuration. Make sure the YAML syntax is " +
@@ -143,6 +147,7 @@ public class ConfigurationManager extends CoreManager {
 
         try {
             if (Files.exists(configPath)) {
+                // Create a backup when the configuration already exists!
                 Path backupPath = this.getPluginFolder().resolve(BACKUP_FILENAME);
                 this.getLogger().debug("Saving configuration backup to: " + backupPath);
 
@@ -157,6 +162,7 @@ public class ConfigurationManager extends CoreManager {
                 yaml.newLine(writer);
 
                 for (Object config : storage.get())
+                    // Write the configuration to the file
                     yaml.writeDocumented(writer, config);
             }
 

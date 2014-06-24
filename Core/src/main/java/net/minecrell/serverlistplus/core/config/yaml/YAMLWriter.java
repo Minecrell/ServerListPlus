@@ -66,6 +66,7 @@ public class YAMLWriter {
     public void registerAlias(Class<?> clazz, String alias) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(alias), "empty alias");
         Tag tag = new Tag("!" + alias);
+        // Add tag to representer and constructor to "notify" them about the alias
         snakeYAML.getRepresenter().addClassTag(clazz, tag);
         snakeYAML.getConstructor().addTypeDescription(new TypeDescription(clazz, tag));
     }
@@ -82,13 +83,14 @@ public class YAMLWriter {
         // Write configuration description
         writeComments(writer, ConfHelper.getDescription(conf));
         writer.append(DOCUMENT_START);
+        // Write only one configuration, but don't create a new list for that as SnakeYAML is doing that
         snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);
         writer.append(newLine);
     }
 
     public void writeComments(Appendable appendable, String... comments) throws IOException {
         if (!Helper.nullOrEmpty(comments))
-            for (String line : comments)
+            for (String line : comments) // Write all comment lines
                 appendable.append(COMMENT_PREFIX).append(line).append(newLine);
     }
 }

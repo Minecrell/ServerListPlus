@@ -31,6 +31,7 @@ public final class ConfHelper {
     }
 
     public static String[] getDescription(Class<?> clazz) {
+        // Get description from class annotation
         Description description = clazz.getAnnotation(Description.class);
         return description != null ? description.value() : null;
     }

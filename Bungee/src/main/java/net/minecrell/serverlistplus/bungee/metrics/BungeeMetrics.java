@@ -47,7 +47,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 public class BungeeMetrics {
     private final static Gson JSON = new Gson();
 
-    private final static int REVISION = 7;
+    private final static int REVISION = 7; // PluginMetrics revision
     private static final String BASE_URL = "http://report.mcstats.org";
     private static final String REPORT_URL = "/plugin/%s";
 
@@ -61,10 +61,12 @@ public class BungeeMetrics {
 
     public BungeeMetrics(Plugin plugin) {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
+        // Get UUID from BungeeCord configuration
         this.guid = plugin.getProxy().getConfigurationAdapter().getString("stats", UUID.randomUUID().toString());
     }
 
     public void start() {
+        // Check if UUID is not null --> Plugin statistics disabled
         if (task != null || guid == null || guid.equalsIgnoreCase("null")) return;
 
         this.task = new TimerTask() {
@@ -75,7 +77,7 @@ public class BungeeMetrics {
             public void run() {
                 try {
                     postPlugin(!firstPost);
-                    firstPost = false;
+                    firstPost = false; // Just ping now for the next times
                 } catch (Throwable e) {
                     if (!errorReported) {
                         plugin.getLogger().fine("Failed to submit plugin statistics: " + e.getMessage());
@@ -96,8 +98,10 @@ public class BungeeMetrics {
     }
 
     private void postPlugin(final boolean isPing) throws IOException {
+        // Create data object
         JsonObject jsonData = new JsonObject();
 
+        // Plugin and server information
         jsonData.addProperty("guid", guid);
         jsonData.addProperty("plugin_version", plugin.getDescription().getVersion());
         jsonData.addProperty("server_version", plugin.getProxy().getVersion());
@@ -106,7 +110,7 @@ public class BungeeMetrics {
                 true) ? 1 : 0);
         jsonData.addProperty("players_online", plugin.getProxy().getOnlineCount());
 
-        // New data as of R6
+        // New data as of R6, system information
         jsonData.addProperty("osname", System.getProperty("os.name"));
         String osArch = System.getProperty("os.arch");
         jsonData.addProperty("osarch", osArch.equals("amd64") ? "x86_64" : osArch);
@@ -116,8 +120,10 @@ public class BungeeMetrics {
 
         if (isPing) jsonData.addProperty("ping", 1);
 
+        // Get json output from GSON
         String json = JSON.toJson(jsonData);
 
+        // Open URL connection
         URL url = new URL(BASE_URL + String.format(REPORT_URL, URLEncoder.encode(plugin.getDescription().getName(),
                 "UTF-8")));
         URLConnection con = url.openConnection();
@@ -125,10 +131,11 @@ public class BungeeMetrics {
         byte[] data = json.getBytes(Charsets.UTF_8);
         byte[] gzip = null;
 
-        try {
+        try { // Compress using GZIP
             gzip = gzip(data);
         } catch (Exception ignored) {}
 
+        // Add request headers
         con.addRequestProperty("User-Agent", "MCStats/" + REVISION);
         con.addRequestProperty("Content-Type", "application/json");
         if (gzip != null) {
@@ -142,16 +149,18 @@ public class BungeeMetrics {
 
         con.setDoOutput(true);
 
+        // Write json data to the opened stream
         try (OutputStream out = con.getOutputStream()) {
             out.write(data);
             out.flush();
         }
 
-        String response;
+        String response; // Read the response
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
             response = reader.readLine();
         }
 
+        // Check for error
         if (response == null || response.startsWith("ERR") || response.startsWith("7")) {
             if (response == null) response = "null";
             else if (response.startsWith("7")) response = response.substring(response.startsWith("7,") ? 2 : 1);

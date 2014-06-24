@@ -58,9 +58,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 
 public class ServerStatusManager extends CoreManager {
-    public static final String EMPTY_ID = "0-0-0-0-0";
+    public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format
     public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
 
+    // Processed configuration storage
     private static class ServerStatus {
         private final List<String> description, playerHover;
         private final List<Integer> online, max;
@@ -94,8 +95,9 @@ public class ServerStatusManager extends CoreManager {
         }
     }
 
+    // Default and personalized
     private ServerStatus def, personalized;
-    private Multimap<String, DynamicReplacer> replacers;
+    private Multimap<String, DynamicReplacer> replacers; // The used placeholders of the messages.
 
     public ServerStatusManager(ServerListPlusCore core) {
         super(core);
@@ -108,18 +110,21 @@ public class ServerStatusManager extends CoreManager {
 
         ServerStatusConf conf = core.getConf().getStorage().get(ServerStatusConf.class);
         if (conf != null) {
-            this.def = reload(conf.Default);
-            this.personalized = reload(conf.Personalized);
+
+            this.def = reload(conf.Default); // Process default configuration
+            this.personalized = reload(conf.Personalized); // Personalized configuration
         } else {
+            // Configuration is empty
             this.def = this.personalized = new ServerStatus();
         }
 
+        // Status was reloaded
         core.getPlugin().statusChanged(this);
     }
 
     private String prepare(String s) {
-        s = ReplacementManager.replaceStatic(core, s);
-        replacers.putAll(s, ReplacementManager.findDynamic(s));
+        s = ReplacementManager.replaceStatic(core, s); // Apply all static replacers like colors and so on
+        replacers.putAll(s, ReplacementManager.findDynamic(s)); // Search for dynamic placeholders
         return s;
     }
 
@@ -133,11 +138,13 @@ public class ServerStatusManager extends CoreManager {
 
     private ImmutableList<String> readMessages(List<String> messages) {
         if (Helper.nullOrEmpty(messages)) return null;
+        // Prepare all messages
         return ImmutableList.copyOf(Collections2.transform(messages, prepareFunc));
     }
 
     private Collection<String> readFavicons(List<String> favicons) {
         if (Helper.nullOrEmpty(favicons)) return null;
+        // Prepare all favicons
         return Collections2.transform(favicons, prepareFunc);
     }
 
@@ -153,8 +160,8 @@ public class ServerStatusManager extends CoreManager {
                 continue;
             }
 
-            if (recursive)
-                try {
+            if (recursive) // Also check sub folders
+                try { // Walk down the file tree
                     Files.walkFileTree(folder, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
                             new SimpleFileVisitor<Path>() {
                                 @Override
@@ -170,9 +177,9 @@ public class ServerStatusManager extends CoreManager {
                 } catch (IOException e) {
                     core.getLogger().warning(e, "Unable to walk through file tree for " + folder);
                 }
-            else
+            else // Only this one folder
                 try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, "*.png")) {
-                    for (Path file : dir) {
+                    for (Path file : dir) { // File list
                         favicons.add(pluginFolder.relativize(file).toString());
                     }
                 } catch (IOException e) {
@@ -192,6 +199,8 @@ public class ServerStatusManager extends CoreManager {
 
     private ServerStatus reload(ServerStatusConf.StatusConf conf) {
         if (conf != null) {
+            // Get everything from the configuration
+
             List<String> descriptions = readMessages(conf.Description), playerHover = null;
             List<Integer> online = null, max = null;
             List<String> version = null; Integer protocol = null;

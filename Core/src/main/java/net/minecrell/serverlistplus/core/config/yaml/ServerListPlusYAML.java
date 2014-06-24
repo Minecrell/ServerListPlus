@@ -40,25 +40,27 @@ public final class ServerListPlusYAML {
 
     public static YAMLWriter createWriter(ServerListPlusCore core) {
         DumperOptions dumperOptions = new DumperOptions();
-        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK); // Configuration style
 
+        // Plugin classes are loaded from a different class loader, that's why we need this
         Constructor constructor = new CustomClassLoaderConstructor(core.getClass().getClassLoader());
-        Representer representer = new NullSkippingRepresenter();
+        Representer representer = new NullSkippingRepresenter(); // Skip null properties
 
         boolean outdatedYaml = false;
 
-        try {
+        try { // Try setting the newer property utils, but will fail on CraftBukkit
             representer.setPropertyUtils(new ConfigurationPropertyUtils(core));
         } catch (Throwable e) {
             outdatedYaml = true; // Meh, CraftBukkit is using an outdated SnakeYAML version
             core.getLogger().warning("Your server is using an outdated YAML version. The configuration might not" +
                     " work correctly.");
+            // Use old fallback versions and apply fixes!
             representer = new OutdatedConfigurationRepresenter();
             representer.setPropertyUtils(new OutdatedConfigurationPropertyUtils(core));
         }
 
         String[] header = null;
-        try {
+        try { // Try loading the configuration header from the JAR file
             header = IOUtil.readLineArray(core.getClass().getClassLoader().getResourceAsStream(HEADER_FILENAME));
         } catch (IOException e) {
             core.getLogger().warning(e, "Unable to read configuration header!");

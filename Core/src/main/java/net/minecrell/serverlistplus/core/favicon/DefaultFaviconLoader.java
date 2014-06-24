@@ -47,7 +47,7 @@ public enum DefaultFaviconLoader implements FaviconLoader {
         public BufferedImage load(ServerListPlusCore core, String source) throws IOException {
             return FaviconHelper.fromURL(new URL(source));
         }
-    }, BASE64 {
+    }, BASE64 { // Encoded favicon
         @Override
         public BufferedImage load(ServerListPlusCore core, String source) throws IOException {
             return FaviconHelper.fromStream(BaseEncoding.base64().decodingStream(new StringReader(source)));

@@ -71,16 +71,17 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
-        try {
+        try { // Load the core first
             this.core = new ServerListPlusCore(this);
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!");
-            this.disablePlugin(); return;
+            this.disablePlugin(); return; // Disable plugin to show error in /plugins
         } catch (Exception e) {
             this.getLogger().log(Level.SEVERE, "An internal error occurred while loading the core!", e);
-            this.disablePlugin(); return;
+            this.disablePlugin(); return; // Disable plugin to show error in /plugins
         }
 
+        // Register commands
         this.getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
         this.getLogger().info(this.getDisplayName() + " enabled.");
     }
@@ -93,6 +94,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             handler.close();
     }
 
+    // Commands
     public final class ServerListPlusCommand implements CommandExecutor {
         private ServerListPlusCommand() {}
 
@@ -102,6 +104,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         }
     }
 
+    // Player tracking
     public final class LoginListener implements Listener {
         private LoginListener() {}
 
@@ -111,6 +114,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         }
     }
 
+    // Status packet listener (ProtocolLib)
     public final class StatusPacketListener extends PacketAdapter {
         public StatusPacketListener() {
             super(PacketAdapter.params(BukkitPlugin.this, PacketType.Status.Server.OUT_SERVER_INFO).optionAsync());
@@ -119,11 +123,14 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         @Override // Server status packet
         public void onPacketSending(final PacketEvent event) {
             final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
+            // Make sure players have not been hidden when getting the player count
             boolean playersHidden = !ping.isPlayersVisible();
 
             ServerStatusManager.Response response = core.getStatus().createResponse(event.getPlayer().getAddress()
-                    .getAddress(), playersHidden ? new ServerStatusManager.ResponseFetcher() :
-                    new ServerStatusManager.ResponseFetcher() {
+                    .getAddress(),
+                    // Return unknown player counts if it has been hidden
+                    playersHidden ? new ServerStatusManager.ResponseFetcher() :
+                            new ServerStatusManager.ResponseFetcher() {
 
                 @Override
                 public Integer fetchPlayersOnline() {
@@ -136,25 +143,32 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                 }
             });
 
+            // Description
             String message = response.getDescription();
             if (message != null) ping.setMotD(message);
 
             if (!playersHidden) {
+                // Online players
                 Integer count = response.getPlayersOnline();
                 if (count != null) ping.setPlayersOnline(count);
+                // Max players
                 count = response.getMaxPlayers();
                 if (count != null) ping.setPlayersMaximum(count);
 
+                // Player hover
                 message = response.getPlayerHover();
                 if (message != null) ping.setPlayers(Collections.singleton(
                         new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, message)));
             }
 
+            // Version name
             message = response.getVersion();
             if (message != null) ping.setVersionName(message);
+            // Protocol version
             Integer protocol = response.getProtocol();
             if (protocol != null) ping.setVersionProtocol(protocol);
 
+            // Favicon
             FaviconSource favicon = response.getFavicon();
             if (favicon != null) {
                 Optional<WrappedServerPing.CompressedImage> icon = faviconCache.getUnchecked(favicon);
@@ -180,7 +194,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void initialize(ServerListPlusCore core) {
-
+        // Nothing to do at the moment
     }
 
     @Override
@@ -190,12 +204,14 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                     Optional<WrappedServerPing.CompressedImage>>() {
                 @Override
                 public Optional<WrappedServerPing.CompressedImage> load(FaviconSource source) throws Exception {
+                    // Try loading the favicon
                     BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.absent();
-                    else return Optional.of(WrappedServerPing.CompressedImage.fromPng(image));
+                    if (image == null) return Optional.absent(); // Favicon loading failed
+                    else return Optional.of(WrappedServerPing.CompressedImage.fromPng(image)); // Success!
                 }
             });
         } else {
+            // Delete favicon cache
             faviconCache.invalidateAll();
             faviconCache.cleanUp();
             this.faviconCache = null;
@@ -204,6 +220,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void configChanged(InstanceStorage<Object> confs) {
+        // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
                 this.registerListener(this.loginListener = new LoginListener());
@@ -215,6 +232,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.getLogger().fine("Unregistered player tracking listener.");
         }
 
+        // Plugin statistics
         if (confs.get(PluginConf.class).Stats) {
             if (metrics == null)
                 try {
@@ -235,6 +253,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void statusChanged(ServerStatusManager status) {
+        // Status packet listener
         if (status.hasChanges()) {
             if (packetListener == null) {
                 ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener =

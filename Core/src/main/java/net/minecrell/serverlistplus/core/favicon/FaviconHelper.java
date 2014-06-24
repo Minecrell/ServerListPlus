@@ -47,7 +47,7 @@ public final class FaviconHelper {
     }
 
     public static BufferedImage loadSafely(ServerListPlusCore core, FaviconSource source) {
-        try {
+        try { // Try loading the favicon
             return load(core, source);
         } catch (IOException e) {
             core.getLogger().warningF(e, "Unable to load favicon from %s: %s", source.getLoader().toString(),
