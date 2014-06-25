@@ -53,7 +53,7 @@ public final class FaviconHelper {
             core.getLogger()
                     .warningF("Unable to load favicon from %s: %s\n%s",
                             source.getLoader().toString(), source.getSource(),
-                            (e.getCause() != null) ? e.getCause().getMessage() : e.getMessage())
+                            e.getCause() != null ? e.getCause().getMessage() : e.getMessage())
                     .debugF(e, "Unable to load favicon from %s: %s",
                             source.getLoader().toString(), source.getSource());
             return null;
