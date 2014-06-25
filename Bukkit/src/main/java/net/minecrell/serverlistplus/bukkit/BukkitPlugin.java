@@ -124,7 +124,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
-            getLogger().info("Your name is: " + event.getName());
             core.addClient(event.getName(), event.getAddress());
         }
     }
@@ -134,7 +133,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(PlayerLoginEvent event) {
-            getLogger().info("Your name is now: " + event.getPlayer().getName());
             core.addClient(event.getPlayer().getName(), event.getAddress());
         }
     }
