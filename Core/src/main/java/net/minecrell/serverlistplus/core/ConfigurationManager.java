@@ -126,7 +126,7 @@ public class ConfigurationManager extends CoreManager {
             } catch (ServerListPlusException ignored) {}
 
             core.getPlugin().configChanged(storage); // Call plugin handlers
-            this.getLogger().info("Configuration successfully reloaded!");
+            this.getLogger().debug("Configuration successfully reloaded!");
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "Unable to parse the configuration. Make sure the YAML syntax is " +
                     "correct!");
@@ -166,7 +166,7 @@ public class ConfigurationManager extends CoreManager {
                     yaml.writeDocumented(writer, config);
             }
 
-            this.getLogger().info("Configuration successfully saved!");
+            this.getLogger().debug("Configuration successfully saved!");
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "An error occurred while generating the YAML configuration!");
         } catch (IOException e) {
