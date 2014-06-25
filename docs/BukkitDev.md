@@ -1,19 +1,22 @@
 ServerListPlus
 ==============
 
-[ServerListPlus](http://git.io/slp) is a new Minecraft plugin that allows you to customize your complete server status ping. It is not yet complete, but new features will be added soon.
+[ServerListPlus](http://git.io/slp) is a plugin for Bukkit and BungeeCord servers that allows you to customize your complete server status ping! While has most of the features have already been added, the plugin aims to become an universal solution for everything possible for the server status ping! It is compatible with Bukkit/Spigot servers and BungeeCord servers with the same configuration and plugin file therefore switching between them is really easy!
+
+![](http://i.imgur.com/fZUIq2U.png)
+
 
 Features
 ---------------------
-- Add custom status descriptions (MotD).
-- Add messages when a player hovers the player amount in the server list.
-- Change the displayed version when an outdated or newer client pings your server.
-- Change the displayed maximal player count in the status ping.
-- Load favicons from URLs or display a random icon from the configuration.
-- Choose a random entry by adding multiple ones.
-- Personalize your status by adding the player's name.
-- Use symbols or special characters directly by saving your configuration using `UTF-8`.
-- Currently supports CraftBukkit/Spigot and BungeeCord.
+- Custom status descriptions (MotD)!
+- Messages when a player hovers the player amount in the server list!
+- Change the displayed version when an outdated or newer client pings your server!
+- Change the displayed maximal player count in the status ping!
+- Load favicons from URLs or display a random icon from the configuration!
+- Multiple randomly chosen descriptions, favicons, maximal player counts, ...!
+- Personalize your status ping by adding the player's name!
+- Use symbols or special characters directly by in your configuration without any escaping!
+- Supports both CraftBukkit/Spigot and BungeeCord!
 
 Upcoming Features
 ---------------------
