@@ -27,7 +27,7 @@ package net.minecrell.serverlistplus.core.plugin;
  * Represents the server implementation running the ServerListPlus plugin container.
  */
 public enum ServerType {
-    BUKKIT ("CraftBukkit"), SPIGOT ("Spigot"),
+    BUKKIT ("Bukkit"), SPIGOT ("Spigot"),
     BUNGEE ("Bungee"),
     CUSTOM;
 
