@@ -24,21 +24,24 @@
 apply from: rootProject.file('gradle/shadow.gradle')
 
 configurations.all {
+    // Don't include other dependencies from Bukkit and Bungee because they're not available
+    // for some reason..
     transitive = false
 }
 
 dependencies {
+    // Create a package of Bukkit and Bungee
     compile project(':Bukkit'),
             project(':Bungee')
 }
 
 shadow {
     artifactSet {
-        include 'ServerListPlus:*'
-        exclude 'ServerListPlus:Core'
+        include 'ServerListPlus:*' // Include ready plugin JARs
+        exclude 'ServerListPlus:Core' // Already included twice
     }
 
     filter ('ServerListPlus:Bungee') {
-        exclude 'plugin.yml'
+        exclude 'plugin.yml' // BungeeCord uses bungee.yml
     }
 }

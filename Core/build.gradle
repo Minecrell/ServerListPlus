@@ -33,6 +33,7 @@ processResources {
 }
 
 processResources << {
+    // Create an ABOUT file with information about the core
     copy {
         from rootProject.projectDir
         into destinationDir

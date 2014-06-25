@@ -46,6 +46,7 @@ processResources {
 }
 
 processResources << {
+    // Create a copy of plugin.yml to bungee.yml for the universal package
     copy {
         from destinationDir
         into destinationDir

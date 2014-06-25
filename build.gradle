@@ -22,6 +22,7 @@
  */
 
 buildscript {
+    // Add Gradle shadow plugin: https://github.com/johnrengelman/shadow
     repositories { jcenter() }
     dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:0.8' }
 }
@@ -31,6 +32,7 @@ allprojects {
 }
 
 ext {
+    // Placeholders for configuration filtering
     description = 'Customize your complete server status ping!'
     author = 'Minecrell <https://github.com/Minecrell>'
 
@@ -48,7 +50,7 @@ ext {
 subprojects {
     apply plugin: 'java'
 
-    sourceCompatibility = 1.7
+    sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
 
     repositories { mavenCentral() }
 }
