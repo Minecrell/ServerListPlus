@@ -193,6 +193,8 @@ public class ServerListPlusCore {
                 } catch (ServerListPlusException e) {
                     sender.sendMessage(Format.RED + "An internal error occurred while saving the configuration.");
                 }
+
+                return;
             } else if (sub.equalsIgnoreCase("enable") || sub.equalsIgnoreCase("disable")) {
                 boolean enable = sub.equalsIgnoreCase("enable");
                 String tmp = enable ? "Enabling" : "Disabling";
