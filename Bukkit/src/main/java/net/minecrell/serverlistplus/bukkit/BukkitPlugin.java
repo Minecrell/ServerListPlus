@@ -51,6 +51,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -61,10 +62,23 @@ import com.comphenix.protocol.wrappers.WrappedServerPing;
 import org.mcstats.MetricsLite;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
+    private final boolean spigot;
+
+    public BukkitPlugin() {
+        // Check if server is running Spigot
+        boolean spigot = false;
+        try {
+            Class.forName("org.spigotmc.SpigotConfig");
+            spigot = true;
+        } catch (ClassNotFoundException ignored) {}
+
+        this.spigot = spigot;
+    }
+
     private ServerListPlusCore core;
     private LoadingCache<FaviconSource, Optional<WrappedServerPing.CompressedImage>> faviconCache;
 
-    private LoginListener loginListener;
+    private Listener loginListener;
     private StatusPacketListener packetListener;
 
     private MetricsLite metrics;
@@ -112,6 +126,16 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
             getLogger().info("Your name is: " + event.getName());
             core.addClient(event.getName(), event.getAddress());
+        }
+    }
+
+    public final class OfflineModeLoginListener implements Listener {
+        private OfflineModeLoginListener() {}
+
+        @EventHandler
+        public void onPlayerLogin(PlayerLoginEvent event) {
+            getLogger().info("Your name is now: " + event.getPlayer().getName());
+            core.addClient(event.getPlayer().getName(), event.getAddress());
         }
     }
 
@@ -224,7 +248,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
-                this.registerListener(this.loginListener = new LoginListener());
+                this.registerListener(this.loginListener = spigot || this.getServer().getOnlineMode()
+                        ? new LoginListener() : new OfflineModeLoginListener());
                 this.getLogger().fine("Registered player tracking listener.");
             }
         } else if (loginListener != null) {
