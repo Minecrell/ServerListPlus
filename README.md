@@ -9,6 +9,7 @@ Features
 - Add messages when a player hovers the player amount in the server list.
 - Change the displayed version when an outdated or newer client pings your server.
 - Change the displayed maximal player count in the status ping.
+- Load favicons from URLs or display a random icon from the configuration.
 - Choose a random entry by adding multiple ones.
 - Personalize your status by adding the player's name.
 - Use symbols or special characters directly by saving your configuration using `UTF-8`.

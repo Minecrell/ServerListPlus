@@ -9,6 +9,7 @@ Features
 - Add messages when a player hovers the player amount in the server list.
 - Change the displayed version when an outdated or newer client pings your server.
 - Change the displayed maximal player count in the status ping.
+- Load favicons from URLs or display a random icon from the configuration.
 - Choose a random entry by adding multiple ones.
 - Personalize your status by adding the player's name.
 - Use symbols or special characters directly by saving your configuration using `UTF-8`.
@@ -42,6 +43,7 @@ Commands & Permissions
 - `/serverlistplus save` - Save the plugin configuration.
 - `/serverlistplus enable` - Enable the plugin and start modifying the status ping.
 - `/serverlistplus disable` - Disable the plugin and stop modifying the status ping.
+- `/serverlistplus clean <favicons/players>` - Delete all entries from the specified cache.
 
 The permission for all commands is `serverlistplus.admin`.
 
