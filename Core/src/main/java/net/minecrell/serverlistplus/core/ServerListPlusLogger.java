@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 public class ServerListPlusLogger {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private static final String LOG_PREFIX = "[Core] "; // Prefix used by core log messages
+    private static final String LOG_PREFIX = "[ Core ] "; // Prefix used by core log messages
     private static final String PLUGIN_PREFIX = "[ServerListPlus] "; // Prefix used by plugin logger
 
     private static final String LOG_FILE = "ServerListPlus.log";
