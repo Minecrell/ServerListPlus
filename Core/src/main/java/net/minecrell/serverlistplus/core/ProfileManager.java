@@ -68,11 +68,11 @@ public class ProfileManager extends CoreManager {
                 }
 
                 if (enabled)
-                    this.getLogger().debug("ServerListPlus profile is enabled.");
+                    this.getLogger().debug("ServerListPlus profile is enabled!");
                 else
-                    this.getLogger().debug("ServerListPlus profile is disabled.");
+                    this.getLogger().debug("ServerListPlus profile is disabled!");
             } else
-                this.getLogger().debug("Profile configuration not found, assuming the profile is disabled.");
+                this.getLogger().debug("Profile configuration not found, assuming the profile is disabled!");
         } catch (JsonSyntaxException e) {
             throw this.getLogger().process(e, "Unable to parse profile configuration, have you changed it?");
         } catch (IOException | JsonIOException e) {
@@ -101,7 +101,7 @@ public class ProfileManager extends CoreManager {
                 JSON.toJson(obj, writer);
             }
 
-            this.getLogger().debug("Successfully saved profiles to the storage.");
+            this.getLogger().debug("Successfully saved profiles to the storage!");
         } catch (IOException | JsonIOException e) {
             throw this.getLogger().process(e, "Unable to access profile configuration.");
         } catch (Exception e) {
