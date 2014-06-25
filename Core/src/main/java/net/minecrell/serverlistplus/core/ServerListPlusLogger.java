@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 public class ServerListPlusLogger {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    private static final String LOG_PREFIX = "[ Core ] "; // Prefix used by core log messages
+    private static final String LOG_PREFIX = "[Core] "; // Prefix used by core log messages
     private static final String PLUGIN_PREFIX = "[ServerListPlus] "; // Prefix used by plugin logger
 
     private static final String LOG_FILE = "ServerListPlus.log";
@@ -217,10 +217,12 @@ public class ServerListPlusLogger {
 
             // If there is not the core prefix, the log messages has to come from the plugin, add plugin type
             if (!message.startsWith(LOG_PREFIX))
-                formatted.append(pluginPrefix);
+                formatted.append(pluginPrefix).append(message);
+            // Indent core messages so they start at the same column as the other ones
+            else formatted.append(LOG_PREFIX).append("  ").append(message.substring(LOG_PREFIX.length()));
 
             // Append message and new line
-            formatted.append(message).append('\n');
+            formatted.append('\n');
 
             // Print the exception if the record has one
             if (record.getThrown() != null) {
