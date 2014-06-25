@@ -50,8 +50,10 @@ public final class FaviconHelper {
         try { // Try loading the favicon
             return load(core, source);
         } catch (IOException e) {
-            core.getLogger().warningF(e, "Unable to load favicon from %s: %s", source.getLoader().toString(),
-                    source.getSource());
+            core.getLogger().warningF("Unable to load favicon from %s: %s\n%s",
+                    source.getLoader().toString(), source.getSource(), e.getMessage());
+            core.getLogger().debugF(e, "Unable to load favicon from %s: %s",
+                    source.getLoader().toString(), source.getSource());
             return null;
         }
     }
