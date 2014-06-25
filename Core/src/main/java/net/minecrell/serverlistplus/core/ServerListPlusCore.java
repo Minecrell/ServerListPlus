@@ -32,6 +32,7 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.util.Format;
 
 import java.net.InetAddress;
+import java.util.Locale;
 
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
@@ -208,6 +209,19 @@ public class ServerListPlusCore {
                 }
 
                 return;
+            } else if (sub.equalsIgnoreCase("clean") && args.length > 1) {
+                String cacheName = args[1].toLowerCase(Locale.ENGLISH);
+                Cache<?, ?> cache =  cacheName.equals("players") ? playerTracker
+                        : (cacheName.equals("favicons") ? plugin.getFaviconCache() : null);
+                if (cache != null) {
+                    this.getLogger().infoF("Cleaning %s cache at request of %s...", cacheName, sender);
+                    cache.invalidateAll();
+                    cache.cleanUp();
+                    this.getLogger().debug("Done.");
+
+                    sender.sendMessage(Format.GREEN + "Successfully cleaned " + cacheName + " cache.");
+                    return;
+                }
             }
         }
 
@@ -230,12 +244,21 @@ public class ServerListPlusCore {
                 buildCommandHelp("reload", "Reload the plugin configuration."),
                 buildCommandHelp("save", "Save the plugin configuration."),
                 buildCommandHelp("enable", "Enable the plugin and start modifying the status ping."),
-                buildCommandHelp("disable", "Disable the plugin and stop modifying the status ping.")
+                buildCommandHelp("disable", "Disable the plugin and stop modifying the status ping."),
+                buildCommandHelp("clean", "<favicons/players>", "Delete all entries from the specified cache.")
         );
     }
 
     private static String buildCommandHelp(String cmd, String description) {
-        return Format.RED + "/serverlistplus " + cmd + Format.WHITE + " - " + Format.GRAY + description;
+        return buildCommandHelp(cmd, null, description);
+    }
+
+    private static String buildCommandHelp(String cmd, String usage, String description) {
+        StringBuilder help = new StringBuilder();
+        help.append(Format.RED).append("/serverlistplus ").append(cmd);
+        if (usage != null)
+            help.append(' ').append(Format.GOLD).append(usage);
+        return help.append(Format.WHITE).append(" - ").append(Format.GRAY).append(description).toString();
     }
 
     public ServerListPlusLogger getLogger() {
