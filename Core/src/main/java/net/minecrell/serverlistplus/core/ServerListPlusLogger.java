@@ -87,95 +87,93 @@ public class ServerListPlusLogger {
         return String.format(message, args);
     }
 
-    public void debug(String message) {
-        this.log(Level.FINE, message);
+    public ServerListPlusLogger debug(String message) {
+        return this.log(Level.FINE, message);
     }
 
-    public void debug(Exception e, String message) {
-        this.log(Level.FINE, e, message);
+    public ServerListPlusLogger debug(Exception e, String message) {
+        return this.log(Level.FINE, e, message);
     }
 
-    public void debugF(String message, Object... args) {
-        this.logF(Level.FINE, message, args);
+    public ServerListPlusLogger debugF(String message, Object... args) {
+        return this.logF(Level.FINE, message, args);
     }
 
-    public void debugF(Exception e, String message, Object... args) {
-        this.logF(Level.FINE, e, message, args);
+    public ServerListPlusLogger debugF(Exception e, String message, Object... args) {
+        return this.logF(Level.FINE, e, message, args);
     }
 
-    public void info(String message) {
-        this.log(Level.INFO, message);
+    public ServerListPlusLogger info(String message) {
+        return this.log(Level.INFO, message);
     }
 
-    public void info(Exception e, String message) {
-        this.log(Level.INFO, e, message);
+    public ServerListPlusLogger info(Exception e, String message) {
+        return this.log(Level.INFO, e, message);
     }
 
-    public void infoF(String message, Object... args) {
-        this.logF(Level.INFO, message, args);
+    public ServerListPlusLogger infoF(String message, Object... args) {
+        return this.logF(Level.INFO, message, args);
     }
 
-    public void infoF(Exception e, String message, Object... args) {
-        this.logF(Level.INFO, e, message, args);
+    public ServerListPlusLogger infoF(Exception e, String message, Object... args) {
+        return this.logF(Level.INFO, e, message, args);
     }
 
-    public void warning(String message) {
-        this.log(Level.WARNING, message);
+    public ServerListPlusLogger warning(String message) {
+        return this.log(Level.WARNING, message);
     }
 
-    public void warning(Exception e, String message) {
-        this.log(Level.WARNING, e, message);
+    public ServerListPlusLogger warning(Exception e, String message) {
+        return this.log(Level.WARNING, e, message);
     }
 
-    public void warningF(String message, Object... args) {
-        this.logF(Level.WARNING, message, args);
+    public ServerListPlusLogger warningF(String message, Object... args) {
+        return this.logF(Level.WARNING, message, args);
     }
 
-    public void warningF(Exception e, String message, Object... args) {
-        this.logF(Level.WARNING, e, message, args);
+    public ServerListPlusLogger warningF(Exception e, String message, Object... args) {
+        return this.logF(Level.WARNING, e, message, args);
     }
 
-    public void severe(String message) {
-        this.log(Level.SEVERE, message);
+    public ServerListPlusLogger severe(String message) {
+        return this.log(Level.SEVERE, message);
     }
 
-    public void severe(Exception e, String message) {
-        this.log(Level.SEVERE, e, message);
+    public ServerListPlusLogger severe(Exception e, String message) {
+        return this.log(Level.SEVERE, e, message);
     }
 
-    public void severeF(String message, Object... args) {
-        this.logF(Level.SEVERE, message, args);
+    public ServerListPlusLogger severeF(String message, Object... args) {
+        return this.logF(Level.SEVERE, message, args);
     }
 
-    public void severeF(Exception e, String message, Object... args) {
-        this.logF(Level.SEVERE, e, message, args);
+    public ServerListPlusLogger severeF(Exception e, String message, Object... args) {
+        return this.logF(Level.SEVERE, e, message, args);
     }
 
-    public void log(Level level, String message) {
-        this.getLogger().log(level, LOG_PREFIX + message);
+    public ServerListPlusLogger log(Level level, String message) {
+        this.getLogger().log(level, LOG_PREFIX + message); return this;
     }
 
-    public void logF(Level level, String message, Object... args) {
-        this.log(level, this.formatMessage(message, args));
+    public ServerListPlusLogger logF(Level level, String message, Object... args) {
+        return this.log(level, this.formatMessage(message, args));
     }
 
-    public boolean log(Exception e, String message) {
+    public ServerListPlusLogger log(Exception e, String message) {
         return this.log(DEFAULT_EXCEPTION_LEVEL, e, message);
     }
 
-    public boolean logF(Exception e, String message, Object... args) {
+    public ServerListPlusLogger logF(Exception e, String message, Object... args) {
         return this.logF(DEFAULT_EXCEPTION_LEVEL, e, message, args);
     }
 
-    public boolean log(Level level, Exception e, String message) {
-        if (!checkException(e)) return false;
-        this.getLogger().log(level, LOG_PREFIX + message, e); return true;
+    public ServerListPlusLogger log(Level level, Exception e, String message) {
+        this.getLogger().log(level, LOG_PREFIX + message, e); return this;
     }
 
-    public boolean logF(Level level, Exception e, String message, Object... args) {
+    public ServerListPlusLogger logF(Level level, Exception e, String message, Object... args) {
         return this.log(level, e, this.formatMessage(message, args));
     }
-
 
     public ServerListPlusException process(Exception e, String message) {
         return this.process(DEFAULT_EXCEPTION_LEVEL, e, message);
@@ -186,16 +184,13 @@ public class ServerListPlusLogger {
     }
 
     public ServerListPlusException process(Level level, Exception e, String message) {
-        return this.log(level, e, message) ? new CoreServerListPlusException(message, e)
-                : (ServerListPlusException) e;
+        if (e != null && e.getClass() == CoreServerListPlusException.class) return (ServerListPlusException) e;
+        this.log(level, e, message);
+        return new CoreServerListPlusException(message, e);
     }
 
     public ServerListPlusException processF(Level level, Exception e, String message, Object... args) {
         return this.process(level, e, this.formatMessage(message, args));
-    }
-
-    private static boolean checkException(Exception e) {
-        return e == null || e.getClass() != CoreServerListPlusException.class;
     }
 
     private static final class CoreServerListPlusException extends ServerListPlusException {
