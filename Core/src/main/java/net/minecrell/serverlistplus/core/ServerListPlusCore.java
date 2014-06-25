@@ -241,8 +241,7 @@ public class ServerListPlusCore {
         // Command help
         sender.sendMessages(
                 Format.GOLD + "Commands:",
-                buildCommandHelp("", "Display an information page about the plugin and list all available " +
-                        "commands."),
+                buildCommandHelp("Display an information page about the plugin and list all available commands."),
                 buildCommandHelp("reload", "Reload the plugin configuration."),
                 buildCommandHelp("save", "Save the plugin configuration."),
                 buildCommandHelp("enable", "Enable the plugin and start modifying the status ping."),
@@ -251,15 +250,19 @@ public class ServerListPlusCore {
         );
     }
 
+    private static String buildCommandHelp(String description) {
+        return buildCommandHelp(null, description);
+    }
+
     private static String buildCommandHelp(String cmd, String description) {
         return buildCommandHelp(cmd, null, description);
     }
 
     private static String buildCommandHelp(String cmd, String usage, String description) {
         StringBuilder help = new StringBuilder();
-        help.append(Format.RED).append("/serverlistplus ").append(cmd);
-        if (usage != null)
-            help.append(' ').append(Format.GOLD).append(usage);
+        help.append(Format.RED).append("/serverlistplus");
+        if (cmd != null) help.append(' ').append(cmd);
+        if (usage != null) help.append(' ').append(Format.GOLD).append(usage);
         return help.append(Format.WHITE).append(" - ").append(Format.GRAY).append(description).toString();
     }
 
