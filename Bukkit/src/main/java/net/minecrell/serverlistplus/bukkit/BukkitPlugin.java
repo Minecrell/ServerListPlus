@@ -95,7 +95,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.disablePlugin(); return; // Disable plugin to show error in /plugins
         }
 
-        if (!spigot)
+        if (this.getServerType() != ServerType.SPIGOT)
             this.getLogger().warning("You are not using Spigot! Please consider using Spigot instead of " +
                     "CraftBukkit as of ServerListPlus is optimized for Spigot. Thanks!");
 
@@ -206,7 +206,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public ServerType getServerType() {
-        return ServerType.BUKKIT;
+        return spigot ? ServerType.SPIGOT : ServerType.BUKKIT;
     }
 
     @Override
