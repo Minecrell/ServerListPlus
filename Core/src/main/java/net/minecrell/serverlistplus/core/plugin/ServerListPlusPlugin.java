@@ -42,6 +42,8 @@ public interface ServerListPlusPlugin {
     ServerType getServerType();
     Path getPluginFolder();
 
+    String getRandomPlayer();
+
     LoadingCache<FaviconSource, ?> getFaviconCache();
 
     String colorize(String s);

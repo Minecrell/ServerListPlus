@@ -35,6 +35,8 @@ import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
+import java.util.Collection;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 import com.google.common.base.Optional;
@@ -47,6 +49,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Command;
@@ -167,6 +170,19 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public ServerType getServerType() {
         return ServerType.BUNGEE;
+    }
+
+    @Override
+    public String getRandomPlayer() {
+        int tmp = this.getProxy().getOnlineCount();
+        if (tmp == 0) return null;
+        if (tmp == 1) return this.getProxy().getPlayers().iterator().next().getName();
+        // TODO: Make this complete faster
+        Collection<ProxiedPlayer> players = this.getProxy().getPlayers();
+        int i = 0; tmp = ThreadLocalRandom.current().nextInt(players.size());
+        for (ProxiedPlayer player : players)
+            if (i++ == tmp) return player.getName();
+        return null;
     }
 
     @Override

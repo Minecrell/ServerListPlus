@@ -48,7 +48,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -56,6 +55,8 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
+
+import static net.minecrell.serverlistplus.core.util.Helper.nextEntry;
 
 public class ServerStatusManager extends CoreManager {
     public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format
@@ -296,7 +297,7 @@ public class ServerStatusManager extends CoreManager {
 
         public Integer getPlayersOnline() {
             if (online == null)
-                this.online = random(playerName != null && personalized.online != null ? personalized.online :
+                this.online = nextEntry(playerName != null && personalized.online != null ? personalized.online :
                         def.online);
             return online;
         }
@@ -315,7 +316,7 @@ public class ServerStatusManager extends CoreManager {
 
         public Integer getMaxPlayers() {
             if (max == null)
-                this.max = random(playerName != null && personalized.max != null ? personalized.max : def.max);
+                this.max = nextEntry(playerName != null && personalized.max != null ? personalized.max : def.max);
             return max;
         }
 
@@ -339,7 +340,7 @@ public class ServerStatusManager extends CoreManager {
         }
 
         public FaviconSource getFavicon() {
-            FaviconSource favicon = random(playerName != null && personalized.favicon != null ?
+            FaviconSource favicon = nextEntry(playerName != null && personalized.favicon != null ?
                     personalized.favicon : def.favicon);
             if (favicon == null) return null;
             Collection<DynamicReplacer> replacer = replacers.get(favicon.getSource());
@@ -350,12 +351,7 @@ public class ServerStatusManager extends CoreManager {
     }
 
     private String prepareRandom(Response response, List<String> list) {
-        String s = random(list);
+        String s = nextEntry(list);
         return s != null ? ReplacementManager.replaceDynamic(response, s, replacers.get(s)) : null;
-    }
-
-    private static <T> T random(List<T> list) {
-        if (list == null) return null;
-        return list.size() > 1 ? Helper.nextEntry(ThreadLocalRandom.current(), list) : list.get(0);
     }
 }

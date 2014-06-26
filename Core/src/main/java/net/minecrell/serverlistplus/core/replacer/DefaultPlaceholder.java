@@ -71,6 +71,17 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
             // Use unknown player count
             return this.replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
         }
+    },
+    RANDOM_PLAYER ("%randomplayer%") {
+        @Override
+        public String replace(ServerStatusManager.Response response, String s) {
+            return this.replace(response.getCore(), s);
+        }
+
+        @Override
+        public String replace(ServerListPlusCore core, String s) {
+            return this.replace(s, core.getPlugin().getRandomPlayer());
+        }
     };
 
     protected final Pattern pattern;
