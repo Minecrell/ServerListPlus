@@ -73,7 +73,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
         }
     };
 
-    private final Pattern pattern;
+    protected final Pattern pattern;
 
     private DefaultPlaceholder(String pattern) {
         this(Pattern.compile(Preconditions.checkNotNull(pattern, "pattern"), Pattern.LITERAL));
