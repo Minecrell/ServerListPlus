@@ -57,12 +57,13 @@ public class BungeeMetrics {
     private final String guid;
 
     private TimerTask task;
-    private final Timer timer = new Timer();
+    private final Timer timer;
 
     public BungeeMetrics(Plugin plugin) {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         // Get UUID from BungeeCord configuration
         this.guid = plugin.getProxy().getConfigurationAdapter().getString("stats", UUID.randomUUID().toString());
+        this.timer = new Timer(plugin.getDescription().getName() + " Metrics Thread");
     }
 
     public void start() {
