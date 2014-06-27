@@ -122,7 +122,7 @@ public class ConfigurationManager extends CoreManager {
             }
 
             if (!confExists) try {
-                this.save(); // Save it if it doesn't exists
+                this.save(); // Save it if it doesn't exist
             } catch (ServerListPlusException ignored) {}
 
             core.getPlugin().configChanged(storage); // Call plugin handlers
