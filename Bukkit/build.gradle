@@ -56,9 +56,8 @@ shadowJar {
         include dependency('org.mcstats.bukkit:metrics-lite:R7')
     }
 
-    // TODO: Replace with variable
-    relocate 'net.minecrell.serverlistplus.core', 'net.minecrell.serverlistplus.bukkit.core'
-    relocate 'org.mcstats', 'net.minecrell.serverlistplus.bukkit.metrics'
+    relocate javaPackage + '.core', pluginPackage + '.core'
+    relocate 'org.mcstats', pluginPackage + '.metrics'
 
     // TODO: Use the libraries included in Minecraft for now
     relocate 'com.google.common', 'net.minecraft.util.com.google.common'

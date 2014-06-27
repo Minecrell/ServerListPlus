@@ -60,6 +60,5 @@ shadowJar {
         include project(':Core')
     }
 
-    // TODO: Replace with variable
-    relocate 'net.minecrell.serverlistplus.core', 'net.minecrell.serverlistplus.bungee.core'
+    relocate javaPackage + '.core', pluginPackage + '.core'
 }
