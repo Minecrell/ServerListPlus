@@ -24,6 +24,7 @@
 package net.minecrell.serverlistplus.bungee;
 
 import net.minecrell.serverlistplus.bungee.metrics.BungeeMetrics;
+import net.minecrell.serverlistplus.bungee.replacer.ServerOnlinePlaceholder;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
@@ -32,6 +33,7 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
@@ -197,7 +199,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void initialize(ServerListPlusCore core) {
-        // Nothing to do at the moment
+        // Register the BungeeCord replacers
+        ReplacementManager.getDynamic().add(new ServerOnlinePlaceholder(this.getProxy()));
     }
 
     @Override
