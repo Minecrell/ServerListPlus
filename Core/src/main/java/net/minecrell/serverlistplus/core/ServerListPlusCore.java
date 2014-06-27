@@ -84,7 +84,7 @@ public class ServerListPlusCore {
 
     public <T> void registerConf(Class<T> clazz, T def, String alias) {
         configManager.getDefaults().set(clazz, def); // Set default configuration
-        configManager.getYAML().registerAlias(clazz, alias); // Register alias of the configuration
+        configManager.getYAML().registerAlias(clazz, alias); // Register alias for the configuration
     }
 
     private void reloadCaches() {
