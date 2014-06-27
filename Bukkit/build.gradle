@@ -21,13 +21,13 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+apply plugin: 'com.github.johnrengelman.shadow'
+
 repositories {
     maven { url 'http://repo.bukkit.org/content/groups/public' }
     maven { url 'http://repo.comphenix.net/content/groups/public' }
     maven { url 'http://repo.mcstats.org/content/repositories/public' }
 }
-
-apply from: rootProject.file('gradle/shadow.gradle')
 
 ext {
     // TODO: Better fix?
@@ -50,29 +50,17 @@ processResources {
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
 }
 
-shadow {
-    artifactSet {
-        include 'ServerListPlus:Core'
-        include 'org.mcstats.bukkit:metrics-lite'
+shadowJar {
+    dependencies {
+        include project(':Core')
+        include dependency('org.mcstats.bukkit:metrics-lite:R7')
     }
 
-    relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverlistplus.core'
-        shadedPattern = 'net.minecrell.serverlistplus.bukkit.core'
-    }
-
-    relocation {
-        pattern = 'org.mcstats'
-        shadedPattern = 'net.minecrell.serverlistplus.bukkit.metrics'
-    }
+    // TODO: Replace with variable
+    relocate 'net.minecrell.serverlistplus.core', 'net.minecrell.serverlistplus.bukkit.core'
+    relocate 'org.mcstats', 'net.minecrell.serverlistplus.bukkit.metrics'
 
     // TODO: Use the libraries included in Minecraft for now
-    relocation {
-        pattern = 'com.google.common'
-        shadedPattern = 'net.minecraft.util.com.google.common'
-    }
-    relocation {
-        pattern = 'com.google.gson'
-        shadedPattern = 'net.minecraft.util.com.google.gson'
-    }
+    relocate 'com.google.common', 'net.minecraft.util.com.google.common'
+    relocate 'com.google.gson', 'net.minecraft.util.com.google.gson'
 }

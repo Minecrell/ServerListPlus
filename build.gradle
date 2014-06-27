@@ -24,8 +24,11 @@
 buildscript {
     // Add Gradle shadow plugin: https://github.com/johnrengelman/shadow
     repositories { jcenter() }
-    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:0.8' }
+    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.0' }
 }
+
+import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin;
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar;
 
 allprojects {
     version = '3.2.1-SNAPSHOT'
@@ -53,6 +56,13 @@ subprojects {
     sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
 
     repositories { mavenCentral() }
+
+    plugins.withType(ShadowJavaPlugin) {
+        shadowJar {
+            classifier = ''
+            baseName = rootProject.name + project.name
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
