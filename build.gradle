@@ -31,6 +31,11 @@ import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin;
 
 allprojects {
     version = '3.2.1-SNAPSHOT'
+
+    apply plugin: 'java'
+    sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
+
+    repositories { mavenCentral() }
 }
 
 ext {
@@ -47,15 +52,13 @@ ext {
             'Website': 'http://git.io/slp',
             'Wiki': 'http://git.io/slp-wiki'
     ];
+
+    universalProjects = [
+            ':Bukkit', ':Bungee'
+    ]
 }
 
 subprojects {
-    apply plugin: 'java'
-
-    sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
-
-    repositories { mavenCentral() }
-
     plugins.withType(ShadowJavaPlugin) {
         shadowJar {
             classifier = ''
@@ -66,4 +69,15 @@ subprojects {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
+}
+
+task universal(type: Jar) {
+    duplicatesStrategy 'exclude'
+    universalProjects.each {
+        evaluationDependsOn it
+        dependsOn project(it).tasks.shadowJar
+        from zipTree(project(it).shadowJar.archivePath)
+    }
+
+    baseName = rootProject.name + 'Universal'
 }
