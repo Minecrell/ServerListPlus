@@ -28,7 +28,6 @@ buildscript {
 }
 
 import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin;
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar;
 
 allprojects {
     version = '3.2.1-SNAPSHOT'
