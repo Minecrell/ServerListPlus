@@ -24,7 +24,7 @@
 buildscript {
     // Add Gradle shadow plugin: https://github.com/johnrengelman/shadow
     repositories { jcenter() }
-    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.0' }
+    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.1' }
 }
 
 import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin;
