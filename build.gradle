@@ -72,12 +72,11 @@ task wrapper(type: Wrapper) {
 }
 
 task universal(type: Jar) {
-    duplicatesStrategy 'exclude'
-    universalProjects.each {
-        evaluationDependsOn it
-        dependsOn project(it).tasks.shadowJar
-        from zipTree(project(it).shadowJar.archivePath)
-    }
-
     baseName = rootProject.name + 'Universal'
+    duplicatesStrategy 'exclude' // Skip the second plugin.yml of the Bungee plugin
+    universalProjects.each {
+        evaluationDependsOn it // Load the projects completely first
+        dependsOn project(it).tasks.shadowJar // Now wait to complete the plugin creation
+        from zipTree(project(it).shadowJar.archivePath) // And add it to our universal JAR
+    }
 }
