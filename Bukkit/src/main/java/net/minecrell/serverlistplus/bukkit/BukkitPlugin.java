@@ -212,6 +212,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public String getServerImplementation() {
+        return this.getServer().getVersion();
+    }
+
+    @Override
     public String getRandomPlayer() {
         Player player = Helper.nextEntry(this.getServer().getOnlinePlayers());
         return player != null ? player.getName() : null;

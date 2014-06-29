@@ -175,6 +175,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public String getServerImplementation() {
+        return this.getProxy().getVersion();
+    }
+
+    @Override
     public String getRandomPlayer() {
         int tmp = this.getProxy().getOnlineCount();
         if (tmp == 0) return null;

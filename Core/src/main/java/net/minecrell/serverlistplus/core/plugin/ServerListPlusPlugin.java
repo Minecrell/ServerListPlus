@@ -40,6 +40,7 @@ import com.google.common.cache.LoadingCache;
 public interface ServerListPlusPlugin {
     Logger getLogger();
     ServerType getServerType();
+    String getServerImplementation();
     Path getPluginFolder();
 
     String getRandomPlayer();

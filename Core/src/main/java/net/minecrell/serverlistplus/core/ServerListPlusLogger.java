@@ -26,6 +26,7 @@ package net.minecrell.serverlistplus.core;
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -34,7 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -70,9 +70,14 @@ public class ServerListPlusLogger {
                 // Register the file handler for the logger
                 Path logFile = core.getPlugin().getPluginFolder().resolve(LOG_FILE);
                 if (!Files.isDirectory(logFile.getParent())) Files.createDirectories(logFile.getParent());
-                Files.write(logFile, Collections.singleton(
-                            "--- # " + DATE_FORMAT.format(System.currentTimeMillis())
-                    ), IOUtil.CHARSET, StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+                try (BufferedWriter writer = Files.newBufferedWriter(logFile, IOUtil.CHARSET,
+                        StandardOpenOption.APPEND, StandardOpenOption.CREATE)) {
+                    writer.write("---"); writer.newLine();
+                    writer.write(DATE_FORMAT.format(System.currentTimeMillis())); writer.newLine();
+                    writer.write(core.getDisplayName()); writer.newLine();
+                    writer.write(core.getPlugin().getServerImplementation()); writer.newLine();
+                    writer.write("---"); writer.newLine();
+                }
 
                 FileHandler handler = new FileHandler(logFile.toString(),
                         1024 * 1024 /* 1 MB */, 1, true /* append */);

@@ -25,6 +25,7 @@ package net.minecrell.serverlistplus.core;
 
 import java.net.URL;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import com.google.common.base.Preconditions;
 
@@ -78,7 +79,8 @@ public class CoreDescription {
                     about.getProperty("Description"), about.getProperty("Author"),
                     new URL(about.getProperty("Website")), new URL(about.getProperty("Wiki")));
         } catch (Exception e) {
-            core.getLogger().log(e, "Unable to load core info!");
+            core.getPlugin().getLogger().log(Level.SEVERE, "Unable to load plugin version information from JAR.",
+                    e);
             return new CoreDescription("ServerListPlus", "Unknown", null, null, null, null);
         }
     }

@@ -59,10 +59,10 @@ public class ServerListPlusCore {
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
+        this.info = CoreDescription.load(this);
         this.logger = new ServerListPlusLogger(this);
 
         plugin.getLogger().info("Loading core...");
-        this.info = CoreDescription.load(this);
 
         // Initialize configuration and status manager, but not yet load it
         this.statusManager = new ServerStatusManager(this);
@@ -80,6 +80,10 @@ public class ServerListPlusCore {
         this.reload(); // Now load the configuration!
 
         plugin.getLogger().info("Core was successfully loaded!");
+    }
+
+    public String getDisplayName() {
+        return info.getName() + plugin.getServerType() + " v" + info.getVersion();
     }
 
     public <T> void registerConf(Class<T> clazz, T def, String alias) {
@@ -228,7 +232,7 @@ public class ServerListPlusCore {
         }
 
         // Send the sender some information about the plugin
-        sender.sendMessage(Format.GOLD + info.getName() + plugin.getServerType() + " v" + info.getVersion());
+        sender.sendMessage(Format.GOLD + this.getDisplayName());
         if (info.getDescription() != null)
             sender.sendMessage(Format.GRAY + info.getDescription());
         if (info.getAuthor() != null)
