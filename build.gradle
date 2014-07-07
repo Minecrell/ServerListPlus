@@ -72,7 +72,7 @@ task wrapper(type: Wrapper) {
 }
 
 task universal(type: Jar) {
-    baseName = rootProject.name + 'Universal'
+    baseName = "${rootProject.name}Universal"
     duplicatesStrategy 'exclude' // Skip the second plugin.yml of the Bungee plugin
     universalProjects.each {
         evaluationDependsOn it // Load the projects completely first

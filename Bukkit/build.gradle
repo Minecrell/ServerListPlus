@@ -32,9 +32,9 @@ repositories {
 ext {
     // TODO: Better fix?
     resourceTokens = resourceTokens.clone()
-    pluginPackage = javaPackage + '.bukkit'
-    pluginClass = pluginPackage + '.BukkitPlugin'
-    resourceTokens.PluginClass = pluginClass
+    pluginPackage = "${javaPackage}.bukkit"
+    pluginClass = "${pluginPackage}.BukkitPlugin"
+    resourceTokens.PluginClass = pluginClass.toString()
 }
 
 dependencies {
@@ -56,8 +56,8 @@ shadowJar {
         include dependency('org.mcstats.bukkit:metrics-lite:R7')
     }
 
-    relocate javaPackage + '.core', pluginPackage + '.core'
-    relocate 'org.mcstats', pluginPackage + '.metrics'
+    relocate "${javaPackage}.core", "${pluginPackage}.core"
+    relocate 'org.mcstats', "${pluginPackage}.metrics"
 
     // TODO: Use the libraries included in Minecraft for now
     relocate 'com.google.common', 'net.minecraft.util.com.google.common'

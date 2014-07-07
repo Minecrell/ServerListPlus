@@ -30,9 +30,9 @@ repositories {
 ext {
     // TODO: Better fix?
     resourceTokens = resourceTokens.clone()
-    pluginPackage = javaPackage + '.bungee'
-    pluginClass = pluginPackage + '.BungeePlugin'
-    resourceTokens.PluginClass = pluginClass
+    pluginPackage = "${javaPackage}.bungee"
+    pluginClass = "${pluginPackage}.BungeePlugin"
+    resourceTokens.PluginClass = pluginClass.toString()
 }
 
 dependencies {
@@ -60,5 +60,5 @@ shadowJar {
         include project(':Core')
     }
 
-    relocate javaPackage + '.core', pluginPackage + '.core'
+    relocate "${javaPackage}.core", "${pluginPackage}.core"
 }
