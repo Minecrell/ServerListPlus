@@ -31,8 +31,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
@@ -43,6 +41,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 public class BungeeMetrics {
     private final static Gson JSON = new Gson();
@@ -56,21 +55,19 @@ public class BungeeMetrics {
     private final Plugin plugin;
     private final String guid;
 
-    private TimerTask task;
-    private final Timer timer;
+    private ScheduledTask task;
 
     public BungeeMetrics(Plugin plugin) {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         // Get UUID from BungeeCord configuration
         this.guid = plugin.getProxy().getConfigurationAdapter().getString("stats", UUID.randomUUID().toString());
-        this.timer = new Timer(plugin.getDescription().getName() + " Metrics Thread");
     }
 
     public void start() {
         // Check if UUID is not null --> Plugin statistics disabled
         if (task != null || guid == null || guid.equalsIgnoreCase("null")) return;
 
-        this.task = new TimerTask() {
+        this.task = plugin.getProxy().getScheduler().schedule(plugin, new Runnable() {
             private boolean firstPost = true;
             private boolean errorReported = false;
 
@@ -86,14 +83,12 @@ public class BungeeMetrics {
                     }
                 }
             }
-        };
-
-        timer.scheduleAtFixedRate(task, 0, TimeUnit.MINUTES.toMillis(PING_INTERVAL));
+        }, 0, PING_INTERVAL, TimeUnit.MINUTES);
     }
 
     public void stop() {
         if (task != null) {
-            timer.cancel();
+            task.cancel();
             task = null;
         }
     }
