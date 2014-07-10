@@ -76,13 +76,22 @@ public final class Helper {
         return c != null ? c.toArray(new String[c.size()]) : null;
     }
 
+    public static ThreadLocalRandom random() {
+        return ThreadLocalRandom.current();
+    }
+
     public static <T> T nextEntry(T[] array) {
         if (Helper.nullOrEmpty(array)) return null;
-        return array.length > 1 ? array[ThreadLocalRandom.current().nextInt(array.length)] : array[0];
+        return array.length > 1 ? array[random().nextInt(array.length)] : array[0];
     }
 
     public static <T> T nextEntry(List<T> list) {
         if (Helper.nullOrEmpty(list)) return null;
-        return list.size() > 1 ? list.get(ThreadLocalRandom.current().nextInt(list.size())) : list.get(0);
+        return list.size() > 1 ? list.get(random().nextInt(list.size())) : list.get(0);
+    }
+
+    public static Integer nextNumber(IntRange range) {
+        if (range == null) return null;
+        return range.isSingle() ? range.from() : random().nextInt(range.from(), range.to());
     }
 }

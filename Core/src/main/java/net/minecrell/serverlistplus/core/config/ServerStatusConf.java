@@ -24,6 +24,7 @@
 package net.minecrell.serverlistplus.core.config;
 
 import net.minecrell.serverlistplus.core.config.help.Description;
+import net.minecrell.serverlistplus.core.util.IntRange;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class ServerStatusConf {
         public FaviconConf Favicon;
 
         public static class PlayersConf {
-            public List<Integer> Online, Max;
+            public List<IntRange> Online, Max;
             public List<String> Hover;
         }
 

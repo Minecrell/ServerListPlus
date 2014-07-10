@@ -32,6 +32,7 @@ import net.minecrell.serverlistplus.core.replacer.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
 import net.minecrell.serverlistplus.core.util.CoreManager;
 import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.util.IntRange;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -57,6 +58,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 
 import static net.minecrell.serverlistplus.core.util.Helper.nextEntry;
+import static net.minecrell.serverlistplus.core.util.Helper.nextNumber;
 
 public class ServerStatusManager extends CoreManager {
     public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format
@@ -65,7 +67,7 @@ public class ServerStatusManager extends CoreManager {
     // Processed configuration storage
     private static class ServerStatus {
         private final List<String> description, playerHover;
-        private final List<Integer> online, max;
+        private final List<IntRange> online, max;
         private final List<String> version; private final Integer protocol;
         private final List<FaviconSource> favicon;
 
@@ -79,7 +81,7 @@ public class ServerStatusManager extends CoreManager {
         }
 
         private ServerStatus(List<String> description, List<String> playerHover,
-                             List<Integer> online, List<Integer> max,
+                             List<IntRange> online, List<IntRange> max,
                              List<String> version, Integer protocol,
                              List<FaviconSource> favicon) {
             this.description = description; this.playerHover = playerHover;
@@ -203,7 +205,7 @@ public class ServerStatusManager extends CoreManager {
             // Get everything from the configuration
 
             List<String> descriptions = readMessages(conf.Description), playerHover = null;
-            List<Integer> online = null, max = null;
+            List<IntRange> online = null, max = null;
             List<String> version = null; Integer protocol = null;
             List<FaviconSource> favicons = null;
 
@@ -297,8 +299,8 @@ public class ServerStatusManager extends CoreManager {
 
         public Integer getPlayersOnline() {
             if (online == null)
-                this.online = nextEntry(playerName != null && personalized.online != null ? personalized.online :
-                        def.online);
+                this.online = nextNumber(nextEntry(playerName != null && personalized.online != null ?
+                        personalized.online : def.online));
             return online;
         }
 
@@ -316,7 +318,8 @@ public class ServerStatusManager extends CoreManager {
 
         public Integer getMaxPlayers() {
             if (max == null)
-                this.max = nextEntry(playerName != null && personalized.max != null ? personalized.max : def.max);
+                this.max = nextNumber(nextEntry(playerName != null && personalized.max != null ? personalized.max :
+                        def.max));
             return max;
         }
 

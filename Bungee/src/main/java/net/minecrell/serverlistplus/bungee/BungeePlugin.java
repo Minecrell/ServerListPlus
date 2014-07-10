@@ -34,11 +34,11 @@ import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
+import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 import com.google.common.base.Optional;
@@ -186,7 +186,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (tmp == 1) return this.getProxy().getPlayers().iterator().next().getName();
         // TODO: Make this complete faster
         Collection<ProxiedPlayer> players = this.getProxy().getPlayers();
-        int i = 0; tmp = ThreadLocalRandom.current().nextInt(players.size());
+        int i = 0; tmp = Helper.random().nextInt(players.size());
         for (ProxiedPlayer player : players)
             if (i++ == tmp) return player.getName();
         return null;
