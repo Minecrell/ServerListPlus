@@ -3,3 +3,5 @@ jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
+before_install:
+  - chmod +x gradlew
