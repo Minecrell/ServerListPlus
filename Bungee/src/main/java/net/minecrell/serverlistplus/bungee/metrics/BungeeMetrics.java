@@ -76,7 +76,7 @@ public class BungeeMetrics {
                 try {
                     postPlugin(!firstPost);
                     firstPost = false; // Just ping now for the next times
-                } catch (Throwable e) {
+                } catch (Exception e) {
                     if (!errorReported) {
                         plugin.getLogger().fine("Failed to submit plugin statistics: " + e.getMessage());
                         errorReported = true;
