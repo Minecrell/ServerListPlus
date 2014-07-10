@@ -147,7 +147,7 @@ public class ConfigurationManager extends CoreManager {
 
         try {
             if (Files.exists(configPath)) {
-                // Create a backup when the configuration already exists!
+                // Create a backup if the configuration already exists!
                 Path backupPath = this.getPluginFolder().resolve(BACKUP_FILENAME);
                 this.getLogger().debug("Saving configuration backup to: " + backupPath);
 
