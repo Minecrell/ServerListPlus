@@ -160,6 +160,7 @@ public class ConfigurationManager extends CoreManager {
             try (BufferedWriter writer = IOUtil.newBufferedWriter(configPath)) {
                 yaml.writeHeader(writer);
                 yaml.newLine(writer);
+                yaml.newLine(writer);
 
                 for (Object config : storage.get())
                     // Write the configuration to the file
