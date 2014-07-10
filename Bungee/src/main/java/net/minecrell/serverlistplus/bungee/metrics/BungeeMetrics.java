@@ -50,7 +50,7 @@ public class BungeeMetrics {
     private static final String BASE_URL = "http://report.mcstats.org";
     private static final String REPORT_URL = "/plugin/%s";
 
-    private final static int PING_INTERVAL = 15;
+    private final static int PING_INTERVAL = 15; // In minutes
 
     private final Plugin plugin;
     private final String guid;
