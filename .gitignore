@@ -151,6 +151,10 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+# Don't include the configurations...
+.project
+.classpath
+
 #################
 ## NetBeans
 #################
