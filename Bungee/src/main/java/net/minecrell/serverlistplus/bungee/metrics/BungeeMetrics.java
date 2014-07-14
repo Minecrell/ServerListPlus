@@ -50,7 +50,7 @@ public class BungeeMetrics {
 
     private final static int REVISION = 7; // PluginMetrics revision
     private static final String BASE_URL = "http://report.mcstats.org";
-    private static final String REPORT_URL = "/plugin/%s";
+    private static final String REPORT_URL = BASE_URL + "/plugin/";
 
     private final static int PING_INTERVAL = 15; // In minutes
 
@@ -122,8 +122,7 @@ public class BungeeMetrics {
         String json = JSON.toJson(jsonData);
 
         // Open URL connection
-        URL url = new URL(BASE_URL + String.format(REPORT_URL, URLEncoder.encode(plugin.getDescription().getName(),
-                "UTF-8")));
+        URL url = new URL(REPORT_URL + URLEncoder.encode(plugin.getDescription().getName(), "UTF-8"));
         URLConnection con = url.openConnection();
 
         byte[] data = json.getBytes(Charsets.UTF_8);
