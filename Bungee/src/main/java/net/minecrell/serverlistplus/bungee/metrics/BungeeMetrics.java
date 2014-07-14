@@ -31,7 +31,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
@@ -62,7 +61,7 @@ public class BungeeMetrics {
     public BungeeMetrics(Plugin plugin) {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         // Get UUID from BungeeCord configuration
-        this.guid = plugin.getProxy().getConfigurationAdapter().getString("stats", UUID.randomUUID().toString());
+        this.guid = plugin.getProxy().getConfig().getUuid();
     }
 
     public void start() {
