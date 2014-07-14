@@ -56,7 +56,7 @@ public class ServerOnlinePlaceholder extends AbstractPlaceholder {
 
         do {
             ServerInfo info = proxy.getServerInfo(matcher.group(1));
-            matcher.appendReplacement(result, info != null ? Integer.toString(info.getPlayers().size()) :
+            matcher.appendReplacement(result, info != null ? String.valueOf(info.getPlayers().size()) :
                     (unknown != null ? unknown : (unknown = core.getConf(PluginConf.class).Unknown.PlayerCount)));
         } while (matcher.find());
 

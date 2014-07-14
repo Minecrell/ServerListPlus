@@ -141,7 +141,7 @@ public class BungeeMetrics {
             data = gzip;
         }
 
-        con.addRequestProperty(CONTENT_LENGTH, Integer.toString(data.length));
+        con.addRequestProperty(CONTENT_LENGTH, String.valueOf(data.length));
         con.addRequestProperty(ACCEPT, "application/json");
         con.addRequestProperty(CONNECTION, "close");
 
