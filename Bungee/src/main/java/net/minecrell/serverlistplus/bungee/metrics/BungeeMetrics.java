@@ -43,6 +43,8 @@ import com.google.gson.JsonObject;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
+import static com.google.common.net.HttpHeaders.*;
+
 public class BungeeMetrics {
     private final static Gson JSON = new Gson();
 
@@ -132,16 +134,16 @@ public class BungeeMetrics {
         } catch (Exception ignored) {}
 
         // Add request headers
-        con.addRequestProperty("User-Agent", "MCStats/" + REVISION);
-        con.addRequestProperty("Content-Type", "application/json");
+        con.addRequestProperty(USER_AGENT, "MCStats/" + REVISION);
+        con.addRequestProperty(CONTENT_TYPE, "application/json");
         if (gzip != null) {
-            con.addRequestProperty("Content-Encoding", "gzip");
+            con.addRequestProperty(CONTENT_ENCODING, "gzip");
             data = gzip;
         }
 
-        con.addRequestProperty("Content-Length", Integer.toString(data.length));
-        con.addRequestProperty("Accept", "application/json");
-        con.addRequestProperty("Connection", "close");
+        con.addRequestProperty(CONTENT_LENGTH, Integer.toString(data.length));
+        con.addRequestProperty(ACCEPT, "application/json");
+        con.addRequestProperty(CONNECTION, "close");
 
         con.setDoOutput(true);
 
