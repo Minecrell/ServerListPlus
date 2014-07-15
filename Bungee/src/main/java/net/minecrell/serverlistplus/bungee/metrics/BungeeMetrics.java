@@ -70,7 +70,6 @@ public class BungeeMetrics {
 
         this.task = plugin.getProxy().getScheduler().schedule(plugin, new Runnable() {
             private boolean firstPost = true;
-            private boolean errorReported = false;
 
             @Override
             public void run() {
@@ -78,10 +77,7 @@ public class BungeeMetrics {
                     postPlugin(!firstPost);
                     firstPost = false; // Just ping now for the next times
                 } catch (Exception e) {
-                    if (!errorReported) {
-                        plugin.getLogger().fine("Failed to submit plugin statistics: " + e.getMessage());
-                        errorReported = true;
-                    }
+                    plugin.getLogger().fine("Failed to submit plugin statistics: " + e.getMessage());
                 }
             }
         }, 0, PING_INTERVAL, TimeUnit.MINUTES);
