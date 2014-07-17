@@ -62,7 +62,7 @@ public class BungeeMetrics {
 
     public BungeeMetrics(Plugin plugin) {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
-        // Get UUID from BungeeCord configuration
+        // Get UUID from the BungeeCord configuration
         this.guid = plugin.getProxy().getConfig().getUuid();
     }
 
