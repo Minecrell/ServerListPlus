@@ -53,6 +53,7 @@ public class BungeeMetrics {
     private static final String REPORT_URL = BASE_URL + "/plugin/";
 
     private final static int PING_INTERVAL = 15; // In minutes
+    private final static TimeUnit PING_INTERVAL_UNIT = TimeUnit.MINUTES;
 
     private final Plugin plugin;
     private final String guid;
@@ -81,7 +82,7 @@ public class BungeeMetrics {
                     plugin.getLogger().fine("Failed to submit plugin statistics: " + e.getMessage());
                 }
             }
-        }, 0, PING_INTERVAL, TimeUnit.MINUTES);
+        }, 0, PING_INTERVAL, PING_INTERVAL_UNIT);
     }
 
     public void stop() {
