@@ -71,13 +71,13 @@ public class BungeeMetrics {
         if (task != null || guid == null || guid.equalsIgnoreCase("null")) return;
 
         this.task = plugin.getProxy().getScheduler().schedule(plugin, new Runnable() {
-            private boolean firstPost = true;
+            private boolean ping;
 
             @Override
             public void run() {
                 try {
-                    postPlugin(!firstPost);
-                    firstPost = false; // Just ping now for the next times
+                    postPlugin(ping);
+                    this.ping = true; // Just ping now for the next times
                 } catch (Exception e) {
                     plugin.getLogger().fine("Failed to submit plugin statistics: " + e.getMessage());
                 }
