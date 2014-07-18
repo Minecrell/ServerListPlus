@@ -66,6 +66,7 @@ subprojects {
         shadowJar {
             classifier = ''
             baseName = rootProject.name + project.name
+            exclude 'META-INF/'
         }
     }
 }
