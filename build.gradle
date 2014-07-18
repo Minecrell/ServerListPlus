@@ -38,7 +38,10 @@ allprojects {
     apply plugin: 'java'
     sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
 
-    repositories { mavenCentral() }
+    repositories {
+        mavenCentral()
+        maven { url 'http://repo.minecrell.net' }
+    }
 }
 
 ext {

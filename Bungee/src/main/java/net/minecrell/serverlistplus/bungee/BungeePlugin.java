@@ -23,7 +23,7 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import net.minecrell.serverlistplus.bungee.metrics.BungeeMetrics;
+import net.minecrell.metrics.BungeeMetricsLite;
 import net.minecrell.serverlistplus.bungee.replacer.ServerOnlinePlaceholder;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
@@ -65,7 +65,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     private LoginListener loginListener;
     private PingListener pingListener;
 
-    private BungeeMetrics metrics;
+    private BungeeMetricsLite metrics;
 
     @Override
     public void onEnable() {
@@ -246,7 +246,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (confs.get(PluginConf.class).Stats) {
             if (metrics == null)
                 try {
-                    this.metrics = new BungeeMetrics(this);
+                    this.metrics = new BungeeMetricsLite(this);
                     metrics.start();
                 } catch (Throwable e) {
                     this.getLogger().info("Failed to enable plugin statistics: " + e.getMessage());

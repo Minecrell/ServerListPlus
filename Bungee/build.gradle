@@ -38,6 +38,7 @@ ext {
 dependencies {
     compile project(':Core')
     compile 'net.md-5:bungeecord-api:1.7-SNAPSHOT'
+    compile 'net.minecrell.metrics:bungeemetrics-lite:1.0'
 }
 
 processResources {
@@ -58,7 +59,9 @@ processResources << {
 shadowJar {
     dependencies {
         include project(':Core')
+        include dependency('net.minecrell.metrics:bungeemetrics-lite:1.0')
     }
 
     relocate "${javaPackage}.core", "${pluginPackage}.core"
+    relocate 'net.minecrell.metrics', "${pluginPackage}.metrics"
 }
