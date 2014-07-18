@@ -21,18 +21,18 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+apply plugin: 'com.github.johnrengelman.shadow'
+
 repositories {
     maven { url 'https://oss.sonatype.org/content/groups/public' }
 }
 
-apply from: rootProject.file('gradle/shadow.gradle')
-
 ext {
     // TODO: Better fix?
     resourceTokens = resourceTokens.clone()
-    pluginPackage = javaPackage + '.bungee'
-    pluginClass = pluginPackage + '.BungeePlugin'
-    resourceTokens.PluginClass = pluginClass
+    pluginPackage = "${javaPackage}.bungee"
+    pluginClass = "${pluginPackage}.BungeePlugin"
+    resourceTokens.PluginClass = pluginClass.toString()
 }
 
 dependencies {
@@ -55,13 +55,10 @@ processResources << {
     }
 }
 
-shadow {
-    artifactSet {
-        include 'ServerListPlus:Core'
+shadowJar {
+    dependencies {
+        include project(':Core')
     }
 
-    relocation { // TODO: Replace with variable
-        pattern = 'net.minecrell.serverlistplus.core'
-        shadedPattern = 'net.minecrell.serverlistplus.bungee.core'
-    }
+    relocate "${javaPackage}.core", "${pluginPackage}.core"
 }

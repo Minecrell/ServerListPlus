@@ -23,12 +23,22 @@
 
 buildscript {
     // Add Gradle shadow plugin: https://github.com/johnrengelman/shadow
-    repositories { jcenter() }
-    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:0.8' }
+    // repositories { jcenter() } TODO: Update to next shadow release
+    repositories {
+        maven { url 'https://oss.jfrog.org/repo' }
+    }
+    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.3-SNAPSHOT' }
 }
+
+import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin;
 
 allprojects {
     version = '3.2.2-SNAPSHOT'
+
+    apply plugin: 'java'
+    sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
+
+    repositories { mavenCentral() }
 }
 
 ext {
@@ -45,16 +55,32 @@ ext {
             'Website': 'http://git.io/slp',
             'Wiki': 'http://git.io/slp-wiki'
     ];
+
+    universalProjects = [
+            ':Bukkit', ':Bungee'
+    ]
 }
 
 subprojects {
-    apply plugin: 'java'
-
-    sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
-
-    repositories { mavenCentral() }
+    plugins.withType(ShadowJavaPlugin) {
+        shadowJar {
+            classifier = ''
+            baseName = rootProject.name + project.name
+            exclude 'META-INF/'
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
+    gradleVersion = '2.0'
+}
+
+task universal(type: Jar) {
+    baseName = "${rootProject.name}Universal"
+    duplicatesStrategy 'exclude' // Skip the second plugin.yml of the Bungee plugin
+    universalProjects.each {
+        evaluationDependsOn it // Load the projects completely first
+        dependsOn project(it).tasks.shadowJar // Now wait to complete the plugin creation
+        from zipTree(project(it).shadowJar.archivePath) // And add it to our universal JAR
+    }
 }

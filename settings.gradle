@@ -22,4 +22,4 @@
  */
 
 rootProject.name = 'ServerListPlus'
-include 'Core', 'Bungee', 'Bukkit', 'Universal'
+include 'Core', 'Bungee', 'Bukkit'

@@ -29,7 +29,7 @@ There are multiple locations where you can download [ServerListPlus](http://git.
 
 Compilation
 ---------------------
-You can also compile it yourself by cloning the repository from [GitHub](http://git.io/slp) and executing the following command on the command line: `gradlew clean shadowJar`
+You can compile the plugin by cloning the GitHub repository to and executing the following command: `gradlew clean universal`
 
 Installation
 ---------------------
