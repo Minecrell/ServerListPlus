@@ -23,8 +23,11 @@
 
 buildscript {
     // Add Gradle shadow plugin: https://github.com/johnrengelman/shadow
-    repositories { jcenter() }
-    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.2' }
+    // repositories { jcenter() } TODO: Update to next shadow release
+    repositories {
+        maven { url 'https://oss.jfrog.org/repo' }
+    }
+    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.3-SNAPSHOT' }
 }
 
 import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin;
