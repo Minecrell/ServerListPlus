@@ -92,7 +92,7 @@ public class BungeeMetrics {
         }
     }
 
-    private void postPlugin(final boolean isPing) throws IOException {
+    private void postPlugin(final boolean ping) throws IOException {
         // Create data object
         JsonObject jsonData = new JsonObject();
 
@@ -113,7 +113,7 @@ public class BungeeMetrics {
         jsonData.addProperty("cores", Runtime.getRuntime().availableProcessors());
         jsonData.addProperty("java_version", System.getProperty("java.version"));
 
-        if (isPing) jsonData.addProperty("ping", 1);
+        if (ping) jsonData.addProperty("ping", 1);
 
         // Get json output from GSON
         String json = JSON.toJson(jsonData);
