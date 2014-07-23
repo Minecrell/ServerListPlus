@@ -34,6 +34,7 @@ import net.minecrell.serverlistplus.core.util.InstanceStorage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -130,10 +131,12 @@ public class ConfigurationManager extends CoreManager {
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "Unable to parse the configuration. Make sure the YAML syntax is " +
                     "correct!");
+        } catch (MalformedInputException e) {
+            throw this.getLogger().processF(e, "Your configuration contains invalid special characters. Please " +
+                    "save your configuration using %s instead.", IOUtil.CHARSET.displayName());
         } catch (IOException e) {
-            throw this.getLogger().processF(e, "Unable to access the configuration file. Make sure that it is " +
-                    "saved using the correct charset (%s) and accessible by the server.",
-                    IOUtil.CHARSET.displayName());
+            throw this.getLogger().process(e, "Unable to access the configuration file. Make sure that it is " +
+                    "accessible by the server.");
         } catch (Exception e) {
             throw this.getLogger().process(e, "An internal error occurred while reloading the configuration!");
         }
