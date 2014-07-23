@@ -23,31 +23,18 @@
 
 package net.minecrell.serverlistplus.core;
 
-import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
+import java.nio.file.PathMatcher;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class ServerListPlusLogger {
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     private static final String LOG_PREFIX = "[Core] "; // Prefix used by core log messages
-    private static final String PLUGIN_PREFIX = "[ServerListPlus] "; // Prefix used by plugin logger
-
-    private static final String LOG_FILE = "ServerListPlus.log";
 
     private static final Level DEFAULT_EXCEPTION_LEVEL = Level.SEVERE;
 
@@ -63,31 +50,20 @@ public class ServerListPlusLogger {
             this.getLogger().setLevel(Level.ALL);
         }
 
-        // Register a file handler for the logger but only if it has a parent to have compatibility with older
-        // BungeeCord versions.
-        if (!bungee || this.getLogger().getParent() != null)
-            try {
-                // Register the file handler for the logger
-                Path logFile = core.getPlugin().getPluginFolder().resolve(LOG_FILE);
-                if (!Files.isDirectory(logFile.getParent())) Files.createDirectories(logFile.getParent());
-                try (BufferedWriter writer = Files.newBufferedWriter(logFile, IOUtil.CHARSET,
-                        StandardOpenOption.APPEND, StandardOpenOption.CREATE)) {
-                    writer.write("---"); writer.newLine();
-                    writer.write(DATE_FORMAT.format(System.currentTimeMillis())); writer.newLine();
-                    writer.write(core.getDisplayName()); writer.newLine();
-                    writer.write(core.getPlugin().getServerImplementation()); writer.newLine();
-                    writer.write("---"); writer.newLine();
-                }
+        try {
+            deleteOldFiles(core.getPlugin().getPluginFolder());
+        } catch (Exception e) {
+            this.debug(e, "Unable to delete old log files.");
+        }
+    }
 
-                FileHandler handler = new FileHandler(logFile.toString(),
-                        1024 * 1024 /* 1 MB */, 1, true /* append */);
-                handler.setEncoding(IOUtil.CHARSET.name());
-                handler.setLevel(Level.ALL);
-                handler.setFormatter(new LogFormatter(core.getPlugin().getServerType()));
-                this.getLogger().addHandler(handler);
-            } catch (IOException e) {
-                this.warning(e, "Unable to register file handler for the logger!");
-            }
+    private static void deleteOldFiles(Path folder) throws IOException {
+        if (Files.notExists(folder)) return;
+        PathMatcher matcher = folder.getFileSystem().getPathMatcher("ServerListPlus*.log*");
+        try (DirectoryStream<Path> files = Files.newDirectoryStream(folder)) {
+            for (Path path : files)
+                if (matcher.matches(path)) Files.delete(path);
+        }
     }
 
     private Logger getLogger() {
@@ -207,40 +183,6 @@ public class ServerListPlusLogger {
     private static final class CoreServerListPlusException extends ServerListPlusException {
         private CoreServerListPlusException(String message, Throwable cause) {
             super(message, cause);
-        }
-    }
-
-    public static class LogFormatter extends Formatter {
-        private final String pluginPrefix;
-
-        private LogFormatter(ServerType type) {
-            this.pluginPrefix = "[" + type + "] ";
-        }
-
-        @Override
-        public String format(LogRecord record) {
-            StringBuilder formatted = new StringBuilder().append(DATE_FORMAT.format(record.getMillis()))
-                    .append(" [").append(record.getLevel().getName()).append("] ");
-
-            String message = formatMessage(record);
-            if (message.startsWith(PLUGIN_PREFIX)) // Remove plugin prefix, as this log is only for ServerListPlus
-                message = message.substring(PLUGIN_PREFIX.length());
-
-            // If there is not the core prefix, the log messages has to come from the plugin, add plugin type
-            if (!message.startsWith(LOG_PREFIX))
-                formatted.append(pluginPrefix);
-
-            // Append message and new line
-            formatted.append(message).append('\n');
-
-            // Print the exception if the record has one
-            if (record.getThrown() != null) {
-                StringWriter writer = new StringWriter();
-                record.getThrown().printStackTrace(new PrintWriter(writer));
-                formatted.append(writer);
-            }
-
-            return formatted.toString();
         }
     }
 }
