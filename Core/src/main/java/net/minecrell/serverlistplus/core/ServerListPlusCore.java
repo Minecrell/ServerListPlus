@@ -30,6 +30,7 @@ import net.minecrell.serverlistplus.core.config.help.ConfExamples;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.util.Format;
+import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetAddress;
 import java.util.Locale;
@@ -38,6 +39,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
+
+import static com.google.common.base.StandardSystemProperty.*;
 
 /**
  * Represents the core part of the ServerListPlus plugin.
@@ -62,7 +65,18 @@ public class ServerListPlusCore {
         this.info = CoreDescription.load(this);
         this.logger = new ServerListPlusLogger(this);
 
-        plugin.getLogger().info("Loading core...");
+        plugin.getLogger().info("Starting...");
+
+        // Print some information about the environment
+        this.getLogger().debug(Helper.lines(
+                "Plugin Information:",
+                "---",
+                "Plugin: " + getDisplayName(),
+                "Server: " + plugin.getServerImplementation(),
+                "Java: " + JAVA_VERSION.value() + " (" + JAVA_VM_NAME.value() + ")",
+                "OS: " + OS_NAME.value() + ", " + OS_VERSION.value() + " (" + OS_ARCH.value() + ")",
+                "---"
+        ));
 
         // Initialize configuration and status manager, but not yet load it
         this.statusManager = new ServerStatusManager(this);
@@ -79,7 +93,7 @@ public class ServerListPlusCore {
         plugin.initialize(this);
         this.reload(); // Now load the configuration!
 
-        plugin.getLogger().info("Core was successfully loaded!");
+        plugin.getLogger().info("Successfully loaded!");
     }
 
     public String getDisplayName() {

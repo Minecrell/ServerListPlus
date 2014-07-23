@@ -40,6 +40,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
@@ -281,7 +282,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                     metrics.enable();
                     metrics.start();
                 } catch (Throwable e) {
-                    this.getLogger().info("Failed to enable plugin statistics: " + e.getMessage());
+                    Throwable cause = Throwables.getRootCause(e);
+                    this.getLogger().log(Level.FINE, "Failed to enable plugin statistics: {0}: {1}", new Object[]{
+                            cause.getClass().getName(),
+                            cause.getMessage()
+                    });
                 }
         } else if (metrics != null)
             try {

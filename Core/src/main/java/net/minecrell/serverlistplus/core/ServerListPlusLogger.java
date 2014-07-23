@@ -23,8 +23,6 @@
 
 package net.minecrell.serverlistplus.core;
 
-import net.minecrell.serverlistplus.core.plugin.ServerType;
-
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -43,13 +41,6 @@ public class ServerListPlusLogger {
     public ServerListPlusLogger(ServerListPlusCore core) {
         this.core = core;
 
-        // Set BungeeCord logger level to ALL so it logs FINE messages when pull requests wasn't merged yet
-        boolean bungee = core.getPlugin().getServerType() == ServerType.BUNGEE;
-        if (bungee && (this.getLogger().getParent() == null
-                || this.getLogger().getParent().getLevel() != Level.ALL)) {
-            this.getLogger().setLevel(Level.ALL);
-        }
-
         try {
             deleteOldFiles(core.getPlugin().getPluginFolder());
         } catch (Exception e) {
@@ -57,12 +48,17 @@ public class ServerListPlusLogger {
         }
     }
 
-    private static void deleteOldFiles(Path folder) throws IOException {
+    private void deleteOldFiles(Path folder) throws IOException {
         if (Files.notExists(folder)) return;
-        PathMatcher matcher = folder.getFileSystem().getPathMatcher("ServerListPlus*.log*");
+        PathMatcher matcher = folder.getFileSystem().getPathMatcher("glob:ServerListPlus*.log*");
         try (DirectoryStream<Path> files = Files.newDirectoryStream(folder)) {
-            for (Path path : files)
-                if (matcher.matches(path)) Files.delete(path);
+            for (Path path : files) {
+                Path fileName = path.getFileName();
+                if (matcher.matches(fileName)) {
+                    this.debug("Deleting old log file: " + fileName);
+                    Files.delete(path);
+                }
+            }
         }
     }
 
