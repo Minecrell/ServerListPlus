@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -93,5 +94,10 @@ public final class Helper {
     public static Integer nextNumber(IntRange range) {
         if (range == null) return null;
         return range.isSingle() ? range.from() : random().nextInt(range.from(), range.to());
+    }
+
+    public static String causedError(Throwable e) {
+        Throwable cause = Throwables.getRootCause(e);
+        return cause.getClass().getName() + ": " + cause.getMessage();
     }
 }

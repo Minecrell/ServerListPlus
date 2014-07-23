@@ -42,7 +42,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
@@ -254,11 +253,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     this.metrics = new BungeeMetricsLite(this);
                     metrics.start();
                 } catch (Throwable e) {
-                    Throwable cause = Throwables.getRootCause(e);
-                    this.getLogger().log(Level.FINE, "Failed to enable plugin statistics: {0}: {1}", new Object[]{
-                            cause.getClass().getName(),
-                            cause.getMessage()
-                    });
+                    this.getLogger().log(Level.FINE, "Failed to enable plugin statistics: " +
+                            Helper.causedError(e));
                 }
         } else if (metrics != null)
             try {
