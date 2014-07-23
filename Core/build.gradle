@@ -34,11 +34,6 @@ processResources {
 
 processResources << {
     // Create an ABOUT file with information about the core
-    copy {
-        from rootProject.projectDir
-        into destinationDir
-        include 'LICENSE'
-    }
     def prop = new Properties();
     prop.putAll resourceTokens
     prop.store new File(destinationDir, 'ABOUT').newOutputStream(), null
