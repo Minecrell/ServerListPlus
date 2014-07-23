@@ -29,6 +29,7 @@ dependencies {
 
 processResources {
     include 'HEADER'
+    include 'LICENSE'
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
 }
 
