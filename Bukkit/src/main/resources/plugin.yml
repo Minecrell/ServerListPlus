@@ -46,4 +46,5 @@ commands:
       - 'serverping+'
       - 'serverping'
       - 'spp'
+      - 'slus'
     permission: serverlistplus.admin
