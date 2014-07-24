@@ -24,7 +24,6 @@
 package net.minecrell.serverlistplus.core.config;
 
 import net.minecrell.serverlistplus.core.config.help.Description;
-import net.minecrell.serverlistplus.core.favicon.FaviconLoader;
 import net.minecrell.serverlistplus.core.util.IntRange;
 
 import java.util.List;
