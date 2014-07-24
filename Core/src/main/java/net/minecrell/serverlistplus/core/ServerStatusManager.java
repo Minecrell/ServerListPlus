@@ -33,6 +33,7 @@ import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
 import net.minecrell.serverlistplus.core.util.CoreManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.IntRange;
+import net.minecrell.serverlistplus.core.util.PathMatcherFilter;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -41,6 +42,7 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
@@ -158,8 +160,14 @@ public class ServerStatusManager extends CoreManager {
     private Set<String> findFolderFavicons(List<String> folders) {
         if (Helper.nullOrEmpty(folders)) return null;
         final Path pluginFolder = core.getPlugin().getPluginFolder();
+
+        final PathMatcher imageMatcher = pluginFolder.getFileSystem().getPathMatcher(
+                "glob:*.{jpg,jpeg,png,bmp,wbmp,gif}");
+        DirectoryStream.Filter<Path> imageFilter = new PathMatcherFilter(imageMatcher);
+
         final Set<String> favicons = new LinkedHashSet<>();
         boolean recursive = core.getConf(PluginConf.class).Favicon.RecursiveFolderSearch;
+
         for (String folderPath : folders) {
             Path folder = core.getPlugin().getPluginFolder().resolve(folderPath);
             if (!Files.isDirectory(folder)) {
@@ -167,31 +175,30 @@ public class ServerStatusManager extends CoreManager {
                 continue;
             }
 
-            if (recursive) // Also check sub folders
+            if (recursive) { // Also check sub folders
                 try { // Walk down the file tree
                     Files.walkFileTree(folder, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
                             new SimpleFileVisitor<Path>() {
                                 @Override
                                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                                         throws IOException {
-                                    if (file.getFileName().toString().endsWith(".png")) {
+                                    if (imageMatcher.matches(file.getFileName()))
                                         favicons.add(pluginFolder.relativize(file).toString());
-                                    }
-
                                     return FileVisitResult.CONTINUE;
                                 }
                             });
                 } catch (IOException e) {
-                    core.getLogger().warning(e, "Unable to walk through file tree for " + folder);
+                    core.getLogger().warning(e, "Unable to walk through the file tree of " + folder);
                 }
-            else // Only this one folder
-                try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, "*.png")) {
-                    for (Path file : dir) { // File list
+            } else { // Only this one folder
+                try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, imageFilter)) {
+                    for (Path file : dir) // File list
                         favicons.add(pluginFolder.relativize(file).toString());
-                    }
                 } catch (IOException e) {
-                    core.getLogger().warning(e, "Unable to get directory listing for " + folder);
+                    core.getLogger().warning(e, "Unable to get directory listing of " + folder);
                 }
+
+            }
         }
 
         return Helper.makeImmutableSet(favicons);
