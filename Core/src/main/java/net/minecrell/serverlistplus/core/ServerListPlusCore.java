@@ -189,7 +189,7 @@ public class ServerListPlusCore {
     public void executeCommand(ServerCommandSender sender, String cmd, String[] args) {
         String sub = (args.length > 0) ? args[0] : null;
         if (sub != null) {
-            if (sub.equalsIgnoreCase("reload")) {
+            if (sub.equalsIgnoreCase("reload")  || sub.equalsIgnoreCase("rl")) {
                 this.getLogger().infoF("Reloading configuration at request of %s!", sender);
                 sender.sendMessage(Format.GREEN + "Reloading configuration...");
 
