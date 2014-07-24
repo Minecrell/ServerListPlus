@@ -218,6 +218,7 @@ public class ServerStatusManager extends CoreManager {
             List<String> descriptions = readMessages(conf.Description), playerHover = null;
             List<IntRange> online = null, max = null;
             Boolean playersHidden = null;
+            List<String> slots = null;
             List<String> version = null; Integer protocol = null;
             List<FaviconSource> favicons = null;
 
@@ -227,6 +228,7 @@ public class ServerStatusManager extends CoreManager {
                     online = Helper.makeImmutableList(conf.Players.Online);
                     max = Helper.makeImmutableList(conf.Players.Max);
                     playerHover = readMessages(conf.Players.Hover);
+                    slots = readMessages(conf.Players.Slots);
                 } else if (conf.Players.Online != null || conf.Players.Max != null || conf.Players.Hover != null) {
                     getLogger().warning("You have hidden the player count in your configuration but still have " +
                             "the maximum online count / hover message configured. They will not work if the " +
@@ -249,6 +251,14 @@ public class ServerStatusManager extends CoreManager {
                 addFavicons(builder, readFavicons(conf.Favicon.Encoded), DefaultFaviconLoader.BASE64);
                 favicons = builder.build();
                 if (favicons.size() == 0) favicons = null;
+            }
+
+            if (slots != null) {
+                if (version != null)
+                    version = ImmutableList.<String>builder().addAll(version).addAll(slots).build();
+                else version = slots;
+                if (protocol == null)
+                    protocol = 999;
             }
 
             return new ServerStatus(descriptions, playerHover, online, max, playersHidden, version, protocol,

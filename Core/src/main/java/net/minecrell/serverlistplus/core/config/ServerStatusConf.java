@@ -57,6 +57,7 @@ public class ServerStatusConf {
             public List<IntRange> Online, Max;
             public Boolean Hidden;
             public List<String> Hover;
+            public List<String> Slots;
         }
 
         public static class VersionConf {
