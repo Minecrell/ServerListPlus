@@ -38,6 +38,6 @@ public class CoreConf {
          * that's why we need something different here...
          */
         @Deprecated public String PlayerTracking = "";
-        public String Favicon = "maximumSize=256,expireAfterWrite=6h";
+        public String Favicon = "maximumSize=512,expireAfterWrite=6h";
     }
 }
