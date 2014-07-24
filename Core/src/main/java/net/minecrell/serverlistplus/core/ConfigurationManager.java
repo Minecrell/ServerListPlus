@@ -39,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import org.yaml.snakeyaml.error.YAMLException;
 
@@ -105,7 +106,7 @@ public class ConfigurationManager extends CoreManager {
                 }
             }
 
-            this.getLogger().info(newStorage.count() + " configurations loaded.");
+            this.getLogger().log(Level.CONFIG, newStorage.count() + " configurations loaded.");
 
             // Add missing configurations from default values
             int generated = Helper.mergeMaps(newStorage.getMap(), defaults.getMap());

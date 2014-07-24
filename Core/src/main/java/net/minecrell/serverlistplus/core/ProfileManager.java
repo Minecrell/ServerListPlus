@@ -31,6 +31,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
@@ -68,9 +69,9 @@ public class ProfileManager extends CoreManager {
                 }
 
                 if (enabled)
-                    this.getLogger().debug("ServerListPlus profile is enabled!");
+                    this.getLogger().log(Level.CONFIG, "ServerListPlus profile is enabled!");
                 else
-                    this.getLogger().debug("ServerListPlus profile is disabled!");
+                    this.getLogger().log(Level.CONFIG, "ServerListPlus profile is disabled!");
             } else
                 this.getLogger().debug("Profile configuration not found, assuming the profile is disabled!");
         } catch (JsonSyntaxException e) {

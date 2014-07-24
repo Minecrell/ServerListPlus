@@ -34,6 +34,7 @@ import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetAddress;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
@@ -68,7 +69,7 @@ public class ServerListPlusCore {
         plugin.getLogger().info("Starting...");
 
         // Print some information about the environment
-        this.getLogger().debug(Helper.lines(
+        this.getLogger().log(Level.CONFIG, Helper.lines(
                 "Plugin Information:",
                 "---",
                 "Plugin: " + getDisplayName(),
