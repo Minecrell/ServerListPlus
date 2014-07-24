@@ -56,7 +56,7 @@ public class ServerListPlusCore {
     private final ProfileManager profileManager;
     private final ServerStatusManager statusManager;
 
-    private Cache<String, String> playerTracker;
+    private Cache<InetAddress, String> playerTracker;
     private String playerTrackerConf;
 
     private String faviconCacheConf;
@@ -179,11 +179,11 @@ public class ServerListPlusCore {
     }
 
     public void addClient(String playerName, InetAddress client) {
-        if (this.playerTracker != null) playerTracker.put(client.getHostAddress(), playerName);
+        if (this.playerTracker != null) playerTracker.put(client, playerName);
     }
 
     public String resolveClient(InetAddress client) {
-        return this.playerTracker != null ? playerTracker.getIfPresent(client.getHostAddress()) : null;
+        return this.playerTracker != null ? playerTracker.getIfPresent(client) : null;
     }
 
     public void executeCommand(ServerCommandSender sender, String cmd, String[] args) {
