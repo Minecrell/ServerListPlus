@@ -26,6 +26,8 @@ package net.minecrell.serverlistplus.core.favicon;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.util.Helper;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,12 +37,33 @@ import javax.imageio.ImageIO;
 public final class FaviconHelper {
     private FaviconHelper() {}
 
+    private static final int FAVICON_SIZE = 64;
+
     public static BufferedImage fromStream(InputStream in) throws IOException {
         return ImageIO.read(in);
     }
 
     public static BufferedImage fromURL(URL url) throws IOException {
         return ImageIO.read(url);
+    }
+
+    private static final int HEAD_X = 8, HEAD_Y = 8;
+    private static final int HELM_X = 40, HELM_Y = 8;
+    private static final int HEAD_SIZE = 8;
+
+    public static BufferedImage fromSkin(String url, String name, boolean helm) throws IOException {
+        BufferedImage skin = fromURL(new URL(String.format(url, name)));
+        if (helm)
+            skin.getGraphics().copyArea(HELM_X, HELM_Y, HEAD_SIZE, HEAD_SIZE, HEAD_X - HELM_X, HEAD_Y - HELM_Y);
+        BufferedImage head = skin.getSubimage(HEAD_X, HEAD_Y, HEAD_SIZE, HEAD_SIZE);
+        return copyImage(head.getScaledInstance(FAVICON_SIZE, FAVICON_SIZE, Image.SCALE_REPLICATE));
+    }
+
+    private static BufferedImage copyImage(Image image) {
+        BufferedImage buffer = new BufferedImage(FAVICON_SIZE, FAVICON_SIZE, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = buffer.createGraphics();
+        g.drawImage(image, null, null);
+        return buffer;
     }
 
     public static BufferedImage load(ServerListPlusCore core, FaviconSource source) throws IOException {

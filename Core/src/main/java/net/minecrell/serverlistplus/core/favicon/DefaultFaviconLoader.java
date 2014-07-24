@@ -24,6 +24,7 @@
 package net.minecrell.serverlistplus.core.favicon;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.config.PluginConf;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -37,20 +38,30 @@ import com.google.common.io.BaseEncoding;
 public enum DefaultFaviconLoader implements FaviconLoader {
     FILE {
         @Override
-        public BufferedImage load(ServerListPlusCore core, String source) throws IOException {
-            try (InputStream in = Files.newInputStream(core.getPlugin().getPluginFolder().resolve(source))) {
+        public BufferedImage load(ServerListPlusCore core, String path) throws IOException {
+            try (InputStream in = Files.newInputStream(core.getPlugin().getPluginFolder().resolve(path))) {
                 return FaviconHelper.fromStream(in);
             }
         }
     }, URL {
         @Override
-        public BufferedImage load(ServerListPlusCore core, String source) throws IOException {
-            return FaviconHelper.fromURL(new URL(source));
+        public BufferedImage load(ServerListPlusCore core, String url) throws IOException {
+            return FaviconHelper.fromURL(new URL(url));
+        }
+    }, SKIN_HEAD {
+        @Override
+        public BufferedImage load(ServerListPlusCore core, String name) throws IOException {
+            return FaviconHelper.fromSkin(core.getConf(PluginConf.class).SkinSource, name, false);
+        }
+    }, SKIN_HELM {
+        @Override
+        public BufferedImage load(ServerListPlusCore core, String name) throws IOException {
+            return FaviconHelper.fromSkin(core.getConf(PluginConf.class).SkinSource, name, true);
         }
     }, BASE64 { // Encoded favicon
         @Override
-        public BufferedImage load(ServerListPlusCore core, String source) throws IOException {
-            return FaviconHelper.fromStream(BaseEncoding.base64().decodingStream(new StringReader(source)));
+        public BufferedImage load(ServerListPlusCore core, String base64) throws IOException {
+            return FaviconHelper.fromStream(BaseEncoding.base64().decodingStream(new StringReader(base64)));
         }
     }
 }

@@ -24,6 +24,7 @@
 package net.minecrell.serverlistplus.core.config;
 
 import net.minecrell.serverlistplus.core.config.help.Description;
+import net.minecrell.serverlistplus.core.favicon.FaviconLoader;
 import net.minecrell.serverlistplus.core.util.IntRange;
 
 import java.util.List;
@@ -65,9 +66,9 @@ public class ServerStatusConf {
         }
 
         public static class FaviconConf {
-            public List<String> Files;
-            public List<String> Folders;
+            public List<String> Files, Folders;
             public List<String> URLs;
+            public List<String> Heads, Helms;
             public List<String> Encoded;
         }
     }

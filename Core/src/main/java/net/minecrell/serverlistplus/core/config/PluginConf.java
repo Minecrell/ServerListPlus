@@ -37,6 +37,7 @@ public class PluginConf {
     public boolean PlayerTracking = true;
     public UnknownConf Unknown = new UnknownConf();
     public boolean RecursiveFolderSearch = false;
+    public String SkinSource = "https://s3.amazonaws.com/MinecraftSkins/%s.png";
 
     public static class UnknownConf {
         public String PlayerName = "player";

@@ -237,6 +237,8 @@ public class ServerStatusManager extends CoreManager {
                 addFavicons(builder, readFavicons(conf.Favicon.Files), DefaultFaviconLoader.FILE);
                 addFavicons(builder, findFolderFavicons(conf.Favicon.Folders), DefaultFaviconLoader.FILE);
                 addFavicons(builder, readFavicons(conf.Favicon.URLs), DefaultFaviconLoader.URL);
+                addFavicons(builder, readFavicons(conf.Favicon.Heads), DefaultFaviconLoader.SKIN_HEAD);
+                addFavicons(builder, readFavicons(conf.Favicon.Helms), DefaultFaviconLoader.SKIN_HELM);
                 addFavicons(builder, readFavicons(conf.Favicon.Encoded), DefaultFaviconLoader.BASE64);
                 favicons = builder.build();
                 if (favicons.size() == 0) favicons = null;
