@@ -140,20 +140,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             String message = response.getDescription();
             if (message != null) ping.setDescription(message);
 
-            if (players != null) {
-                // Online players
-                Integer count = response.getPlayersOnline();
-                if (count != null) players.setOnline(count);
-                // Max players
-                count = response.getMaxPlayers();
-                if (count != null) players.setMax(count);
-
-                // Player hover
-                message = response.getPlayerHover();
-                if (message != null) players.setSample(new ServerPing.PlayerInfo[]{
-                        new ServerPing.PlayerInfo(message, ServerStatusManager.EMPTY_UUID) });
-            }
-
             ServerPing.Protocol version = ping.getVersion();
             if (version != null) {
                 // Version name
@@ -169,6 +155,24 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             if (favicon != null) {
                 Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
                 if (icon.isPresent()) ping.setFavicon(icon.get());
+            }
+
+            if (players != null) {
+                if (response.arePlayersHidden()) {
+                    ping.setPlayers(null);
+                } else {
+                    // Online players
+                    Integer count = response.getPlayersOnline();
+                    if (count != null) players.setOnline(count);
+                    // Max players
+                    count = response.getMaxPlayers();
+                    if (count != null) players.setMax(count);
+
+                    // Player hover
+                    message = response.getPlayerHover();
+                    if (message != null) players.setSample(new ServerPing.PlayerInfo[]{
+                            new ServerPing.PlayerInfo(message, ServerStatusManager.EMPTY_UUID) });
+                }
             }
         }
     }

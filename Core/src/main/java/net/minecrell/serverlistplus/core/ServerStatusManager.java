@@ -68,6 +68,7 @@ public class ServerStatusManager extends CoreManager {
     private static class ServerStatus {
         private final List<String> description, playerHover;
         private final List<IntRange> online, max;
+        private final Boolean playersHidden;
         private final List<String> version; private final Integer protocol;
         private final List<FaviconSource> favicon;
 
@@ -75,6 +76,7 @@ public class ServerStatusManager extends CoreManager {
             this(
                     null, null,
                     null, null,
+                    null,
                     null, null,
                     null
             );
@@ -82,10 +84,12 @@ public class ServerStatusManager extends CoreManager {
 
         private ServerStatus(List<String> description, List<String> playerHover,
                              List<IntRange> online, List<IntRange> max,
+                             Boolean playersHidden,
                              List<String> version, Integer protocol,
                              List<FaviconSource> favicon) {
             this.description = description; this.playerHover = playerHover;
             this.online = online; this.max = max;
+            this.playersHidden = playersHidden;
             this.version = version; this.protocol = protocol;
             this.favicon = favicon;
         }
@@ -206,13 +210,21 @@ public class ServerStatusManager extends CoreManager {
 
             List<String> descriptions = readMessages(conf.Description), playerHover = null;
             List<IntRange> online = null, max = null;
+            Boolean playersHidden = null;
             List<String> version = null; Integer protocol = null;
             List<FaviconSource> favicons = null;
 
             if (conf.Players != null) {
-                playerHover = readMessages(conf.Players.Hover);
-                online = Helper.makeImmutableList(conf.Players.Online);
-                max = Helper.makeImmutableList(conf.Players.Max);
+                playersHidden = conf.Players.Hidden;
+                if (playersHidden == null || !playersHidden) {
+                    online = Helper.makeImmutableList(conf.Players.Online);
+                    max = Helper.makeImmutableList(conf.Players.Max);
+                    playerHover = readMessages(conf.Players.Hover);
+                } else if (conf.Players.Online != null || conf.Players.Max != null || conf.Players.Hover != null) {
+                    getLogger().warning("You have hidden the player count in your configuration but still have " +
+                            "the maximum online count / hover message configured. They will not work if the " +
+                            "player count is hidden.");
+                }
             }
 
             if (conf.Version != null) {
@@ -230,7 +242,8 @@ public class ServerStatusManager extends CoreManager {
                 if (favicons.size() == 0) favicons = null;
             }
 
-            return new ServerStatus(descriptions, playerHover, online, max, version, protocol, favicons);
+            return new ServerStatus(descriptions, playerHover, online, max, playersHidden, version, protocol,
+                    favicons);
         } else return new ServerStatus();
     }
 
@@ -283,6 +296,11 @@ public class ServerStatusManager extends CoreManager {
 
         public String getPlayerName() {
             return playerName;
+        }
+
+        public boolean arePlayersHidden() {
+            return playerName != null && personalized.playersHidden != null ? personalized.playersHidden :
+                    (def.playersHidden != null ? def.playersHidden : false);
         }
 
         public Integer fetchPlayersOnline() {

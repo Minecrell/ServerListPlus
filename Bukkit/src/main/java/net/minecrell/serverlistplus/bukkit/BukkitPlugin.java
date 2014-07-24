@@ -176,20 +176,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             String message = response.getDescription();
             if (message != null) ping.setMotD(message);
 
-            if (!playersHidden) {
-                // Online players
-                Integer count = response.getPlayersOnline();
-                if (count != null) ping.setPlayersOnline(count);
-                // Max players
-                count = response.getMaxPlayers();
-                if (count != null) ping.setPlayersMaximum(count);
-
-                // Player hover
-                message = response.getPlayerHover();
-                if (message != null) ping.setPlayers(Collections.singleton(
-                        new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, message)));
-            }
-
             // Version name
             message = response.getVersion();
             if (message != null) ping.setVersionName(message);
@@ -202,6 +188,24 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (favicon != null) {
                 Optional<WrappedServerPing.CompressedImage> icon = faviconCache.getUnchecked(favicon);
                 if (icon.isPresent()) ping.setFavicon(icon.get());
+            }
+
+            if (!playersHidden) {
+                if (response.arePlayersHidden()) {
+                    ping.setPlayersVisible(false);
+                } else {
+                    // Online players
+                    Integer count = response.getPlayersOnline();
+                    if (count != null) ping.setPlayersOnline(count);
+                    // Max players
+                    count = response.getMaxPlayers();
+                    if (count != null) ping.setPlayersMaximum(count);
+
+                    // Player hover
+                    message = response.getPlayerHover();
+                    if (message != null) ping.setPlayers(Collections.singleton(
+                            new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, message)));
+                }
             }
         }
     }
