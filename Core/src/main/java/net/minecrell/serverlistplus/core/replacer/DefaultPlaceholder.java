@@ -72,6 +72,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
             return this.replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
         }
     },
+    @Deprecated // TODO: Rename to %random_player% but keep configuration compatibility
     RANDOM_PLAYER ("%randomplayer%") {
         @Override
         public String replace(ServerStatusManager.Response response, String s) {
