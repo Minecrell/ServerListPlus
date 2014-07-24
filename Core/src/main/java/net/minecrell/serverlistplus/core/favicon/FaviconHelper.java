@@ -51,6 +51,7 @@ public final class FaviconHelper {
     private static final int HELM_X = 40, HELM_Y = 8;
     private static final int HEAD_SIZE = 8;
 
+    // Based on Comphenix version: https://gist.github.com/aadnk/8119275
     public static BufferedImage fromSkin(String url, String name, boolean helm) throws IOException {
         BufferedImage skin = fromURL(new URL(String.format(url, name)));
         if (helm)
