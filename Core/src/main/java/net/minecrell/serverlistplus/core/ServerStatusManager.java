@@ -159,7 +159,7 @@ public class ServerStatusManager extends CoreManager {
         if (Helper.nullOrEmpty(folders)) return null;
         final Path pluginFolder = core.getPlugin().getPluginFolder();
         final Set<String> favicons = new LinkedHashSet<>();
-        boolean recursive = core.getConf(PluginConf.class).RecursiveFolderSearch;
+        boolean recursive = core.getConf(PluginConf.class).Favicon.RecursiveFolderSearch;
         for (String folderPath : folders) {
             Path folder = core.getPlugin().getPluginFolder().resolve(folderPath);
             if (!Files.isDirectory(folder)) {

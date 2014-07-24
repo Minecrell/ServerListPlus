@@ -24,23 +24,36 @@
 package net.minecrell.serverlistplus.core.config;
 
 import net.minecrell.serverlistplus.core.config.help.Description;
+import net.minecrell.serverlistplus.core.favicon.ResizeStrategy;
+
+import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
 
 @Description({
         "General plugin options:",
         "Stats: Enable/disable sending plugin statistics.",
         "PlayerTracking: Enable/disable tracking of player names to their IP-Addresses.",
         "Unknown: Placeholder replacement if real value is unknown.",
-        "RecursiveFolderSearch: Also search for favicons in sub directories."
+        "Favicon: Options for the creation / downloading of favicons:",
+        " - RecursiveFolderSearch: Also search for favicons in sub directories.",
+        " - SkinSource: The URL to get the Minecraft Skins from, %s will be replaced",
+        "     by the player name.",
+        " - ResizeStrategy: The method used to resize too small or too big favicons.",
+        "     NONE (keep them as is), SCALE (scale them to the correct size)"
 })
 public class PluginConf {
     public boolean Stats = true;
     public boolean PlayerTracking = true;
     public UnknownConf Unknown = new UnknownConf();
-    public boolean RecursiveFolderSearch = false;
-    public String SkinSource = "https://s3.amazonaws.com/MinecraftSkins/%s.png";
+    public FaviconConf Favicon = new FaviconConf();
 
     public static class UnknownConf {
         public String PlayerName = "player";
         public String PlayerCount = "???";
+    }
+
+    public static class FaviconConf {
+        public boolean RecursiveFolderSearch = false;
+        public String SkinSource = "https://s3.amazonaws.com/MinecraftSkins/%s.png";
+        public ResizeStrategy ResizeStrategy = SCALE;
     }
 }
