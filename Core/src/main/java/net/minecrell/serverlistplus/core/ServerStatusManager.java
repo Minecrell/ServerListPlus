@@ -99,6 +99,7 @@ public class ServerStatusManager extends CoreManager {
         private boolean hasChanges() {
             return description != null || playerHover != null
                     || online != null || max != null
+                    || playersHidden != null
                     || version != null || protocol != null
                     || favicon != null;
         }
