@@ -90,7 +90,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         try {
             BukkitLogger.enableDebugLevels(this);
         } catch (Throwable e) {
-            this.getLogger().warning("Unable to enable Log4j2 debug levels: " + Helper.causedError(e));
+            this.getLogger().warning("Unable to create log file: " + Helper.causedError(e));
         }
 
         try { // Load the core first
