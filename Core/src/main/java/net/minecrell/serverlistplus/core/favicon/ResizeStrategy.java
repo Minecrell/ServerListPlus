@@ -57,7 +57,7 @@ public enum ResizeStrategy {
     protected abstract BufferedImage drawImage(BufferedImage original, BufferedImage resized);
 
     protected BufferedImage resizeImage(BufferedImage original, int width, int height) {
-        BufferedImage resized = new BufferedImage(width, height, original.getType());
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         return drawImage(original, resized);
     }
 
