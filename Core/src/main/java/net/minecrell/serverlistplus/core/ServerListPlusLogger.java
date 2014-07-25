@@ -23,6 +23,8 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.plugin.ServerType;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -49,14 +51,18 @@ public class ServerListPlusLogger {
     }
 
     private void deleteOldFiles(Path folder) throws IOException {
-        if (Files.notExists(folder)) return;
+        if (core.getPlugin().getServerType() != ServerType.BUNGEE || Files.notExists(folder)) return;
         PathMatcher matcher = folder.getFileSystem().getPathMatcher("glob:ServerListPlus*.log*");
         try (DirectoryStream<Path> files = Files.newDirectoryStream(folder)) {
             for (Path path : files) {
                 Path fileName = path.getFileName();
                 if (matcher.matches(fileName)) {
-                    this.debug("Deleting old log file: " + fileName);
-                    Files.delete(path);
+                    try {
+                        Files.delete(path);
+                        this.debug("Deleted old log file: " + fileName);
+                    } catch (IOException e) {
+                        this.debug(e, "Unable to delete old log file: " + fileName);
+                    }
                 }
             }
         }

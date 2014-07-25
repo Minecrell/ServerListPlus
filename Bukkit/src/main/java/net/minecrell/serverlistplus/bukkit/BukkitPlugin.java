@@ -88,7 +88,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void onEnable() {
         try {
-            BukkitLog4j.enableDebugLevels();
+            BukkitLogger.enableDebugLevels(this);
         } catch (Throwable e) {
             this.getLogger().warning("Unable to enable Log4j2 debug levels: " + Helper.causedError(e));
         }
@@ -159,12 +159,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         public void onPacketSending(final PacketEvent event) {
             final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
             // Make sure players have not been hidden when getting the player count
-            boolean playersHidden = !ping.isPlayersVisible();
+            boolean playersVisible = ping.isPlayersVisible();
 
             ServerStatusManager.Response response = core.getStatus().createResponse(event.getPlayer().getAddress()
                     .getAddress(),
                     // Return unknown player counts if it has been hidden
-                    playersHidden ? new ServerStatusManager.ResponseFetcher() :
+                    !playersVisible ? new ServerStatusManager.ResponseFetcher() :
                             new ServerStatusManager.ResponseFetcher() {
 
                 @Override
@@ -196,7 +196,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                 if (icon.isPresent()) ping.setFavicon(icon.get());
             }
 
-            if (!playersHidden) {
+            if (playersVisible) {
                 if (response.arePlayersHidden()) {
                     ping.setPlayersVisible(false);
                 } else {
