@@ -23,7 +23,7 @@ Download
 ---------------------
 There are multiple locations where you can download [ServerListPlus](http://git.io/slp):
 - [GitHub Releases](http://git.io/slp-releases)
-- [SpigotMC](www.spigotmc.org/resources/serverlistplus.241/)
+- [SpigotMC](http://www.spigotmc.org/resources/serverlistplus.241/)
 - [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/)
 - [Development Builds](http://ci.minecrell.net/job/ServerListPlus/)
 
