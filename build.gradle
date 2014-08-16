@@ -23,7 +23,7 @@
 
 buildscript {
     // Add Gradle shadow plugin: https://github.com/johnrengelman/shadow
-    repositories { jcenter() } TODO: Update to next shadow release
+    repositories { jcenter() }
     /* SNAPSHOT repo
     repositories {
         maven { url 'https://oss.jfrog.org/repo' }
