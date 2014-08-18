@@ -302,8 +302,8 @@ public class ServerListPlusCore {
             } else if (sub.equals("help")) {
                 sender.sendMessages(
                         HELP_HEADER,
-                        buildCommandHelp("Display an information page about the plugin and list all available " +
-                                "commands."),
+                        buildCommandHelp("Display an information page about the plugin."),
+                        buildCommandHelp("help", "Show this list of all available commands."),
                         buildCommandHelp("reload", "Reload the plugin configuration."),
                         buildCommandHelp("save", "Save the plugin configuration."),
                         buildCommandHelp("enable", "Enable the plugin and start modifying the status ping."),
