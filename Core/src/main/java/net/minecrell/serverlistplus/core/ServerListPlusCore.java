@@ -34,12 +34,17 @@ import net.minecrell.serverlistplus.core.util.Format;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
+import com.google.common.collect.ImmutableSet;
 
 import static com.google.common.base.StandardSystemProperty.*;
 import static net.minecrell.serverlistplus.core.logging.Logger.*;
@@ -188,6 +193,9 @@ public class ServerListPlusCore {
         return this.playerTracker != null ? playerTracker.getIfPresent(client) : null;
     }
 
+    private static final Set<String> SUB_COMMANDS = ImmutableSet.of("reload", "rl", "save", "enable", "disable",
+            "clean", "info");
+
     public void executeCommand(ServerCommandSender sender, String cmd, String[] args) {
         String sub = (args.length > 0) ? args[0] : null;
         if (sub != null) {
@@ -269,6 +277,15 @@ public class ServerListPlusCore {
                 buildCommandHelp("disable", "Disable the plugin and stop modifying the status ping."),
                 buildCommandHelp("clean", "<favicons/players>", "Delete all entries from the specified cache.")
         );
+    }
+
+    public List<String> tabComplete(ServerCommandSender sender, String cmd, String[] args) {
+        if (args.length > 1) return Collections.emptyList();
+        String sub = args.length > 0 ? args[0] : "";
+        List<String> result = new ArrayList<>();
+        for (String subCmd : SUB_COMMANDS)
+            if (Helper.startsWithIgnoreCase(subCmd, sub)) result.add(subCmd);
+        return result;
     }
 
     private static String buildCommandHelp(String description) {

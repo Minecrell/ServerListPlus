@@ -36,6 +36,7 @@ import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
@@ -47,8 +48,8 @@ import com.google.common.cache.LoadingCache;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -111,12 +112,17 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     // Commands
-    public final class ServerListPlusCommand implements CommandExecutor {
+    public final class ServerListPlusCommand implements TabExecutor {
         private ServerListPlusCommand() {}
 
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
             core.executeCommand(new BukkitCommandSender(sender), cmd.getName(), args); return true;
+        }
+
+        @Override
+        public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+            return core.tabComplete(new BukkitCommandSender(sender), cmd.getName(), args);
         }
     }
 

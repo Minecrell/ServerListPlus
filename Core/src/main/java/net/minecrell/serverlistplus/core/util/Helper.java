@@ -152,4 +152,8 @@ public final class Helper {
 
         return result.toString();
     }
+
+    public static boolean startsWithIgnoreCase(String s, String start) {
+        return s.regionMatches(true, 0, start, 0, start.length());
+    }
 }
