@@ -47,4 +47,9 @@ public class BungeeCommandSender extends AbstractCommandSender<CommandSender> {
         // Deprecated, but compatibility with older BungeeCord versions
         sender.sendMessages(messages);
     }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        return sender.hasPermission(permission);
+    }
 }

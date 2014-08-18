@@ -46,4 +46,9 @@ public class BukkitCommandSender extends AbstractCommandSender<CommandSender> {
     public void sendMessages(String... messages) {
         sender.sendMessage(messages);
     }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        return sender.hasPermission(permission);
+    }
 }

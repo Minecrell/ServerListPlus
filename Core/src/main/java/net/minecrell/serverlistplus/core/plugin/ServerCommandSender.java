@@ -30,4 +30,5 @@ public interface ServerCommandSender {
     String getName();
     void sendMessage(String message);
     void sendMessages(String... messages);
+    boolean hasPermission(String permission);
 }
