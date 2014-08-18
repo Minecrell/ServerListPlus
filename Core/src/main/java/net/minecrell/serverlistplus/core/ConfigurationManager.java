@@ -39,9 +39,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
-import java.util.logging.Level;
 
 import org.yaml.snakeyaml.error.YAMLException;
+
+import static net.minecrell.serverlistplus.core.logging.Logger.*;
 
 public class ConfigurationManager extends CoreManager {
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
@@ -78,10 +79,10 @@ public class ConfigurationManager extends CoreManager {
     }
 
     public void reload() throws ServerListPlusException {
-        this.getLogger().info("Reloading configuration...");
+        this.getLogger().log(INFO, "Reloading configuration...");
 
         Path configPath = this.getConfigPath();
-        this.getLogger().debug("Configuration location: " + configPath);
+        this.getLogger().log(DEBUG, "Configuration location: " + configPath);
 
         try {
             // Create new storage, will replace the other one when finished loading
@@ -97,25 +98,25 @@ public class ConfigurationManager extends CoreManager {
                             Object obj = itr.next();
                             // Add it to the storage
                             newStorage.setUnsafe(obj.getClass(), obj);
-                            this.getLogger().info("Loaded configuration: " + obj.getClass().getSimpleName());
+                            this.getLogger().log(INFO, "Loaded configuration: " + obj.getClass().getSimpleName());
                         } catch (YAMLException e) {
-                            this.getLogger().warning(e, "Unable to parse a part of the configuration. Make sure " +
-                                    "the YAML syntax is valid!");
+                            this.getLogger().log(WARN, e, "Unable to parse a part of the configuration. Make " +
+                                    "sure the YAML syntax is valid!");
                         }
                     }
                 }
             }
 
-            this.getLogger().log(Level.CONFIG, newStorage.count() + " configurations loaded.");
+            this.getLogger().log(REPORT, newStorage.count() + " configurations loaded.");
 
             // Add missing configurations from default values
             int generated = Helper.mergeMaps(newStorage.getMap(), defaults.getMap());
             this.storage = newStorage;
 
             if (generated > 0) {
-                this.getLogger().debugF("Using %d default configurations.", generated);
+                this.getLogger().log(DEBUG, "Using {} default configurations.", generated);
                 if (confExists)
-                    this.getLogger().warning(generated + " configurations could not be found in the " +
+                    this.getLogger().log(WARN, generated + " configurations could not be found in the " +
                             "configuration file. Your configuration might be outdated, " +
                             "or some of them contain invalid YAML syntax. If you want to regenerate the missing " +
                             "configuration parts type '/ServerListPlus save'. Please note that this will delete " +
@@ -128,13 +129,13 @@ public class ConfigurationManager extends CoreManager {
             } catch (ServerListPlusException ignored) {}
 
             core.getPlugin().configChanged(storage); // Call plugin handlers
-            this.getLogger().debug("Configuration successfully reloaded!");
+            this.getLogger().log(DEBUG, "Configuration successfully reloaded!");
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "Unable to parse the configuration. Make sure the YAML syntax is " +
                     "correct!");
         } catch (MalformedInputException e) {
-            throw this.getLogger().processF(e, "Your configuration contains invalid special characters. Please " +
-                    "save your configuration using %s instead.", IOUtil.CHARSET.displayName());
+            throw this.getLogger().process(e, "Your configuration contains invalid special characters. Please " +
+                    "save your configuration using {} instead.", IOUtil.CHARSET.displayName());
         } catch (IOException e) {
             throw this.getLogger().process(e, "Unable to access the configuration file. Make sure that it is " +
                     "accessible by the server.");
@@ -144,16 +145,16 @@ public class ConfigurationManager extends CoreManager {
     }
 
     public void save() throws ServerListPlusException {
-        this.getLogger().info("Saving configuration...");
+        this.getLogger().log(INFO, "Saving configuration...");
 
         Path configPath = this.getConfigPath();
-        this.getLogger().debug("Configuration location: " + configPath);
+        this.getLogger().log(DEBUG, "Configuration location: " + configPath);
 
         try {
             if (Files.exists(configPath)) {
                 // Create a backup if the configuration already exists!
                 Path backupPath = this.getPluginFolder().resolve(BACKUP_FILENAME);
-                this.getLogger().debug("Saving configuration backup to: " + backupPath);
+                this.getLogger().log(DEBUG, "Saving configuration backup to: " + backupPath);
 
                 Files.copy(configPath, backupPath, StandardCopyOption.REPLACE_EXISTING);
             } else {
@@ -171,7 +172,7 @@ public class ConfigurationManager extends CoreManager {
                     yaml.writeDocumented(writer, config);
             }
 
-            this.getLogger().debug("Configuration successfully saved!");
+            this.getLogger().log(DEBUG, "Configuration successfully saved!");
         } catch (YAMLException e) {
             throw this.getLogger().process(e, "An error occurred while generating the YAML configuration!");
         } catch (IOException e) {

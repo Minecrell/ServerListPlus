@@ -87,12 +87,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
-        try {
-            BukkitLogger.enableDebugLevels(this);
-        } catch (Throwable e) {
-            this.getLogger().warning("Unable to create log file: " + Helper.causedError(e));
-        }
-
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
         } catch (ServerListPlusException e) {

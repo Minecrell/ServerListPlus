@@ -21,26 +21,24 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.util;
+package net.minecrell.serverlistplus.core.logging;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.ServerListPlusException;
-import net.minecrell.serverlistplus.core.logging.Logger;
+import java.util.logging.Level;
 
-import com.google.common.base.Preconditions;
-
-public abstract class CoreManager {
-    protected final ServerListPlusCore core;
-
-    protected CoreManager(ServerListPlusCore core) {
-        this.core = Preconditions.checkNotNull(core, "core");
+public abstract class JavaLogger<E extends Throwable> extends WrappedLogger<E, java.util.logging.Logger> {
+    public JavaLogger(Class<? extends E> exceptionClass) {
+        super(exceptionClass);
     }
 
-    public ServerListPlusCore getCore() {
-        return core;
+    @Override
+    public Logger log(Level level, String message) {
+        getLogger().log(level, message);
+        return this;
     }
 
-    protected Logger<ServerListPlusException> getLogger() {
-        return core.getLogger();
+    @Override
+    public Logger log(Level level, Throwable thrown, String message) {
+        getLogger().log(level, message, thrown);
+        return this;
     }
 }

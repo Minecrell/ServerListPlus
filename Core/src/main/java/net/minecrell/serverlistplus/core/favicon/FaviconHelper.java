@@ -34,6 +34,9 @@ import java.io.InputStream;
 import java.net.URL;
 import javax.imageio.ImageIO;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+
 public final class FaviconHelper {
     private FaviconHelper() {}
 
@@ -72,10 +75,10 @@ public final class FaviconHelper {
             return load(core, source);
         } catch (IOException e) {
             core.getLogger()
-                    .warningF("Unable to load favicon from %s: %s -> %s",
-                            source.getLoader().toString(), source.getSource(), Helper.causedError(e))
-                    .debugF(e, "Unable to load favicon from %s: %s",
-                            source.getLoader().toString(), source.getSource());
+                    .log(WARN, "Unable to load favicon from {}: {} -> {}",
+                            source.getLoader(), source.getSource(), Helper.causedError(e))
+                    .log(DEBUG, e, "Unable to load favicon from {}: {}",
+                            source.getLoader(), source.getSource());
             return null;
         }
     }

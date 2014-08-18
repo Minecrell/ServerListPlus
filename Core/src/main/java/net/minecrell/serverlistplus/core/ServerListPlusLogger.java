@@ -23,167 +23,75 @@
 
 package net.minecrell.serverlistplus.core;
 
-import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.logging.JavaLogger;
+import net.minecrell.serverlistplus.core.logging.Logger;
+import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class ServerListPlusLogger {
+public class ServerListPlusLogger extends JavaLogger<ServerListPlusException> {
     private static final String LOG_PREFIX = "[Core] "; // Prefix used by core log messages
-
-    private static final Level DEFAULT_EXCEPTION_LEVEL = Level.SEVERE;
 
     private final ServerListPlusCore core;
 
     public ServerListPlusLogger(ServerListPlusCore core) {
+        super(ServerListPlusCoreException.class);
         this.core = core;
 
         try {
-            deleteOldFiles(core.getPlugin().getPluginFolder());
+            if (deleteOldFiles(core.getPlugin().getPluginFolder()))
+                this.log(WARN, "Unable to delete old log files.");
         } catch (Exception e) {
-            this.debug(e, "Unable to delete old log files.");
+            this.log(WARN, e, "Unable to delete old log files.");
         }
     }
 
-    private void deleteOldFiles(Path folder) throws IOException {
-        if (core.getPlugin().getServerType() != ServerType.BUNGEE || Files.notExists(folder)) return;
-        PathMatcher matcher = folder.getFileSystem().getPathMatcher("glob:ServerListPlus*.log*");
-        try (DirectoryStream<Path> files = Files.newDirectoryStream(folder)) {
-            for (Path path : files) {
-                Path fileName = path.getFileName();
-                if (matcher.matches(fileName)) {
-                    try {
-                        Files.delete(path);
-                        this.debug("Deleted old log file: " + fileName);
-                    } catch (IOException e) {
-                        this.debug(e, "Unable to delete old log file: " + fileName);
-                    }
-                }
-            }
-        }
-    }
-
-    private Logger getLogger() {
+    @Override
+    public java.util.logging.Logger getLogger() {
         return core.getPlugin().getLogger();
     }
 
-    public String formatMessage(String message, Object... args) {
-        return String.format(message, args);
+    private boolean deleteOldFiles(Path folder) throws IOException {
+        if (Files.notExists(folder)) return false;
+        boolean failed = false;
+
+        try (DirectoryStream<Path> files = Files.newDirectoryStream(folder, "ServerListPlus*.log*")) {
+            for (Path path : files) {
+                try {
+                    Files.delete(path);
+                    this.log(DEBUG, "Deleted old log file: " + path.getFileName());
+                } catch (IOException e) {
+                    this.log(DEBUG, "Unable to delete old log file " + path.getFileName() + ": "
+                            + Helper.causedError(e));
+                    failed = true;
+                }
+            }
+        }
+
+        return failed;
     }
 
-    public ServerListPlusLogger debug(String message) {
-        return this.log(Level.FINE, message);
+    @Override
+    public Logger log(Level level, String message) {
+        return super.log(level, LOG_PREFIX + message);
     }
 
-    public ServerListPlusLogger debug(Exception e, String message) {
-        return this.log(Level.FINE, e, message);
+    @Override
+    public Logger log(Level level, Throwable thrown, String message) {
+        return super.log(level, thrown, LOG_PREFIX + message);
     }
 
-    public ServerListPlusLogger debugF(String message, Object... args) {
-        return this.logF(Level.FINE, message, args);
+    @Override
+    protected ServerListPlusException createException(String message, Throwable thrown) {
+        return new ServerListPlusCoreException(message, thrown);
     }
 
-    public ServerListPlusLogger debugF(Exception e, String message, Object... args) {
-        return this.logF(Level.FINE, e, message, args);
-    }
-
-    public ServerListPlusLogger info(String message) {
-        return this.log(Level.INFO, message);
-    }
-
-    public ServerListPlusLogger info(Exception e, String message) {
-        return this.log(Level.INFO, e, message);
-    }
-
-    public ServerListPlusLogger infoF(String message, Object... args) {
-        return this.logF(Level.INFO, message, args);
-    }
-
-    public ServerListPlusLogger infoF(Exception e, String message, Object... args) {
-        return this.logF(Level.INFO, e, message, args);
-    }
-
-    public ServerListPlusLogger warning(String message) {
-        return this.log(Level.WARNING, message);
-    }
-
-    public ServerListPlusLogger warning(Exception e, String message) {
-        return this.log(Level.WARNING, e, message);
-    }
-
-    public ServerListPlusLogger warningF(String message, Object... args) {
-        return this.logF(Level.WARNING, message, args);
-    }
-
-    public ServerListPlusLogger warningF(Exception e, String message, Object... args) {
-        return this.logF(Level.WARNING, e, message, args);
-    }
-
-    public ServerListPlusLogger severe(String message) {
-        return this.log(Level.SEVERE, message);
-    }
-
-    public ServerListPlusLogger severe(Exception e, String message) {
-        return this.log(Level.SEVERE, e, message);
-    }
-
-    public ServerListPlusLogger severeF(String message, Object... args) {
-        return this.logF(Level.SEVERE, message, args);
-    }
-
-    public ServerListPlusLogger severeF(Exception e, String message, Object... args) {
-        return this.logF(Level.SEVERE, e, message, args);
-    }
-
-    public ServerListPlusLogger log(Level level, String message) {
-        this.getLogger().log(level, LOG_PREFIX + message); return this;
-    }
-
-    public ServerListPlusLogger logF(Level level, String message, Object... args) {
-        return this.log(level, this.formatMessage(message, args));
-    }
-
-    public ServerListPlusLogger log(Exception e, String message) {
-        return this.log(DEFAULT_EXCEPTION_LEVEL, e, message);
-    }
-
-    public ServerListPlusLogger logF(Exception e, String message, Object... args) {
-        return this.logF(DEFAULT_EXCEPTION_LEVEL, e, message, args);
-    }
-
-    public ServerListPlusLogger log(Level level, Exception e, String message) {
-        this.getLogger().log(level, LOG_PREFIX + message, e); return this;
-    }
-
-    public ServerListPlusLogger logF(Level level, Exception e, String message, Object... args) {
-        return this.log(level, e, this.formatMessage(message, args));
-    }
-
-    public ServerListPlusException process(Exception e, String message) {
-        return this.process(DEFAULT_EXCEPTION_LEVEL, e, message);
-    }
-
-    public ServerListPlusException processF(Exception e, String message, Object... args) {
-        return this.processF(DEFAULT_EXCEPTION_LEVEL, e, message, args);
-    }
-
-    public ServerListPlusException process(Level level, Exception e, String message) {
-        if (e != null && e.getClass() == CoreServerListPlusException.class) return (ServerListPlusException) e;
-        this.log(level, e, message);
-        return new CoreServerListPlusException(message, e);
-    }
-
-    public ServerListPlusException processF(Level level, Exception e, String message, Object... args) {
-        return this.process(level, e, this.formatMessage(message, args));
-    }
-
-    private static final class CoreServerListPlusException extends ServerListPlusException {
-        private CoreServerListPlusException(String message, Throwable cause) {
+    private static final class ServerListPlusCoreException extends ServerListPlusException {
+        private ServerListPlusCoreException(String message, Throwable cause) {
             super(message, cause);
         }
     }

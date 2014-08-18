@@ -31,6 +31,8 @@ import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.MissingProperty;
 import org.yaml.snakeyaml.introspector.Property;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+
 public class ConfigurationPropertyUtils extends FieldOrderPropertyUtils {
     private final ServerListPlusCore core;
 
@@ -43,7 +45,7 @@ public class ConfigurationPropertyUtils extends FieldOrderPropertyUtils {
     public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
         Property p = super.getProperty(type, name, bAccess);
         if (p instanceof MissingProperty) // Check if property was missing and notify user if necessary
-            core.getLogger().warningF("Unknown configuration property: %s @ %s", name, type.getSimpleName());
+            core.getLogger().log(WARN, "Unknown configuration property: {} @ {}", name, type.getSimpleName());
         return p;
     }
 }

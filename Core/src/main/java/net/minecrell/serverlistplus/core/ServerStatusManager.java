@@ -59,6 +59,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 import static net.minecrell.serverlistplus.core.util.Helper.nextEntry;
 import static net.minecrell.serverlistplus.core.util.Helper.nextNumber;
 
@@ -172,7 +173,7 @@ public class ServerStatusManager extends CoreManager {
         for (String folderPath : folders) {
             Path folder = core.getPlugin().getPluginFolder().resolve(folderPath);
             if (!Files.isDirectory(folder)) {
-                core.getLogger().warning("Invalid favicon folder in configuration: " + folder);
+                core.getLogger().log(WARN, "Invalid favicon folder in configuration: " + folder);
                 continue;
             }
 
@@ -189,14 +190,14 @@ public class ServerStatusManager extends CoreManager {
                                 }
                             });
                 } catch (IOException e) {
-                    core.getLogger().warning(e, "Unable to walk through the file tree of " + folder);
+                    core.getLogger().log(WARN, e, "Unable to walk through the file tree of " + folder);
                 }
             } else { // Only this one folder
                 try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, imageFilter)) {
                     for (Path file : dir) // File list
                         favicons.add(pluginFolder.relativize(file).toString());
                 } catch (IOException e) {
-                    core.getLogger().warning(e, "Unable to get directory listing of " + folder);
+                    core.getLogger().log(WARN, e, "Unable to get directory listing of " + folder);
                 }
 
             }
@@ -231,9 +232,9 @@ public class ServerStatusManager extends CoreManager {
                     playerHover = readMessages(conf.Players.Hover);
                     slots = readMessages(conf.Players.Slots);
                 } else if (conf.Players.Online != null || conf.Players.Max != null || conf.Players.Hover != null) {
-                    getLogger().warning("You have hidden the player count in your configuration but still have " +
-                            "the maximum online count / hover message configured. They will not work if the " +
-                            "player count is hidden.");
+                    getLogger().log(WARN, "You have hidden the player count in your configuration but still " +
+                            "have the maximum online count / hover message configured. They will not work if the" +
+                            " player count is hidden.");
                 }
             }
 

@@ -31,12 +31,14 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
 
 public class ProfileManager extends CoreManager {
     private static final String DEFAULT_PROFILE = "ServerListPlus";
@@ -57,7 +59,7 @@ public class ProfileManager extends CoreManager {
 
     public void reload() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
-        this.getLogger().debug("Reloading profiles from: " + profilePath);
+        this.getLogger().log(DEBUG, "Reloading profiles from: " + profilePath);
 
         try {
             if (Files.exists(profilePath)) {
@@ -69,12 +71,11 @@ public class ProfileManager extends CoreManager {
                 }
 
                 if (enabled)
-                    this.getLogger().log(Level.CONFIG, "ServerListPlus profile is enabled!");
+                    this.getLogger().log(REPORT, "ServerListPlus profile is enabled!");
                 else
-                    this.getLogger().log(Level.CONFIG, "ServerListPlus profile is disabled!");
+                    this.getLogger().log(REPORT, "ServerListPlus profile is disabled!");
             } else
-                this.getLogger().log(Level.CONFIG, "Profile configuration not found, " +
-                        "assuming the profile is disabled!");
+                this.getLogger().log(REPORT, "Profile configuration not found, assuming the profile is disabled!");
         } catch (JsonSyntaxException e) {
             throw this.getLogger().process(e, "Unable to parse profile configuration, have you changed it?");
         } catch (IOException | JsonIOException e) {
@@ -86,7 +87,7 @@ public class ProfileManager extends CoreManager {
 
     public void save() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
-        this.getLogger().debug("Saving profiles to: " + profilePath);
+        this.getLogger().log(DEBUG, "Saving profiles to: " + profilePath);
 
         try {
             if (Files.notExists(profilePath)) {
@@ -103,7 +104,7 @@ public class ProfileManager extends CoreManager {
                 JSON.toJson(obj, writer);
             }
 
-            this.getLogger().debug("Successfully saved profiles to the storage!");
+            this.getLogger().log(DEBUG, "Successfully saved profiles to the storage!");
         } catch (IOException | JsonIOException e) {
             throw this.getLogger().process(e, "Unable to access profile configuration.");
         } catch (Exception e) {
