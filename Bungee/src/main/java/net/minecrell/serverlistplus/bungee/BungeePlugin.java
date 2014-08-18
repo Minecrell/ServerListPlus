@@ -90,7 +90,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     // Commands
     public final class ServerListPlusCommand extends Command implements TabExecutor {
         private ServerListPlusCommand() {
-            super("serverlistplus", "serverlistplus.admin", "serverlist+", "serverlist", "slp", "sl+", "s++",
+            super("serverlistplus", null, "serverlist+", "serverlist", "slp", "sl+", "s++",
                     "serverping+", "serverping", "spp", "slus");
         }
 

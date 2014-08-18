@@ -25,6 +25,7 @@ package net.minecrell.serverlistplus.core.util;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -155,5 +156,9 @@ public final class Helper {
 
     public static boolean startsWithIgnoreCase(String s, String start) {
         return s.regionMatches(true, 0, start, 0, start.length());
+    }
+
+    public static String toLowerCase(String s) {
+        return s.toLowerCase(Locale.ENGLISH);
     }
 }

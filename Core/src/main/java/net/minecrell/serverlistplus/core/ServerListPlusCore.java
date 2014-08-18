@@ -37,13 +37,15 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import static com.google.common.base.StandardSystemProperty.*;
@@ -193,69 +195,126 @@ public class ServerListPlusCore {
         return this.playerTracker != null ? playerTracker.getIfPresent(client) : null;
     }
 
+    private static final String COMMAND_PREFIX_BASE = Format.GOLD + "[ServerListPlus] ";
+    private static final String COMMAND_PREFIX = COMMAND_PREFIX_BASE + Format.GRAY;
+    private static final String COMMAND_PREFIX_SUCCESS = COMMAND_PREFIX_BASE + Format.GREEN;
+    private static final String COMMAND_PREFIX_ERROR = COMMAND_PREFIX_BASE + Format.RED;
+
+    private static final String ADMIN_PERMISSION = "serverlistplus.admin";
+
+    private static final String HELP_HEADER = Format.GOLD + "---- [ServerListPlus Help] ----";
+
     private static final Set<String> SUB_COMMANDS = ImmutableSet.of("reload", "rl", "save", "enable", "disable",
-            "clean", "info");
+            "clean", "info", "help");
+
+    private static final Map<String, Function<ServerListPlusCore, Cache<?, ?>>> CACHE_TYPES = ImmutableMap.of(
+            "players", new Function<ServerListPlusCore, Cache<?, ?>>() {
+                @Override
+                public Cache<?, ?> apply(ServerListPlusCore input) {
+                    return input.playerTracker;
+                }
+            }, "favicons", new Function<ServerListPlusCore, Cache<?, ?>>() {
+                @Override
+                public Cache<?, ?> apply(ServerListPlusCore input) {
+                    return input.getPlugin().getFaviconCache();
+                }
+            });
 
     public void executeCommand(ServerCommandSender sender, String cmd, String[] args) {
-        String sub = (args.length > 0) ? args[0] : null;
-        if (sub != null) {
-            if (sub.equalsIgnoreCase("reload")  || sub.equalsIgnoreCase("rl")) {
+        boolean admin = sender.hasPermission(ADMIN_PERMISSION);
+
+        if (args.length > 0) {
+            String sub = Helper.toLowerCase(args[0]);
+
+            if (!SUB_COMMANDS.contains(sub)) {
+                if (admin)
+                    sender.sendMessage(COMMAND_PREFIX + "Unknown command. Type " + Format.DARK_GRAY
+                            + "/slp help" + Format.GRAY + " for a list of available commands.");
+                else
+                    sender.sendMessage(COMMAND_PREFIX + "Unknown command.");
+                return;
+            }
+
+            if (!admin)
+                sender.sendMessage(COMMAND_PREFIX_ERROR + "You do not have permission for this command.");
+
+            else if (sub.equals("reload") || sub.equals("rl")) {
                 this.getLogger().log(INFO, "Reloading configuration at request of {}!", sender);
-                sender.sendMessage(Format.GREEN + "Reloading configuration...");
+                sender.sendMessage(COMMAND_PREFIX + "Reloading configuration...");
 
                 try { // Reload the configuration
                     this.reload();
-                    sender.sendMessage(Format.GREEN + "Configuration successfully reloaded!");
+                    sender.sendMessage(COMMAND_PREFIX_SUCCESS + "Configuration successfully reloaded!");
                 } catch (ServerListPlusException e) {
-                    sender.sendMessage(Format.RED + "An internal error occurred while reloading the " +
+                    sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while reloading the " +
                             "configuration.");
                 }
-
-                return;
-            } else if (sub.equalsIgnoreCase("save")) {
+            } else if (sub.equals("save")) {
                 this.getLogger().log(INFO, "Saving configuration at request of {}!", sender);
-                sender.sendMessage(Format.GREEN + "Saving configuration...");
+                sender.sendMessage(COMMAND_PREFIX + "Saving configuration...");
 
                 try { // Save the configuration
                     configManager.save();
-                    sender.sendMessage(Format.GREEN + "Configuration successfully saved.");
+                    sender.sendMessage(COMMAND_PREFIX_SUCCESS + "Configuration successfully saved.");
                 } catch (ServerListPlusException e) {
-                    sender.sendMessage(Format.RED + "An internal error occurred while saving the configuration.");
+                    sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while saving the " +
+                            "configuration.");
                 }
-
-                return;
-            } else if (sub.equalsIgnoreCase("enable") || sub.equalsIgnoreCase("disable")) {
+            } else if (sub.equals("enable") || sub.equals("disable")) {
                 boolean enable = sub.equalsIgnoreCase("enable");
                 String tmp = enable ? "Enabling" : "Disabling";
                 this.getLogger().log(INFO, "{} ServerListPlus at request of {}...", tmp, sender);
-                sender.sendMessage(Format.GREEN + tmp + " ServerListPlus...");
+                sender.sendMessage(COMMAND_PREFIX + tmp + " ServerListPlus...");
 
                 try { // Enable / disable the ServerListPlus profile
                     profileManager.setEnabled(enable);
-                    sender.sendMessage(Format.GREEN + "ServerListPlus has been successfully " + (enable ?
+                    sender.sendMessage(COMMAND_PREFIX_SUCCESS + "ServerListPlus has been successfully " + (enable ?
                             "enabled" : "disabled") + "!");
                 } catch (ServerListPlusException e) {
-                    sender.sendMessage(Format.RED + "An internal error occurred while " + (enable ? "enabling" :
-                            "disabling") + " ServerListPlus.");
+                    sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while " +
+                            (enable ? "enabling" : "disabling") + " ServerListPlus.");
                 }
+            } else if (sub.equals("clean")) {
+                boolean found = false;
 
-                return;
-            } else if (sub.equalsIgnoreCase("clean") && args.length > 1) {
-                String cacheName = args[1].toLowerCase(Locale.ENGLISH);
-                Cache<?, ?> cache =  cacheName.equals("players") ? playerTracker
-                        : (cacheName.equals("favicons") ? plugin.getFaviconCache() : null);
-                if (cache != null) {
-                    this.getLogger().log(INFO, "Cleaning {} cache at request of {}...", cacheName, sender);
-                    cache.invalidateAll();
-                    cache.cleanUp();
-                    this.getLogger().log(DEBUG, "Done.");
+                if (args.length > 1) {
+                    String cacheName = Helper.toLowerCase(args[1]);
+                    Function<ServerListPlusCore, Cache<?, ?>> cacheType = CACHE_TYPES.get(cacheName);
+                    if (cacheType != null) {
+                        Cache<?, ?> cache = cacheType.apply(this);
+                        if (cache != null) {
+                            this.getLogger().log(INFO, "Cleaning {} cache at request of {}...", cacheName, sender);
+                            cache.invalidateAll();
+                            cache.cleanUp();
+                            this.getLogger().log(DEBUG, "Done.");
 
-                    sender.sendMessage(Format.GREEN + "Successfully cleaned " + cacheName + " cache.");
-                    return;
-                }
+                            sender.sendMessage(COMMAND_PREFIX_SUCCESS +
+                                    "Successfully cleaned up " + cacheName + " cache.");
+                        } else
+                            sender.sendMessage(COMMAND_PREFIX + "The " + cacheName + " cache is currently " +
+                                    "disabled. There is nothing to clean up.");
+                    } else
+                        sender.sendMessage(COMMAND_PREFIX_ERROR + "Unknown cache type. Type " + Format.DARK_RED +
+                                "/slp help" + Format.RED + " for more information.");
+                } else
+                    sender.sendMessage(COMMAND_PREFIX_ERROR + "You need to specify the cache type. Type " +
+                            Format.DARK_RED + "/slp help" + Format.RED + " for more information.");
+            } else if (sub.equals("help")) {
+                sender.sendMessages(
+                        HELP_HEADER,
+                        buildCommandHelp("Display an information page about the plugin and list all available " +
+                                "commands."),
+                        buildCommandHelp("reload", "Reload the plugin configuration."),
+                        buildCommandHelp("save", "Save the plugin configuration."),
+                        buildCommandHelp("enable", "Enable the plugin and start modifying the status ping."),
+                        buildCommandHelp("disable", "Disable the plugin and stop modifying the status ping."),
+                        buildCommandHelp("clean", "<favicons/players>", "Delete all entries from the specified " +
+                                "cache.")
+                );
             }
-        }
 
+            return;
+        }
         // Send the sender some information about the plugin
         sender.sendMessage(Format.GOLD + this.getDisplayName());
         if (info.getDescription() != null)
@@ -264,23 +323,17 @@ public class ServerListPlusCore {
             sender.sendMessage(Format.GOLD + "Author: " + Format.GRAY + info.getAuthor());
         if (info.getWebsite() != null)
             sender.sendMessage(Format.GOLD + "Website: " + Format.GRAY + info.getWebsite());
-        if (info.getWiki() != null)
-            sender.sendMessage(Format.GOLD + "Wiki: " + Format.GRAY + info.getWiki());
 
-        // Command help
-        sender.sendMessages(
-                Format.GOLD + "Commands:",
-                buildCommandHelp("Display an information page about the plugin and list all available commands."),
-                buildCommandHelp("reload", "Reload the plugin configuration."),
-                buildCommandHelp("save", "Save the plugin configuration."),
-                buildCommandHelp("enable", "Enable the plugin and start modifying the status ping."),
-                buildCommandHelp("disable", "Disable the plugin and stop modifying the status ping."),
-                buildCommandHelp("clean", "<favicons/players>", "Delete all entries from the specified cache.")
-        );
+        if (admin) {
+            if (info.getWiki() != null)
+                sender.sendMessage(Format.GOLD + "Wiki: " + Format.GRAY + info.getWiki());
+            sender.sendMessage(Format.GREEN + "Type " + Format.DARK_GREEN + "/slp help" + Format.GREEN + " for a" +
+                    " list of available commands.");
+        }
     }
 
     public List<String> tabComplete(ServerCommandSender sender, String cmd, String[] args) {
-        if (args.length > 1) return Collections.emptyList();
+        if (!sender.hasPermission(ADMIN_PERMISSION) || args.length > 1) return Collections.emptyList();
         String sub = args.length > 0 ? args[0] : "";
         List<String> result = new ArrayList<>();
         for (String subCmd : SUB_COMMANDS)
@@ -298,7 +351,7 @@ public class ServerListPlusCore {
 
     private static String buildCommandHelp(String cmd, String usage, String description) {
         StringBuilder help = new StringBuilder();
-        help.append(Format.RED).append("/serverlistplus");
+        help.append(Format.RED).append("/slp");
         if (cmd != null) help.append(' ').append(cmd);
         if (usage != null) help.append(' ').append(Format.GOLD).append(usage);
         return help.append(Format.WHITE).append(" - ").append(Format.GRAY).append(description).toString();

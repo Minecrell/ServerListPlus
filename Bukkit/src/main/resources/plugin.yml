@@ -11,7 +11,7 @@ depend: [ProtocolLib]
 
 permissions:
   serverlistplus.admin:
-    description: Allows you to access the ServerListPlus commands.
+    description: Allows you to access the ServerListPlus administration commands.
     default: op
 commands:
   serverlistplus:
@@ -26,4 +26,3 @@ commands:
       - 'serverping'
       - 'spp'
       - 'slus'
-    permission: serverlistplus.admin
