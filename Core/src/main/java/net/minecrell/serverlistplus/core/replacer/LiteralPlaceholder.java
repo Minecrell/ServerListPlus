@@ -23,6 +23,26 @@
 
 package net.minecrell.serverlistplus.core.replacer;
 
-public interface StaticPlaceholder extends StaticReplacer {
-    String replace(String s, Object replacement);
+import net.minecrell.serverlistplus.core.util.Helper;
+
+public abstract class LiteralPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
+    private final String literal;
+
+    public LiteralPlaceholder(String literal) {
+        this.literal = literal;
+    }
+
+    public String getLiteral() {
+        return literal;
+    }
+
+    @Override
+    public boolean find(String s) {
+        return s.contains(literal);
+    }
+
+    @Override
+    public String replace(String s, Object replacement) {
+        return Helper.replace(literal, s, replacement);
+    }
 }

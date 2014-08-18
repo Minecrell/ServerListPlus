@@ -23,35 +23,12 @@
 
 package net.minecrell.serverlistplus.core.replacer;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.minecrell.serverlistplus.core.ServerStatusManager;
 
-import com.google.common.base.Preconditions;
-
-public abstract class AbstractPlaceholder implements DynamicPlaceholder {
-    protected final Pattern pattern;
-
-    public AbstractPlaceholder(Pattern pattern) {
-        this.pattern = Preconditions.checkNotNull(pattern, "pattern");
-    }
+public abstract class AbstractDynamicReplacer implements DynamicReplacer {
 
     @Override
-    public Pattern pattern() {
-        return pattern;
-    }
-
-    @Override
-    public Matcher matcher(String s) {
-        return pattern.matcher(s);
-    }
-
-    @Override
-    public boolean find(String s) {
-        return this.matcher(s).find();
-    }
-
-    @Override
-    public String replace(String s, String replacement) {
-        return this.matcher(s).replaceAll(replacement);
+    public String replace(ServerStatusManager.Response response, String s) {
+        return replace(response.getCore(), s);
     }
 }

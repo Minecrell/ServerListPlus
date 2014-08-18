@@ -24,9 +24,8 @@
 package net.minecrell.serverlistplus.bungee.replacer;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
-import net.minecrell.serverlistplus.core.replacer.AbstractPlaceholder;
+import net.minecrell.serverlistplus.core.replacer.PatternPlaceholder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,17 +33,12 @@ import java.util.regex.Pattern;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
-public class ServerOnlinePlaceholder extends AbstractPlaceholder {
+public class ServerOnlinePlaceholder extends PatternPlaceholder {
     private final ProxyServer proxy;
 
     public ServerOnlinePlaceholder(ProxyServer proxy) {
         super(Pattern.compile("%online@(.+)%"));
         this.proxy = proxy;
-    }
-
-    @Override
-    public String replace(ServerStatusManager.Response response, String s) {
-        return this.replace(response.getCore(), s);
     }
 
     @Override

@@ -23,6 +23,33 @@
 
 package net.minecrell.serverlistplus.core.replacer;
 
-public interface StaticPlaceholder extends StaticReplacer {
-    String replace(String s, Object replacement);
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.google.common.base.Preconditions;
+
+public abstract class PatternPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
+    protected final Pattern pattern;
+
+    public PatternPlaceholder(Pattern pattern) {
+        this.pattern = Preconditions.checkNotNull(pattern, "pattern");
+    }
+
+    public Pattern getPattern() {
+        return pattern;
+    }
+
+    public Matcher matcher(String s) {
+        return pattern.matcher(s);
+    }
+
+    @Override
+    public boolean find(String s) {
+        return this.matcher(s).find();
+    }
+
+    @Override
+    public String replace(String s, Object replacement) {
+        return this.matcher(s).replaceAll(replacement.toString());
+    }
 }

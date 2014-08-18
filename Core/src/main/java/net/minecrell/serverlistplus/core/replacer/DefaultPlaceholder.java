@@ -26,18 +26,14 @@ package net.minecrell.serverlistplus.core.replacer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.google.common.base.Preconditions;
+import net.minecrell.serverlistplus.core.util.Helper;
 
 public enum DefaultPlaceholder implements DynamicPlaceholder {
     PLAYER ("%player%") {
         @Override
         public String replace(ServerStatusManager.Response response, String s) {
             String playerName = response.getPlayerName();
-            return playerName != null ? this.replace(s, playerName) : this.replace(response.getCore(), s);
+            return playerName != null ? this.replace(s, playerName) : super.replace(response, s);
         }
 
         @Override
@@ -50,7 +46,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(ServerStatusManager.Response response, String s) {
             Integer online = response.fetchPlayersOnline();
-            return online != null ? this.replace(s, online.toString()) : this.replace(response.getCore(), s);
+            return online != null ? this.replace(s, online.toString()) : super.replace(response, s);
         }
 
         @Override
@@ -63,7 +59,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(ServerStatusManager.Response response, String s) {
             Integer max = response.fetchMaxPlayers();
-            return max != null ? this.replace(s, max.toString()) : this.replace(response.getCore(), s);
+            return max != null ? this.replace(s, max.toString()) : super.replace(response, s);
         }
 
         @Override
@@ -75,43 +71,31 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
     @Deprecated // TODO: Rename to %random_player% but keep configuration compatibility
     RANDOM_PLAYER ("%randomplayer%") {
         @Override
-        public String replace(ServerStatusManager.Response response, String s) {
-            return this.replace(response.getCore(), s);
-        }
-
-        @Override
         public String replace(ServerListPlusCore core, String s) {
             return this.replace(s, core.getPlugin().getRandomPlayer());
         }
     };
 
-    protected final Pattern pattern;
+    protected final String literal;
 
-    private DefaultPlaceholder(String pattern) {
-        this(Pattern.compile(Preconditions.checkNotNull(pattern, "pattern"), Pattern.LITERAL));
-    }
-
-    private DefaultPlaceholder(Pattern pattern) {
-        this.pattern = Preconditions.checkNotNull(pattern, "pattern");
-    }
-
-    @Override
-    public Pattern pattern() {
-        return pattern;
-    }
-
-    @Override
-    public Matcher matcher(String s) {
-        return this.pattern().matcher(s);
+    private DefaultPlaceholder(String literal) {
+        this.literal = literal;
     }
 
     @Override
     public boolean find(String s) {
-        return this.matcher(s).find();
+        return s.contains(literal);
     }
 
     @Override
-    public String replace(String s, String replacement) {
-        return this.matcher(s).replaceAll(replacement);
+    public String replace(ServerStatusManager.Response response, String s) {
+        return replace(response.getCore(), s);
     }
+
+    @Override
+    public String replace(String s, Object replacement) {
+        return Helper.replace(literal, s, replacement);
+    }
+
+
 }

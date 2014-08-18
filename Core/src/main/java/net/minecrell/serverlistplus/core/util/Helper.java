@@ -100,4 +100,54 @@ public final class Helper {
         Throwable cause = Throwables.getRootCause(e);
         return cause.getClass().getName() + ": " + cause.getMessage();
     }
+
+    public static String replace(String replace, String s, Object replacement) {
+        if (replacement == null) return s;
+        final StringBuilder result = new StringBuilder(s.length());
+
+        int i = s.indexOf(replace);
+        if (i == -1) return s;
+
+        int pos = 0;
+        final String replacementString = replacement.toString();
+        final int stringLength = s.length(), replaceLength = replace.length();
+        do {
+            result.append(s, pos, i);
+            pos = i + replaceLength;
+            result.append(replacementString);
+
+            if (pos == stringLength) break;
+            i = s.indexOf(replace, pos);
+        } while (i != -1);
+
+        if (pos < stringLength)
+            result.append(s, pos, stringLength);
+
+        return result.toString();
+    }
+
+    public static String replace(String replace, String s, Object[] replacements) {
+        if (nullOrEmpty(replacements)) return s;
+        final StringBuilder result = new StringBuilder(s.length());
+
+        int i = s.indexOf(replace);
+        if (i == -1) return s;
+
+        int pos = 0;
+        final int stringLength = s.length(), replaceLength = replace.length();
+        for (Object replacement : replacements) {
+            result.append(s, pos, i);
+            pos = i + replaceLength;
+            result.append(replacement);
+
+            if (pos == stringLength) break;
+            i = s.indexOf(replace, pos);
+            if (i == -1) break;
+        }
+
+        if (pos < stringLength)
+            result.append(s, pos, stringLength);
+
+        return result.toString();
+    }
 }
