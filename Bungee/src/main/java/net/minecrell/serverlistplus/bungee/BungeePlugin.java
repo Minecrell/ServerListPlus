@@ -99,7 +99,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             core.executeCommand(new BungeeCommandSender(sender), this.getName(), args);
         }
 
-
         @Override
         public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
             return core.tabComplete(new BungeeCommandSender(sender), this.getName(), args);
