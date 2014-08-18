@@ -103,14 +103,15 @@ public final class Helper {
 
     public static String replace(String replace, String s, Object replacement) {
         if (replacement == null) return s;
-        final StringBuilder result = new StringBuilder(s.length());
+        final int stringLength = s.length();
+        final StringBuilder result = new StringBuilder(stringLength);
 
         int i = s.indexOf(replace);
         if (i == -1) return s;
 
         int pos = 0;
         final String replacementString = replacement.toString();
-        final int stringLength = s.length(), replaceLength = replace.length();
+        final int replaceLength = replace.length();
         do {
             result.append(s, pos, i);
             pos = i + replaceLength;
@@ -128,13 +129,14 @@ public final class Helper {
 
     public static String replace(String replace, String s, Object[] replacements) {
         if (nullOrEmpty(replacements)) return s;
-        final StringBuilder result = new StringBuilder(s.length());
+        final int stringLength = s.length();
+        final StringBuilder result = new StringBuilder(stringLength);
 
         int i = s.indexOf(replace);
         if (i == -1) return s;
 
         int pos = 0;
-        final int stringLength = s.length(), replaceLength = replace.length();
+        final int replaceLength = replace.length();
         for (Object replacement : replacements) {
             result.append(s, pos, i);
             pos = i + replaceLength;
