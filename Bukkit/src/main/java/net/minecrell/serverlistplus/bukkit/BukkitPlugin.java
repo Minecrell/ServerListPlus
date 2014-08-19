@@ -29,6 +29,7 @@ import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.logging.Logger;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.util.Helper;
@@ -64,6 +65,10 @@ import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import org.mcstats.MetricsLite;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
+import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private final boolean spigot;
 
@@ -90,12 +95,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     public void onEnable() {
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
-            getLogger().info("Successfully loaded!");
+            getLogger().log(INFO, "Successfully loaded!");
         } catch (ServerListPlusException e) {
-            getLogger().info("Please fix the error before restarting the server!");
+            getLogger().log(INFO, "Please fix the error before restarting the server!");
             disablePlugin(); return; // Disable plugin to show error in /plugins
         } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "An internal error occurred while loading the core!", e);
+            getLogger().log(ERROR, "An internal error occurred while loading the core!", e);
             disablePlugin(); return; // Disable plugin to show error in /plugins
         }
 
@@ -272,12 +277,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (loginListener == null) {
                 registerListener(this.loginListener = spigot || this.getServer().getOnlineMode()
                         ? new LoginListener() : new OfflineModeLoginListener());
-                getLogger().fine("Registered player tracking listener.");
+                getLogger().log(DEBUG, "Registered player tracking listener.");
             }
         } else if (loginListener != null) {
             unregisterListener(loginListener);
             this.loginListener = null;
-            getLogger().fine("Unregistered player tracking listener.");
+            getLogger().log(DEBUG, "Unregistered player tracking listener.");
         }
 
         // Plugin statistics
@@ -288,14 +293,14 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                     metrics.enable();
                     metrics.start();
                 } catch (Throwable e) {
-                    getLogger().log(Level.FINE, "Failed to enable plugin statistics: " + Helper.causedError(e));
+                    getLogger().log(DEBUG, "Failed to enable plugin statistics: " + Helper.causedError(e));
                 }
         } else if (metrics != null)
             try {
                 metrics.disable();
                 this.metrics = null;
             } catch (Throwable e) {
-                getLogger().info("Failed to disable plugin statistics: " + e.getMessage());
+                getLogger().log(DEBUG, "Failed to disable plugin statistics: " + Helper.causedError(e));
             }
     }
 
@@ -306,12 +311,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (packetListener == null) {
                 ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener =
                         new StatusPacketListener());
-                getLogger().fine("Registered status packet listener.");
+                getLogger().log(DEBUG, "Registered status packet listener.");
             }
         } else if (packetListener != null) {
             ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
             this.packetListener = null;
-            getLogger().fine("Unregistered status packet listener.");
+            getLogger().log(DEBUG, "Unregistered status packet listener.");
         }
     }
 }

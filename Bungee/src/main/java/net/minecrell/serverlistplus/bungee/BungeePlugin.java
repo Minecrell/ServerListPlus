@@ -31,6 +31,7 @@ import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.logging.Logger;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
@@ -59,6 +60,10 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
+import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
     private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
@@ -72,11 +77,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     public void onEnable() {
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
-            getLogger().info("Successfully loaded!");
+            getLogger().log(INFO, "Successfully loaded!");
         } catch (ServerListPlusException e) {
-            getLogger().info("Please fix the error before restarting the server!"); return;
+            getLogger().log(INFO, "Please fix the error before restarting the server!"); return;
         } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "An internal error occurred while loading the core.", e);
+            getLogger().log(ERROR, "An internal error occurred while loading the core.", e);
             return;
         }
 
@@ -245,12 +250,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
                 registerListener(this.loginListener = new LoginListener());
-                getLogger().fine("Registered proxy player tracking listener.");
+                getLogger().log(DEBUG, "Registered proxy player tracking listener.");
             }
         } else if (loginListener != null) {
             unregisterListener(loginListener);
             this.loginListener = null;
-            getLogger().fine("Unregistered proxy player tracking listener.");
+            getLogger().log(DEBUG, "Unregistered proxy player tracking listener.");
         }
 
         // Plugin statistics
@@ -260,14 +265,14 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     this.metrics = new BungeeMetricsLite(this);
                     metrics.start();
                 } catch (Throwable e) {
-                    getLogger().log(Level.FINE, "Failed to enable plugin statistics: " + Helper.causedError(e));
+                    getLogger().log(DEBUG, "Failed to enable plugin statistics: " + Helper.causedError(e));
                 }
         } else if (metrics != null)
             try {
                 metrics.stop();
                 this.metrics = null;
             } catch (Throwable e) {
-                getLogger().info("Failed to disable plugin statistics: " + Helper.causedError(e));
+                getLogger().log(DEBUG, "Failed to disable plugin statistics: " + Helper.causedError(e));
             }
     }
 
@@ -277,12 +282,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (status.hasChanges()) {
             if (pingListener == null) {
                 registerListener(this.pingListener = new PingListener());
-                getLogger().fine("Registered proxy ping listener.");
+                getLogger().log(DEBUG, "Registered proxy ping listener.");
             }
         } else if (pingListener != null) {
             unregisterListener(pingListener);
             this.pingListener = null;
-            getLogger().fine("Unregistered proxy ping listener.");
+            getLogger().log(DEBUG, "Unregistered proxy ping listener.");
         }
     }
 }
