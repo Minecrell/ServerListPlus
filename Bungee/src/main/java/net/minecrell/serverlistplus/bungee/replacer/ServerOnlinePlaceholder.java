@@ -43,7 +43,7 @@ public class ServerOnlinePlaceholder extends PatternPlaceholder {
 
     @Override
     public String replace(ServerListPlusCore core, String s) {
-        Matcher matcher = this.matcher(s);
+        Matcher matcher = matcher(s);
         if (!matcher.find()) return s;
 
         StringBuffer result = new StringBuffer(); String unknown = null;

@@ -70,22 +70,18 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
-        // Set BungeeCord logger level to ALL so it logs FINE messages when pull requests wasn't merged yet
-        if (this.getLogger().getParent() == null || this.getLogger().getParent().getLevel() != Level.ALL)
-            this.getLogger().setLevel(Level.ALL);
-
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
             getLogger().info("Successfully loaded!");
         } catch (ServerListPlusException e) {
-            this.getLogger().info("Please fix the error before restarting the server!"); return;
+            getLogger().info("Please fix the error before restarting the server!"); return;
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "An internal error occurred while loading the core.", e);
+            getLogger().log(Level.SEVERE, "An internal error occurred while loading the core.", e);
             return;
         }
 
         // Register commands
-        this.getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
+        getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
     }
 
     // Commands
@@ -97,12 +93,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         @Override
         public void execute(CommandSender sender, String[] args) {
-            core.executeCommand(new BungeeCommandSender(sender), this.getName(), args);
+            core.executeCommand(new BungeeCommandSender(sender), getName(), args);
         }
 
         @Override
         public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-            return core.tabComplete(new BungeeCommandSender(sender), this.getName(), args);
+            return core.tabComplete(new BungeeCommandSender(sender), getName(), args);
         }
     }
 
@@ -191,16 +187,16 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public String getServerImplementation() {
-        return this.getProxy().getVersion() + " (MC: " + this.getProxy().getGameVersion() + ')';
+        return getProxy().getVersion() + " (MC: " + getProxy().getGameVersion() + ')';
     }
 
     @Override
     public String getRandomPlayer() {
-        int tmp = this.getProxy().getOnlineCount();
+        int tmp = getProxy().getOnlineCount();
         if (tmp == 0) return null;
-        if (tmp == 1) return this.getProxy().getPlayers().iterator().next().getName();
+        if (tmp == 1) return getProxy().getPlayers().iterator().next().getName();
         // TODO: Make this complete faster
-        Collection<ProxiedPlayer> players = this.getProxy().getPlayers();
+        Collection<ProxiedPlayer> players = getProxy().getPlayers();
         int i = 0; tmp = Helper.random().nextInt(players.size());
         for (ProxiedPlayer player : players)
             if (i++ == tmp) return player.getName();
@@ -220,7 +216,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void initialize(ServerListPlusCore core) {
         // Register the BungeeCord replacers
-        ReplacementManager.getDynamic().add(new ServerOnlinePlaceholder(this.getProxy()));
+        ReplacementManager.getDynamic().add(new ServerOnlinePlaceholder(getProxy()));
     }
 
     @Override
@@ -248,13 +244,13 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
-                this.registerListener(this.loginListener = new LoginListener());
-                this.getLogger().fine("Registered proxy player tracking listener.");
+                registerListener(this.loginListener = new LoginListener());
+                getLogger().fine("Registered proxy player tracking listener.");
             }
         } else if (loginListener != null) {
-            this.unregisterListener(loginListener);
+            unregisterListener(loginListener);
             this.loginListener = null;
-            this.getLogger().fine("Unregistered proxy player tracking listener.");
+            getLogger().fine("Unregistered proxy player tracking listener.");
         }
 
         // Plugin statistics
@@ -264,15 +260,14 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     this.metrics = new BungeeMetricsLite(this);
                     metrics.start();
                 } catch (Throwable e) {
-                    this.getLogger().log(Level.FINE, "Failed to enable plugin statistics: " +
-                            Helper.causedError(e));
+                    getLogger().log(Level.FINE, "Failed to enable plugin statistics: " + Helper.causedError(e));
                 }
         } else if (metrics != null)
             try {
                 metrics.stop();
                 this.metrics = null;
             } catch (Throwable e) {
-                this.getLogger().info("Failed to disable plugin statistics: " + e.getMessage());
+                getLogger().info("Failed to disable plugin statistics: " + Helper.causedError(e));
             }
     }
 
@@ -281,13 +276,13 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         // Status listener
         if (status.hasChanges()) {
             if (pingListener == null) {
-                this.registerListener(this.pingListener = new PingListener());
-                this.getLogger().fine("Registered proxy ping listener.");
+                registerListener(this.pingListener = new PingListener());
+                getLogger().fine("Registered proxy ping listener.");
             }
         } else if (pingListener != null) {
-            this.unregisterListener(pingListener);
+            unregisterListener(pingListener);
             this.pingListener = null;
-            this.getLogger().fine("Unregistered proxy ping listener.");
+            getLogger().fine("Unregistered proxy ping listener.");
         }
     }
 }

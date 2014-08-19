@@ -31,23 +31,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class BukkitPluginBase extends JavaPlugin {
     public String getVersion() {
-        return this.getDescription().getVersion();
+        return getDescription().getVersion();
     }
 
     public String getDisplayName() {
-        return this.getDescription().getFullName();
+        return getDescription().getFullName();
     }
 
     public Path getPluginFolder() {
-        return this.getDataFolder().toPath();
+        return getDataFolder().toPath();
     }
 
     protected void disablePlugin() {
-        this.getServer().getPluginManager().disablePlugin(this);
+        getServer().getPluginManager().disablePlugin(this);
     }
 
     protected void registerListener(Listener listener) {
-        this.getServer().getPluginManager().registerEvents(listener, this);
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 
     protected void unregisterListener(Listener listener) {

@@ -45,11 +45,11 @@ public abstract class PatternPlaceholder extends AbstractDynamicReplacer impleme
 
     @Override
     public boolean find(String s) {
-        return this.matcher(s).find();
+        return matcher(s).find();
     }
 
     @Override
     public String replace(String s, Object replacement) {
-        return this.matcher(s).replaceAll(replacement.toString());
+        return matcher(s).replaceAll(replacement.toString());
     }
 }

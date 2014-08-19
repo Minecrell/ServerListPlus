@@ -173,7 +173,7 @@ public class ServerStatusManager extends CoreManager {
         for (String folderPath : folders) {
             Path folder = core.getPlugin().getPluginFolder().resolve(folderPath);
             if (!Files.isDirectory(folder)) {
-                core.getLogger().log(WARN, "Invalid favicon folder in configuration: " + folder);
+                getLogger().log(WARN, "Invalid favicon folder in configuration: " + folder);
                 continue;
             }
 
@@ -190,14 +190,14 @@ public class ServerStatusManager extends CoreManager {
                                 }
                             });
                 } catch (IOException e) {
-                    core.getLogger().log(WARN, e, "Unable to walk through the file tree of " + folder);
+                    getLogger().log(WARN, e, "Unable to walk through the file tree of " + folder);
                 }
             } else { // Only this one folder
                 try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, imageFilter)) {
                     for (Path file : dir) // File list
                         favicons.add(pluginFolder.relativize(file).toString());
                 } catch (IOException e) {
-                    core.getLogger().log(WARN, e, "Unable to get directory listing of " + folder);
+                    getLogger().log(WARN, e, "Unable to get directory listing of " + folder);
                 }
 
             }
@@ -283,7 +283,7 @@ public class ServerStatusManager extends CoreManager {
     }
 
     public Response createResponse(InetAddress client, ResponseFetcher fetcher) {
-        return this.createResponse(core.resolveClient(client), fetcher);
+        return createResponse(core.resolveClient(client), fetcher);
     }
 
     public Response createResponse(String playerName, ResponseFetcher fetcher) {
@@ -327,7 +327,7 @@ public class ServerStatusManager extends CoreManager {
         public Integer fetchPlayersOnline() {
             if (online == null) {
                 // First try to get it from the configuration
-                this.online = this.getPlayersOnline();
+                this.online = getPlayersOnline();
                 if (online == null)
                     // Ok, let's get it from the response instead
                     this.online = fetcher.fetchPlayersOnline();
@@ -346,7 +346,7 @@ public class ServerStatusManager extends CoreManager {
         public Integer fetchMaxPlayers() {
             if (max == null) {
                 // First try to get it from the configuration
-                this.max = this.getMaxPlayers();
+                this.max = getMaxPlayers();
                 if (max == null)
                     // Ok, let's get it from the response instead
                     this.max = fetcher.fetchMaxPlayers();

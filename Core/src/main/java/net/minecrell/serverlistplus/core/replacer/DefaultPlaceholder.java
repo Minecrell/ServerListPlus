@@ -33,46 +33,46 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(ServerStatusManager.Response response, String s) {
             String playerName = response.getPlayerName();
-            return playerName != null ? this.replace(s, playerName) : super.replace(response, s);
+            return playerName != null ? replace(s, playerName) : super.replace(response, s);
         }
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
             // Use unknown player name
-            return this.replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
+            return replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
         }
     },
     ONLINE_PLAYERS ("%online%") {
         @Override
         public String replace(ServerStatusManager.Response response, String s) {
             Integer online = response.fetchPlayersOnline();
-            return online != null ? this.replace(s, online.toString()) : super.replace(response, s);
+            return online != null ? replace(s, online.toString()) : super.replace(response, s);
         }
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
             // Use unknown player count
-            return this.replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
+            return replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
         }
     },
     MAX_PLAYERS ("%max%") {
         @Override
         public String replace(ServerStatusManager.Response response, String s) {
             Integer max = response.fetchMaxPlayers();
-            return max != null ? this.replace(s, max.toString()) : super.replace(response, s);
+            return max != null ? replace(s, max.toString()) : super.replace(response, s);
         }
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
             // Use unknown player count
-            return this.replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
+            return replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
         }
     },
     @Deprecated // TODO: Rename to %random_player% but keep configuration compatibility
     RANDOM_PLAYER ("%randomplayer%") {
         @Override
         public String replace(ServerListPlusCore core, String s) {
-            return this.replace(s, core.getPlugin().getRandomPlayer());
+            return replace(s, core.getPlugin().getRandomPlayer());
         }
     };
 

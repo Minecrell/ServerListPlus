@@ -79,10 +79,10 @@ public class ConfigurationManager extends CoreManager {
     }
 
     public void reload() throws ServerListPlusException {
-        this.getLogger().log(INFO, "Reloading configuration...");
+        getLogger().log(INFO, "Reloading configuration...");
 
-        Path configPath = this.getConfigPath();
-        this.getLogger().log(DEBUG, "Configuration location: " + configPath);
+        Path configPath = getConfigPath();
+        getLogger().log(DEBUG, "Configuration location: " + configPath);
 
         try {
             // Create new storage, will replace the other one when finished loading
@@ -98,25 +98,25 @@ public class ConfigurationManager extends CoreManager {
                             Object obj = itr.next();
                             // Add it to the storage
                             newStorage.setUnsafe(obj.getClass(), obj);
-                            this.getLogger().log(INFO, "Loaded configuration: " + obj.getClass().getSimpleName());
+                            getLogger().log(INFO, "Loaded configuration: " + obj.getClass().getSimpleName());
                         } catch (YAMLException e) {
-                            this.getLogger().log(WARN, e, "Unable to parse a part of the configuration. Make " +
+                            getLogger().log(WARN, e, "Unable to parse a part of the configuration. Make " +
                                     "sure the YAML syntax is valid!");
                         }
                     }
                 }
             }
 
-            this.getLogger().log(REPORT, newStorage.count() + " configurations loaded.");
+            getLogger().log(REPORT, newStorage.count() + " configurations loaded.");
 
             // Add missing configurations from default values
             int generated = Helper.mergeMaps(newStorage.getMap(), defaults.getMap());
             this.storage = newStorage;
 
             if (generated > 0) {
-                this.getLogger().log(DEBUG, "Using {} default configurations.", generated);
+                getLogger().log(DEBUG, "Using {} default configurations.", generated);
                 if (confExists)
-                    this.getLogger().log(WARN, generated + " configurations could not be found in the " +
+                    getLogger().log(WARN, generated + " configurations could not be found in the " +
                             "configuration file. Your configuration might be outdated, " +
                             "or some of them contain invalid YAML syntax. If you want to regenerate the missing " +
                             "configuration parts type '/ServerListPlus save'. Please note that this will delete " +
@@ -125,36 +125,36 @@ public class ConfigurationManager extends CoreManager {
             }
 
             if (!confExists) try {
-                this.save(); // Save it if it doesn't exist
+                save(); // Save it if it doesn't exist
             } catch (ServerListPlusException ignored) {}
 
             core.getPlugin().configChanged(storage); // Call plugin handlers
-            this.getLogger().log(DEBUG, "Configuration successfully reloaded!");
+            getLogger().log(DEBUG, "Configuration successfully reloaded!");
         } catch (YAMLException e) {
-            throw this.getLogger().process(e, "Unable to parse the configuration. Make sure the YAML syntax is " +
+            throw getLogger().process(e, "Unable to parse the configuration. Make sure the YAML syntax is " +
                     "correct!");
         } catch (MalformedInputException e) {
-            throw this.getLogger().process(e, "Your configuration contains invalid special characters. Please " +
+            throw getLogger().process(e, "Your configuration contains invalid special characters. Please " +
                     "save your configuration using {} instead.", IOUtil.CHARSET.displayName());
         } catch (IOException e) {
-            throw this.getLogger().process(e, "Unable to access the configuration file. Make sure that it is " +
+            throw getLogger().process(e, "Unable to access the configuration file. Make sure that it is " +
                     "accessible by the server.");
         } catch (Exception e) {
-            throw this.getLogger().process(e, "An internal error occurred while reloading the configuration!");
+            throw getLogger().process(e, "An internal error occurred while reloading the configuration!");
         }
     }
 
     public void save() throws ServerListPlusException {
-        this.getLogger().log(INFO, "Saving configuration...");
+        getLogger().log(INFO, "Saving configuration...");
 
-        Path configPath = this.getConfigPath();
-        this.getLogger().log(DEBUG, "Configuration location: " + configPath);
+        Path configPath = getConfigPath();
+        getLogger().log(DEBUG, "Configuration location: " + configPath);
 
         try {
             if (Files.exists(configPath)) {
                 // Create a backup if the configuration already exists!
-                Path backupPath = this.getPluginFolder().resolve(BACKUP_FILENAME);
-                this.getLogger().log(DEBUG, "Saving configuration backup to: " + backupPath);
+                Path backupPath = getPluginFolder().resolve(BACKUP_FILENAME);
+                getLogger().log(DEBUG, "Saving configuration backup to: " + backupPath);
 
                 Files.copy(configPath, backupPath, StandardCopyOption.REPLACE_EXISTING);
             } else {
@@ -172,14 +172,14 @@ public class ConfigurationManager extends CoreManager {
                     yaml.writeDocumented(writer, config);
             }
 
-            this.getLogger().log(DEBUG, "Configuration successfully saved!");
+            getLogger().log(DEBUG, "Configuration successfully saved!");
         } catch (YAMLException e) {
-            throw this.getLogger().process(e, "An error occurred while generating the YAML configuration!");
+            throw getLogger().process(e, "An error occurred while generating the YAML configuration!");
         } catch (IOException e) {
-            throw this.getLogger().process(e, "Unable to access the configuration file. Make sure that it is " +
+            throw getLogger().process(e, "Unable to access the configuration file. Make sure that it is " +
                     "accessible by the server.");
         } catch (Exception e) {
-            throw this.getLogger().process(e, "An internal error occurred while saving the configuration!");
+            throw getLogger().process(e, "An internal error occurred while saving the configuration!");
         }
     }
 }

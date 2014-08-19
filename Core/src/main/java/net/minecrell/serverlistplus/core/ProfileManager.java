@@ -59,7 +59,7 @@ public class ProfileManager extends CoreManager {
 
     public void reload() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
-        this.getLogger().log(DEBUG, "Reloading profiles from: " + profilePath);
+        getLogger().log(DEBUG, "Reloading profiles from: " + profilePath);
 
         try {
             if (Files.exists(profilePath)) {
@@ -71,23 +71,23 @@ public class ProfileManager extends CoreManager {
                 }
 
                 if (enabled)
-                    this.getLogger().log(REPORT, "ServerListPlus profile is enabled!");
+                    getLogger().log(REPORT, "ServerListPlus profile is enabled!");
                 else
-                    this.getLogger().log(REPORT, "ServerListPlus profile is disabled!");
+                    getLogger().log(REPORT, "ServerListPlus profile is disabled!");
             } else
-                this.getLogger().log(REPORT, "Profile configuration not found, assuming the profile is disabled!");
+                getLogger().log(REPORT, "Profile configuration not found, assuming the profile is disabled!");
         } catch (JsonSyntaxException e) {
-            throw this.getLogger().process(e, "Unable to parse profile configuration, have you changed it?");
+            throw getLogger().process(e, "Unable to parse profile configuration, have you changed it?");
         } catch (IOException | JsonIOException e) {
-            throw this.getLogger().process(e, "Unable to access profile configuration.");
+            throw getLogger().process(e, "Unable to access profile configuration.");
         } catch (Exception e) {
-            throw this.getLogger().process(e, "An internal error occurred while reloading the profiles!");
+            throw getLogger().process(e, "An internal error occurred while reloading the profiles!");
         }
     }
 
     public void save() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
-        this.getLogger().log(DEBUG, "Saving profiles to: " + profilePath);
+        getLogger().log(DEBUG, "Saving profiles to: " + profilePath);
 
         try {
             if (Files.notExists(profilePath)) {
@@ -104,11 +104,11 @@ public class ProfileManager extends CoreManager {
                 JSON.toJson(obj, writer);
             }
 
-            this.getLogger().log(DEBUG, "Successfully saved profiles to the storage!");
+            getLogger().log(DEBUG, "Successfully saved profiles to the storage!");
         } catch (IOException | JsonIOException e) {
-            throw this.getLogger().process(e, "Unable to access profile configuration.");
+            throw getLogger().process(e, "Unable to access profile configuration.");
         } catch (Exception e) {
-            throw this.getLogger().process(e, "An internal error occurred while saving the profiles!");
+            throw getLogger().process(e, "An internal error occurred while saving the profiles!");
         }
     }
 

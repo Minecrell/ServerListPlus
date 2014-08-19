@@ -33,11 +33,11 @@ import org.yaml.snakeyaml.introspector.PropertyUtils;
 
 public class FieldOrderPropertyUtils extends PropertyUtils {
     public FieldOrderPropertyUtils() {
-        this.setBeanAccess(BeanAccess.FIELD);
+        setBeanAccess(BeanAccess.FIELD);
     }
 
     @Override // Order properties in the configuration as defined in the source code
     protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
-        return new LinkedHashSet<>(this.getPropertiesMap(type, bAccess).values());
+        return new LinkedHashSet<>(getPropertiesMap(type, bAccess).values());
     }
 }

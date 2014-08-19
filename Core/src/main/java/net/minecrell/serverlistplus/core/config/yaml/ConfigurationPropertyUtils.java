@@ -38,7 +38,7 @@ public class ConfigurationPropertyUtils extends FieldOrderPropertyUtils {
 
     public ConfigurationPropertyUtils(ServerListPlusCore core) {
         this.core = core;
-        this.setSkipMissingProperties(true); // Will throw NoSuchMethodError on CraftBukkit
+        setSkipMissingProperties(true); // Will throw NoSuchMethodError on CraftBukkit
     }
 
     @Override

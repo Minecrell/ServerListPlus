@@ -44,9 +44,9 @@ public class ServerListPlusLogger extends JavaLogger<ServerListPlusException> {
 
         try {
             if (deleteOldFiles(core.getPlugin().getPluginFolder()))
-                this.log(WARN, "Unable to delete old log files.");
+                log(WARN, "Unable to delete all old log files.");
         } catch (Exception e) {
-            this.log(WARN, e, "Unable to delete old log files.");
+            log(WARN, e, "Unable to delete old log files.");
         }
     }
 
@@ -63,10 +63,10 @@ public class ServerListPlusLogger extends JavaLogger<ServerListPlusException> {
             for (Path path : files) {
                 try {
                     Files.delete(path);
-                    this.log(DEBUG, "Deleted old log file: " + path.getFileName());
+                    log(DEBUG, "Deleted old log file: " + path.getFileName());
                 } catch (IOException e) {
-                    this.log(DEBUG, "Unable to delete old log file " + path.getFileName() + ": "
-                            + Helper.causedError(e));
+                    log(DEBUG, "Unable to delete old log file: " + path.getFileName() + " -> " +
+                            Helper.causedError(e));
                     failed = true;
                 }
             }

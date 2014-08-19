@@ -31,22 +31,22 @@ import net.md_5.bungee.api.plugin.Plugin;
 public abstract class BungeePluginBase extends Plugin {
 
     public String getName() {
-        return this.getDescription().getName();
+        return getDescription().getName();
     }
 
     public String getVersion() {
-        return this.getDescription().getVersion();
+        return getDescription().getVersion();
     }
 
     public Path getPluginFolder() {
-        return this.getDataFolder().toPath();
+        return getDataFolder().toPath();
     }
 
     protected void registerListener(Listener listener) {
-        this.getProxy().getPluginManager().registerListener(this, listener);
+        getProxy().getPluginManager().registerListener(this, listener);
     }
 
     protected void unregisterListener(Listener listener) {
-        this.getProxy().getPluginManager().unregisterListener(listener);
+        getProxy().getPluginManager().unregisterListener(listener);
     }
 }

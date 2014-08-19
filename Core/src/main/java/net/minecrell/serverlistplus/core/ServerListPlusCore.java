@@ -77,7 +77,7 @@ public class ServerListPlusCore {
         plugin.getLogger().info("Starting...");
 
         // Print some information about the environment
-        this.getLogger().log(REPORT, Helper.lines(
+        getLogger().log(REPORT, Helper.lines(
                 "Plugin Information:",
                 "---",
                 "Plugin: " + getDisplayName(),
@@ -92,14 +92,15 @@ public class ServerListPlusCore {
         this.configManager = new ConfigurationManager(this);
 
         // Register the configurations
-        this.registerConf(ServerStatusConf.class, ConfExamples.forServerStatus(), "Status");
-        this.registerConf(PluginConf.class, ConfExamples.forPlugin(), "Plugin");
-        this.registerConf(CoreConf.class, ConfExamples.forCore(), "Core");
+        registerConf(ServerStatusConf.class, ConfExamples.forServerStatus(), "Status");
+        registerConf(PluginConf.class, ConfExamples.forPlugin(), "Plugin");
+        registerConf(CoreConf.class, ConfExamples.forCore(), "Core");
 
         // Initialize the profile manager
         this.profileManager = new ProfileManager(this);
 
         plugin.initialize(this);
+
         this.reload(); // Now load the configuration!
     }
 
@@ -122,27 +123,26 @@ public class ServerListPlusCore {
 
             if (playerTracker != null) {
                 // Delete the player tracker
-                this.getLogger().log(DEBUG, "Deleting old player tracking cache due to configuration " +
-                        "changes.");
+                getLogger().log(DEBUG, "Deleting old player tracking cache due to configuration changes.");
                 playerTracker.invalidateAll();
                 playerTracker.cleanUp();
                 this.playerTracker = null;
             }
 
             if (enabled) {
-                this.getLogger().log(DEBUG, "Creating new player tracking cache...");
+                getLogger().log(DEBUG, "Creating new player tracking cache...");
 
                 try {
                     Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
                     this.playerTrackerConf = conf.Caches.PlayerTracking;
                     this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
                 } catch (IllegalArgumentException e) {
-                    this.getLogger().log(e, "Unable to create player tracker cache using configuration settings.");
+                    getLogger().log(e, "Unable to create player tracker cache using configuration settings.");
                     this.playerTrackerConf = this.getDefaultConf(CoreConf.class).Caches.PlayerTracking;
                     this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
                 }
 
-                this.getLogger().log(DEBUG, "Player tracking cache created.");
+                getLogger().log(DEBUG, "Player tracking cache created.");
             } else
                 playerTrackerConf = null; // Not enabled, so there is also no cache
         }
@@ -153,24 +153,24 @@ public class ServerListPlusCore {
         if (!enabled || (faviconCacheConf == null || conf.Caches == null
                 || !faviconCacheConf.equals(conf.Caches.Favicon))) {
             if (plugin.getFaviconCache() != null) {
-                this.getLogger().log(DEBUG, "Deleting old favicon cache due to configuration changes.");
+                getLogger().log(DEBUG, "Deleting old favicon cache due to configuration changes.");
                 plugin.reloadFaviconCache(null); // Delete the old favicon cache
             }
 
             if (enabled) {
-                this.getLogger().log(DEBUG, "Creating new favicon cache...");
+                getLogger().log(DEBUG, "Creating new favicon cache...");
 
                 try {
                     Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found!");
                     this.faviconCacheConf = conf.Caches.Favicon;
                     plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 } catch (IllegalArgumentException e) {
-                    this.getLogger().log(e, "Unable to create favicon cache using configuration settings.");
+                    getLogger().log(e, "Unable to create favicon cache using configuration settings.");
                     this.faviconCacheConf = this.getDefaultConf(CoreConf.class).Caches.Favicon;
                     plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 }
 
-                this.getLogger().log(DEBUG, "Favicon cache created.");
+                getLogger().log(DEBUG, "Favicon cache created.");
             } else
                 faviconCacheConf = null; // Not used, so there is also no cache
         }
@@ -180,7 +180,7 @@ public class ServerListPlusCore {
         configManager.reload(); // Reload configuration from disk
         this.profileManager.reload(); // Reload profile storage from disk
         if (!profileManager.isEnabled())
-            this.getLogger().log(WARN, "Configuration is not enabled, nothing will be changed on the server!");
+            getLogger().log(WARN, "Configuration is not enabled, nothing will be changed on the server!");
         statusManager.reload(); // Now actually read and process the configuration
         this.reloadCaches(); // Check for cache setting changes
     }
@@ -237,7 +237,7 @@ public class ServerListPlusCore {
                 sender.sendMessage(COMMAND_PREFIX_ERROR + "You do not have permission for this command.");
 
             else if (sub.equals("reload") || sub.equals("rl")) {
-                this.getLogger().log(INFO, "Reloading configuration at request of {}!", sender);
+                getLogger().log(INFO, "Reloading configuration at request of {}!", sender);
                 sender.sendMessage(COMMAND_PREFIX + "Reloading configuration...");
 
                 try { // Reload the configuration
@@ -248,7 +248,7 @@ public class ServerListPlusCore {
                             "configuration.");
                 }
             } else if (sub.equals("save")) {
-                this.getLogger().log(INFO, "Saving configuration at request of {}!", sender);
+                getLogger().log(INFO, "Saving configuration at request of {}!", sender);
                 sender.sendMessage(COMMAND_PREFIX + "Saving configuration...");
 
                 try { // Save the configuration
@@ -261,7 +261,7 @@ public class ServerListPlusCore {
             } else if (sub.equals("enable") || sub.equals("disable")) {
                 boolean enable = sub.equalsIgnoreCase("enable");
                 String tmp = enable ? "Enabling" : "Disabling";
-                this.getLogger().log(INFO, "{} ServerListPlus at request of {}...", tmp, sender);
+                getLogger().log(INFO, "{} ServerListPlus at request of {}...", tmp, sender);
                 sender.sendMessage(COMMAND_PREFIX + tmp + " ServerListPlus...");
 
                 try { // Enable / disable the ServerListPlus profile
@@ -281,10 +281,10 @@ public class ServerListPlusCore {
                     if (cacheType != null) {
                         Cache<?, ?> cache = cacheType.apply(this);
                         if (cache != null) {
-                            this.getLogger().log(INFO, "Cleaning {} cache at request of {}...", cacheName, sender);
+                            getLogger().log(INFO, "Cleaning {} cache at request of {}...", cacheName, sender);
                             cache.invalidateAll();
                             cache.cleanUp();
-                            this.getLogger().log(DEBUG, "Done.");
+                            getLogger().log(DEBUG, "Done.");
 
                             sender.sendMessage(COMMAND_PREFIX_SUCCESS +
                                     "Successfully cleaned up " + cacheName + " cache.");
@@ -372,11 +372,11 @@ public class ServerListPlusCore {
     }
 
     public <T> T getConf(Class<T> clazz) {
-        return this.getConf().getStorage().get(clazz);
+        return getConf().getStorage().get(clazz);
     }
 
     public <T> T getDefaultConf(Class<T> clazz) {
-        return this.getConf().getDefaults().get(clazz);
+        return getConf().getDefaults().get(clazz);
     }
 
     public ProfileManager getProfiles() {
