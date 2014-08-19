@@ -37,7 +37,7 @@ public class ServerOnlinePlaceholder extends PatternPlaceholder {
     private final ProxyServer proxy;
 
     public ServerOnlinePlaceholder(ProxyServer proxy) {
-        super(Pattern.compile("%online@(.+)%"));
+        super(Pattern.compile("%online@(\\w+)%"));
         this.proxy = proxy;
     }
 
