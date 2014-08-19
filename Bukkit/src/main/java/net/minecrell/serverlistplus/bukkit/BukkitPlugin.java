@@ -90,6 +90,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     public void onEnable() {
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
+            getLogger().info("Successfully loaded!");
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!");
             this.disablePlugin(); return; // Disable plugin to show error in /plugins

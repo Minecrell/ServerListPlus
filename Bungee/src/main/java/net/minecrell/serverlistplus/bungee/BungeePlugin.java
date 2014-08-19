@@ -76,6 +76,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
+            getLogger().info("Successfully loaded!");
         } catch (ServerListPlusException e) {
             this.getLogger().info("Please fix the error before restarting the server!"); return;
         } catch (Exception e) {

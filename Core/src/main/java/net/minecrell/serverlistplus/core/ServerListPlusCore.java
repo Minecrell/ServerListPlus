@@ -101,8 +101,6 @@ public class ServerListPlusCore {
 
         plugin.initialize(this);
         this.reload(); // Now load the configuration!
-
-        plugin.getLogger().info("Successfully loaded!");
     }
 
     public String getDisplayName() {
