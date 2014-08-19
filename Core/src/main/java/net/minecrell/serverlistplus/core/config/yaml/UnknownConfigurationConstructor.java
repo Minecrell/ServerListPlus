@@ -23,21 +23,33 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import java.beans.IntrospectionException;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.config.UnknownConf;
 
-import org.yaml.snakeyaml.introspector.BeanAccess;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.introspector.PropertyUtils;
+import com.google.common.base.Throwables;
 
-public class FieldOrderPropertyUtils extends PropertyUtils {
-    public FieldOrderPropertyUtils() {
-        setBeanAccess(BeanAccess.FIELD);
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.yaml.snakeyaml.error.YAMLException;
+import org.yaml.snakeyaml.nodes.Node;
+
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+
+public class UnknownConfigurationConstructor extends CustomClassLoaderConstructor {
+    private final ServerListPlusCore core;
+
+    public UnknownConfigurationConstructor(ServerListPlusCore core) {
+        super(core.getClass().getClassLoader());
+        this.core = core;
     }
 
-    @Override // Order properties in the configuration as defined in the source code
-    protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
-        return new LinkedHashSet<>(getPropertiesMap(type, bAccess).values());
+    @Override
+    protected Class<?> getClassForNode(Node node) {
+        try {
+            return super.getClassForNode(node);
+        } catch (YAMLException e) {
+            core.getLogger().log(WARN, "Unknown configuration: {} -> {}", node.getTag().getValue(),
+                    Throwables.getRootCause(e).getMessage());
+            return UnknownConf.class;
+        }
     }
 }

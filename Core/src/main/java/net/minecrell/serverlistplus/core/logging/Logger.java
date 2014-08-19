@@ -36,25 +36,25 @@ public interface Logger<E extends Throwable> {
     public Logger log(Level level, String message);
     public Logger log(Level level, String message, Object arg);
     public Logger log(Level level, String message, Object... args);
-    public Logger logf(Level level, String message, Object... args);
+    //public Logger logf(Level level, String message, Object... args);
 
     public Logger log(Throwable thrown, String message);
     public Logger log(Throwable thrown, String message, Object arg);
     public Logger log(Throwable thrown, String message, Object... args);
-    public Logger logf(Throwable thrown, String message, Object... args);
+    //public Logger logf(Throwable thrown, String message, Object... args);
 
     public Logger log(Level level, Throwable thrown, String message);
     public Logger log(Level level, Throwable thrown, String message, Object arg);
     public Logger log(Level level, Throwable thrown, String message, Object... args);
-    public Logger logf(Level level, Throwable thrown, String message, Object... args);
+    //public Logger logf(Level level, Throwable thrown, String message, Object... args);
 
     public E process(Throwable thrown, String message);
     public E process(Throwable thrown, String message, Object arg);
     public E process(Throwable thrown, String message, Object... args);
-    public E processf(Throwable thrown, String message, Object... args);
+    //public E processf(Throwable thrown, String message, Object... args);
 
     public E process(Level level, Throwable thrown, String message);
     public E process(Level level, Throwable thrown, String message, Object arg);
     public E process(Level level, Throwable thrown, String message, Object... args);
-    public E processf(Level level, Throwable thrown, String message, Object... args);
+    //public E processf(Level level, Throwable thrown, String message, Object... args);
 }

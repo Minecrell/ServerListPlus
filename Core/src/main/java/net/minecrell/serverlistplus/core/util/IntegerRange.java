@@ -25,26 +25,26 @@ package net.minecrell.serverlistplus.core.util;
 
 import java.util.regex.Pattern;
 
-public class IntRange {
+public class IntegerRange {
     private static final Pattern SEPARATOR = Pattern.compile("..", Pattern.LITERAL);
 
     private final int from, to;
 
-    public IntRange(int single) {
+    public IntegerRange(int single) {
         this.from = this.to = single;
     }
 
-    public IntRange(int from, int to) {
+    public IntegerRange(int from, int to) {
         if (from > to) throw new IllegalArgumentException("Invalid range: from " + from + " to " + to);
         this.from = from;
         this.to = to;
     }
 
-    public IntRange(IntRange other) {
+    public IntegerRange(IntegerRange other) {
         this(other.from, other.to);
     }
 
-    public IntRange(String range) {
+    public IntegerRange(String range) {
         this(from(range));
     }
 
@@ -60,9 +60,9 @@ public class IntRange {
         return to;
     }
 
-    public static IntRange from(String range) {
+    public static IntegerRange from(String range) {
         try {
-            return new IntRange(Integer.parseInt(range));
+            return new IntegerRange(Integer.parseInt(range));
         } catch (NumberFormatException ignored) {}
 
         // Let's try to parse the range
@@ -70,14 +70,14 @@ public class IntRange {
         if (parts.length != 2) throw new IllegalArgumentException("Invalid range: " + range);
 
         // Now parse both numbers
-        return new IntRange(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        return new IntegerRange(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || !(o instanceof IntRange)) return false;
-        IntRange intRange = (IntRange) o;
+        if (o == null || !(o instanceof IntegerRange)) return false;
+        IntegerRange intRange = (IntegerRange) o;
         return from == intRange.from && to == intRange.to;
     }
 

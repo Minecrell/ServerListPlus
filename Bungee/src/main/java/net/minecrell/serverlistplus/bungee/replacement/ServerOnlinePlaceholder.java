@@ -21,11 +21,11 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bungee.replacer;
+package net.minecrell.serverlistplus.bungee.replacement;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
-import net.minecrell.serverlistplus.core.replacer.PatternPlaceholder;
+import net.minecrell.serverlistplus.core.replacement.PatternPlaceholder;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

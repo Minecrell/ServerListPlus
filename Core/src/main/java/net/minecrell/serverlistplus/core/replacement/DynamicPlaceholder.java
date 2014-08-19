@@ -21,10 +21,6 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.replacement;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
-
-public interface StaticReplacer {
-    String replace(ServerListPlusCore core, String s);
-}
+public interface DynamicPlaceholder extends StaticPlaceholder, DynamicReplacer {}

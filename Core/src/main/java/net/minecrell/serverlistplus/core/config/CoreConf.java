@@ -23,15 +23,20 @@
 
 package net.minecrell.serverlistplus.core.config;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import net.minecrell.serverlistplus.core.config.help.Description;
 
 @Description({
         "WARNING: Changes in this section can possibly break the plugin!",
         "Caches: Change the behaviour of the caches: http://goo.gl/oYVk0F",
 })
+@EqualsAndHashCode @ToString
 public class CoreConf {
     public CachesConf Caches = new CachesConf();
 
+    @EqualsAndHashCode @ToString
     public static class CachesConf {
         /**
          * @deprecated The cache can always only count the time from the login, but not from the logout,
@@ -39,5 +44,6 @@ public class CoreConf {
          */
         @Deprecated public String PlayerTracking = "";
         public String Favicon = "maximumSize=512,expireAfterWrite=6h";
+        public String Request = "expireAfterAccess=15m";
     }
 }

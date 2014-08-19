@@ -62,10 +62,10 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
         return log(level, format(message, args));
     }
 
-    @Override
+    /*@Override
     public final Logger logf(Level level, String message, Object... args) {
         return log(level, formatAdvanced(message, args));
-    }
+    }*/
 
     @Override
     public final Logger log(Throwable thrown, String message) {
@@ -82,10 +82,10 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
         return log(ERROR, thrown, message, args);
     }
 
-    @Override
+    /*@Override
     public final Logger logf(Throwable thrown, String message, Object... args) {
         return logf(ERROR, thrown, message, args);
-    }
+    }*/
 
     @Override
     public final Logger log(Level level, Throwable thrown, String message, Object arg) {
@@ -97,10 +97,10 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
         return log(level, thrown, format(message, args));
     }
 
-    @Override
+    /*@Override
     public final Logger logf(Level level, Throwable thrown, String message, Object... args) {
         return log(level, thrown, formatAdvanced(message, args));
-    }
+    }*/
 
     @Override
     public final E process(Throwable thrown, String message) {
@@ -117,10 +117,10 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
         return process(thrown, format(message, args));
     }
 
-    @Override
+    /*@Override
     public final E processf(Throwable thrown, String message, Object... args) {
         return process(thrown, formatAdvanced(message, args));
-    }
+    }*/
 
     @Override
     @SuppressWarnings("unchecked")
@@ -140,8 +140,8 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
         return process(level, thrown, format(message, args));
     }
 
-    @Override
+    /*@Override
     public final E processf(Level level, Throwable thrown, String message, Object... args) {
         return process(level, thrown, formatAdvanced(message, args));
-    }
+    }*/
 }

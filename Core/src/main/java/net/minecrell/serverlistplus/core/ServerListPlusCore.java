@@ -28,8 +28,12 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.ConfExamples;
 import net.minecrell.serverlistplus.core.logging.Logger;
+import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.core.status.StatusManager;
+import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Format;
 import net.minecrell.serverlistplus.core.util.Helper;
 
@@ -45,6 +49,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -62,12 +68,16 @@ public class ServerListPlusCore {
 
     private final ConfigurationManager configManager;
     private final ProfileManager profileManager;
-    private final ServerStatusManager statusManager;
+    private final StatusManager statusManager;
 
-    private Cache<InetAddress, String> playerTracker;
+    private Cache<InetAddress, PlayerIdentity> playerTracker;
     private String playerTrackerConf;
 
     private String faviconCacheConf;
+
+    private final CacheLoader<InetAddress, StatusRequest> requestLoader;
+    private LoadingCache<InetAddress, StatusRequest> requestCache;
+    private String requestCacheConf;
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
@@ -88,7 +98,7 @@ public class ServerListPlusCore {
         ));
 
         // Initialize configuration and status manager, but not yet load it
-        this.statusManager = new ServerStatusManager(this);
+        this.statusManager = new StatusManager(this);
         this.configManager = new ConfigurationManager(this);
 
         // Register the configurations
@@ -98,6 +108,13 @@ public class ServerListPlusCore {
 
         // Initialize the profile manager
         this.profileManager = new ProfileManager(this);
+
+        this.requestLoader = new CacheLoader<InetAddress, StatusRequest>() {
+            @Override
+            public StatusRequest load(InetAddress client) throws Exception {
+                return new StatusRequest(client, resolveClient(client));
+            }
+        };
 
         plugin.initialize(this);
 
@@ -118,8 +135,8 @@ public class ServerListPlusCore {
         boolean enabled = this.getConf(PluginConf.class).PlayerTracking;
 
         // Check if player tracker configuration has been changed
-        if (!enabled || (playerTrackerConf == null || conf.Caches == null
-                || !playerTrackerConf.equals(conf.Caches.PlayerTracking))) {
+        if (!enabled || (playerTrackerConf == null || conf.Caches == null ||
+                !playerTrackerConf.equals(conf.Caches.PlayerTracking))) {
 
             if (playerTracker != null) {
                 // Delete the player tracker
@@ -138,7 +155,7 @@ public class ServerListPlusCore {
                     this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
                 } catch (IllegalArgumentException e) {
                     getLogger().log(e, "Unable to create player tracker cache using configuration settings.");
-                    this.playerTrackerConf = this.getDefaultConf(CoreConf.class).Caches.PlayerTracking;
+                    this.playerTrackerConf = getDefaultConf(CoreConf.class).Caches.PlayerTracking;
                     this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
                 }
 
@@ -150,8 +167,8 @@ public class ServerListPlusCore {
         enabled = statusManager.hasFavicon();
 
         // Check if favicon cache configuration has been changed
-        if (!enabled || (faviconCacheConf == null || conf.Caches == null
-                || !faviconCacheConf.equals(conf.Caches.Favicon))) {
+        if (!enabled || (faviconCacheConf == null || conf.Caches == null ||
+                !faviconCacheConf.equals(conf.Caches.Favicon))) {
             if (plugin.getFaviconCache() != null) {
                 getLogger().log(DEBUG, "Deleting old favicon cache due to configuration changes.");
                 plugin.reloadFaviconCache(null); // Delete the old favicon cache
@@ -166,13 +183,37 @@ public class ServerListPlusCore {
                     plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 } catch (IllegalArgumentException e) {
                     getLogger().log(e, "Unable to create favicon cache using configuration settings.");
-                    this.faviconCacheConf = this.getDefaultConf(CoreConf.class).Caches.Favicon;
+                    this.faviconCacheConf = getDefaultConf(CoreConf.class).Caches.Favicon;
                     plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 }
 
                 getLogger().log(DEBUG, "Favicon cache created.");
             } else
                 faviconCacheConf = null; // Not used, so there is also no cache
+        }
+
+        if (requestCacheConf == null || requestCache == null || !requestCacheConf.equals(conf.Caches.Request)) {
+            if (requestCache != null) {
+                // Delete the request cache
+                getLogger().log(DEBUG, "Deleting old request cache due to configuration changes.");
+                requestCache.invalidateAll();
+                requestCache.cleanUp();
+                this.playerTracker = null;
+            }
+
+            getLogger().log(DEBUG, "Creating new request cache...");
+
+            try {
+                Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
+                this.requestCacheConf = conf.Caches.Request;
+                this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
+            } catch (IllegalArgumentException e) {
+                getLogger().log(e, "Unable to create request cache using configuration settings.");
+                this.requestCacheConf = getDefaultConf(CoreConf.class).Caches.Request;
+                this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
+            }
+
+            getLogger().log(DEBUG, "Request cache created.");
         }
     }
 
@@ -185,12 +226,16 @@ public class ServerListPlusCore {
         this.reloadCaches(); // Check for cache setting changes
     }
 
-    public void addClient(String playerName, InetAddress client) {
-        if (this.playerTracker != null) playerTracker.put(client, playerName);
+    public void addClient(InetAddress client, PlayerIdentity identity) {
+        if (this.playerTracker != null) playerTracker.put(client, identity);
     }
 
-    public String resolveClient(InetAddress client) {
+    public PlayerIdentity resolveClient(InetAddress client) {
         return this.playerTracker != null ? playerTracker.getIfPresent(client) : null;
+    }
+
+    public StatusRequest getRequest(InetAddress client) {
+        return requestCache.getUnchecked(client);
     }
 
     private static final String COMMAND_PREFIX_BASE = Format.GOLD + "[ServerListPlus] ";
@@ -383,7 +428,7 @@ public class ServerListPlusCore {
         return profileManager;
     }
 
-    public ServerStatusManager getStatus() {
+    public StatusManager getStatus() {
         return statusManager;
     }
 }

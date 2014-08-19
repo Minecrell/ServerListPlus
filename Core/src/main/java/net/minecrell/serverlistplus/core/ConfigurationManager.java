@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.core;
 
+import net.minecrell.serverlistplus.core.config.UnknownConf;
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
 import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
@@ -96,6 +97,8 @@ public class ConfigurationManager extends CoreManager {
                         try {
                             // Read one configuration from the file
                             Object obj = itr.next();
+                            if (obj.getClass() == UnknownConf.class) continue;
+
                             // Add it to the storage
                             newStorage.setUnsafe(obj.getClass(), obj);
                             getLogger().log(INFO, "Loaded configuration: " + obj.getClass().getSimpleName());

@@ -21,19 +21,20 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.replacement;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 public enum DefaultPlaceholder implements DynamicPlaceholder {
     PLAYER ("%player%") {
         @Override
-        public String replace(ServerStatusManager.Response response, String s) {
-            String playerName = response.getPlayerName();
-            return playerName != null ? replace(s, playerName) : super.replace(response, s);
+        public String replace(StatusResponse response, String s) {
+            PlayerIdentity identity = response.getRequest().getIdentity();
+            return identity != null ? replace(s, identity.getName()) : super.replace(response, s);
         }
 
         @Override
@@ -44,8 +45,8 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
     },
     ONLINE_PLAYERS ("%online%") {
         @Override
-        public String replace(ServerStatusManager.Response response, String s) {
-            Integer online = response.fetchPlayersOnline();
+        public String replace(StatusResponse response, String s) {
+            Integer online = response.fetchOnlinePlayers();
             return online != null ? replace(s, online.toString()) : super.replace(response, s);
         }
 
@@ -57,7 +58,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
     },
     MAX_PLAYERS ("%max%") {
         @Override
-        public String replace(ServerStatusManager.Response response, String s) {
+        public String replace(StatusResponse response, String s) {
             Integer max = response.fetchMaxPlayers();
             return max != null ? replace(s, max.toString()) : super.replace(response, s);
         }
@@ -68,8 +69,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
             return replace(s, core.getConf(PluginConf.class).Unknown.PlayerCount);
         }
     },
-    @Deprecated // TODO: Rename to %random_player% but keep configuration compatibility
-    RANDOM_PLAYER ("%randomplayer%") {
+    RANDOM_PLAYER ("%random_player%") {
         @Override
         public String replace(ServerListPlusCore core, String s) {
             return replace(s, core.getPlugin().getRandomPlayer());
@@ -88,7 +88,7 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
     }
 
     @Override
-    public String replace(ServerStatusManager.Response response, String s) {
+    public String replace(StatusResponse response, String s) {
         return replace(response.getCore(), s);
     }
 

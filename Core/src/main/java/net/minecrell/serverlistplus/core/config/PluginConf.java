@@ -23,6 +23,9 @@
 
 package net.minecrell.serverlistplus.core.config;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import net.minecrell.serverlistplus.core.config.help.Description;
 import net.minecrell.serverlistplus.core.favicon.ResizeStrategy;
 
@@ -40,17 +43,20 @@ import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
         " - ResizeStrategy: The method used to resize too small or too big favicons.",
         "     NONE (keep them as is), SCALE (scale them to the correct size)"
 })
+@EqualsAndHashCode @ToString
 public class PluginConf {
     public boolean Stats = true;
     public boolean PlayerTracking = true;
     public UnknownConf Unknown = new UnknownConf();
     public FaviconConf Favicon = new FaviconConf();
 
+    @EqualsAndHashCode @ToString
     public static class UnknownConf {
         public String PlayerName = "player";
         public String PlayerCount = "???";
     }
 
+    @EqualsAndHashCode @ToString
     public static class FaviconConf {
         public boolean RecursiveFolderSearch = false;
         public String SkinSource = "https://s3.amazonaws.com/MinecraftSkins/%s.png";

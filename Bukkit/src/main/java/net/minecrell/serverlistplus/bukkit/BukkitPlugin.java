@@ -25,13 +25,15 @@ package net.minecrell.serverlistplus.bukkit;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
-import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.logging.Logger;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.status.PlayerFetcher;
+import net.minecrell.serverlistplus.core.status.StatusManager;
+import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
@@ -39,7 +41,6 @@ import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
@@ -138,7 +139,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
-            core.addClient(event.getName(), event.getAddress());
+            core.addClient(event.getAddress(), new PlayerIdentity(event.getUniqueId(), event.getName()));
         }
     }
 
@@ -147,7 +148,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(PlayerLoginEvent event) {
-            core.addClient(event.getPlayer().getName(), event.getAddress());
+            core.addClient(event.getAddress(), new PlayerIdentity(event.getPlayer().getUniqueId(),
+                    event.getPlayer().getName()));
         }
     }
 
@@ -163,22 +165,21 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             // Make sure players have not been hidden when getting the player count
             boolean playersVisible = ping.isPlayersVisible();
 
-            ServerStatusManager.Response response = core.getStatus().createResponse(event.getPlayer().getAddress()
-                    .getAddress(),
-                    // Return unknown player counts if it has been hidden
-                    !playersVisible ? new ServerStatusManager.ResponseFetcher() :
-                            new ServerStatusManager.ResponseFetcher() {
+            StatusResponse response = core.getRequest(event.getPlayer().getAddress().getAddress())
+                    .createResponse(core.getStatus(),
+                            // Return unknown player counts if it has been hidden
+                            !playersVisible ? new PlayerFetcher.Hidden() :
+                                    new PlayerFetcher() {
+                                        @Override
+                                        public Integer getOnlinePlayers() {
+                                            return ping.getPlayersOnline();
+                                        }
 
-                @Override
-                public Integer fetchPlayersOnline() {
-                    return ping.getPlayersOnline();
-                }
-
-                @Override
-                public Integer fetchMaxPlayers() {
-                    return ping.getPlayersMaximum();
-                }
-            });
+                                        @Override
+                                        public Integer getMaxPlayers() {
+                                            return ping.getPlayersMaximum();
+                                        }
+                                    });
 
             // Description
             String message = response.getDescription();
@@ -199,11 +200,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             }
 
             if (playersVisible) {
-                if (response.arePlayersHidden()) {
+                if (response.hidePlayers()) {
                     ping.setPlayersVisible(false);
                 } else {
                     // Online players
-                    Integer count = response.getPlayersOnline();
+                    Integer count = response.getOnlinePlayers();
                     if (count != null) ping.setPlayersOnline(count);
                     // Max players
                     count = response.getMaxPlayers();
@@ -212,7 +213,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                     // Player hover
                     message = response.getPlayerHover();
                     if (message != null) ping.setPlayers(Collections.singleton(
-                            new WrappedGameProfile(ServerStatusManager.EMPTY_UUID, message)));
+                            new WrappedGameProfile(StatusManager.EMPTY_UUID, message)));
                 }
             }
         }
@@ -246,7 +247,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void initialize(ServerListPlusCore core) {
-        // Nothing to do at the moment
+
     }
 
     @Override
@@ -275,7 +276,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
-                registerListener(this.loginListener = spigot || this.getServer().getOnlineMode()
+                registerListener(this.loginListener = spigot || getServer().getOnlineMode()
                         ? new LoginListener() : new OfflineModeLoginListener());
                 getLogger().log(DEBUG, "Registered player tracking listener.");
             }
@@ -305,12 +306,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void statusChanged(ServerStatusManager status) {
+    public void statusChanged(StatusManager status) {
         // Status packet listener
         if (status.hasChanges()) {
             if (packetListener == null) {
-                ProtocolLibrary.getProtocolManager().addPacketListener(this.packetListener =
-                        new StatusPacketListener());
+                ProtocolLibrary.getProtocolManager().addPacketListener(
+                        this.packetListener = new StatusPacketListener());
                 getLogger().log(DEBUG, "Registered status packet listener.");
             }
         } else if (packetListener != null) {

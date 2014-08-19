@@ -21,17 +21,22 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.status;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
+public interface PlayerFetcher {
+    Integer getOnlinePlayers();
+    Integer getMaxPlayers();
 
-public class ColorReplacer implements StaticReplacer {
-    public static final ColorReplacer INSTANCE = new ColorReplacer();
+    public static class Hidden implements PlayerFetcher {
 
-    private ColorReplacer() {}
+        @Override
+        public Integer getOnlinePlayers() {
+            return null;
+        }
 
-    @Override
-    public String replace(ServerListPlusCore core, String s) {
-        return core.getPlugin().colorize(s);
+        @Override
+        public Integer getMaxPlayers() {
+            return null;
+        }
     }
 }

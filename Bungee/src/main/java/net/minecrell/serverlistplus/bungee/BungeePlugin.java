@@ -24,23 +24,24 @@
 package net.minecrell.serverlistplus.bungee;
 
 import net.minecrell.metrics.BungeeMetricsLite;
-import net.minecrell.serverlistplus.bungee.replacer.ServerOnlinePlaceholder;
+import net.minecrell.serverlistplus.bungee.replacement.ServerOnlinePlaceholder;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
-import net.minecrell.serverlistplus.core.ServerStatusManager;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.logging.Logger;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
-import net.minecrell.serverlistplus.core.replacer.ReplacementManager;
+import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
+import net.minecrell.serverlistplus.core.status.PlayerFetcher;
+import net.minecrell.serverlistplus.core.status.StatusManager;
+import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-import java.util.logging.Level;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
@@ -52,6 +53,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
@@ -113,7 +115,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(LoginEvent event) {
-            core.addClient(event.getConnection().getName(), event.getConnection().getAddress().getAddress());
+            PendingConnection con = event.getConnection();
+            core.addClient(con.getAddress().getAddress(), new PlayerIdentity(con.getUniqueId(), con.getName()));
         }
     }
 
@@ -127,22 +130,21 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             final ServerPing ping = event.getResponse();
             final ServerPing.Players players = ping.getPlayers();
 
-            ServerStatusManager.Response response = core.getStatus().createResponse(event.getConnection().
-                    getAddress().getAddress(),
-                    // Return unknown player counts if it has been hidden
-                    players == null ? new ServerStatusManager.ResponseFetcher() :
-                            new ServerStatusManager.ResponseFetcher() {
+            StatusResponse response = core.getRequest(event.getConnection().getAddress().getAddress())
+                    .createResponse(core.getStatus(),
+                            // Return unknown player counts if it has been hidden
+                            players == null ? new PlayerFetcher.Hidden() :
+                                    new PlayerFetcher() {
+                                        @Override
+                                        public Integer getOnlinePlayers() {
+                                            return players.getOnline();
+                                        }
 
-                @Override
-                public Integer fetchPlayersOnline() {
-                    return players.getOnline();
-                }
-
-                @Override
-                public Integer fetchMaxPlayers() {
-                    return players.getMax();
-                }
-            });
+                                        @Override
+                                        public Integer getMaxPlayers() {
+                                            return players.getMax();
+                                        }
+                                    });
 
             // Description
             String message = response.getDescription();
@@ -166,11 +168,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             }
 
             if (players != null) {
-                if (response.arePlayersHidden()) {
+                if (response.hidePlayers()) {
                     ping.setPlayers(null);
                 } else {
                     // Online players
-                    Integer count = response.getPlayersOnline();
+                    Integer count = response.getOnlinePlayers();
                     if (count != null) players.setOnline(count);
                     // Max players
                     count = response.getMaxPlayers();
@@ -179,7 +181,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     // Player hover
                     message = response.getPlayerHover();
                     if (message != null) players.setSample(new ServerPing.PlayerInfo[]{
-                            new ServerPing.PlayerInfo(message, ServerStatusManager.EMPTY_UUID) });
+                            new ServerPing.PlayerInfo(message, StatusManager.EMPTY_UUID) });
                 }
             }
         }
@@ -277,7 +279,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void statusChanged(ServerStatusManager status) {
+    public void statusChanged(StatusManager status) {
         // Status listener
         if (status.hasChanges()) {
             if (pingListener == null) {

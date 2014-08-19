@@ -66,6 +66,10 @@ ext {
 }
 
 subprojects {
+    dependencies {
+        compile 'org.projectlombok:lombok:1.14.4'
+    }
+
     plugins.withType(ShadowJavaPlugin) {
         shadowJar {
             classifier = ''

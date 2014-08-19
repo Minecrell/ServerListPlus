@@ -21,6 +21,15 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.player;
 
-public interface DynamicPlaceholder extends StaticPlaceholder, DynamicReplacer {}
+import lombok.NonNull;
+import lombok.Value;
+
+import java.util.UUID;
+
+@Value
+public class PlayerIdentity {
+    private final UUID id;
+    private final @NonNull String name;
+}

@@ -21,10 +21,10 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.replacement;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.ServerStatusManager;
+import net.minecrell.serverlistplus.core.status.StatusResponse;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,14 +46,14 @@ public final class ReplacementManager {
         return staticReplacers;
     }
 
+    public static Set<DynamicReplacer> getDynamic() {
+        return dynamicReplacers;
+    }
+
     public static String replaceStatic(ServerListPlusCore core, String s) {
         for (StaticReplacer replacer : staticReplacers)
             s = replacer.replace(core, s);
         return s;
-    }
-
-    public static Set<DynamicReplacer> getDynamic() {
-        return dynamicReplacers;
     }
 
     public static Set<DynamicReplacer> findDynamic(String s) {
@@ -63,8 +63,7 @@ public final class ReplacementManager {
         return result;
     }
 
-    public static String replaceDynamic(ServerStatusManager.Response response, String s,
-                                        Iterable<DynamicReplacer> replacers) {
+    public static String replaceDynamic(StatusResponse response, String s, Iterable<DynamicReplacer> replacers) {
         for (DynamicReplacer replacer : replacers)
             s = replacer.replace(response, s);
         return s;

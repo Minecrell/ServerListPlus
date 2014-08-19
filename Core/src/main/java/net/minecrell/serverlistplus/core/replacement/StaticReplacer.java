@@ -21,28 +21,10 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.replacement;
 
-import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
 
-public abstract class LiteralPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
-    private final String literal;
-
-    public LiteralPlaceholder(String literal) {
-        this.literal = literal;
-    }
-
-    public String getLiteral() {
-        return literal;
-    }
-
-    @Override
-    public boolean find(String s) {
-        return s.contains(literal);
-    }
-
-    @Override
-    public String replace(String s, Object replacement) {
-        return Helper.replace(literal, s, replacement);
-    }
+public interface StaticReplacer {
+    String replace(ServerListPlusCore core, String s);
 }

@@ -21,14 +21,35 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.status;
 
-import net.minecrell.serverlistplus.core.ServerStatusManager;
+import lombok.Value;
 
-public abstract class AbstractDynamicReplacer implements DynamicReplacer {
+import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.util.IntegerRange;
 
-    @Override
-    public String replace(ServerStatusManager.Response response, String s) {
-        return replace(response.getCore(), s);
+import java.util.List;
+
+@Value
+public class StatusPatch {
+    final List<String> descriptions, playerHovers;
+    final List<IntegerRange> online, max;
+    final Boolean hidePlayers;
+
+    final List<String> versions;
+    final Integer protocol;
+
+    final List<FaviconSource> favicons;
+
+    public boolean hasChanges() {
+        return descriptions != null || playerHovers != null ||
+                online != null || max != null ||
+                hidePlayers != null ||
+                versions != null || protocol != null ||
+                favicons != null;
+    }
+
+    public static StatusPatch empty() {
+        return new StatusPatch(null, null, null, null, null, null, null, null);
     }
 }

@@ -24,6 +24,8 @@
 package net.minecrell.serverlistplus.core.config.yaml;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.config.UnknownConf;
+import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.beans.IntrospectionException;
 import java.util.Map;
@@ -34,7 +36,7 @@ import org.yaml.snakeyaml.introspector.Property;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
-public class OutdatedConfigurationPropertyUtils extends FieldOrderPropertyUtils {
+public class OutdatedConfigurationPropertyUtils extends AbstractPropertyUtils {
     private final ServerListPlusCore core;
 
     public OutdatedConfigurationPropertyUtils(ServerListPlusCore core) {
@@ -43,10 +45,13 @@ public class OutdatedConfigurationPropertyUtils extends FieldOrderPropertyUtils 
 
     @Override
     public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
+        if (bAccess != BeanAccess.FIELD) return super.getProperty(type, name, bAccess);
         Map<String, Property> properties = getPropertiesMap(type, bAccess);
-        Property property = properties.get(name);
+        Property property = properties.get(Helper.toLowerCase(name));
+
         if (property == null) { // Check if property was missing and notify user if necessary
-            core.getLogger().log(WARN, "Unknown configuration property: %s @ %s", name, type.getSimpleName());
+            if (type != UnknownConf.class)
+                core.getLogger().log(WARN, "Unknown configuration property: %s @ %s", name, type.getSimpleName());
             return new OutdatedMissingProperty(name);
         }
 

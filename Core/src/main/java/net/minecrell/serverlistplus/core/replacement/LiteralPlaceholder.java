@@ -21,35 +21,28 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.replacement;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.minecrell.serverlistplus.core.util.Helper;
 
-import com.google.common.base.Preconditions;
+public abstract class LiteralPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
+    private final String literal;
 
-public abstract class PatternPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
-    protected final Pattern pattern;
-
-    public PatternPlaceholder(Pattern pattern) {
-        this.pattern = Preconditions.checkNotNull(pattern, "pattern");
+    public LiteralPlaceholder(String literal) {
+        this.literal = literal;
     }
 
-    public Pattern getPattern() {
-        return pattern;
-    }
-
-    public Matcher matcher(String s) {
-        return pattern.matcher(s);
+    public String getLiteral() {
+        return literal;
     }
 
     @Override
     public boolean find(String s) {
-        return matcher(s).find();
+        return s.contains(literal);
     }
 
     @Override
     public String replace(String s, Object replacement) {
-        return matcher(s).replaceAll(replacement.toString());
+        return Helper.replace(literal, s, replacement);
     }
 }

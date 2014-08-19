@@ -21,11 +21,17 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.replacement;
 
-import net.minecrell.serverlistplus.core.ServerStatusManager;
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
 
-public interface DynamicReplacer extends StaticReplacer {
-    boolean find(String s);
-    String replace(ServerStatusManager.Response response, String s);
+public class ColorReplacer implements StaticReplacer {
+    public static final ColorReplacer INSTANCE = new ColorReplacer();
+
+    private ColorReplacer() {}
+
+    @Override
+    public String replace(ServerListPlusCore core, String s) {
+        return core.getPlugin().colorize(s);
+    }
 }

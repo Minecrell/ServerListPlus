@@ -21,36 +21,35 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.plugin;
+package net.minecrell.serverlistplus.core.replacement;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.status.StatusManager;
-import net.minecrell.serverlistplus.core.util.InstanceStorage;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import java.nio.file.Path;
-import java.util.logging.Logger;
+import com.google.common.base.Preconditions;
 
-import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.LoadingCache;
+public abstract class PatternPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
+    protected final Pattern pattern;
 
-/**
- * Represents a plugin container running the ServerListPlus core.
- */
-public interface ServerListPlusPlugin {
-    Logger getLogger();
-    ServerType getServerType();
-    String getServerImplementation();
-    Path getPluginFolder();
+    public PatternPlaceholder(Pattern pattern) {
+        this.pattern = Preconditions.checkNotNull(pattern, "pattern");
+    }
 
-    String getRandomPlayer();
+    public Pattern getPattern() {
+        return pattern;
+    }
 
-    LoadingCache<FaviconSource, ?> getFaviconCache();
+    public Matcher matcher(String s) {
+        return pattern.matcher(s);
+    }
 
-    String colorize(String s);
+    @Override
+    public boolean find(String s) {
+        return matcher(s).find();
+    }
 
-    void initialize(ServerListPlusCore core);
-    void reloadFaviconCache(CacheBuilderSpec spec);
-    void configChanged(InstanceStorage<Object> confs);
-    void statusChanged(StatusManager status);
+    @Override
+    public String replace(String s, Object replacement) {
+        return matcher(s).replaceAll(replacement.toString());
+    }
 }

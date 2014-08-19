@@ -21,8 +21,8 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacer;
+package net.minecrell.serverlistplus.core.config;
 
-public interface StaticPlaceholder extends StaticReplacer {
-    String replace(String s, Object replacement);
+public final class UnknownConf  {
+
 }

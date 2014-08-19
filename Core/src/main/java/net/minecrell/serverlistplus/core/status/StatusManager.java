@@ -1,0 +1,285 @@
+/*
+ *        _____                     __    _     _   _____ _
+ *       |   __|___ ___ _ _ ___ ___|  |  |_|___| |_|  _  | |_ _ ___
+ *       |__   | -_|  _| | | -_|  _|  |__| |_ -|  _|   __| | | |_ -|
+ *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
+ *
+ *  ServerListPlus - Customize your complete server status ping!
+ *  Copyright (C) 2014, Minecrell <https://github.com/Minecrell>
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package net.minecrell.serverlistplus.core.status;
+
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.config.ServerStatusConf;
+import net.minecrell.serverlistplus.core.favicon.DefaultFaviconLoader;
+import net.minecrell.serverlistplus.core.favicon.FaviconLoader;
+import net.minecrell.serverlistplus.core.favicon.FaviconSearch;
+import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
+import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
+import net.minecrell.serverlistplus.core.util.CoreManager;
+import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.util.IntegerRange;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.collect.Multimap;
+
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.util.Helper.nextEntry;
+import static net.minecrell.serverlistplus.core.util.Helper.nextNumber;
+
+public class StatusManager extends CoreManager {
+    public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format
+    public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
+
+    private StatusPatch def, personalized;
+    private Multimap<String, DynamicReplacer> replacers; // For the used placeholders of the messages.
+
+    public StatusManager(ServerListPlusCore core) {
+        super(core);
+    }
+
+    public StatusPatch getDefault() {
+        return def;
+    }
+
+    public StatusPatch getPersonalized() {
+        return personalized;
+    }
+
+    public boolean isEnabled() {
+        return core.getProfiles().isEnabled();
+    }
+
+    public boolean hasChanges() {
+        return isEnabled() &&
+                (def != null && def.hasChanges()) ||(personalized != null && personalized.hasChanges());
+    }
+
+    public boolean hasFavicon() {
+        return isEnabled() && ((def != null && def.getFavicons() != null)
+                || (personalized != null && personalized.getFavicons() != null));
+    }
+
+    public void reload() {
+        ServerStatusConf conf = core.getConf(ServerStatusConf.class);
+        if (conf != null && (conf.Default != null || conf.Personalized != null)) {
+            Preparation preparation = new Preparation();
+
+            this.def = preparation.preparePatch(conf.Default);
+            this.personalized = preparation.preparePatch(conf.Personalized);
+            this.replacers = preparation.createReplacers();
+
+        } else { // Configuration is empty
+            this.def = this.personalized = StatusPatch.empty();
+            this.replacers = ImmutableSetMultimap.of();
+        }
+
+        core.getPlugin().statusChanged(this);
+    }
+
+    protected class Preparation implements Function<String, String> {
+        private final Multimap<String, DynamicReplacer> replacers;
+
+        private Preparation() {
+            this.replacers = HashMultimap.create();
+        }
+
+        public Multimap<String, DynamicReplacer> createReplacers() {
+            return ImmutableSetMultimap.copyOf(replacers);
+        }
+
+        public StatusPatch preparePatch(ServerStatusConf.StatusConf conf) {
+            if (conf == null) return StatusPatch.empty();
+
+            // Temporary patch storage
+            List<String> descriptions = null, playerHovers = null;
+
+            List<IntegerRange> online = null, max = null;
+            Boolean hidePlayers = null;
+            List<String> slots = null;
+
+            List<String> versions = null;
+            Integer protocol = null;
+
+            List<FaviconSource> favicons = null;
+
+
+            descriptions = prepareMessages(conf.Description);
+
+            if (conf.Players != null) {
+                hidePlayers = conf.Players.Hidden;
+                if (hidePlayers == null || !hidePlayers) {
+                    online = prepareRanges(conf.Players.Online);
+                    max = prepareRanges(conf.Players.Max);
+                    playerHovers = prepareMessages(conf.Players.Hover);
+                    slots = prepareMessages(conf.Players.Slots);
+                } else if (conf.Players.Online != null || conf.Players.Max != null || conf.Players.Hover != null) {
+                    getLogger().log(WARN, "You have hidden the player count in your configuration but still " +
+                            "have the maximum online count / hover message configured. They will not work if the" +
+                            " player count is hidden.");
+                }
+            }
+
+            if (conf.Version != null) {
+                versions = prepareMessages(conf.Version.Name);
+                protocol = conf.Version.Protocol;
+            }
+
+            if (conf.Favicon != null) {
+                // Improve this somehow
+                ImmutableList.Builder<FaviconSource> builder = ImmutableList.builder();
+
+                builder.addAll(prepareFavicons(conf.Favicon.Files, DefaultFaviconLoader.FILE));
+                builder.addAll(prepareFaviconSources(FaviconSearch.findInFolder(core, conf.Favicon.Folders),
+                        DefaultFaviconLoader.FILE));
+
+                builder.addAll(prepareFavicons(conf.Favicon.URLs, DefaultFaviconLoader.URL));
+
+                builder.addAll(prepareFavicons(conf.Favicon.Heads, DefaultFaviconLoader.SKIN_HEAD));
+                builder.addAll(prepareFavicons(conf.Favicon.Helms, DefaultFaviconLoader.SKIN_HELM));
+
+                builder.addAll(prepareFaviconSources(conf.Favicon.Encoded, DefaultFaviconLoader.BASE64));
+
+                // Done
+                favicons = builder.build();
+                if (favicons.size() == 0) favicons = null;
+            }
+
+            if (slots != null) {
+                if (versions != null)
+                    versions = ImmutableList.<String>builder().addAll(versions).addAll(slots).build();
+                else versions = slots;
+                if (protocol == null)
+                    protocol = 999;
+            }
+
+            return new StatusPatch(descriptions, playerHovers, online, max, hidePlayers, versions, protocol,
+                    favicons);
+        }
+
+        @Override
+        public String apply(String result) {
+            result = ReplacementManager.replaceStatic(core, result);
+            replacers.putAll(result, ReplacementManager.findDynamic(result));
+            return result;
+        }
+
+        protected Collection<String> prepareStrings(List<String> strings) {
+            return !Helper.nullOrEmpty(strings) ? Collections2.transform(strings, this) : null;
+        }
+
+        protected List<String> prepareMessages(List<String> messages) {
+            return Helper.makeImmutableList(prepareStrings(messages));
+        }
+
+        protected List<IntegerRange> prepareRanges(List<IntegerRange> ranges) {
+            return Helper.makeImmutableList(ranges);
+        }
+
+        protected Collection<FaviconSource> prepareFavicons(List<String> favicons, final FaviconLoader loader) {
+            return prepareFaviconSources(prepareStrings(favicons), loader);
+        }
+
+        protected Collection<FaviconSource> prepareFaviconSources(Collection<String> favicons,
+                                                                  final FaviconLoader loader) {
+            return favicons == null ? ImmutableList.<FaviconSource>of() :
+                    Collections2.transform(favicons, new Function<String, FaviconSource>() {
+                        @Override
+                        public FaviconSource apply(String input) {
+                            return new FaviconSource(input, loader);
+                        }
+                    });
+        }
+    }
+
+    public boolean hidePlayers(StatusResponse response) {
+        Boolean result;
+        return response.getRequest().isIdentified() && (result = personalized.getHidePlayers()) != null ?
+                result : ((result = def.getHidePlayers()) != null ? result : false);
+    }
+
+    public Integer getOnlinePlayers(StatusResponse response) {
+        List<IntegerRange> result;
+        return nextNumber(nextEntry(
+                response.getRequest().isIdentified() && (result = personalized.getOnline()) != null ?
+                        result : def.getOnline()));
+    }
+
+    public Integer getMaxPlayers(StatusResponse response) {
+        List<IntegerRange> result;
+        return nextNumber(nextEntry(
+                response.getRequest().isIdentified() && (result = personalized.getMax()) != null ?
+                        result : def.getMax()));
+    }
+
+    public String getDescription(StatusResponse response) {
+        List<String> result;
+        return prepareRandomEntry(response,
+                response.getRequest().isIdentified() && (result = personalized.getDescriptions()) != null ?
+                        result : def.getDescriptions());
+    }
+
+    public String getPlayerHover(StatusResponse response) {
+        List<String> result;
+        return prepareRandomEntry(response,
+                response.getRequest().isIdentified() && (result = personalized.getPlayerHovers()) != null ?
+                        result : def.getPlayerHovers());
+    }
+
+    public String getVersion(StatusResponse response) {
+        List<String> result;
+        return prepareRandomEntry(response,
+                response.getRequest().isIdentified() && (result = personalized.getVersions()) != null ?
+                        result : def.getVersions());
+    }
+
+    public Integer getProtocol(StatusResponse response) {
+        Integer result;
+        return response.getRequest().isIdentified() && (result = personalized.getProtocol()) != null ?
+                result : def.getProtocol();
+    }
+
+    public FaviconSource getFavicon(StatusResponse response) {
+        List<FaviconSource> result;
+        FaviconSource favicon = nextEntry(
+                response.getRequest().isIdentified() && (result = personalized.getFavicons()) != null ?
+                        result : def.getFavicons());
+        if (favicon == null) return null;
+        Collection<DynamicReplacer> replacer = replacers.get(favicon.getSource());
+        if (replacer.size() > 0) return favicon.withSource(ReplacementManager.replaceDynamic(response,
+                favicon.getSource(), replacer));
+        return favicon;
+    }
+
+
+    private String prepare(StatusResponse response, String s) {
+        return s != null ? ReplacementManager.replaceDynamic(response, s, replacers.get(s)) : null;
+    }
+
+    private String prepareRandomEntry(StatusResponse response, List<String> list) {
+        return prepare(response, Helper.nextEntry(list));
+    }
+}

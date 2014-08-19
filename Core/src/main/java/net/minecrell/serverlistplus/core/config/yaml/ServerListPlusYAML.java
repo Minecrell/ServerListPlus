@@ -30,7 +30,6 @@ import java.io.IOException;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
@@ -45,7 +44,7 @@ public final class ServerListPlusYAML {
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK); // Configuration style
 
         // Plugin classes are loaded from a different class loader, that's why we need this
-        Constructor constructor = new CustomClassLoaderConstructor(core.getClass().getClassLoader());
+        Constructor constructor = new UnknownConfigurationConstructor(core);
         Representer representer = new NullSkippingRepresenter(); // Skip null properties
 
         boolean outdatedYaml = false;

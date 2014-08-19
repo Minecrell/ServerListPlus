@@ -21,36 +21,14 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.plugin;
+package net.minecrell.serverlistplus.core.replacement;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.status.StatusManager;
-import net.minecrell.serverlistplus.core.util.InstanceStorage;
+import net.minecrell.serverlistplus.core.status.StatusResponse;
 
-import java.nio.file.Path;
-import java.util.logging.Logger;
+public abstract class AbstractDynamicReplacer implements DynamicReplacer {
 
-import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.LoadingCache;
-
-/**
- * Represents a plugin container running the ServerListPlus core.
- */
-public interface ServerListPlusPlugin {
-    Logger getLogger();
-    ServerType getServerType();
-    String getServerImplementation();
-    Path getPluginFolder();
-
-    String getRandomPlayer();
-
-    LoadingCache<FaviconSource, ?> getFaviconCache();
-
-    String colorize(String s);
-
-    void initialize(ServerListPlusCore core);
-    void reloadFaviconCache(CacheBuilderSpec spec);
-    void configChanged(InstanceStorage<Object> confs);
-    void statusChanged(StatusManager status);
+    @Override
+    public String replace(StatusResponse response, String s) {
+        return replace(response.getCore(), s);
+    }
 }

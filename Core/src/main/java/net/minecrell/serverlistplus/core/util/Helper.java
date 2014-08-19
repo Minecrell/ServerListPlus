@@ -92,7 +92,7 @@ public final class Helper {
         return list.size() > 1 ? list.get(random().nextInt(list.size())) : list.get(0);
     }
 
-    public static Integer nextNumber(IntRange range) {
+    public static Integer nextNumber(IntegerRange range) {
         if (range == null) return null;
         return range.isSingle() ? range.from() : random().nextInt(range.from(), range.to());
     }

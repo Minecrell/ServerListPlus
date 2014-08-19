@@ -24,6 +24,8 @@
 package net.minecrell.serverlistplus.core.config.yaml;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.config.UnknownConf;
+import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.beans.IntrospectionException;
 
@@ -33,7 +35,7 @@ import org.yaml.snakeyaml.introspector.Property;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
-public class ConfigurationPropertyUtils extends FieldOrderPropertyUtils {
+public class ConfigurationPropertyUtils extends AbstractPropertyUtils {
     private final ServerListPlusCore core;
 
     public ConfigurationPropertyUtils(ServerListPlusCore core) {
@@ -41,10 +43,12 @@ public class ConfigurationPropertyUtils extends FieldOrderPropertyUtils {
         setSkipMissingProperties(true); // Will throw NoSuchMethodError on CraftBukkit
     }
 
-    @Override
+    @Override // Print warning for unknown properties
     public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
-        Property p = super.getProperty(type, name, bAccess);
-        if (p instanceof MissingProperty) // Check if property was missing and notify user if necessary
+        if (bAccess != BeanAccess.FIELD) return super.getProperty(type, name, bAccess);
+        Property p = super.getProperty(type, Helper.toLowerCase(name), bAccess);
+        // Check if property was missing and notify user if necessary
+        if ((p instanceof MissingProperty) && type != UnknownConf.class)
             core.getLogger().log(WARN, "Unknown configuration property: {} @ {}", name, type.getSimpleName());
         return p;
     }
