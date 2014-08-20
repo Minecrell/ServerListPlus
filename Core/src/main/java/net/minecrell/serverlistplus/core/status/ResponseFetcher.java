@@ -23,20 +23,9 @@
 
 package net.minecrell.serverlistplus.core.status;
 
-public interface PlayerFetcher {
+public interface ResponseFetcher {
     Integer getOnlinePlayers();
     Integer getMaxPlayers();
 
-    public static class Hidden implements PlayerFetcher {
-
-        @Override
-        public Integer getOnlinePlayers() {
-            return null;
-        }
-
-        @Override
-        public Integer getMaxPlayers() {
-            return null;
-        }
-    }
+    int getProtocolVersion();
 }

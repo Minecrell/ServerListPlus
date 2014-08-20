@@ -107,6 +107,13 @@ public class PersonalizedStatusPatch {
                         result : def.getPlayerHovers());
     }
 
+    public String getPlayerSlots(StatusResponse response) {
+        List<String> result;
+        return prepareRandomEntry(response,
+                response.getRequest().isIdentified() && (result = personalized.getSlots()) != null ?
+                        result : def.getSlots());
+    }
+
     public String getVersion(StatusResponse response) {
         List<String> result;
         return prepareRandomEntry(response,
@@ -114,10 +121,10 @@ public class PersonalizedStatusPatch {
                         result : def.getVersions());
     }
 
-    public Integer getProtocol(StatusResponse response) {
+    public Integer getProtocolVersion(StatusResponse response) {
         Integer result;
-        return response.getRequest().isIdentified() && (result = personalized.getProtocol()) != null ?
-                result : def.getProtocol();
+        return response.getRequest().isIdentified() && (result = personalized.getProtocolVersion()) != null ?
+                result : def.getProtocolVersion();
     }
 
     public FaviconSource getFavicon(StatusResponse response) {

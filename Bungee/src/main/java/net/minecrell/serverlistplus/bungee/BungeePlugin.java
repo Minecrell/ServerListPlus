@@ -32,7 +32,7 @@ import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
-import net.minecrell.serverlistplus.core.status.PlayerFetcher;
+import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
@@ -138,33 +138,37 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
             final ServerPing ping = event.getResponse();
             final ServerPing.Players players = ping.getPlayers();
+            final ServerPing.Protocol version = ping.getVersion();
 
             StatusResponse response = request.createResponse(core.getStatus(),
                     // Return unknown player counts if it has been hidden
-                    players == null ? new PlayerFetcher.Hidden() :
-                            new PlayerFetcher() {
-                                @Override
-                                public Integer getOnlinePlayers() {
-                                    return players.getOnline();
-                                }
+                    new ResponseFetcher() {
+                        @Override
+                        public Integer getOnlinePlayers() {
+                            return players != null ? players.getOnline() : null;
+                        }
 
-                                @Override
-                                public Integer getMaxPlayers() {
-                                    return players.getMax();
-                                }
-                            });
+                        @Override
+                        public Integer getMaxPlayers() {
+                            return players != null ? players.getMax() : null;
+                        }
+
+                        @Override
+                        public int getProtocolVersion() {
+                            return version != null ? version.getProtocol() : 0;
+                        }
+                    });
 
             // Description
             String message = response.getDescription();
             if (message != null) ping.setDescription(message);
 
-            ServerPing.Protocol version = ping.getVersion();
             if (version != null) {
                 // Version name
                 message = response.getVersion();
                 if (message != null) version.setName(message);
                 // Protocol version
-                Integer protocol = response.getProtocol();
+                Integer protocol = response.getProtocolVersion();
                 if (protocol != null) version.setProtocol(protocol);
             }
 

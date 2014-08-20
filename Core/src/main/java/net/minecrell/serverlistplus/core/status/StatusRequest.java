@@ -84,7 +84,7 @@ public class StatusRequest {
         return createResponse(status, null);
     }
 
-    public StatusResponse createResponse(StatusManager status, PlayerFetcher fetcher) {
+    public StatusResponse createResponse(StatusManager status, ResponseFetcher fetcher) {
         return new StatusResponse(this, status, fetcher);
     }
 

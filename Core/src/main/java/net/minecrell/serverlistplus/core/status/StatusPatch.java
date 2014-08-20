@@ -32,24 +32,27 @@ import java.util.List;
 
 @Value
 public class StatusPatch {
-    final List<String> descriptions, playerHovers;
-    final List<IntegerRange> online, max;
-    final Boolean hidePlayers;
+    private final List<String> descriptions, playerHovers;
 
-    final List<String> versions;
-    final Integer protocol;
+    private final List<IntegerRange> online, max;
+    private final Boolean hidePlayers;
+    private final List<String> slots;
 
-    final List<FaviconSource> favicons;
+    private final List<String> versions;
+    private final Integer protocolVersion;
+
+    private final List<FaviconSource> favicons;
 
     public boolean hasChanges() {
         return descriptions != null || playerHovers != null ||
                 online != null || max != null ||
                 hidePlayers != null ||
-                versions != null || protocol != null ||
+                slots != null ||
+                versions != null || protocolVersion != null ||
                 favicons != null;
     }
 
     public static StatusPatch empty() {
-        return new StatusPatch(null, null, null, null, null, null, null, null);
+        return new StatusPatch(null, null, null, null, null, null, null, null, null);
     }
 }

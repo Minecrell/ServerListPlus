@@ -34,13 +34,14 @@ import com.google.common.collect.ImmutableSet;
 public class StatusResponse {
     private final StatusRequest request;
     private final StatusManager status;
-    private final PlayerFetcher fetcher;
+    private final ResponseFetcher fetcher;
 
     private final Set<VirtualHost> matchingHosts;
 
     private Integer online, max; // The cached player count values
+    private boolean playerSlots;
 
-    protected StatusResponse(StatusRequest request, StatusManager status, PlayerFetcher fetcher) {
+    protected StatusResponse(StatusRequest request, StatusManager status, ResponseFetcher fetcher) {
         this.request = Preconditions.checkNotNull(request, "request");
         this.status = Preconditions.checkNotNull(status, "status");
         this.fetcher = fetcher;
@@ -161,9 +162,30 @@ public class StatusResponse {
         return status.getPatch().getPlayerHover(this);
     }
 
-    public String getVersion() {
+    public String getPlayerSlots() {
         if (matchingHosts != null) {
             String result;
+            for (VirtualHost host : matchingHosts) {
+                result = status.getHosts().get(host).getPlayerSlots(this);
+                if (result != null) return result;
+            }
+        }
+
+        return status.getPatch().getPlayerSlots(this);
+    }
+
+    public String getVersion() {
+        String result;
+
+        if (fetcher.getProtocolVersion() == request.getProtocolVersion()) {
+            result = getPlayerSlots();
+            if (result != null) {
+                playerSlots = true;
+                return result;
+            }
+        }
+
+        if (matchingHosts != null) {
             for (VirtualHost host : matchingHosts) {
                 result = status.getHosts().get(host).getVersion(this);
                 if (result != null) return result;
@@ -173,16 +195,18 @@ public class StatusResponse {
         return status.getPatch().getVersion(this);
     }
 
-    public Integer getProtocol() {
+    public Integer getProtocolVersion() {
+        if (playerSlots) return 9999;
+
         if (matchingHosts != null) {
             Integer result;
             for (VirtualHost host : matchingHosts) {
-                result = status.getHosts().get(host).getProtocol(this);
+                result = status.getHosts().get(host).getProtocolVersion(this);
                 if (result != null) return result;
             }
         }
 
-        return status.getPatch().getProtocol(this);
+        return status.getPatch().getProtocolVersion(this);
     }
 
     public FaviconSource getFavicon() {

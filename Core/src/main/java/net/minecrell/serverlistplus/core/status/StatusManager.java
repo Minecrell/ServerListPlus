@@ -59,6 +59,8 @@ public class StatusManager extends CoreManager {
     private Map<VirtualHost, PersonalizedStatusPatch> hosts;
     private Multimap<String, DynamicReplacer> replacers; // For the used placeholders of the messages.
 
+    private boolean favicons, slots;
+
     public StatusManager(ServerListPlusCore core) {
         super(core);
     }
@@ -80,8 +82,7 @@ public class StatusManager extends CoreManager {
     }
 
     public boolean hasFavicon() {
-        return isEnabled() && patch != null &&
-                (patch.getDefault().getFavicons() != null || patch.getPersonalized().getFavicons() != null);
+        return isEnabled() && favicons;
     }
 
     public void reload() {
@@ -94,6 +95,13 @@ public class StatusManager extends CoreManager {
             this.hosts = preparation.prepareHosts(conf.Hosts);
             this.replacers = preparation.createReplacers();
 
+            favicons = patch.getDefault().getFavicons() != null || patch.getPersonalized().getFavicons() != null;
+            if (!favicons)
+                for (PersonalizedStatusPatch patch : hosts.values())
+                    if (patch.getDefault().getFavicons() != null ||
+                            patch.getPersonalized().getFavicons() != null) {
+                        favicons = true; break;
+                    }
         } else { // Configuration is empty
             this.patch = new PersonalizedStatusPatch();
             this.hosts = ImmutableMap.of();
@@ -122,7 +130,7 @@ public class StatusManager extends CoreManager {
             if (conf == null) return StatusPatch.empty();
 
             // Temporary patch storage
-            List<String> descriptions = null, playerHovers = null;
+            List<String> descriptions, playerHovers = null;
 
             List<IntegerRange> online = null, max = null;
             Boolean hidePlayers = null;
@@ -175,15 +183,7 @@ public class StatusManager extends CoreManager {
                 if (favicons.size() == 0) favicons = null;
             }
 
-            if (slots != null) {
-                if (versions != null)
-                    versions = ImmutableList.<String>builder().addAll(versions).addAll(slots).build();
-                else versions = slots;
-                if (protocol == null)
-                    protocol = 999;
-            }
-
-            return new StatusPatch(descriptions, playerHovers, online, max, hidePlayers, versions, protocol,
+            return new StatusPatch(descriptions, playerHovers, online, max, hidePlayers, slots, versions, protocol,
                     favicons);
         }
 

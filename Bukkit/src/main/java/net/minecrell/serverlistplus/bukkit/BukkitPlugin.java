@@ -31,7 +31,7 @@ import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
-import net.minecrell.serverlistplus.core.status.PlayerFetcher;
+import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
@@ -187,18 +187,22 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             StatusResponse response = core.getRequest(event.getPlayer().getAddress())
                     .createResponse(core.getStatus(),
                             // Return unknown player counts if it has been hidden
-                            !playersVisible ? new PlayerFetcher.Hidden() :
-                                    new PlayerFetcher() {
-                                        @Override
-                                        public Integer getOnlinePlayers() {
-                                            return ping.getPlayersOnline();
-                                        }
+                            new ResponseFetcher() {
+                                @Override
+                                public Integer getOnlinePlayers() {
+                                    return ping.getPlayersOnline();
+                                }
 
-                                        @Override
-                                        public Integer getMaxPlayers() {
-                                            return ping.getPlayersMaximum();
-                                        }
-                                    });
+                                @Override
+                                public Integer getMaxPlayers() {
+                                    return ping.getPlayersMaximum();
+                                }
+
+                                @Override
+                                public int getProtocolVersion() {
+                                    return ping.getVersionProtocol();
+                                }
+                            });
 
             // Description
             String message = response.getDescription();
@@ -208,7 +212,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             message = response.getVersion();
             if (message != null) ping.setVersionName(message);
             // Protocol version
-            Integer protocol = response.getProtocol();
+            Integer protocol = response.getProtocolVersion();
             if (protocol != null) ping.setVersionProtocol(protocol);
 
             // Favicon
