@@ -106,6 +106,7 @@ public class StatusManager extends CoreManager {
             this.patch = new PersonalizedStatusPatch();
             this.hosts = ImmutableMap.of();
             this.replacers = ImmutableSetMultimap.of();
+            this.favicons = false;
         }
 
         core.getPlugin().statusChanged(this);
