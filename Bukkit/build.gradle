@@ -41,7 +41,6 @@ dependencies {
     compile project(':Core')
     compile 'com.google.guava:guava:15.0', // TODO: Better fix for guava compilation in Bukkit
             'org.bukkit:bukkit:1.7.9-R0.2',
-            'org.bukkit:craftbukkit:1.7.9-R0.2',
             'com.comphenix.protocol:ProtocolLib:3.4.0',
             'org.mcstats.bukkit:metrics-lite:R7'
 }
