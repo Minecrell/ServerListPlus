@@ -4,8 +4,9 @@
  *       |__   | -_|  _| | | -_|  _|  |__| |_ -|  _|   __| | | |_ -|
  *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
  *
- *  ServerListPlus - Customize your complete server status ping!
- *  Copyright (C) 2014, Minecrell <https://github.com/Minecrell>
+ *  ServerListPlus - http://git.io/slp
+ *    > The most customizable server status ping plugin for Minecraft!
+ *  Copyright (c) 2014, Minecrell <https://github.com/Minecrell>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -32,16 +33,14 @@ import net.minecrell.serverlistplus.core.favicon.ResizeStrategy;
 import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
 
 @Description({
-        "General plugin options:",
         "Stats: Enable/disable sending plugin statistics.",
         "PlayerTracking: Enable/disable tracking of player names to their IP-Addresses.",
         "Unknown: Placeholder replacement if real value is unknown.",
         "Favicon: Options for the creation / downloading of favicons:",
         " - RecursiveFolderSearch: Also search for favicons in sub directories.",
-        " - SkinSource: The URL to get the Minecraft Skins from, %s will be replaced",
-        "     by the player name.",
-        " - ResizeStrategy: The method used to resize too small or too big favicons.",
-        "     NONE (keep them as is), SCALE (scale them to the correct size)"
+        " - SkinSource: The URL to get the Minecraft Skins from. (%s -> player name)",
+        " - ResizeStrategy: The strategy used to resize too small or too big favicons.",
+        "     NONE (keep them as is, will probably fail), SCALE (scale them to the correct size)"
 })
 @EqualsAndHashCode @ToString
 public class PluginConf {

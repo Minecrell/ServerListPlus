@@ -4,8 +4,9 @@
  *       |__   | -_|  _| | | -_|  _|  |__| |_ -|  _|   __| | | |_ -|
  *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
  *
- *  ServerListPlus - Customize your complete server status ping!
- *  Copyright (C) 2014, Minecrell <https://github.com/Minecrell>
+ *  ServerListPlus - http://git.io/slp
+ *    > The most customizable server status ping plugin for Minecraft!
+ *  Copyright (c) 2014, Minecrell <https://github.com/Minecrell>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -31,18 +32,30 @@ import net.minecrell.serverlistplus.core.config.help.Description;
 import java.util.Map;
 
 @Description({
-        "Customize your server status ping here. Currently changeable:",
-        " - Description (MotD)",
-        " - Message when a player hovers the player count",
-        " - Displayed outdated version, can be also used for colored slots: http://git.io/M66qiw",
-        " - Favicon: http://git.io/oMhJlg",
+        "This is the section where you can customize your server status ping!",
+        " - Default is the section for the status used when the player name is unknown.",
+        "   Personalized is used if the client has already joined the server once.",
+        "   Use %player% as placeholder for the player's name.",
+        "",
+        "Features:",
+        " - Description (MotD): A short status message for your server, max. 2 lines.",
+        " - Players:",
+        "   - Hover: The player hover message that is displayed if you hover the player count.",
+        "   - Slots: Custom player slot formatting, see http://git.io/slp-slots",
+        " - Favicon:",
+        // TODO: http://git.io/slp-favicons?
+        "   - Use multiple server icons or the player's head as favicon, see http://git.io/oMhJlg",
+        "   - Possible favicon sources: Files, Folders, URLs, Heads, Helms, Encoded",
+        "",
+        " More features are explained in the Wiki: http://git.io/slp-config",
+        "",
         "Usage:",
         " - Add multiple entries for random messages.",
         " - Save the file with valid UTF-8 encoding for special characters.",
-        " - Color codes are possible using the usual color codes: &c &4 and so on.",
-        " - The default status is used when the player name is unknown, the personalized is used",
-        "   when the player has already joined the server.",
-        " - Use placeholders to make your status more dynamic: '%player%', '%online%' or '%max%'."
+        " - Available placeholders:",
+        "   - Player name: %player%",
+        "   - Player count: %online%, %max%, %online@server% %online@world%",
+        "   - Random online player name: %random_player%"
 })
 @EqualsAndHashCode(callSuper = true) @ToString(callSuper = true)
 public class ServerStatusConf extends PersonalizedStatusConf {

@@ -4,8 +4,9 @@
  *       |__   | -_|  _| | | -_|  _|  |__| |_ -|  _|   __| | | |_ -|
  *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
  *
- *  ServerListPlus - Customize your complete server status ping!
- *  Copyright (C) 2014, Minecrell <https://github.com/Minecrell>
+ *  ServerListPlus - http://git.io/slp
+ *    > The most customizable server status ping plugin for Minecraft!
+ *  Copyright (c) 2014, Minecrell <https://github.com/Minecrell>
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -90,7 +91,9 @@ public class YAMLWriter {
 
     public void writeComments(Appendable appendable, String... comments) throws IOException {
         if (!Helper.isNullOrEmpty(comments))
-            for (String line : comments) // Write all comment lines
-                appendable.append(COMMENT_PREFIX).append(line).append(newLine);
+            for (String line : comments) { // Write all comment lines
+                if (!line.equals("\\")) appendable.append(COMMENT_PREFIX).append(line);
+                newLine(appendable);
+            }
     }
 }
