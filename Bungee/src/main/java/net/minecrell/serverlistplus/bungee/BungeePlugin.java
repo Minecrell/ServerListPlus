@@ -34,6 +34,7 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.status.PlayerFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
+import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
@@ -47,6 +48,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.Favicon;
@@ -126,24 +128,31 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         @EventHandler
         public void onProxyPing(ProxyPingEvent event) {
             if (event.getResponse() == null) return; // Check if response is not empty
+
+            PendingConnection con = event.getConnection();
+            StatusRequest request = core.getRequest(con.getAddress());
+
+            request.setProtocolVersion(con.getVersion());
+            ServerInfo forcedHost = AbstractReconnectHandler.getForcedHost(con);
+            request.setTarget(con.getVirtualHost(), forcedHost != null ? forcedHost.getName() : null);
+
             final ServerPing ping = event.getResponse();
             final ServerPing.Players players = ping.getPlayers();
 
-            StatusResponse response = core.getRequest(event.getConnection().getAddress().getAddress())
-                    .createResponse(core.getStatus(),
-                            // Return unknown player counts if it has been hidden
-                            players == null ? new PlayerFetcher.Hidden() :
-                                    new PlayerFetcher() {
-                                        @Override
-                                        public Integer getOnlinePlayers() {
-                                            return players.getOnline();
-                                        }
+            StatusResponse response = request.createResponse(core.getStatus(),
+                    // Return unknown player counts if it has been hidden
+                    players == null ? new PlayerFetcher.Hidden() :
+                            new PlayerFetcher() {
+                                @Override
+                                public Integer getOnlinePlayers() {
+                                    return players.getOnline();
+                                }
 
-                                        @Override
-                                        public Integer getMaxPlayers() {
-                                            return players.getMax();
-                                        }
-                                    });
+                                @Override
+                                public Integer getMaxPlayers() {
+                                    return players.getMax();
+                                }
+                            });
 
             // Description
             String message = response.getDescription();
@@ -194,6 +203,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public String getServerImplementation() {
         return getProxy().getVersion() + " (MC: " + getProxy().getGameVersion() + ')';
+    }
+
+    @Override
+    public boolean useRequestCache() {
+        return false;
     }
 
     @Override

@@ -29,6 +29,7 @@ import lombok.Value;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 import com.google.common.base.Preconditions;
 
@@ -67,6 +68,14 @@ public class StatusRequest {
         return target;
     }
 
+    public void setTarget(InetSocketAddress host) {
+        setTarget(host, null);
+    }
+
+    public void setTarget(InetSocketAddress host, String name) {
+        setTarget(new Target(host, name));
+    }
+
     public void setTarget(Target target) {
         this.target = target;
     }
@@ -94,7 +103,7 @@ public class StatusRequest {
 
     @Value
     public static class Target {
-        private final @NonNull String host;
-        private final Integer port;
+        private final @NonNull InetSocketAddress host;
+        private final String name;
     }
 }

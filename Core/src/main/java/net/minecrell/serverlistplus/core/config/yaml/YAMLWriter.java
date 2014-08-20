@@ -89,7 +89,7 @@ public class YAMLWriter {
     }
 
     public void writeComments(Appendable appendable, String... comments) throws IOException {
-        if (!Helper.nullOrEmpty(comments))
+        if (!Helper.isNullOrEmpty(comments))
             for (String line : comments) // Write all comment lines
                 appendable.append(COMMENT_PREFIX).append(line).append(newLine);
     }

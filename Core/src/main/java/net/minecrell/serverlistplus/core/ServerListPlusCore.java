@@ -38,6 +38,7 @@ import net.minecrell.serverlistplus.core.util.Format;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -75,8 +76,7 @@ public class ServerListPlusCore {
 
     private String faviconCacheConf;
 
-    private final CacheLoader<InetAddress, StatusRequest> requestLoader;
-    private LoadingCache<InetAddress, StatusRequest> requestCache;
+    private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
@@ -108,13 +108,6 @@ public class ServerListPlusCore {
 
         // Initialize the profile manager
         this.profileManager = new ProfileManager(this);
-
-        this.requestLoader = new CacheLoader<InetAddress, StatusRequest>() {
-            @Override
-            public StatusRequest load(InetAddress client) throws Exception {
-                return new StatusRequest(client, resolveClient(client));
-            }
-        };
 
         plugin.initialize(this);
 
@@ -192,28 +185,43 @@ public class ServerListPlusCore {
                 faviconCacheConf = null; // Not used, so there is also no cache
         }
 
-        if (requestCacheConf == null || requestCache == null || !requestCacheConf.equals(conf.Caches.Request)) {
+        enabled = plugin.useRequestCache();
+
+        // Check if request cache configuration has been changed
+        if (!enabled || (requestCacheConf == null || requestCache == null ||
+                !requestCacheConf.equals(conf.Caches.Request))) {
             if (requestCache != null) {
                 // Delete the request cache
                 getLogger().log(DEBUG, "Deleting old request cache due to configuration changes.");
                 requestCache.invalidateAll();
                 requestCache.cleanUp();
-                this.playerTracker = null;
+                this.requestCache = null;
             }
 
-            getLogger().log(DEBUG, "Creating new request cache...");
+            if (enabled) {
+                getLogger().log(DEBUG, "Creating new request cache...");
 
-            try {
-                Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
-                this.requestCacheConf = conf.Caches.Request;
-                this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
-            } catch (IllegalArgumentException e) {
-                getLogger().log(e, "Unable to create request cache using configuration settings.");
-                this.requestCacheConf = getDefaultConf(CoreConf.class).Caches.Request;
-                this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
-            }
+                final CacheLoader<InetSocketAddress, StatusRequest> requestLoader =
+                        new CacheLoader<InetSocketAddress, StatusRequest>() {
+                    @Override
+                    public StatusRequest load(InetSocketAddress client) throws Exception {
+                        return createRequest(client.getAddress());
+                    }
+                };
 
-            getLogger().log(DEBUG, "Request cache created.");
+                try {
+                    Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
+                    this.requestCacheConf = conf.Caches.Request;
+                    this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
+                } catch (IllegalArgumentException e) {
+                    getLogger().log(e, "Unable to create request cache using configuration settings.");
+                    this.requestCacheConf = getDefaultConf(CoreConf.class).Caches.Request;
+                    this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
+                }
+
+                getLogger().log(DEBUG, "Request cache created.");
+            } else
+                requestCacheConf = null;
         }
     }
 
@@ -234,8 +242,12 @@ public class ServerListPlusCore {
         return this.playerTracker != null ? playerTracker.getIfPresent(client) : null;
     }
 
-    public StatusRequest getRequest(InetAddress client) {
-        return requestCache.getUnchecked(client);
+    public StatusRequest createRequest(InetAddress client) {
+        return new StatusRequest(client, resolveClient(client));
+    }
+
+    public StatusRequest getRequest(InetSocketAddress client) {
+        return requestCache != null ? requestCache.getUnchecked(client) : createRequest(client.getAddress());
     }
 
     private static final String COMMAND_PREFIX_BASE = Format.GOLD + "[ServerListPlus] ";
@@ -253,13 +265,18 @@ public class ServerListPlusCore {
     private static final Map<String, Function<ServerListPlusCore, Cache<?, ?>>> CACHE_TYPES = ImmutableMap.of(
             "players", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
-                public Cache<?, ?> apply(ServerListPlusCore input) {
-                    return input.playerTracker;
+                public Cache<?, ?> apply(ServerListPlusCore core) {
+                    return core.playerTracker;
                 }
             }, "favicons", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
-                public Cache<?, ?> apply(ServerListPlusCore input) {
-                    return input.getPlugin().getFaviconCache();
+                public Cache<?, ?> apply(ServerListPlusCore core) {
+                    return core.getPlugin().getFaviconCache();
+                }
+            }, "requests", new Function<ServerListPlusCore, Cache<?, ?>>() {
+                @Override
+                public Cache<?, ?> apply(ServerListPlusCore core) {
+                    return core.requestCache;
                 }
             });
 
@@ -318,8 +335,6 @@ public class ServerListPlusCore {
                             (enable ? "enabling" : "disabling") + " ServerListPlus.");
                 }
             } else if (sub.equals("clean")) {
-                boolean found = false;
-
                 if (args.length > 1) {
                     String cacheName = Helper.toLowerCase(args[1]);
                     Function<ServerListPlusCore, Cache<?, ?>> cacheType = CACHE_TYPES.get(cacheName);

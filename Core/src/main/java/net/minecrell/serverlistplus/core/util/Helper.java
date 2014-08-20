@@ -33,7 +33,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 
 public final class Helper {
@@ -45,21 +44,25 @@ public final class Helper {
         return NEWLINE_JOINER.join(Iterators.forArray(lines));
     }
 
-    public static boolean nullOrEmpty(Object[] array) {
+    public static boolean isNullOrEmpty(Object[] array) {
         return array == null || array.length == 0;
     }
 
-    public static boolean nullOrEmpty(Iterable<?> iterable) {
-        return iterable == null || Iterables.isEmpty(iterable);
+    public static boolean isNullOrEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
+    public static boolean isNullOrEmpty(Map<?, ?> map) {
+        return map == null || map.isEmpty();
     }
 
     public static <T> ImmutableList<T> makeImmutableList(Collection<T> elements) {
-        if (nullOrEmpty(elements)) return null;
+        if (isNullOrEmpty(elements)) return null;
         return ImmutableList.copyOf(elements);
     }
 
     public static <T> ImmutableSet<T> makeImmutableSet(Collection<T> elements) {
-        if (nullOrEmpty(elements)) return null;
+        if (isNullOrEmpty(elements)) return null;
         return ImmutableSet.copyOf(elements);
     }
 
@@ -83,12 +86,12 @@ public final class Helper {
     }
 
     public static <T> T nextEntry(T[] array) {
-        if (Helper.nullOrEmpty(array)) return null;
+        if (Helper.isNullOrEmpty(array)) return null;
         return array.length > 1 ? array[random().nextInt(array.length)] : array[0];
     }
 
     public static <T> T nextEntry(List<T> list) {
-        if (Helper.nullOrEmpty(list)) return null;
+        if (Helper.isNullOrEmpty(list)) return null;
         return list.size() > 1 ? list.get(random().nextInt(list.size())) : list.get(0);
     }
 
@@ -129,7 +132,7 @@ public final class Helper {
     }
 
     public static String replace(String replace, String s, Object[] replacements) {
-        if (nullOrEmpty(replacements)) return s;
+        if (isNullOrEmpty(replacements)) return s;
         final int stringLength = s.length();
         final StringBuilder result = new StringBuilder(stringLength);
 

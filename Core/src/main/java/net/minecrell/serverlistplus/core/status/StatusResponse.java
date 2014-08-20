@@ -26,12 +26,17 @@ package net.minecrell.serverlistplus.core.status;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 
+import java.util.Set;
+
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 
 public class StatusResponse {
     private final StatusRequest request;
     private final StatusManager status;
     private final PlayerFetcher fetcher;
+
+    private final Set<VirtualHost> matchingHosts;
 
     private Integer online, max; // The cached player count values
 
@@ -39,6 +44,17 @@ public class StatusResponse {
         this.request = Preconditions.checkNotNull(request, "request");
         this.status = Preconditions.checkNotNull(status, "status");
         this.fetcher = fetcher;
+
+        Set<VirtualHost> matchingHosts = null;
+
+        if (!status.getHosts().isEmpty()) {
+            ImmutableSet.Builder<VirtualHost> builder = ImmutableSet.builder();
+            for (VirtualHost host : status.getHosts().keySet())
+                if (host.matches(request.getTarget())) builder.add(host);
+            if ((matchingHosts = builder.build()).isEmpty()) matchingHosts = null;
+        }
+
+        this.matchingHosts = matchingHosts;
     }
 
     public ServerListPlusCore getCore() {
@@ -53,12 +69,33 @@ public class StatusResponse {
         return status;
     }
 
+    public Set<VirtualHost> getMatchingHosts() {
+        return matchingHosts;
+    }
+
     public boolean hidePlayers() {
-        return status.hidePlayers(this);
+        Boolean result;
+        if (matchingHosts != null) {
+            for (VirtualHost host : matchingHosts) {
+                result = status.getHosts().get(host).hidePlayers(this);
+                if (result != null) return result;
+            }
+        }
+
+        return (result = status.getPatch().hidePlayers(this)) != null ? result : false;
     }
 
     public Integer getOnlinePlayers() {
-        return online != null ? online : (this.online = status.getOnlinePlayers(this));
+        if (online != null) return online;
+
+        if (matchingHosts != null) {
+            for (VirtualHost host : matchingHosts) {
+                this.online = status.getHosts().get(host).getOnlinePlayers(this);
+                if (online != null) return online;
+            }
+        }
+
+        return this.online = status.getPatch().getOnlinePlayers(this);
     }
 
     public Integer fetchOnlinePlayers() {
@@ -75,7 +112,16 @@ public class StatusResponse {
     }
 
     public Integer getMaxPlayers() {
-        return max != null ? max : (this.max = status.getMaxPlayers(this));
+        if (max != null) return max;
+
+        if (matchingHosts != null) {
+            for (VirtualHost host : matchingHosts) {
+                this.max = status.getHosts().get(host).getMaxPlayers(this);
+                if (max != null) return max;
+            }
+        }
+
+        return this.max = status.getPatch().getOnlinePlayers(this);
     }
 
     public Integer fetchMaxPlayers() {
@@ -92,22 +138,62 @@ public class StatusResponse {
     }
 
     public String getDescription() {
-        return status.getDescription(this);
+        if (matchingHosts != null) {
+            String result;
+            for (VirtualHost host : matchingHosts) {
+                result = status.getHosts().get(host).getDescription(this);
+                if (result != null) return result;
+            }
+        }
+
+        return status.getPatch().getDescription(this);
     }
 
     public String getPlayerHover() {
-        return status.getPlayerHover(this);
+        if (matchingHosts != null) {
+            String result;
+            for (VirtualHost host : matchingHosts) {
+                result = status.getHosts().get(host).getPlayerHover(this);
+                if (result != null) return result;
+            }
+        }
+
+        return status.getPatch().getPlayerHover(this);
     }
 
     public String getVersion() {
-        return status.getVersion(this);
+        if (matchingHosts != null) {
+            String result;
+            for (VirtualHost host : matchingHosts) {
+                result = status.getHosts().get(host).getVersion(this);
+                if (result != null) return result;
+            }
+        }
+
+        return status.getPatch().getVersion(this);
     }
 
     public Integer getProtocol() {
-        return status.getProtocol(this);
+        if (matchingHosts != null) {
+            Integer result;
+            for (VirtualHost host : matchingHosts) {
+                result = status.getHosts().get(host).getProtocol(this);
+                if (result != null) return result;
+            }
+        }
+
+        return status.getPatch().getProtocol(this);
     }
 
     public FaviconSource getFavicon() {
-        return status.getFavicon(this);
+        if (matchingHosts != null) {
+            FaviconSource result;
+            for (VirtualHost host : matchingHosts) {
+                result = status.getHosts().get(host).getFavicon(this);
+                if (result != null) return result;
+            }
+        }
+
+        return status.getPatch().getFavicon(this);
     }
 }

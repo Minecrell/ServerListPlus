@@ -52,7 +52,7 @@ public final class FaviconSearch {
     public static final String IMAGE_PATTERN = "glob:*.{jpg,jpeg,png,bmp,wbmp,gif}";
 
     public static Set<String> findInFolder(ServerListPlusCore core, List<String> folders) {
-        if (Helper.nullOrEmpty(folders)) return ImmutableSet.of();
+        if (Helper.isNullOrEmpty(folders)) return ImmutableSet.of();
         final Path pluginFolder = core.getPlugin().getPluginFolder();
 
         final PathMatcher image = pluginFolder.getFileSystem().getPathMatcher(IMAGE_PATTERN);

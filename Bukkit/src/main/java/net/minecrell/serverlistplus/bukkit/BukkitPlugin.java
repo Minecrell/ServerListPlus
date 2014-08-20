@@ -33,11 +33,13 @@ import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.status.PlayerFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
+import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
+import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Handler;
@@ -62,6 +64,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
@@ -157,7 +160,22 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     // Status packet listener (ProtocolLib)
     public final class StatusPacketListener extends PacketAdapter {
         public StatusPacketListener() {
-            super(PacketAdapter.params(BukkitPlugin.this, PacketType.Status.Server.OUT_SERVER_INFO).optionAsync());
+            super(PacketAdapter.params(BukkitPlugin.this,
+                    PacketType.Status.Server.OUT_SERVER_INFO, PacketType.Handshake.Client.SET_PROTOCOL)
+                    .optionAsync());
+        }
+
+        @Override
+        public void onPacketReceiving(PacketEvent event) {
+            PacketContainer packet = event.getPacket();
+            if (packet.getProtocols().read(0) != PacketType.Protocol.STATUS) return;
+
+            StatusRequest request = core.getRequest(event.getPlayer().getAddress());
+            request.setProtocolVersion(packet.getIntegers().read(0));
+
+            String host = packet.getStrings().read(0);
+            int port = packet.getIntegers().read(1);
+            request.setTarget(InetSocketAddress.createUnresolved(host, port));
         }
 
         @Override // Server status packet
@@ -166,7 +184,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             // Make sure players have not been hidden when getting the player count
             boolean playersVisible = ping.isPlayersVisible();
 
-            StatusResponse response = core.getRequest(event.getPlayer().getAddress().getAddress())
+            StatusResponse response = core.getRequest(event.getPlayer().getAddress())
                     .createResponse(core.getStatus(),
                             // Return unknown player counts if it has been hidden
                             !playersVisible ? new PlayerFetcher.Hidden() :
@@ -228,6 +246,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public String getServerImplementation() {
         return getServer().getVersion();
+    }
+
+    @Override
+    public boolean useRequestCache() {
+        return true;
     }
 
     @Override

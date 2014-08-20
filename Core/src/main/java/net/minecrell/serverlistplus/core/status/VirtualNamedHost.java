@@ -21,29 +21,23 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.config;
+package net.minecrell.serverlistplus.core.status;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.NonNull;
+import lombok.Value;
 
-import net.minecrell.serverlistplus.core.config.help.Description;
+@Value
+public class VirtualNamedHost implements VirtualHost {
+    protected static final String NAME_PREFIX = "Name:";
 
-@Description({
-        "WARNING: Changes in this section can possibly break the plugin!",
-        "Caches: Change the behaviour of the caches: http://goo.gl/oYVk0F",
-})
-@EqualsAndHashCode @ToString
-public class CoreConf {
-    public CachesConf Caches = new CachesConf();
+    private final @NonNull String name;
 
-    @EqualsAndHashCode @ToString
-    public static class CachesConf {
-        /**
-         * @deprecated The cache can always only count the time from the login, but not from the logout,
-         * that's why we need something different here...
-         */
-        @Deprecated public String PlayerTracking = "";
-        public String Favicon = "maximumSize=512,expireAfterWrite=6h";
-        public String Request = "expireAfterWrite=5m";
+    @Override
+    public boolean matches(StatusRequest.Target target) {
+        return name.equalsIgnoreCase(target.getName());
+    }
+
+    public static VirtualNamedHost parse(String host) {
+        return new VirtualNamedHost(host);
     }
 }

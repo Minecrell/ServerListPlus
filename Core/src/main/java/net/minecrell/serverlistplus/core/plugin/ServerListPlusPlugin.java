@@ -43,6 +43,8 @@ public interface ServerListPlusPlugin {
     String getServerImplementation();
     Path getPluginFolder();
 
+    boolean useRequestCache();
+
     String getRandomPlayer();
     Integer getOnlinePlayersAt(String location);
 
