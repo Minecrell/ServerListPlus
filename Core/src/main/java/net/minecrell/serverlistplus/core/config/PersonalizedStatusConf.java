@@ -26,7 +26,6 @@ package net.minecrell.serverlistplus.core.config;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import net.minecrell.serverlistplus.core.config.help.Description;
 import net.minecrell.serverlistplus.core.util.IntegerRange;
 
 import java.util.List;
