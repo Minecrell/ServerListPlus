@@ -44,6 +44,7 @@ public interface ServerListPlusPlugin {
     Path getPluginFolder();
 
     String getRandomPlayer();
+    Integer getOnlinePlayersAt(String location);
 
     LoadingCache<FaviconSource, ?> getFaviconCache();
 

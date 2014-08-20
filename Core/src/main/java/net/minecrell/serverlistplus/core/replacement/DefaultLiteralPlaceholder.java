@@ -29,7 +29,7 @@ import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 
-public enum DefaultPlaceholder implements DynamicPlaceholder {
+public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
     PLAYER ("%player%") {
         @Override
         public String replace(StatusResponse response, String s) {
@@ -78,8 +78,12 @@ public enum DefaultPlaceholder implements DynamicPlaceholder {
 
     protected final String literal;
 
-    private DefaultPlaceholder(String literal) {
+    private DefaultLiteralPlaceholder(String literal) {
         this.literal = literal;
+    }
+
+    public String getLiteral() {
+        return literal;
     }
 
     @Override

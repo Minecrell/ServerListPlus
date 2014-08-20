@@ -23,20 +23,37 @@
 
 package net.minecrell.serverlistplus.core.replacement;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.config.PluginConf;
+import net.minecrell.serverlistplus.core.status.StatusResponse;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Preconditions;
+public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
+    ONLINE_AT (Pattern.compile("%online@(\\w+)%")) {
+        @Override
+        public String replace(ServerListPlusCore core, String s) {
+            Matcher matcher = matcher(s);
+            if (!matcher.find()) return s;
 
-public abstract class PatternPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
-    protected final Pattern pattern;
+            final String unknown = Matcher.quoteReplacement(core.getConf(PluginConf.class).Unknown.PlayerCount);
+            StringBuffer result = new StringBuffer();
 
-    public PatternPlaceholder(Pattern pattern) {
-        this.pattern = Preconditions.checkNotNull(pattern, "pattern");
-    }
+            do {
+                Integer players = core.getPlugin().getOnlinePlayersAt(matcher.group(1));
+                matcher.appendReplacement(result, players != null ? players.toString() : unknown);
+            } while (matcher.find());
 
-    public Pattern getPattern() {
-        return pattern;
+            matcher.appendTail(result);
+            return result.toString();
+        }
+    };
+
+    private final Pattern pattern;
+
+    private DefaultPatternPlaceholder(Pattern pattern) {
+        this.pattern = pattern;
     }
 
     public Matcher matcher(String s) {
@@ -51,5 +68,10 @@ public abstract class PatternPlaceholder extends AbstractDynamicReplacer impleme
     @Override
     public String replace(String s, Object replacement) {
         return matcher(s).replaceAll(Matcher.quoteReplacement(replacement.toString()));
+    }
+
+    @Override
+    public String replace(StatusResponse response, String s) {
+        return replace(response.getCore(), s);
     }
 }

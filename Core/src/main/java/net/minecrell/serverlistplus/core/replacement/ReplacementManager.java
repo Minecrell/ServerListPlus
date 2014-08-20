@@ -39,7 +39,8 @@ public final class ReplacementManager {
     static {
         // Register default replacements
         staticReplacers.add(ColorReplacer.INSTANCE);
-        Collections.addAll(dynamicReplacers, DefaultPlaceholder.values());
+        Collections.addAll(dynamicReplacers, DefaultLiteralPlaceholder.values());
+        Collections.addAll(dynamicReplacers, DefaultPatternPlaceholder.values());
     }
 
     public static Set<StaticReplacer> getStatic() {

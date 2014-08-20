@@ -24,7 +24,6 @@
 package net.minecrell.serverlistplus.bungee;
 
 import net.minecrell.metrics.BungeeMetricsLite;
-import net.minecrell.serverlistplus.bungee.replacement.ServerOnlinePlaceholder;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -33,7 +32,6 @@ import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
-import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.status.PlayerFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
@@ -53,6 +51,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.LoginEvent;
@@ -211,6 +210,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public Integer getOnlinePlayersAt(String location) {
+        ServerInfo server = getProxy().getServerInfo(location);
+        return server != null ? server.getPlayers().size() : null;
+    }
+
+    @Override
     public LoadingCache<FaviconSource, Optional<Favicon>> getFaviconCache() {
         return faviconCache;
     }
@@ -222,8 +227,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void initialize(ServerListPlusCore core) {
-        // Register the BungeeCord replacers
-        ReplacementManager.getDynamic().add(new ServerOnlinePlaceholder(getProxy()));
+
     }
 
     @Override

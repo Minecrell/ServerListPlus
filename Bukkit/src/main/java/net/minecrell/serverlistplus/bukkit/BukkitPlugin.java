@@ -49,6 +49,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -234,6 +235,13 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         Player player = Helper.nextEntry(getServer().getOnlinePlayers());
         return player != null ? player.getName() : null;
     }
+
+    @Override
+    public Integer getOnlinePlayersAt(String location) {
+        World world = getServer().getWorld(location);
+        return world != null ? world.getPlayers().size() : null;
+    }
+
 
     @Override
     public LoadingCache<FaviconSource, Optional<WrappedServerPing.CompressedImage>> getFaviconCache() {
