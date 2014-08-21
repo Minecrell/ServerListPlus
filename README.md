@@ -13,7 +13,7 @@ You can download the plugin from these official download sites:
 - [Development Builds](http://ci.minecrell.net/job/ServerListPlus/) (unstable, not recommended)
 
 ## Compilation
-To compile the plugin, simply clone the repository and build the plugin using Gradle:
+To compile the plugin, simply clone the repository and build the plugin using Gradle:  
 `gradlew clean universal`
 
 ## Source
