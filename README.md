@@ -8,7 +8,7 @@
 - [**Favicons**](https://github.com/Minecrell/ServerListPlus/wiki/Favicons) (Server icons): Load from files, URLs, or for example - use the player's head!
 - [**Maximum player count!**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#player-count)
 - [**Custom player slot format!**](https://github.com/Minecrell/ServerListPlus/wiki/Player-Slots)
-- [**Player Hover Message**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#player-hover-message): Display a message when a player hovers the player count in the server list!
+- [**Player Hover Message**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#player-hover-messages): Display a message when a player hovers the player count in the server list!
 - [**Virtual/Forced Hosts**](https://github.com/Minecrell/ServerListPlus/wiki/Virtual-Hosts): Customize your server status ping depending on the IP used to ping your server!
 - Add multiple entries to choose a random one from your list!
 - Personalize your status ping by adding the player's name to your messages!
