@@ -29,7 +29,7 @@ import lombok.Value;
 
 @Value
 public class VirtualNamedHost implements VirtualHost {
-    protected static final String NAME_PREFIX = "Name:";
+    protected static final String NAME_PREFIX = "Name/";
 
     private final @NonNull String name;
 
