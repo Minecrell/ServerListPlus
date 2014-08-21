@@ -123,7 +123,7 @@ public class StatusResponse {
             }
         }
 
-        return this.max = status.getPatch().getOnlinePlayers(this);
+        return this.max = status.getPatch().getMaxPlayers(this);
     }
 
     public Integer fetchMaxPlayers() {
