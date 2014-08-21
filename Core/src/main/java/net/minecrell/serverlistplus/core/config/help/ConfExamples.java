@@ -42,24 +42,20 @@ public final class ConfExamples {
         conf.Default = new ServerStatusConf.StatusConf();
         conf.Default.Description = Arrays.asList(
                 Helper.lines(
-                        "&cA Minecraft Server.",
-                        "&cCurrently running &e1.7&c."
-                ), "&aSingle lines are also possible."
+                        "&aA Minecraft Server.",
+                        "&7Now with [&a&lPvP&7], [&a&lMinigames&7], and much more!"
+                ), Helper.lines(
+                        "&aA Minecraft Server.",
+                        "&eWe have updated our server to &lMinecraft 1.8&e!"
+                )
         );
 
         // Player hover
         conf.Default.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Default.Players.Hover = Arrays.asList(
                 Helper.lines(
-                        "&cOur server is currently still",
-                        "&cunder construction. We will",
-                        "&crelease it soon!"
-                ), Helper.lines(
-                        "&aWhat does our server offer?",
-                        "&6We have:",
-                        "  - &6Survival Games",
-                        "  - &6Skyblock",
-                        "  - &6and much more!"
+                        "&aWelcome to &lA Minecraft Server&a!",
+                        "&aCurrently &e&l%online% &aplayers are playing on our server!"
                 )
         );
 
@@ -68,11 +64,11 @@ public final class ConfExamples {
         conf.Personalized = new ServerStatusConf.StatusConf();
         conf.Personalized.Description = Arrays.asList(
                 Helper.lines(
-                        "Hello, %player%!",
-                        "How are you?"
+                        "&aA Minecraft Network. &7|  &eHello, &l%player%!",
+                        "&7Now with [&a&lPvP&7], [&a&lMinigames&7], and much more!"
                 ), Helper.lines(
-                        "&cA Minecraft Server.",
-                        "&eCome and play on our server, %player%!"
+                        "&aA Minecraft Network. &7|  &eHello, &l%player%!",
+                        "&eWe have updated our server to &lMinecraft 1.8&e!"
                 )
         );
 
@@ -80,11 +76,8 @@ public final class ConfExamples {
         conf.Personalized.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Personalized.Players.Hover = Arrays.asList(
                 Helper.lines(
-                        "&aYou are not %player%?",
-                        "&aWell that's bad then something went wrong!",
-                        "&aYou're probably using the same IP-Address",
-                        "&alike someone else playing on our server.",
-                        "&eThere is no way to fix this, sorry!"
+                        "&aWelcome back, &l%player%&a!",
+                        "&aCurrently &e&l%online% &aplayers are playing on our server!"
                 )
         );
 

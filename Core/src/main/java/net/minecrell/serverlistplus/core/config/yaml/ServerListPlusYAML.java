@@ -43,6 +43,7 @@ public final class ServerListPlusYAML {
     public static YAMLWriter createWriter(ServerListPlusCore core) {
         DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK); // Configuration style
+        dumperOptions.setWidth(Integer.MAX_VALUE);
 
         // Plugin classes are loaded from a different class loader, that's why we need this
         Constructor constructor = new UnknownConfigurationConstructor(core);
