@@ -178,7 +178,7 @@ public class StatusResponse {
     public String getVersion() {
         String result;
 
-        if (fetcher.getProtocolVersion() == request.getProtocolVersion()) {
+        if (request.getProtocolVersion() != null && fetcher.getProtocolVersion() == request.getProtocolVersion()) {
             result = getPlayerSlots();
             if (result != null) {
                 playerSlots = true;
