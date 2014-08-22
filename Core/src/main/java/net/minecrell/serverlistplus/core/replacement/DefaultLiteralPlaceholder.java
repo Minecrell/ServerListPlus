@@ -73,7 +73,9 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
     RANDOM_PLAYER ("%random_player%") {
         @Override
         public String replace(ServerListPlusCore core, String s) {
-            return replace(s, core.getPlugin().getRandomPlayer());
+            String name = core.getPlugin().getRandomPlayer();
+            if (name != null) return replace(s, core.getPlugin().getRandomPlayer());
+            else return replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
         }
     };
 
