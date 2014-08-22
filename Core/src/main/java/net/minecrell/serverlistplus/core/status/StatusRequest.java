@@ -37,7 +37,7 @@ import com.google.common.base.Preconditions;
 public class StatusRequest {
     private final InetAddress client;
     private final PlayerIdentity identity;
-    private int protocolVersion = -1;
+    private Integer protocolVersion;
     private Target target;
 
     public StatusRequest(InetAddress client, PlayerIdentity identity) {
@@ -57,11 +57,11 @@ public class StatusRequest {
         return identity != null;
     }
 
-    public int getProtocolVersion() {
+    public Integer getProtocolVersion() {
         return protocolVersion;
     }
 
-    public void setProtocolVersion(int protocolVersion) {
+    public void setProtocolVersion(Integer protocolVersion) {
         this.protocolVersion = protocolVersion;
     }
 
