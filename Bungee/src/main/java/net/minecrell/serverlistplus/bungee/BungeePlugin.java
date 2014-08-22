@@ -44,6 +44,7 @@ import java.awt.image.BufferedImage;
 import java.util.Collection;
 
 import com.google.common.base.Optional;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
@@ -131,7 +132,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             if (event.getResponse() == null) return; // Check if response is not empty
 
             PendingConnection con = event.getConnection();
-            StatusRequest request = core.getRequest(con.getAddress());
+            StatusRequest request = core.createRequest(con.getAddress().getAddress());
 
             request.setProtocolVersion(con.getVersion());
             ServerInfo forcedHost = AbstractReconnectHandler.getForcedHost(con);
@@ -211,11 +212,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public boolean useRequestCache() {
-        return false;
-    }
-
-    @Override
     public String getRandomPlayer() {
         int tmp = getProxy().getOnlineCount();
         if (tmp == 0) return null;
@@ -235,6 +231,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public Cache<?, ?> getRequestCache() {
+        return null;
+    }
+
+    @Override
     public LoadingCache<FaviconSource, Optional<Favicon>> getFaviconCache() {
         return faviconCache;
     }
@@ -246,6 +247,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void initialize(ServerListPlusCore core) {
+
+    }
+
+    @Override
+    public void reloadCaches(ServerListPlusCore core) {
 
     }
 

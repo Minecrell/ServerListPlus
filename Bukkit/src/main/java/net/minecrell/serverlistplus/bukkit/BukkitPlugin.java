@@ -26,6 +26,7 @@ package net.minecrell.serverlistplus.bukkit;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
+import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
@@ -40,12 +41,15 @@ import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Handler;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
@@ -91,6 +95,16 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private ServerListPlusCore core;
     private LoadingCache<FaviconSource, Optional<WrappedServerPing.CompressedImage>> faviconCache;
+
+    private final CacheLoader<InetAddress, StatusRequest> requestLoader = new CacheLoader<InetAddress,
+            StatusRequest>() {
+        @Override
+        public StatusRequest load(InetAddress client) throws Exception {
+            return core.createRequest(client);
+        }
+    };
+    private LoadingCache<InetAddress, StatusRequest> requestCache;
+    private String requestCacheConf;
 
     private Listener loginListener;
     private StatusPacketListener packetListener;
@@ -171,7 +185,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             PacketContainer packet = event.getPacket();
             if (packet.getProtocols().read(0) != PacketType.Protocol.STATUS) return;
 
-            StatusRequest request = core.getRequest(event.getPlayer().getAddress());
+            StatusRequest request = getRequest(event.getPlayer().getAddress().getAddress());
             request.setProtocolVersion(packet.getIntegers().read(0));
 
             String host = packet.getStrings().read(0);
@@ -185,7 +199,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             // Make sure players have not been hidden when getting the player count
             boolean playersVisible = ping.isPlayersVisible();
 
-            StatusResponse response = core.getRequest(event.getPlayer().getAddress())
+            StatusResponse response = getRequest(event.getPlayer().getAddress().getAddress())
                     .createResponse(core.getStatus(),
                             // Return unknown player counts if it has been hidden
                             new ResponseFetcher() {
@@ -253,9 +267,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         return getServer().getVersion();
     }
 
-    @Override
-    public boolean useRequestCache() {
-        return true;
+    public StatusRequest getRequest(InetAddress client) {
+        return requestCache.getUnchecked(client);
     }
 
     @Override
@@ -268,6 +281,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     public Integer getOnlinePlayersAt(String location) {
         World world = getServer().getWorld(location);
         return world != null ? world.getPlayers().size() : null;
+    }
+
+    @Override
+    public Cache<?, ?> getRequestCache() {
+        return requestCache;
     }
 
 
@@ -284,6 +302,35 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void initialize(ServerListPlusCore core) {
 
+    }
+
+    @Override
+    public void reloadCaches(ServerListPlusCore core) {
+        CoreConf conf = core.getConf(CoreConf.class);
+        // Check if request cache configuration has been changed
+        if (requestCacheConf == null || requestCache == null || !requestCacheConf.equals(conf.Caches.Request)) {
+            if (requestCache != null) {
+                // Delete the request cache
+                getLogger().log(DEBUG, "Deleting old request cache due to configuration changes.");
+                requestCache.invalidateAll();
+                requestCache.cleanUp();
+                this.requestCache = null;
+            }
+
+            getLogger().log(DEBUG, "Creating new request cache...");
+
+            try {
+                Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
+                this.requestCacheConf = conf.Caches.Request;
+                this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
+            } catch (IllegalArgumentException e) {
+                getLogger().log(ERROR, "Unable to create request cache using configuration settings.", e);
+                this.requestCacheConf = core.getDefaultConf(CoreConf.class).Caches.Request;
+                this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
+            }
+
+            getLogger().log(DEBUG, "Request cache created.");
+        }
     }
 
     @Override

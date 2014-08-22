@@ -39,7 +39,6 @@ import net.minecrell.serverlistplus.core.util.Format;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,8 +50,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -76,9 +73,6 @@ public class ServerListPlusCore {
     private String playerTrackerConf;
 
     private String faviconCacheConf;
-
-    private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
-    private String requestCacheConf;
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
@@ -185,45 +179,6 @@ public class ServerListPlusCore {
             } else
                 faviconCacheConf = null; // Not used, so there is also no cache
         }
-
-        enabled = plugin.useRequestCache();
-
-        // Check if request cache configuration has been changed
-        if (!enabled || (requestCacheConf == null || requestCache == null ||
-                !requestCacheConf.equals(conf.Caches.Request))) {
-            if (requestCache != null) {
-                // Delete the request cache
-                getLogger().log(DEBUG, "Deleting old request cache due to configuration changes.");
-                requestCache.invalidateAll();
-                requestCache.cleanUp();
-                this.requestCache = null;
-            }
-
-            if (enabled) {
-                getLogger().log(DEBUG, "Creating new request cache...");
-
-                final CacheLoader<InetSocketAddress, StatusRequest> requestLoader =
-                        new CacheLoader<InetSocketAddress, StatusRequest>() {
-                    @Override
-                    public StatusRequest load(InetSocketAddress client) throws Exception {
-                        return createRequest(client.getAddress());
-                    }
-                };
-
-                try {
-                    Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
-                    this.requestCacheConf = conf.Caches.Request;
-                    this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
-                } catch (IllegalArgumentException e) {
-                    getLogger().log(e, "Unable to create request cache using configuration settings.");
-                    this.requestCacheConf = getDefaultConf(CoreConf.class).Caches.Request;
-                    this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
-                }
-
-                getLogger().log(DEBUG, "Request cache created.");
-            } else
-                requestCacheConf = null;
-        }
     }
 
     public void reload() throws ServerListPlusException {
@@ -245,10 +200,6 @@ public class ServerListPlusCore {
 
     public StatusRequest createRequest(InetAddress client) {
         return new StatusRequest(client, resolveClient(client));
-    }
-
-    public StatusRequest getRequest(InetSocketAddress client) {
-        return requestCache != null ? requestCache.getUnchecked(client) : createRequest(client.getAddress());
     }
 
     private static final String COMMAND_PREFIX_BASE = Format.GOLD + "[ServerListPlus] ";
@@ -277,7 +228,7 @@ public class ServerListPlusCore {
             }, "requests", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
                 public Cache<?, ?> apply(ServerListPlusCore core) {
-                    return core.requestCache;
+                    return core.getPlugin().getRequestCache();
                 }
             });
 

@@ -32,6 +32,7 @@ import net.minecrell.serverlistplus.core.util.InstanceStorage;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.LoadingCache;
 
@@ -44,16 +45,16 @@ public interface ServerListPlusPlugin {
     String getServerImplementation();
     Path getPluginFolder();
 
-    boolean useRequestCache();
-
     String getRandomPlayer();
     Integer getOnlinePlayersAt(String location);
 
+    Cache<?, ?> getRequestCache();
     LoadingCache<FaviconSource, ?> getFaviconCache();
 
     String colorize(String s);
 
     void initialize(ServerListPlusCore core);
+    void reloadCaches(ServerListPlusCore core);
     void reloadFaviconCache(CacheBuilderSpec spec);
     void configChanged(InstanceStorage<Object> confs);
     void statusChanged(StatusManager status);
