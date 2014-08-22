@@ -49,7 +49,7 @@ public class StatusResponse {
 
         Set<VirtualHost> matchingHosts = null;
 
-        if (!status.getHosts().isEmpty()) {
+        if (request.getTarget() != null && !status.getHosts().isEmpty()) {
             ImmutableSet.Builder<VirtualHost> builder = ImmutableSet.builder();
             for (VirtualHost host : status.getHosts().keySet())
                 if (host.matches(request.getTarget())) builder.add(host);
