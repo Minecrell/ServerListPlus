@@ -179,6 +179,8 @@ public class ServerListPlusCore {
             } else
                 faviconCacheConf = null; // Not used, so there is also no cache
         }
+
+        plugin.reloadCaches(this);
     }
 
     public void reload() throws ServerListPlusException {

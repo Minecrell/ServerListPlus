@@ -22,36 +22,17 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.bukkit.handlers;
 
-import java.nio.file.Path;
+public final class Handlers {
+    private Handlers() {}
 
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
-
-public abstract class BukkitPluginBase extends JavaPlugin {
-    public String getVersion() {
-        return getDescription().getVersion();
-    }
-
-    public String getDisplayName() {
-        return getDescription().getFullName();
-    }
-
-    public Path getPluginFolder() {
-        return getDataFolder().toPath();
-    }
-
-    protected void disablePlugin() {
-        getServer().getPluginManager().disablePlugin(this);
-    }
-
-    public void registerListener(Listener listener) {
-        getServer().getPluginManager().registerEvents(listener, this);
-    }
-
-    public void unregisterListener(Listener listener) {
-        HandlerList.unregisterAll(listener);
+    public static boolean checkProtocolLib() {
+        try {
+            Class.forName("com.comphenix.protocol.ProtocolLibrary");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }

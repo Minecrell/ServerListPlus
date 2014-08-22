@@ -22,36 +22,23 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.bukkit.handlers;
 
-import java.nio.file.Path;
+import net.minecrell.serverlistplus.bukkit.BukkitPlugin;
 
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.google.common.base.Preconditions;
 
-public abstract class BukkitPluginBase extends JavaPlugin {
-    public String getVersion() {
-        return getDescription().getVersion();
+public abstract class StatusHandler {
+    protected final BukkitPlugin bukkit;
+
+    protected StatusHandler(BukkitPlugin plugin) {
+        this.bukkit = Preconditions.checkNotNull(plugin, "plugin");
     }
 
-    public String getDisplayName() {
-        return getDescription().getFullName();
+    public BukkitPlugin getPlugin() {
+        return bukkit;
     }
 
-    public Path getPluginFolder() {
-        return getDataFolder().toPath();
-    }
-
-    protected void disablePlugin() {
-        getServer().getPluginManager().disablePlugin(this);
-    }
-
-    public void registerListener(Listener listener) {
-        getServer().getPluginManager().registerEvents(listener, this);
-    }
-
-    public void unregisterListener(Listener listener) {
-        HandlerList.unregisterAll(listener);
-    }
+    public abstract boolean register();
+    public abstract boolean unregister();
 }

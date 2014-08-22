@@ -40,6 +40,8 @@ import com.google.common.cache.LoadingCache;
  * Represents a plugin container running the ServerListPlus core.
  */
 public interface ServerListPlusPlugin {
+    ServerListPlusCore getCore();
+
     Logger getLogger();
     ServerType getServerType();
     String getServerImplementation();

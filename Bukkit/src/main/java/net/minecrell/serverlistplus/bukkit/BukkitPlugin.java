@@ -24,6 +24,10 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
+import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
+import net.minecrell.serverlistplus.bukkit.handlers.Handlers;
+import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
+import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
@@ -33,17 +37,13 @@ import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
-import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
-import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Handler;
 
@@ -65,14 +65,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.util.CachedServerIcon;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import com.comphenix.protocol.wrappers.WrappedServerPing;
 import org.mcstats.MetricsLite;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
@@ -94,7 +88,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     private ServerListPlusCore core;
-    private LoadingCache<FaviconSource, Optional<WrappedServerPing.CompressedImage>> faviconCache;
 
     private final CacheLoader<InetAddress, StatusRequest> requestLoader = new CacheLoader<InetAddress,
             StatusRequest>() {
@@ -106,22 +99,40 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private LoadingCache<InetAddress, StatusRequest> requestCache;
     private String requestCacheConf;
 
+    private StatusHandler bukkit, protocol;
+
+    private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
+            new CacheLoader<FaviconSource, Optional<CachedServerIcon>>() {
+        @Override
+        public Optional<CachedServerIcon> load(FaviconSource source) throws Exception {
+            // Try loading the favicon
+            BufferedImage image = FaviconHelper.loadSafely(core, source);
+            if (image == null) return Optional.absent(); // Favicon loading failed
+            else return Optional.of(getServer().loadServerIcon(image)); // Success!
+        }
+    };
+    private LoadingCache<FaviconSource, Optional<CachedServerIcon>> faviconCache;
+
     private Listener loginListener;
-    private StatusPacketListener packetListener;
 
     private MetricsLite metrics;
 
     @Override
     public void onEnable() {
+        this.bukkit = new BukkitEventHandler(this);
+        if (Handlers.checkProtocolLib()) {
+            this.protocol = new ProtocolLibHandler(this);
+        } else getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
             getLogger().log(INFO, "Successfully loaded!");
         } catch (ServerListPlusException e) {
             getLogger().log(INFO, "Please fix the error before restarting the server!");
-            disablePlugin(); return; // Disable plugin to show error in /plugins
+            disablePlugin(); return; // Disable bukkit to show error in /plugins
         } catch (Exception e) {
             getLogger().log(ERROR, "An internal error occurred while loading the core!", e);
-            disablePlugin(); return; // Disable plugin to show error in /plugins
+            disablePlugin(); return; // Disable bukkit to show error in /plugins
         }
 
         // Register commands
@@ -172,89 +183,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         }
     }
 
-    // Status packet listener (ProtocolLib)
-    public final class StatusPacketListener extends PacketAdapter {
-        public StatusPacketListener() {
-            super(PacketAdapter.params(BukkitPlugin.this,
-                    PacketType.Status.Server.OUT_SERVER_INFO, PacketType.Handshake.Client.SET_PROTOCOL)
-                    .optionAsync());
-        }
-
-        @Override
-        public void onPacketReceiving(PacketEvent event) {
-            PacketContainer packet = event.getPacket();
-            if (packet.getProtocols().read(0) != PacketType.Protocol.STATUS) return;
-
-            StatusRequest request = getRequest(event.getPlayer().getAddress().getAddress());
-            request.setProtocolVersion(packet.getIntegers().read(0));
-
-            String host = packet.getStrings().read(0);
-            int port = packet.getIntegers().read(1);
-            request.setTarget(InetSocketAddress.createUnresolved(host, port));
-        }
-
-        @Override // Server status packet
-        public void onPacketSending(final PacketEvent event) {
-            final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
-            // Make sure players have not been hidden when getting the player count
-            boolean playersVisible = ping.isPlayersVisible();
-
-            StatusResponse response = getRequest(event.getPlayer().getAddress().getAddress())
-                    .createResponse(core.getStatus(),
-                            // Return unknown player counts if it has been hidden
-                            new ResponseFetcher() {
-                                @Override
-                                public Integer getOnlinePlayers() {
-                                    return ping.getPlayersOnline();
-                                }
-
-                                @Override
-                                public Integer getMaxPlayers() {
-                                    return ping.getPlayersMaximum();
-                                }
-
-                                @Override
-                                public int getProtocolVersion() {
-                                    return ping.getVersionProtocol();
-                                }
-                            });
-
-            // Description
-            String message = response.getDescription();
-            if (message != null) ping.setMotD(message);
-
-            // Version name
-            message = response.getVersion();
-            if (message != null) ping.setVersionName(message);
-            // Protocol version
-            Integer protocol = response.getProtocolVersion();
-            if (protocol != null) ping.setVersionProtocol(protocol);
-
-            // Favicon
-            FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
-                Optional<WrappedServerPing.CompressedImage> icon = faviconCache.getUnchecked(favicon);
-                if (icon.isPresent()) ping.setFavicon(icon.get());
-            }
-
-            if (playersVisible) {
-                if (response.hidePlayers()) {
-                    ping.setPlayersVisible(false);
-                } else {
-                    // Online players
-                    Integer count = response.getOnlinePlayers();
-                    if (count != null) ping.setPlayersOnline(count);
-                    // Max players
-                    count = response.getMaxPlayers();
-                    if (count != null) ping.setPlayersMaximum(count);
-
-                    // Player hover
-                    message = response.getPlayerHover();
-                    if (message != null) ping.setPlayers(Collections.singleton(
-                            new WrappedGameProfile(StatusManager.EMPTY_UUID, message)));
-                }
-            }
-        }
+    @Override
+    public ServerListPlusCore getCore() {
+        return core;
     }
 
     @Override
@@ -269,6 +200,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     public StatusRequest getRequest(InetAddress client) {
         return requestCache.getUnchecked(client);
+    }
+
+    public CachedServerIcon getFavicon(FaviconSource source) {
+        Optional<CachedServerIcon> result = faviconCache.getUnchecked(source);
+        return result.isPresent() ? result.get() : null;
     }
 
     @Override
@@ -290,7 +226,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
 
     @Override
-    public LoadingCache<FaviconSource, Optional<WrappedServerPing.CompressedImage>> getFaviconCache() {
+    public LoadingCache<FaviconSource, Optional<CachedServerIcon>> getFaviconCache() {
         return faviconCache;
     }
 
@@ -336,16 +272,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void reloadFaviconCache(CacheBuilderSpec spec) {
         if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource,
-                    Optional<WrappedServerPing.CompressedImage>>() {
-                @Override
-                public Optional<WrappedServerPing.CompressedImage> load(FaviconSource source) throws Exception {
-                    // Try loading the favicon
-                    BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.absent(); // Favicon loading failed
-                    else return Optional.of(WrappedServerPing.CompressedImage.fromPng(image)); // Success!
-                }
-            });
+            this.faviconCache = CacheBuilder.from(spec).build(faviconLoader);
         } else {
             // Delete favicon cache
             faviconCache.invalidateAll();
@@ -392,15 +319,17 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     public void statusChanged(StatusManager status) {
         // Status packet listener
         if (status.hasChanges()) {
-            if (packetListener == null) {
-                ProtocolLibrary.getProtocolManager().addPacketListener(
-                        this.packetListener = new StatusPacketListener());
-                getLogger().log(DEBUG, "Registered status packet listener.");
-            }
-        } else if (packetListener != null) {
-            ProtocolLibrary.getProtocolManager().removePacketListener(packetListener);
-            this.packetListener = null;
-            getLogger().log(DEBUG, "Unregistered status packet listener.");
+            if (bukkit.register())
+                getLogger().log(DEBUG, "Registered ping event handler.");
+            if (protocol == null)
+                getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+            else if (protocol.register())
+                getLogger().log(DEBUG, "Registered status protocol handler.");
+        } else {
+            if (bukkit.unregister())
+                getLogger().log(DEBUG, "Unregistered ping event handler.");
+            if (protocol != null && protocol.unregister())
+                getLogger().log(DEBUG, "Unregistered status protocol handler.");
         }
     }
 }
