@@ -25,13 +25,17 @@
 buildscript {
     // Add Gradle shadow plugin: https://github.com/johnrengelman/shadow
     repositories { jcenter() }
+    /* SNAPSHOT repo
+    repositories {
+        maven { url 'https://oss.jfrog.org/repo' }
+    }*/
     dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.0.3' }
 }
 
 import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin;
 
 allprojects {
-    version = '3.3'
+    version = '3.3-SNAPSHOT'
 
     apply plugin: 'java'
     sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
