@@ -43,8 +43,9 @@ import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Handler;
 
 import com.google.common.base.Optional;
@@ -89,14 +90,14 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private ServerListPlusCore core;
 
-    private final CacheLoader<InetAddress, StatusRequest> requestLoader = new CacheLoader<InetAddress,
+    private final CacheLoader<InetSocketAddress, StatusRequest> requestLoader = new CacheLoader<InetSocketAddress,
             StatusRequest>() {
         @Override
-        public StatusRequest load(InetAddress client) throws Exception {
-            return core.createRequest(client);
+        public StatusRequest load(InetSocketAddress client) throws Exception {
+            return core.createRequest(client.getAddress());
         }
     };
-    private LoadingCache<InetAddress, StatusRequest> requestCache;
+    private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
 
     private StatusHandler bukkit, protocol;
@@ -169,7 +170,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
-            core.addClient(event.getAddress(), new PlayerIdentity(event.getUniqueId(), event.getName()));
+            UUID uuid = null;
+            try {
+                uuid = event.getUniqueId();
+            } catch (Throwable ignored) {}
+            core.addClient(event.getAddress(), new PlayerIdentity(uuid, event.getName()));
         }
     }
 
@@ -178,8 +183,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(PlayerLoginEvent event) {
-            core.addClient(event.getAddress(), new PlayerIdentity(event.getPlayer().getUniqueId(),
-                    event.getPlayer().getName()));
+            UUID uuid = null;
+            try {
+                uuid = event.getPlayer().getUniqueId();
+            } catch (Throwable ignored) {}
+            core.addClient(event.getAddress(), new PlayerIdentity(uuid, event.getPlayer().getName()));
         }
     }
 
@@ -198,8 +206,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         return getServer().getVersion();
     }
 
-    public StatusRequest getRequest(InetAddress client) {
+    public StatusRequest getRequest(InetSocketAddress client) {
         return requestCache.getUnchecked(client);
+    }
+
+    public void requestCompleted(InetSocketAddress client) {
+        requestCache.invalidate(client);
     }
 
     public CachedServerIcon getFavicon(FaviconSource source) {

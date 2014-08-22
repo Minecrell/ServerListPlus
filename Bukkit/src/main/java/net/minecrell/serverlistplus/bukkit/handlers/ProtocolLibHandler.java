@@ -59,7 +59,7 @@ public class ProtocolLibHandler extends StatusHandler {
             PacketContainer packet = event.getPacket();
             if (packet.getProtocols().read(0) != PacketType.Protocol.STATUS) return;
 
-            StatusRequest request = bukkit.getRequest(event.getPlayer().getAddress().getAddress());
+            StatusRequest request = bukkit.getRequest(event.getPlayer().getAddress());
             request.setProtocolVersion(packet.getIntegers().read(0));
 
             String host = packet.getStrings().read(0);
@@ -73,8 +73,11 @@ public class ProtocolLibHandler extends StatusHandler {
             // Make sure players have not been hidden when getting the player count
             boolean playersVisible = ping.isPlayersVisible();
 
-            StatusResponse response = bukkit.getRequest(event.getPlayer().getAddress().getAddress())
-                    .createResponse(bukkit.getCore().getStatus(),
+            InetSocketAddress client = event.getPlayer().getAddress();
+            StatusRequest request = bukkit.getRequest(client);
+            bukkit.requestCompleted(event.getPlayer().getAddress());
+
+            StatusResponse response = request.createResponse(bukkit.getCore().getStatus(),
                             // Return unknown player counts if it has been hidden
                             new ResponseFetcher() {
                                 @Override
@@ -93,14 +96,13 @@ public class ProtocolLibHandler extends StatusHandler {
                                 }
                             });
 
-            // Description is modified in BukkitEventHandler
-            // String message = response.getDescription();
-            // if (message != null) ping.setMotD(message);
-            // TODO: What happens if another plugin modifies the player count using ProtocolLib? In that case we
-            //       should consider setting it here again.
+            // Description is modified in BukkitEventHandler, but we modify it here again,
+            // because the BukkitEventHandler has no access to information like virtual hosts.
+            String message = response.getDescription();
+            if (message != null) ping.setMotD(message);
 
             // Version name
-            String message = response.getVersion();
+            message = response.getVersion();
             if (message != null) ping.setVersionName(message);
             // Protocol version
             Integer protocol = response.getProtocolVersion();
@@ -115,6 +117,8 @@ public class ProtocolLibHandler extends StatusHandler {
                     if (count != null) ping.setPlayersOnline(count);
 
                     // Max players are modified in BukkitEventHandler
+                    count = response.getMaxPlayers();
+                    if (count != null) ping.setPlayersMaximum(count);
 
                     // Player hover
                     message = response.getPlayerHover();

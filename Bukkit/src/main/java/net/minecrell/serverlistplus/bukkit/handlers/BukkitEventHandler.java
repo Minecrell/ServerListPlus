@@ -46,7 +46,7 @@ public class BukkitEventHandler extends StatusHandler {
 
         @EventHandler
         public void onServerListPing(final ServerListPingEvent event) {
-            StatusResponse response = bukkit.getRequest(event.getAddress()).createResponse(
+            StatusResponse response = bukkit.getCore().createRequest(event.getAddress()).createResponse(
                     bukkit.getCore().getStatus(), new ResponseFetcher() {
                         @Override
                         public Integer getOnlinePlayers() {

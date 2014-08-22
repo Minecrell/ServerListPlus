@@ -45,6 +45,6 @@ public class CoreConf {
          */
         @Deprecated public String PlayerTracking = "";
         public String Favicon = "maximumSize=512,expireAfterWrite=6h";
-        public String Request = "expireAfterWrite=5m";
+        public String Request = "expireAfterWrite=2m";
     }
 }
