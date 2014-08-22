@@ -44,6 +44,7 @@ dependencies {
             'org.bukkit:bukkit:1.7.9-R0.2',
             'org.bukkit:craftbukkit:1.7.9-R0.2',
             'com.comphenix.protocol:ProtocolLib:3.4.0',
+            'com.comphenix.tinyprotocol:TinyProtocol:0.1.0',
             'org.mcstats.bukkit:metrics-lite:R7'
 }
 
