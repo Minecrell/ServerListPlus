@@ -41,6 +41,7 @@ import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
+import java.net.InetSocketAddress;
 import java.util.Collection;
 
 import com.google.common.base.Optional;
@@ -135,8 +136,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             StatusRequest request = core.createRequest(con.getAddress().getAddress());
 
             request.setProtocolVersion(con.getVersion());
-            ServerInfo forcedHost = AbstractReconnectHandler.getForcedHost(con);
-            request.setTarget(con.getVirtualHost(), forcedHost != null ? forcedHost.getName() : null);
+            InetSocketAddress host = con.getVirtualHost();
+            if (host != null) {
+                ServerInfo forcedHost = AbstractReconnectHandler.getForcedHost(con);
+                request.setTarget(host, forcedHost != null ? forcedHost.getName() : null);
+            }
 
             final ServerPing ping = event.getResponse();
             final ServerPing.Players players = ping.getPlayers();
