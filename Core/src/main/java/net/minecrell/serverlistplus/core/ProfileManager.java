@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core;
 
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.util.CoreManager;
 
@@ -48,7 +50,7 @@ public class ProfileManager extends CoreManager {
     private static final Gson JSON = new Gson();
 
     // TODO: Implement profiles
-    private boolean enabled;
+    private @Getter boolean enabled;
 
     public ProfileManager(ServerListPlusCore core) {
         super(core);
@@ -111,10 +113,6 @@ public class ProfileManager extends CoreManager {
         } catch (Exception e) {
             throw getLogger().process(e, "An internal error occurred while saving the profiles!");
         }
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 
     public void setEnabled(boolean state) throws ServerListPlusException {

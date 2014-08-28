@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
+import lombok.Getter;
+
 import com.google.common.base.Preconditions;
 
 import org.yaml.snakeyaml.DumperOptions;
@@ -31,6 +33,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
+@Getter
 public class SnakeYAML {
     private final Yaml yaml;
     private final boolean outdated;
@@ -50,25 +53,5 @@ public class SnakeYAML {
         this.representer = Preconditions.checkNotNull(representer, "representer");
         this.outdated = outdated;
         this.yaml = new Yaml(constructor, representer, dumperOptions);
-    }
-
-    public Yaml getYaml() {
-        return yaml;
-    }
-
-    public boolean isOutdated() {
-        return outdated;
-    }
-
-    public DumperOptions getDumperOptions() {
-        return dumperOptions;
-    }
-
-    public Constructor getConstructor() {
-        return constructor;
-    }
-
-    public Representer getRepresenter() {
-        return representer;
     }
 }

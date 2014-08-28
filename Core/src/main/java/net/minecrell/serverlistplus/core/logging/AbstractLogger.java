@@ -24,7 +24,7 @@
 
 package net.minecrell.serverlistplus.core.logging;
 
-import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.replacement.util.Literals;
 
 import java.util.logging.Level;
 
@@ -40,11 +40,11 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
     }
 
     protected String format(String s, Object arg) {
-        return Helper.replace(ARG_PATTERN, s, arg);
+        return Literals.replace(s, ARG_PATTERN, arg);
     }
 
     protected String format(String s, Object[] args) {
-        return Helper.replace(ARG_PATTERN, s, args);
+        return Literals.replace(s, ARG_PATTERN, args);
     }
 
     protected String formatAdvanced(String s, Object[] args) {

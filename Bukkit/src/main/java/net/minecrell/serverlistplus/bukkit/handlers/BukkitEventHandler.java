@@ -78,7 +78,10 @@ public class BukkitEventHandler extends StatusHandler {
             FaviconSource favicon = response.getFavicon();
             if (favicon != null) {
                 CachedServerIcon icon = bukkit.getFavicon(favicon);
-                if (icon != null) event.setServerIcon(icon);
+                if (icon != null)
+                    try {
+                        event.setServerIcon(icon);
+                    } catch (UnsupportedOperationException ignored) {}
             }
         }
     }

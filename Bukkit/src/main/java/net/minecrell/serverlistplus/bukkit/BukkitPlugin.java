@@ -25,7 +25,6 @@
 package net.minecrell.serverlistplus.bukkit;
 
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
-import net.minecrell.serverlistplus.bukkit.handlers.Handlers;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
@@ -43,20 +42,29 @@ import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Handler;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Iterators;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -75,53 +83,50 @@ import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
 import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
-    private final boolean spigot;
-
-    public BukkitPlugin() {
-        // Check if server is running Spigot
-        boolean spigot = false;
-        try {
-            Class.forName("org.spigotmc.SpigotConfig");
-            spigot = true;
-        } catch (ClassNotFoundException ignored) {}
-
-        this.spigot = spigot;
-    }
-
     private ServerListPlusCore core;
 
-    private final CacheLoader<InetSocketAddress, StatusRequest> requestLoader = new CacheLoader<InetSocketAddress,
-            StatusRequest>() {
+    private StatusHandler bukkit, protocol;
+    private Listener loginListener;
+
+    private MetricsLite metrics;
+
+    private Method legacy_getOnlinePlayers;
+
+    // Favicon cache
+    private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
+            new CacheLoader<FaviconSource, Optional<CachedServerIcon>>() {
+                @Override
+                public Optional<CachedServerIcon> load(FaviconSource source) throws Exception {
+                    // Try loading the favicon
+                    BufferedImage image = FaviconHelper.loadSafely(core, source);
+                    if (image == null) return Optional.absent(); // Favicon loading failed
+                    else return Optional.of(getServer().loadServerIcon(image)); // Success!
+                }
+            };
+    private LoadingCache<FaviconSource, Optional<CachedServerIcon>> faviconCache;
+
+    // Request cache
+    private final CacheLoader<InetSocketAddress, StatusRequest> requestLoader =
+            new CacheLoader<InetSocketAddress, StatusRequest>() {
         @Override
         public StatusRequest load(InetSocketAddress client) throws Exception {
             return core.createRequest(client.getAddress());
         }
     };
+
     private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
 
-    private StatusHandler bukkit, protocol;
-
-    private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
-            new CacheLoader<FaviconSource, Optional<CachedServerIcon>>() {
-        @Override
-        public Optional<CachedServerIcon> load(FaviconSource source) throws Exception {
-            // Try loading the favicon
-            BufferedImage image = FaviconHelper.loadSafely(core, source);
-            if (image == null) return Optional.absent(); // Favicon loading failed
-            else return Optional.of(getServer().loadServerIcon(image)); // Success!
-        }
-    };
-    private LoadingCache<FaviconSource, Optional<CachedServerIcon>> faviconCache;
-
-    private Listener loginListener;
-
-    private MetricsLite metrics;
-
     @Override
     public void onEnable() {
+        try {
+            Method method = Server.class.getMethod("getOnlinePlayers");
+            if (method.getReturnType() == Player[].class)
+                legacy_getOnlinePlayers = method;
+        } catch (Throwable ignored) {}
+
         this.bukkit = new BukkitEventHandler(this);
-        if (Handlers.checkProtocolLib()) {
+        if (Environment.checkProtocolLib(getServer())) {
             this.protocol = new ProtocolLibHandler(this);
         } else getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
 
@@ -173,7 +178,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             UUID uuid = null;
             try {
                 uuid = event.getUniqueId();
-            } catch (Throwable ignored) {}
+            } catch (NoSuchMethodError ignored) {}
             core.addClient(event.getAddress(), new PlayerIdentity(uuid, event.getName()));
         }
     }
@@ -186,7 +191,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             UUID uuid = null;
             try {
                 uuid = event.getPlayer().getUniqueId();
-            } catch (Throwable ignored) {}
+            } catch (NoSuchMethodError ignored) {}
             core.addClient(event.getAddress(), new PlayerIdentity(uuid, event.getPlayer().getName()));
         }
     }
@@ -198,7 +203,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public ServerType getServerType() {
-        return spigot ? ServerType.SPIGOT : ServerType.BUKKIT;
+        return Environment.getType();
     }
 
     @Override
@@ -220,15 +225,46 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public String getRandomPlayer() {
-        Player player = Helper.nextEntry(getServer().getOnlinePlayers());
-        return player != null ? player.getName() : null;
+    public Integer getOnlinePlayers(String location) {
+        World world = getServer().getWorld(location);
+        return world != null ? world.getPlayers().size() : null;
     }
 
     @Override
-    public Integer getOnlinePlayersAt(String location) {
+    public Iterator<String> getRandomPlayers() {
+        Collection<? extends Player> players;
+
+        try { // Meh, compatibility
+            players = getServer().getOnlinePlayers();
+        } catch (NoSuchMethodError e) {
+            try {
+                players = Arrays.asList((Player[]) legacy_getOnlinePlayers.invoke(getServer()));
+            } catch (InvocationTargetException ex) {
+                throw Throwables.propagate(ex.getCause());
+            } catch (Exception ex) {
+                throw Throwables.propagate(ex);
+            }
+        }
+
+        return getRandomPlayers(players);
+    }
+
+    @Override
+    public Iterator<String> getRandomPlayers(String location) {
         World world = getServer().getWorld(location);
-        return world != null ? world.getPlayers().size() : null;
+        return world != null ? getRandomPlayers(world.getPlayers()) : null;
+    }
+
+    private static Iterator<String> getRandomPlayers(Collection<? extends Player> players) {
+        if (Helper.isNullOrEmpty(players)) return null;
+
+        // This is horribly inefficient, but I don't have a better idea at the moment..
+        return Iterators.transform(Helper.shuffe(players).iterator(), new Function<Player, String>() {
+            @Override
+            public String apply(Player input) {
+                return input.getName();
+            }
+        });
     }
 
     @Override
@@ -298,7 +334,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking) {
             if (loginListener == null) {
-                registerListener(this.loginListener = spigot || getServer().getOnlineMode()
+                registerListener(this.loginListener = Environment.isSpigot() || getServer().getOnlineMode()
                         ? new LoginListener() : new OfflineModeLoginListener());
                 getLogger().log(DEBUG, "Registered player tracking listener.");
             }

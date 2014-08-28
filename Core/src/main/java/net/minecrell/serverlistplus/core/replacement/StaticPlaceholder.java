@@ -24,6 +24,10 @@
 
 package net.minecrell.serverlistplus.core.replacement;
 
+import java.util.Iterator;
+
 public interface StaticPlaceholder extends StaticReplacer {
     String replace(String s, Object replacement);
+    String replace(String s, Iterator<?> replacements);
+    String replace(String s, Iterator<?> replacements, Object others);
 }

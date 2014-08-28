@@ -24,23 +24,31 @@
 
 package net.minecrell.serverlistplus.core.status;
 
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
 public class StatusResponse {
-    private final StatusRequest request;
-    private final StatusManager status;
+    private final @Getter StatusRequest request;
+    private final @Getter StatusManager status;
     private final ResponseFetcher fetcher;
 
-    private final Set<VirtualHost> matchingHosts;
+    private final @Getter Set<VirtualHost> matchingHosts;
 
     private Integer online, max; // The cached player count values
     private boolean playerSlots;
+
+    private Iterator<String> randomPlayers;
+    private Map<String, Iterator<String>> randomPlayersMap;
 
     protected StatusResponse(StatusRequest request, StatusManager status, ResponseFetcher fetcher) {
         this.request = Preconditions.checkNotNull(request, "request");
@@ -63,16 +71,17 @@ public class StatusResponse {
         return status.getCore();
     }
 
-    public StatusRequest getRequest() {
-        return request;
+    public Iterator<String> getRandomPlayers() {
+        return randomPlayers != null ? randomPlayers :
+                (this.randomPlayers = getCore().getPlugin().getRandomPlayers());
     }
 
-    public StatusManager getStatus() {
-        return status;
-    }
-
-    public Set<VirtualHost> getMatchingHosts() {
-        return matchingHosts;
+    public Iterator<String> getRandomPlayers(String location) {
+        if (randomPlayersMap == null) this.randomPlayersMap = new HashMap<>();
+        if (randomPlayersMap.containsKey(location)) return randomPlayersMap.get(location);
+        Iterator<String> result = getCore().getPlugin().getRandomPlayers(location);
+        randomPlayersMap.put(location, result);
+        return result;
     }
 
     public boolean hidePlayers() {

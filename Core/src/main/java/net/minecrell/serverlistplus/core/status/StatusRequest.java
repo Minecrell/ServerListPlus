@@ -24,7 +24,9 @@
 
 package net.minecrell.serverlistplus.core.status;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.Value;
 
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
@@ -34,10 +36,11 @@ import java.net.InetSocketAddress;
 
 import com.google.common.base.Preconditions;
 
+@Getter
 public class StatusRequest {
     private final InetAddress client;
     private final PlayerIdentity identity;
-    private Integer protocolVersion;
+    private @Setter Integer protocolVersion;
     private Target target;
 
     public StatusRequest(InetAddress client, PlayerIdentity identity) {
@@ -45,28 +48,8 @@ public class StatusRequest {
         this.identity = identity;
     }
 
-    public InetAddress getClient() {
-        return client;
-    }
-
-    public PlayerIdentity getIdentity() {
-        return identity;
-    }
-
     public boolean isIdentified() {
         return identity != null;
-    }
-
-    public Integer getProtocolVersion() {
-        return protocolVersion;
-    }
-
-    public void setProtocolVersion(Integer protocolVersion) {
-        this.protocolVersion = protocolVersion;
-    }
-
-    public Target getTarget() {
-        return target;
     }
 
     public void setTarget(InetSocketAddress host) {

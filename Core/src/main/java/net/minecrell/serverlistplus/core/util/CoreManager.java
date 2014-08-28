@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core.util;
 
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.logging.Logger;
@@ -31,14 +33,10 @@ import net.minecrell.serverlistplus.core.logging.Logger;
 import com.google.common.base.Preconditions;
 
 public abstract class CoreManager {
-    protected final ServerListPlusCore core;
+    protected final @Getter ServerListPlusCore core;
 
     protected CoreManager(ServerListPlusCore core) {
         this.core = Preconditions.checkNotNull(core, "core");
-    }
-
-    public ServerListPlusCore getCore() {
-        return core;
     }
 
     protected Logger<ServerListPlusException> getLogger() {

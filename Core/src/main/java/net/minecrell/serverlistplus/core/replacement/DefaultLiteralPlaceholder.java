@@ -24,11 +24,15 @@
 
 package net.minecrell.serverlistplus.core.replacement;
 
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.replacement.util.Literals;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
-import net.minecrell.serverlistplus.core.util.Helper;
+
+import java.util.Iterator;
 
 public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
     PLAYER ("%player%") {
@@ -72,21 +76,21 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
     },
     RANDOM_PLAYER ("%random_player%") {
         @Override
+        public String replace(StatusResponse response, String s) {
+            return replace(s, response.getRandomPlayers(),
+                    response.getCore().getConf(PluginConf.class).Unknown.PlayerName);
+        }
+
+        @Override
         public String replace(ServerListPlusCore core, String s) {
-            String name = core.getPlugin().getRandomPlayer();
-            if (name != null) return replace(s, core.getPlugin().getRandomPlayer());
-            else return replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
+            return replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
         }
     };
 
-    protected final String literal;
+    protected final @Getter String literal;
 
     private DefaultLiteralPlaceholder(String literal) {
         this.literal = literal;
-    }
-
-    public String getLiteral() {
-        return literal;
     }
 
     @Override
@@ -101,7 +105,17 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
 
     @Override
     public String replace(String s, Object replacement) {
-        return Helper.replace(literal, s, replacement);
+        return Literals.replace(s, literal, replacement);
+    }
+
+    @Override
+    public String replace(String s, Iterator<?> replacements) {
+        return Literals.replace(s, literal, replacements);
+    }
+
+    @Override
+    public String replace(String s, Iterator<?> replacements, Object others) {
+        return Literals.replace(s, literal, replacements, others);
     }
 
 

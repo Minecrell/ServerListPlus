@@ -24,20 +24,18 @@
 
 package net.minecrell.serverlistplus.core.plugin;
 
+import lombok.Getter;
+
 import com.google.common.base.Preconditions;
 
 /**
  * A base class that can be used to wrap the implementation specific command sender classes.
  */
 public abstract class AbstractCommandSender<T> implements ServerCommandSender {
-    protected final T sender;
+    protected final @Getter T sender;
 
     protected AbstractCommandSender(T sender) {
         this.sender = Preconditions.checkNotNull(sender, "sender");
-    }
-
-    public T getSender() {
-        return sender;
     }
 
     @Override

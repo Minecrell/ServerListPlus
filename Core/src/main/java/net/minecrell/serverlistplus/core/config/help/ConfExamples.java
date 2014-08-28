@@ -24,7 +24,6 @@
 
 package net.minecrell.serverlistplus.core.config.help;
 
-import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.util.Helper;
@@ -41,10 +40,10 @@ public final class ConfExamples {
         // Description
         conf.Default = new ServerStatusConf.StatusConf();
         conf.Default.Description = Arrays.asList(
-                Helper.lines(
+                Helper.joinLines(
                         "&aA Minecraft Server.",
                         "&7Now with [&a&lPvP&7], [&a&lMinigames&7], and much more!"
-                ), Helper.lines(
+                ), Helper.joinLines(
                         "&aA Minecraft Server.",
                         "&eWe have updated our server to &lMinecraft 1.8&e!"
                 )
@@ -53,7 +52,7 @@ public final class ConfExamples {
         // Player hover
         conf.Default.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Default.Players.Hover = Arrays.asList(
-                Helper.lines(
+                Helper.joinLines(
                         "&aWelcome to &lA Minecraft Server&a!",
                         "&aCurrently &e&l%online% &aplayers are playing on our server!"
                 )
@@ -63,10 +62,10 @@ public final class ConfExamples {
         // Description
         conf.Personalized = new ServerStatusConf.StatusConf();
         conf.Personalized.Description = Arrays.asList(
-                Helper.lines(
+                Helper.joinLines(
                         "&aA Minecraft Network. &7|  &eHello, &l%player%!",
                         "&7Now with [&a&lPvP&7], [&a&lMinigames&7], and much more!"
-                ), Helper.lines(
+                ), Helper.joinLines(
                         "&aA Minecraft Network. &7|  &eHello, &l%player%!",
                         "&eWe have updated our server to &lMinecraft 1.8&e!"
                 )
@@ -75,7 +74,7 @@ public final class ConfExamples {
         // Player hover
         conf.Personalized.Players = new ServerStatusConf.StatusConf.PlayersConf();
         conf.Personalized.Players.Hover = Arrays.asList(
-                Helper.lines(
+                Helper.joinLines(
                         "&aWelcome back, &l%player%&a!",
                         "&aCurrently &e&l%online% &aplayers are playing on our server!"
                 )
@@ -86,9 +85,5 @@ public final class ConfExamples {
 
     public static PluginConf forPlugin() {
         return new PluginConf();
-    }
-
-    public static CoreConf forCore() {
-        return new CoreConf();
     }
 }

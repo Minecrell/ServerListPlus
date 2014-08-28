@@ -43,13 +43,16 @@ import net.minecrell.serverlistplus.core.util.InstanceStorage;
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.Iterator;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Iterators;
 
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
@@ -72,12 +75,22 @@ import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
 
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
-    private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
-
-    private LoginListener loginListener;
-    private PingListener pingListener;
+    private Listener loginListener, pingListener;
 
     private BungeeMetricsLite metrics;
+
+    // Favicon cache
+    private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
+            new CacheLoader<FaviconSource, Optional<Favicon>>() {
+        @Override
+        public Optional<Favicon> load(FaviconSource source) throws Exception {
+            // Try loading the favicon
+            BufferedImage image = FaviconHelper.loadSafely(core, source);
+            if (image == null) return Optional.absent(); // Favicon loading failed
+            else return Optional.of(Favicon.create(image)); // Success!
+        }
+    };
+    private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
 
     @Override
     public void onEnable() {
@@ -221,22 +234,32 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public String getRandomPlayer() {
-        int tmp = getProxy().getOnlineCount();
-        if (tmp == 0) return null;
-        if (tmp == 1) return getProxy().getPlayers().iterator().next().getName();
-        // TODO: Make this complete faster
-        Collection<ProxiedPlayer> players = getProxy().getPlayers();
-        int i = 0; tmp = Helper.random().nextInt(players.size());
-        for (ProxiedPlayer player : players)
-            if (i++ == tmp) return player.getName();
-        return null;
+    public Integer getOnlinePlayers(String location) {
+        ServerInfo server = getProxy().getServerInfo(location);
+        return server != null ? server.getPlayers().size() : null;
     }
 
     @Override
-    public Integer getOnlinePlayersAt(String location) {
+    public Iterator<String> getRandomPlayers() {
+        return getRandomPlayers(getProxy().getPlayers());
+    }
+
+    @Override
+    public Iterator<String> getRandomPlayers(String location) {
         ServerInfo server = getProxy().getServerInfo(location);
-        return server != null ? server.getPlayers().size() : null;
+        return server != null ? getRandomPlayers(server.getPlayers()) : null;
+    }
+
+    private static Iterator<String> getRandomPlayers(Collection<ProxiedPlayer> players) {
+        if (Helper.isNullOrEmpty(players)) return null;
+
+        // This is horribly inefficient, but I don't have a better idea at the moment..
+        return Iterators.transform(Helper.shuffe(players).iterator(), new Function<ProxiedPlayer, String>() {
+            @Override
+            public String apply(ProxiedPlayer input) {
+                return input.getName();
+            }
+        });
     }
 
     @Override
@@ -267,15 +290,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void reloadFaviconCache(CacheBuilderSpec spec) {
         if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(new CacheLoader<FaviconSource, Optional<Favicon>>() {
-                @Override
-                public Optional<Favicon> load(FaviconSource source) throws Exception {
-                    // Try loading the favicon
-                    BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.absent(); // Favicon loading failed
-                    else return Optional.of(Favicon.create(image)); // Success!
-                }
-            });
+            this.faviconCache = CacheBuilder.from(spec).build(faviconLoader);
         } else {
             // Delete favicon cache
             faviconCache.invalidateAll();

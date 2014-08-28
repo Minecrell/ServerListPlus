@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core;
 
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.core.config.UnknownConf;
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
@@ -52,8 +54,8 @@ public class ConfigurationManager extends CoreManager {
 
     protected final YAMLWriter yaml;
 
-    protected InstanceStorage<Object> storage = ClassToInstanceStorage.createLinked();
-    protected final InstanceStorage<Object> defaults = ClassToInstanceStorage.createLinked();
+    protected @Getter InstanceStorage<Object> storage = ClassToInstanceStorage.createLinked();
+    protected final @Getter InstanceStorage<Object> defaults = ClassToInstanceStorage.createLinked();
 
     public ConfigurationManager(ServerListPlusCore core) {
         super(core);
@@ -70,14 +72,6 @@ public class ConfigurationManager extends CoreManager {
 
     public YAMLWriter getYAML() {
         return yaml;
-    }
-
-    public InstanceStorage<Object> getStorage() {
-        return storage;
-    }
-
-    public InstanceStorage<Object> getDefaults() {
-        return defaults;
     }
 
     public void reload() throws ServerListPlusException {

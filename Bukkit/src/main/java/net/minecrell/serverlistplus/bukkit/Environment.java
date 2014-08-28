@@ -22,46 +22,37 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacement;
+package net.minecrell.serverlistplus.bukkit;
 
-import lombok.Getter;
+import net.minecrell.serverlistplus.core.plugin.ServerType;
 
-import net.minecrell.serverlistplus.core.replacement.util.Patterns;
+import org.bukkit.Server;
+import org.bukkit.plugin.Plugin;
 
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+public final class Environment {
+    private Environment() {}
 
-import com.google.common.base.Preconditions;
-
-public abstract class PatternPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
-    protected final @Getter Pattern pattern;
-
-    public PatternPlaceholder(Pattern pattern) {
-        this.pattern = Preconditions.checkNotNull(pattern, "pattern");
+    private static boolean checkClass(String clazz) {
+        try {
+            Class.forName(clazz);
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
-    public Matcher matcher(String s) {
-        return pattern.matcher(s);
+    private static final boolean spigot = checkClass("org.spigotmc.SpigotConfig");
+
+    public static boolean isSpigot() {
+        return spigot;
     }
 
-    @Override
-    public boolean find(String s) {
-        return matcher(s).find();
+    public static ServerType getType() {
+        return spigot ? ServerType.SPIGOT : ServerType.BUKKIT;
     }
 
-    @Override
-    public String replace(String s, Object replacement) {
-        return Patterns.replace(s, pattern, replacement);
-    }
-
-    @Override
-    public String replace(String s, Iterator<?> replacements) {
-        return Patterns.replace(s, pattern, replacements);
-    }
-
-    @Override
-    public String replace(String s, Iterator<?> replacements, Object others) {
-        return Patterns.replace(s, pattern, replacements, others);
+    public static boolean checkProtocolLib(Server server) {
+        Plugin plugin = server.getPluginManager().getPlugin("ProtocolLib");
+        return plugin.isEnabled() && plugin.getClass().getName().equals("com.comphenix.protocol.ProtocolLibrary");
     }
 }

@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
+import lombok.RequiredArgsConstructor;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.UnknownConf;
 import net.minecrell.serverlistplus.core.util.Helper;
@@ -37,12 +39,9 @@ import org.yaml.snakeyaml.introspector.Property;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
+@RequiredArgsConstructor
 public class OutdatedConfigurationPropertyUtils extends AbstractPropertyUtils {
     private final ServerListPlusCore core;
-
-    public OutdatedConfigurationPropertyUtils(ServerListPlusCore core) {
-        this.core = core;
-    }
 
     @Override
     public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {

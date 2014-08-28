@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core;
 
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
@@ -60,10 +62,10 @@ import static net.minecrell.serverlistplus.core.logging.Logger.*;
  * Represents the core part of the ServerListPlus plugin.
  */
 public class ServerListPlusCore {
-    private final CoreDescription info;
+    private final @Getter ServerListPlusPlugin plugin;
+    private final @Getter Logger<ServerListPlusException> logger;
 
-    private final ServerListPlusPlugin plugin;
-    private final Logger<ServerListPlusException> logger;
+    private final CoreDescription info;
 
     private final ConfigurationManager configManager;
     private final ProfileManager profileManager;
@@ -82,7 +84,7 @@ public class ServerListPlusCore {
         plugin.getLogger().info("Starting...");
 
         // Print some information about the environment
-        getLogger().log(REPORT, Helper.lines(
+        getLogger().log(REPORT, Helper.joinLines(
                 "Plugin Information:",
                 "---",
                 "Plugin: " + getDisplayName(),
@@ -99,7 +101,7 @@ public class ServerListPlusCore {
         // Register the configurations
         registerConf(ServerStatusConf.class, ConfExamples.forServerStatus(), "Status");
         registerConf(PluginConf.class, ConfExamples.forPlugin(), "Plugin");
-        registerConf(CoreConf.class, ConfExamples.forCore(), "Core");
+        registerConf(CoreConf.class, new CoreConf(), "Core");
 
         // Initialize the profile manager
         this.profileManager = new ProfileManager(this);
@@ -114,7 +116,7 @@ public class ServerListPlusCore {
     }
 
     public <T> void registerConf(Class<T> clazz, T def, String alias) {
-        configManager.getDefaults().set(clazz, def); // Set default configuration
+        if (def != null) configManager.getDefaults().set(clazz, def); // Set default configuration
         configManager.getYAML().registerAlias(clazz, alias); // Register alias for the configuration
     }
 
@@ -367,18 +369,6 @@ public class ServerListPlusCore {
         if (cmd != null) help.append(' ').append(cmd);
         if (usage != null) help.append(' ').append(Format.GOLD).append(usage);
         return help.append(Format.WHITE).append(" - ").append(Format.GRAY).append(description).toString();
-    }
-
-    public Logger<ServerListPlusException> getLogger() {
-        return logger;
-    }
-
-    public ServerListPlusPlugin getPlugin() {
-        return plugin;
-    }
-
-    public CoreDescription getInfo() {
-        return info;
     }
 
     public ConfigurationManager getConf() {

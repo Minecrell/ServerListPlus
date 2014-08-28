@@ -22,17 +22,13 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit.handlers;
+package net.minecrell.serverlistplus.core.util;
 
-public final class Handlers {
-    private Handlers() {}
+import com.google.common.collect.UnmodifiableIterator;
 
-    public static boolean checkProtocolLib() {
-        try {
-            Class.forName("com.comphenix.protocol.ProtocolLibrary");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+public abstract class ContinousIterator<E> extends UnmodifiableIterator<E> {
+    @Override
+    public boolean hasNext() {
+        return true;
     }
 }

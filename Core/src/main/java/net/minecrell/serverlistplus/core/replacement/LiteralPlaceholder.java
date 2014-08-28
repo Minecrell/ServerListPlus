@@ -24,26 +24,36 @@
 
 package net.minecrell.serverlistplus.core.replacement;
 
-import net.minecrell.serverlistplus.core.util.Helper;
+import lombok.Getter;
+
+import net.minecrell.serverlistplus.core.replacement.util.Literals;
+
+import java.util.Iterator;
 
 public abstract class LiteralPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
-    private final String literal;
+    private final @Getter String literal;
 
     public LiteralPlaceholder(String literal) {
         this.literal = literal;
     }
 
-    public String getLiteral() {
-        return literal;
-    }
-
     @Override
     public boolean find(String s) {
-        return s.contains(literal);
+        return Literals.find(literal, s);
     }
 
     @Override
     public String replace(String s, Object replacement) {
-        return Helper.replace(literal, s, replacement);
+        return Literals.replace(s, literal, replacement);
+    }
+
+    @Override
+    public String replace(String s, Iterator<?> replacements) {
+        return Literals.replace(s, literal, replacements);
+    }
+
+    @Override
+    public String replace(String s, Iterator<?> replacements, Object others) {
+        return Literals.replace(s, literal, replacements, others);
     }
 }

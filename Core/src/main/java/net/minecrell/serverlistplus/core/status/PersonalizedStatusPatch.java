@@ -25,6 +25,7 @@
 package net.minecrell.serverlistplus.core.status;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
@@ -42,7 +43,7 @@ import static net.minecrell.serverlistplus.core.util.Helper.nextNumber;
 @EqualsAndHashCode @ToString
 public class PersonalizedStatusPatch {
     private final StatusPatch def;
-    private final StatusPatch personalized;
+    private final @Getter StatusPatch personalized;
 
     public PersonalizedStatusPatch() {
         this(null, null);
@@ -55,10 +56,6 @@ public class PersonalizedStatusPatch {
 
     public StatusPatch getDefault() {
         return def;
-    }
-
-    public StatusPatch getPersonalized() {
-        return personalized;
     }
 
     public boolean hasDefault() {

@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.core.config.help.ConfHelper;
 import net.minecrell.serverlistplus.core.util.Helper;
 
@@ -44,7 +46,7 @@ public class YAMLWriter {
     protected final SnakeYAML snakeYAML;
     protected final String newLine;
 
-    protected final String[] header;
+    protected final @Getter String[] header;
 
     public YAMLWriter(SnakeYAML snakeYAML) {
         this(snakeYAML, null);
@@ -58,10 +60,6 @@ public class YAMLWriter {
 
     public SnakeYAML snakeYAML() {
         return snakeYAML;
-    }
-
-    public String[] getHeader() {
-        return header;
     }
 
     public void registerAlias(Class<?> clazz, String alias) {

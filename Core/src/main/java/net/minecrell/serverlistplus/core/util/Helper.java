@@ -24,7 +24,10 @@
 
 package net.minecrell.serverlistplus.core.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -33,20 +36,22 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterators;
 
 public final class Helper {
     private Helper() {}
 
     private final static Joiner NEWLINE_JOINER = Joiner.on('\n');
 
-    public static String lines(String... lines) {
-        return NEWLINE_JOINER.join(Iterators.forArray(lines));
+    public static String joinLines(String... lines) {
+        return NEWLINE_JOINER.join(lines);
     }
 
     public static boolean isNullOrEmpty(Object[] array) {
         return array == null || array.length == 0;
+    }
+
+    public static boolean isNullOrEmpty(Iterator<?> iterator) {
+        return iterator == null || !iterator.hasNext();
     }
 
     public static boolean isNullOrEmpty(Collection<?> collection) {
@@ -60,11 +65,6 @@ public final class Helper {
     public static <T> ImmutableList<T> makeImmutableList(Collection<T> elements) {
         if (isNullOrEmpty(elements)) return null;
         return ImmutableList.copyOf(elements);
-    }
-
-    public static <T> ImmutableSet<T> makeImmutableSet(Collection<T> elements) {
-        if (isNullOrEmpty(elements)) return null;
-        return ImmutableSet.copyOf(elements);
     }
 
     public static <K, V, T extends Map<K, V>> int mergeMaps(T main, Map<K, V> merge) {
@@ -82,8 +82,15 @@ public final class Helper {
         return c != null ? c.toArray(new String[c.size()]) : null;
     }
 
+    // Randoms
     public static ThreadLocalRandom random() {
         return ThreadLocalRandom.current();
+    }
+
+    public static <T> Collection<T> shuffe(Collection<? extends T> collection) {
+        List<T> result = new ArrayList<>(collection);
+        Collections.shuffle(result, random());
+        return result;
     }
 
     public static <T> T nextEntry(T[] array) {
@@ -106,58 +113,7 @@ public final class Helper {
         return cause.getClass().getName() + ": " + cause.getMessage();
     }
 
-    public static String replace(String replace, String s, Object replacement) {
-        if (replacement == null) return s;
-        final int stringLength = s.length();
-        final StringBuilder result = new StringBuilder(stringLength);
-
-        int i = s.indexOf(replace);
-        if (i == -1) return s;
-
-        int pos = 0;
-        final String replacementString = replacement.toString();
-        final int replaceLength = replace.length();
-        do {
-            result.append(s, pos, i);
-            pos = i + replaceLength;
-            result.append(replacementString);
-
-            if (pos == stringLength) break;
-            i = s.indexOf(replace, pos);
-        } while (i != -1);
-
-        if (pos < stringLength)
-            result.append(s, pos, stringLength);
-
-        return result.toString();
-    }
-
-    public static String replace(String replace, String s, Object[] replacements) {
-        if (isNullOrEmpty(replacements)) return s;
-        final int stringLength = s.length();
-        final StringBuilder result = new StringBuilder(stringLength);
-
-        int i = s.indexOf(replace);
-        if (i == -1) return s;
-
-        int pos = 0;
-        final int replaceLength = replace.length();
-        for (Object replacement : replacements) {
-            result.append(s, pos, i);
-            pos = i + replaceLength;
-            result.append(replacement);
-
-            if (pos == stringLength) break;
-            i = s.indexOf(replace, pos);
-            if (i == -1) break;
-        }
-
-        if (pos < stringLength)
-            result.append(s, pos, stringLength);
-
-        return result.toString();
-    }
-
+    // String Utils
     public static boolean startsWithIgnoreCase(String s, String start) {
         return s.regionMatches(true, 0, start, 0, start.length());
     }

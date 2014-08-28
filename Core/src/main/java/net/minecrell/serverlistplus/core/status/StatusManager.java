@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core.status;
 
+import lombok.Getter;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PersonalizedStatusConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
@@ -56,22 +58,14 @@ public class StatusManager extends CoreManager {
     public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format
     public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
 
-    private PersonalizedStatusPatch patch;
-    private Map<VirtualHost, PersonalizedStatusPatch> hosts;
+    private @Getter PersonalizedStatusPatch patch;
+    private @Getter Map<VirtualHost, PersonalizedStatusPatch> hosts;
     private Multimap<String, DynamicReplacer> replacers; // For the used placeholders of the messages.
 
     private boolean favicons, slots;
 
     public StatusManager(ServerListPlusCore core) {
         super(core);
-    }
-
-    public PersonalizedStatusPatch getPatch() {
-        return patch;
-    }
-
-    public Map<VirtualHost, PersonalizedStatusPatch> getHosts() {
-        return hosts;
     }
 
     public boolean isEnabled() {
