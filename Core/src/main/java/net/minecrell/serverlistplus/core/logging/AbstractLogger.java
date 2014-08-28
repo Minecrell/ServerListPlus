@@ -29,6 +29,7 @@ import net.minecrell.serverlistplus.core.replacement.util.Literals;
 import java.util.logging.Level;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterators;
 
 public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
     public static final String ARG_PATTERN = "{}";
@@ -40,16 +41,16 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
     }
 
     protected String format(String s, Object arg) {
-        return Literals.replace(s, ARG_PATTERN, arg);
+        return Literals.replace(s, ARG_PATTERN, Iterators.singletonIterator(arg));
     }
 
     protected String format(String s, Object[] args) {
         return Literals.replace(s, ARG_PATTERN, args);
     }
 
-    protected String formatAdvanced(String s, Object[] args) {
+    /*protected String formatAdvanced(String s, Object[] args) {
         return String.format(s, args);
-    }
+    }*/
 
     protected abstract E createException(String message, Throwable thrown);
 

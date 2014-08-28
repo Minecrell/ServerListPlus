@@ -32,6 +32,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.imageio.ImageIO;
 
@@ -51,12 +52,23 @@ public final class FaviconHelper {
         return ImageIO.read(url);
     }
 
+    private static final String SKIN_URL = "http://skins.minecraft.net/MinecraftSkins/%s.png";
+    private static final String CHAR_URL = "http://s3.amazonaws.com/MinecraftSkins/char.png";
+
     private static final int HEAD_X = 8, HEAD_Y = 8;
     private static final int HELM_X = 40, HELM_Y = 8;
     private static final int HEAD_SIZE = 8;
 
-    public static BufferedImage fromSkin(String url, String name, boolean helm) throws IOException {
-        BufferedImage skin = fromURL(new URL(String.format(url, name)));
+    public static BufferedImage fromSkin(String name, boolean helm) throws IOException {
+        URL url;
+        try { // First try if it is already a valid URL
+            url = new URL(name);
+        } catch(MalformedURLException e) {
+            if (name.equalsIgnoreCase("char")) url = new URL(CHAR_URL);
+            else url = new URL(String.format(SKIN_URL, name));
+        }
+
+        BufferedImage skin = fromURL(url);
         if (helm) {
             Graphics2D g = skin.createGraphics();
             g.copyArea(HELM_X, HELM_Y, HEAD_SIZE, HEAD_SIZE, HEAD_X - HELM_X, HEAD_Y - HELM_Y);

@@ -52,12 +52,12 @@ public enum DefaultFaviconLoader implements FaviconLoader {
     }, SKIN_HEAD {
         @Override
         public BufferedImage load(ServerListPlusCore core, String name) throws IOException {
-            return FaviconHelper.fromSkin(core.getConf(PluginConf.class).Favicon.SkinSource, name, false);
+            return FaviconHelper.fromSkin(name, false);
         }
     }, SKIN_HELM {
         @Override
         public BufferedImage load(ServerListPlusCore core, String name) throws IOException {
-            return FaviconHelper.fromSkin(core.getConf(PluginConf.class).Favicon.SkinSource, name, true);
+            return FaviconHelper.fromSkin(name, true);
         }
     }, BASE64 { // Encoded favicon
         @Override

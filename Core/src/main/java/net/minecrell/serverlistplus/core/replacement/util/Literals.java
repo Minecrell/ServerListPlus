@@ -38,17 +38,17 @@ public final class Literals {
     }
 
     public static String replace(String s, String literal, Object replacement) {
-        return replacement != null ? replace(s, literal, null, 0, replacement) : s;
+        if (replacement == null) return s;
+        StringBuilder result = new StringBuilder(s.length());
+        return replace(s, literal, result, 0, replacement) ? result.toString() : s;
     }
 
-    private static String replace(String s, String literal, StringBuilder result, int pos, Object replacement) {
-        if (replacement == null) return s;
+    private static boolean replace(String s, String literal, StringBuilder result, int pos, Object replacement) {
+        if (replacement == null) return false;
         final int stringLength = s.length();
 
         int i = s.indexOf(literal, pos);
-        if (i == -1) return s;
-
-        if (result == null) result = new StringBuilder(s.length() - pos);
+        if (i == -1) return false;
 
         final String replacementString = replacement.toString();
         final int replaceLength = literal.length();
@@ -64,7 +64,7 @@ public final class Literals {
         if (pos < stringLength)
             result.append(s, pos, stringLength);
 
-        return result.toString();
+        return true;
     }
 
     public static String replace(String s, String literal, Object... replacements) {
@@ -76,7 +76,7 @@ public final class Literals {
     }
 
     public static String replace(String s, String literal, Iterator<?> replacements, Object others) {
-        if (Helper.isNullOrEmpty(replacements)) return replace(literal, s, others);
+        if (Helper.isNullOrEmpty(replacements)) return replace(s, literal, others);
 
         int i = s.indexOf(literal);
         if (i == -1) return s;
@@ -96,7 +96,7 @@ public final class Literals {
             i = s.indexOf(literal, pos);
         } while (i != -1 && replacements.hasNext());
 
-        if (i != -1) return replace(s, literal, others);
+        if (i != -1 && replace(s, literal, result, pos, others)) return result.toString();
         if (pos < stringLength)
             result.append(s, pos, stringLength);
 

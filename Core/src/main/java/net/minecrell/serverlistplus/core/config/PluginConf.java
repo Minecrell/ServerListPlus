@@ -58,7 +58,6 @@ public class PluginConf {
     @EqualsAndHashCode @ToString
     public static class FaviconConf {
         public boolean RecursiveFolderSearch = false;
-        public String SkinSource = "https://s3.amazonaws.com/MinecraftSkins/%s.png";
         public ResizeStrategy ResizeStrategy = SCALE;
     }
 }
