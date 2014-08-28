@@ -63,6 +63,6 @@ shadowJar {
         include dependency('net.minecrell.metrics:bungeemetrics-lite:1.0.3')
     }
 
-    relocate "${javaPackage}.core", "${pluginPackage}.core"
+    //relocate "${javaPackage}.core", "${pluginPackage}.core"
     relocate 'net.minecrell.metrics', "${pluginPackage}.metrics"
 }
