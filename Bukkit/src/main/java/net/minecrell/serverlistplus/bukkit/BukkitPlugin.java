@@ -259,7 +259,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         if (Helper.isNullOrEmpty(players)) return null;
 
         // This is horribly inefficient, but I don't have a better idea at the moment..
-        return Iterators.transform(Helper.shuffe(players).iterator(), new Function<Player, String>() {
+        return Iterators.transform(Helper.shuffle(players).iterator(), new Function<Player, String>() {
             @Override
             public String apply(Player input) {
                 return input.getName();

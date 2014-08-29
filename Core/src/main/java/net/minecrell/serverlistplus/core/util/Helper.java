@@ -87,7 +87,7 @@ public final class Helper {
         return ThreadLocalRandom.current();
     }
 
-    public static <T> Collection<T> shuffe(Collection<? extends T> collection) {
+    public static <T> Collection<T> shuffle(Collection<? extends T> collection) {
         List<T> result = new ArrayList<>(collection);
         Collections.shuffle(result, random());
         return result;
