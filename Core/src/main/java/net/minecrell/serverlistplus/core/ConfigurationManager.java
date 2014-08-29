@@ -31,7 +31,6 @@ import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
 import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
 import net.minecrell.serverlistplus.core.util.ClassToInstanceStorage;
-import net.minecrell.serverlistplus.core.util.CoreManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
 
@@ -48,7 +47,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.*;
 
-public class ConfigurationManager extends CoreManager {
+public class ConfigurationManager extends AbstractManager {
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";
     protected static final String BACKUP_FILENAME = "ServerListPlus.bak.yml";
 

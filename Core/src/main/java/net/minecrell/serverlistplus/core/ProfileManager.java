@@ -27,7 +27,6 @@ package net.minecrell.serverlistplus.core;
 import lombok.Getter;
 
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
-import net.minecrell.serverlistplus.core.util.CoreManager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -43,7 +42,7 @@ import com.google.gson.JsonSyntaxException;
 import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
 
-public class ProfileManager extends CoreManager {
+public class ProfileManager extends AbstractManager {
     private static final String DEFAULT_PROFILE = "ServerListPlus";
 
     private static final String PROFILE_FILENAME = "Profiles.json";

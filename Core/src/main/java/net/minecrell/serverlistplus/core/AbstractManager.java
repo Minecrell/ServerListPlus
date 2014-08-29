@@ -22,20 +22,18 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.util;
+package net.minecrell.serverlistplus.core;
 
 import lombok.Getter;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.logging.Logger;
 
 import com.google.common.base.Preconditions;
 
-public abstract class CoreManager {
+public abstract class AbstractManager {
     protected final @Getter ServerListPlusCore core;
 
-    protected CoreManager(ServerListPlusCore core) {
+    protected AbstractManager(ServerListPlusCore core) {
         this.core = Preconditions.checkNotNull(core, "core");
     }
 

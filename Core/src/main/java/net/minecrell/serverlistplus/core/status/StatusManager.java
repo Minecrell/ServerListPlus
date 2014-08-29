@@ -26,6 +26,7 @@ package net.minecrell.serverlistplus.core.status;
 
 import lombok.Getter;
 
+import net.minecrell.serverlistplus.core.AbstractManager;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PersonalizedStatusConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
@@ -35,7 +36,6 @@ import net.minecrell.serverlistplus.core.favicon.FaviconSearch;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
-import net.minecrell.serverlistplus.core.util.CoreManager;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.IntegerRange;
 
@@ -54,7 +54,7 @@ import com.google.common.collect.Multimap;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
-public class StatusManager extends CoreManager {
+public class StatusManager extends AbstractManager {
     public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format
     public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
 
