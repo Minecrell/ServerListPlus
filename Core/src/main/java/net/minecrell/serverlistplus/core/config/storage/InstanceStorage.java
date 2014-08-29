@@ -24,19 +24,69 @@
 
 package net.minecrell.serverlistplus.core.config.storage;
 
-import java.util.Map;
+import java.util.Collection;
 
-import com.google.common.collect.ImmutableCollection;
+/**
+ * Represents a map similar storage that stores an instance of a class together with the class. There can only
+ * be one instances of the same type. In the implementation the class is used as a key to map the instances.
+ * @param <B> The type all stored instances need to inherit.
+ */
+public interface InstanceStorage<B> extends Iterable<B> {
+    /**
+     * Gets a {@link Collection} with all values that are currently saved in this storage.
+     * @return Stored values.
+     */
+    Collection<B> get();
 
-public interface InstanceStorage<T> {
-    ImmutableCollection<T> get();
-    Map<Class<? extends T>, T> getMap();
+    /**
+     * Gets the assigned instance of a class from this storage.
+     * @param type The class of the instance.
+     * @param <T> The type of the instance.
+     * @return The instance if there is no instance with the specified class then <code>null</code> is returned.
+     */
+    <T extends B> T get(Class<T> type);
 
-    <V extends T> V get(Class<V> clazz);
-    boolean has(Class<? extends T> clazz);
-    <V extends T> void set(Class<V> clazz, V instance);
-    void setUnsafe(Class<? extends T> clazz, T instance);
-    boolean remove(Class<? extends T> clazz);
+    /**
+     * Returns whether this storage has an instance assigned to the specified class.
+     * @param type The class of the instance.
+     * @return <code>true</code> if the storage contains the instance, <code>false</code> if not.
+     */
+    boolean has(Class<? extends B> type);
 
-    int count();
+    /**
+     * Returns whether this storage has an instance assigned to the specified type.
+     * @param instance The instance.
+     * @return <code>true</code> if the storage contains the instance, <code>false</code> if not.
+     */
+    boolean has(B instance);
+
+    /**
+     * Adds a new instance to the storage and assigns it to its own type.
+     * @param instance The actual instance to store in this storage
+     * @param <T> The type of the instance.
+     * @return The provided instance.
+     */
+    <T extends B> T set(T instance);
+
+    /**
+     * Assigns a new instance to a specified type and save it in this storage.
+     * @param type The class of the instance.
+     * @param instance The actual instance to store in this storage.
+     * @param <T> The type of the instance.
+     * @return The provided instance.
+     */
+    <T extends B> T set(Class<T> type, T instance);
+
+    /**
+     * Removes an instance of a specified class from the storage.
+     * @param type The class of the instance.
+     * @return The previous instance of the class, or <code>null</code> if the storage didn't contain an instance.
+     */
+    B remove(Class<? extends B> type);
+
+    /**
+     * Gets the count of the saved instances in this storage.
+     * @return The instance count.
+     */
+    int size();
 }

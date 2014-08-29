@@ -38,8 +38,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class IOUtil {
-    private IOUtil() {}
+public final class IOHelper {
+    private IOHelper() {}
 
     public static final Charset CHARSET = StandardCharsets.UTF_8;
 

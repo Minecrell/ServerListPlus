@@ -26,7 +26,7 @@ package net.minecrell.serverlistplus.core;
 
 import lombok.Getter;
 
-import net.minecrell.serverlistplus.core.config.io.IOUtil;
+import net.minecrell.serverlistplus.core.config.io.IOHelper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -66,7 +66,7 @@ public class ProfileManager extends AbstractManager {
         try {
             if (Files.exists(profilePath)) {
                 // TODO: Deserialize objects instead
-                try (BufferedReader reader = IOUtil.newBufferedReader(profilePath)) {
+                try (BufferedReader reader = IOHelper.newBufferedReader(profilePath)) {
                     JsonObject obj = JSON.fromJson(reader, JsonObject.class);
                     obj = obj.getAsJsonObject(DEFAULT_PROFILE);
                     this.enabled = obj.get("Enabled").getAsBoolean();
@@ -98,7 +98,7 @@ public class ProfileManager extends AbstractManager {
             }
 
             // TODO: Serialize objects instead
-            try (BufferedWriter writer = IOUtil.newBufferedWriter(profilePath)) {
+            try (BufferedWriter writer = IOHelper.newBufferedWriter(profilePath)) {
                 JsonObject profile = new JsonObject();
                 profile.addProperty("Enabled", this.enabled);
                 JsonObject obj = new JsonObject();

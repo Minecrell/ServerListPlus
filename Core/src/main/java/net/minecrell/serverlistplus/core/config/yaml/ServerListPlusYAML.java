@@ -25,7 +25,7 @@
 package net.minecrell.serverlistplus.core.config.yaml;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.config.io.IOUtil;
+import net.minecrell.serverlistplus.core.config.io.IOHelper;
 
 import java.io.IOException;
 
@@ -64,7 +64,7 @@ public final class ServerListPlusYAML {
 
         String[] header = null;
         try { // Try loading the configuration header from the JAR file
-            header = IOUtil.readLineArray(core.getClass().getClassLoader().getResourceAsStream(HEADER_FILENAME));
+            header = IOHelper.readLineArray(core.getClass().getClassLoader().getResourceAsStream(HEADER_FILENAME));
         } catch (IOException e) {
             core.getLogger().log(WARN, e, "Unable to read configuration header!");
         }

@@ -22,18 +22,26 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.config.help;
+package net.minecrell.serverlistplus.core.config.storage;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public final class InstanceStorages {
+    private InstanceStorages() {}
 
-@Target(ElementType.TYPE) // TODO: Implement property descriptions
-@Retention(RetentionPolicy.RUNTIME)
-/**
- * Represents the description for a specific configuration part.
- */
-public @interface Description {
-    String[] value();
+    public static <B> InstanceStorage<B> create() {
+        return ClassToInstanceStorage.create();
+    }
+
+    public static <B> InstanceStorage<B> createOrdered() {
+        return ClassToInstanceStorage.createLinked();
+    }
+
+    public static <B> int merge(InstanceStorage<B> base, InstanceStorage<B> merge) {
+        int counter = 0;
+        for (B entry : merge)
+            if (!base.has(entry)) {
+                base.set(entry);
+                counter++;
+            }
+        return counter;
+    }
 }

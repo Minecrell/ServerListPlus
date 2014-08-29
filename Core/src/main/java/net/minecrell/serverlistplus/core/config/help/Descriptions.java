@@ -24,14 +24,26 @@
 
 package net.minecrell.serverlistplus.core.config.help;
 
-public final class ConfHelper {
-    private ConfHelper() {}
+public final class Descriptions {
+    private Descriptions() {}
 
-    public static String[] getDescription(Object obj) {
-        return getDescription(obj.getClass());
+    /**
+     * Gets the {@link Description} of a specific object.
+     * @param obj The object to get the {@link Description} from.
+     * @return The {@link Description} lines if the annotation is available for the specified object,
+     * or <code>null</code> if the annotation is not available.
+     */
+    public static String[] of(Object obj) {
+        return of(obj.getClass());
     }
 
-    public static String[] getDescription(Class<?> clazz) {
+    /**
+     * Gets the {@link Description} of a specific class.
+     * @param clazz The class to get the {@link Description} from.
+     * @return The {@link Description} lines if the annotation is available for the specified class,
+     * or <code>null</code> if the annotation is not available.
+     */
+    public static String[] of(Class<?> clazz) {
         // Get description from class annotation
         Description description = clazz.getAnnotation(Description.class);
         return description != null ? description.value() : null;

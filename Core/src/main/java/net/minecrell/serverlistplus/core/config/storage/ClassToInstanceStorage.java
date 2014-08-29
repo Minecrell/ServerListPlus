@@ -24,70 +24,81 @@
 
 package net.minecrell.serverlistplus.core.config.storage;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
 
-public class ClassToInstanceStorage<T> implements InstanceStorage<T> {
-    protected final ClassToInstanceMap<T> instances;
+/**
+ * An {@link InstanceStorage} backed by a {@link ClassToInstanceStorage}.
+ * @param <B> The type all stored instances need to inherit.
+ */
+public class ClassToInstanceStorage<B> implements InstanceStorage<B> {
+    protected final ClassToInstanceMap<B> instances;
 
-    protected ClassToInstanceStorage(ClassToInstanceMap<T> instances) {
-        this.instances = instances;
+    protected ClassToInstanceStorage(ClassToInstanceMap<B> instances) {
+        this.instances = Preconditions.checkNotNull(instances, "instances");
     }
 
     @Override
-    public ImmutableCollection<T> get() {
-        return ImmutableList.copyOf(instances.values());
+    public Collection<B> get() {
+        return instances.values();
     }
 
     @Override
-    public Map<Class<? extends T>, T> getMap() {
-        return instances;
+    public <T extends B> T get(Class<T> type) {
+        return instances.getInstance(type);
     }
 
     @Override
-    public <V extends T> V get(Class<V> clazz) {
-        return instances.getInstance(clazz);
+    public boolean has(Class<? extends B> type) {
+        return instances.containsKey(type);
     }
 
     @Override
-    public boolean has(Class<? extends T> clazz) {
-        return instances.containsKey(clazz);
+    @SuppressWarnings("unchecked")
+    public boolean has(B instance) {
+        return this.has((Class<? extends B>) instance.getClass());
     }
 
     @Override
-    public <V extends T> void set(Class<V> clazz, V instance) {
-        instances.putInstance(clazz, instance);
+    @SuppressWarnings("unchecked")
+    public <T extends B> T set(T instance) {
+        return this.set((Class<T>) instance.getClass(), instance);
     }
 
     @Override
-    public void setUnsafe(Class<? extends T> clazz, T instance) {
-        instances.put(clazz, instance);
+    public <T extends B> T set(Class<T> type, T instance) {
+        instances.putInstance(type, instance); return instance;
     }
 
     @Override
-    public boolean remove(Class<? extends T> clazz) {
-        return instances.remove(clazz) != null;
+    public B remove(Class<? extends B> type) {
+        return instances.remove(type);
     }
 
     @Override
-    public int count() {
+    public int size() {
         return instances.size();
+    }
+
+    @Override
+    public Iterator<B> iterator() {
+        return instances.values().iterator();
     }
 
     public static <T> ClassToInstanceStorage<T> create(ClassToInstanceMap<T> instances) {
         return new ClassToInstanceStorage<>(instances);
     }
 
-    public static <T> ClassToInstanceStorage<T> create() {
-        return create(MutableClassToInstanceMap.<T>create());
+    public static <B> ClassToInstanceStorage<B> create() {
+        return create(MutableClassToInstanceMap.<B>create());
     }
 
-    public static <T> ClassToInstanceStorage<T> createLinked() {
-        return create(MutableClassToInstanceMap.create(new LinkedHashMap<Class<? extends T>, T>()));
+    public static <B> ClassToInstanceStorage<B> createLinked() {
+        return create(MutableClassToInstanceMap.create(new LinkedHashMap<Class<? extends B>, B>()));
     }
 }

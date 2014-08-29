@@ -29,7 +29,7 @@ import lombok.Getter;
 import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
-import net.minecrell.serverlistplus.core.config.help.ConfExamples;
+import net.minecrell.serverlistplus.core.config.help.Examples;
 import net.minecrell.serverlistplus.core.logging.Logger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
@@ -99,8 +99,8 @@ public class ServerListPlusCore {
         this.configManager = new ConfigurationManager(this);
 
         // Register the configurations
-        registerConf(ServerStatusConf.class, ConfExamples.forServerStatus(), "Status");
-        registerConf(PluginConf.class, ConfExamples.forPlugin(), "Plugin");
+        registerConf(ServerStatusConf.class, Examples.forServerStatus(), "Status");
+        registerConf(PluginConf.class, Examples.forPlugin(), "Plugin");
         registerConf(CoreConf.class, new CoreConf(), "Core");
 
         // Initialize the profile manager

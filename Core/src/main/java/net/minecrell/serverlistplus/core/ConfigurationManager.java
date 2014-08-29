@@ -27,12 +27,11 @@ package net.minecrell.serverlistplus.core;
 import lombok.Getter;
 
 import net.minecrell.serverlistplus.core.config.UnknownConf;
-import net.minecrell.serverlistplus.core.config.io.IOUtil;
-import net.minecrell.serverlistplus.core.config.storage.ClassToInstanceStorage;
+import net.minecrell.serverlistplus.core.config.io.IOHelper;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
+import net.minecrell.serverlistplus.core.config.storage.InstanceStorages;
 import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
 import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
-import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -53,8 +52,8 @@ public class ConfigurationManager extends AbstractManager {
 
     protected final YAMLWriter yaml;
 
-    protected @Getter InstanceStorage<Object> storage = ClassToInstanceStorage.createLinked();
-    protected final @Getter InstanceStorage<Object> defaults = ClassToInstanceStorage.createLinked();
+    protected @Getter InstanceStorage<Object> storage = InstanceStorages.createOrdered();
+    protected final @Getter InstanceStorage<Object> defaults = InstanceStorages.createOrdered();
 
     public ConfigurationManager(ServerListPlusCore core) {
         super(core);
@@ -81,11 +80,12 @@ public class ConfigurationManager extends AbstractManager {
 
         try {
             // Create new storage, will replace the other one when finished loading
-            ClassToInstanceStorage<Object> newStorage = ClassToInstanceStorage.createLinked();
+            InstanceStorage<Object> newStorage = InstanceStorages.createOrdered();
             final boolean confExists = Files.exists(configPath);
 
             if (confExists) {
-                try (BufferedReader reader = IOUtil.newBufferedReader(configPath)) {
+                // Open the configuration file
+                try (BufferedReader reader = IOHelper.newBufferedReader(configPath)) {
                     Iterator<Object> itr = yaml.snakeYAML().getYaml().loadAll(reader).iterator();
                     while (itr.hasNext()) {
                         try {
@@ -94,7 +94,7 @@ public class ConfigurationManager extends AbstractManager {
                             if (obj.getClass() == UnknownConf.class) continue;
 
                             // Add it to the storage
-                            newStorage.setUnsafe(obj.getClass(), obj);
+                            newStorage.set(obj);
                             getLogger().log(INFO, "Loaded configuration: " + obj.getClass().getSimpleName());
                         } catch (YAMLException e) {
                             getLogger().log(WARN, e, "Unable to parse a part of the configuration. Make " +
@@ -104,10 +104,10 @@ public class ConfigurationManager extends AbstractManager {
                 }
             }
 
-            getLogger().log(REPORT, newStorage.count() + " configurations loaded.");
+            getLogger().log(REPORT, newStorage.size() + " configurations loaded.");
 
             // Add missing configurations from default values
-            int generated = Helper.mergeMaps(newStorage.getMap(), defaults.getMap());
+            int generated = InstanceStorages.merge(newStorage, defaults);
             this.storage = newStorage;
 
             if (generated > 0) {
@@ -116,7 +116,7 @@ public class ConfigurationManager extends AbstractManager {
                     getLogger().log(WARN, generated + " configurations could not be found in the " +
                             "configuration file. Your configuration might be outdated, " +
                             "or some of them contain invalid YAML syntax. If you want to regenerate the missing " +
-                            "configuration parts type '/ServerListPlus save'. Please note that this will delete " +
+                            "configuration parts type '/serverlistplus save'. Please note that this will delete " +
                             "all invalid configuration parts as well as any custom comments. A backup will be " +
                             "created automatically.");
             }
@@ -132,7 +132,7 @@ public class ConfigurationManager extends AbstractManager {
                     "correct!");
         } catch (MalformedInputException e) {
             throw getLogger().process(e, "Your configuration contains invalid special characters. Please " +
-                    "save your configuration using {} instead.", IOUtil.CHARSET.displayName());
+                    "save your configuration using {} instead.", IOHelper.CHARSET.displayName());
         } catch (IOException e) {
             throw getLogger().process(e, "Unable to access the configuration file. Make sure that it is " +
                     "accessible by the server.");
@@ -154,17 +154,16 @@ public class ConfigurationManager extends AbstractManager {
                 getLogger().log(DEBUG, "Saving configuration backup to: " + backupPath);
 
                 Files.copy(configPath, backupPath, StandardCopyOption.REPLACE_EXISTING);
-            } else {
+            } else
                 // Create plugin folder if it doesn't exist already
                 Files.createDirectories(configPath.getParent());
-            }
 
-            try (BufferedWriter writer = IOUtil.newBufferedWriter(configPath)) {
+            try (BufferedWriter writer = IOHelper.newBufferedWriter(configPath)) {
                 yaml.writeHeader(writer);
                 yaml.newLine(writer);
                 yaml.newLine(writer);
 
-                for (Object config : storage.get())
+                for (Object config : storage)
                     // Write the configuration to the file
                     yaml.writeDocumented(writer, config);
             }

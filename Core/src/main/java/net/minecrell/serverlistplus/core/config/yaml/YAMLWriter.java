@@ -26,7 +26,7 @@ package net.minecrell.serverlistplus.core.config.yaml;
 
 import lombok.Getter;
 
-import net.minecrell.serverlistplus.core.config.help.ConfHelper;
+import net.minecrell.serverlistplus.core.config.help.Descriptions;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.io.IOException;
@@ -80,7 +80,7 @@ public class YAMLWriter {
 
     public void writeDocumented(Writer writer, Object conf) throws IOException {
         // Write configuration description
-        writeComments(writer, ConfHelper.getDescription(conf));
+        writeComments(writer, Descriptions.of(conf));
         writer.append(DOCUMENT_START);
         // Write only one configuration, but don't create a new list for that as SnakeYAML is doing that
         snakeYAML.getYaml().dumpAll(Iterators.singletonIterator(conf), writer);

@@ -30,8 +30,8 @@ import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.util.Arrays;
 
-public final class ConfExamples {
-    private ConfExamples() {}
+public final class Examples {
+    private Examples() {}
 
     public static ServerStatusConf forServerStatus() {
         // Feel free to improve the examples
