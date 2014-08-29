@@ -22,18 +22,16 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.status;
+package net.minecrell.serverlistplus.core.status.hosts;
 
 import net.minecrell.serverlistplus.core.util.Helper;
-
-import static net.minecrell.serverlistplus.core.status.VirtualNamedHost.NAME_PREFIX;
 
 public final class VirtualHosts {
     private VirtualHosts() {}
 
     public static VirtualHost parse(String host) {
-        if (Helper.startsWithIgnoreCase(host, NAME_PREFIX))
-            return VirtualNamedHost.parse(host.substring(NAME_PREFIX.length()));
+        if (Helper.startsWithIgnoreCase(host, VirtualNamedHost.NAME_PREFIX))
+            return VirtualNamedHost.parse(host.substring(VirtualNamedHost.NAME_PREFIX.length()));
         else return VirtualHostAddress.parse(host);
     }
 }

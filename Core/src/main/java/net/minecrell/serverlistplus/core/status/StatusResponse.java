@@ -28,6 +28,7 @@ import lombok.Getter;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.status.hosts.VirtualHost;
 
 import java.util.HashMap;
 import java.util.Iterator;

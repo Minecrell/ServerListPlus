@@ -36,6 +36,8 @@ import net.minecrell.serverlistplus.core.favicon.FaviconSearch;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
+import net.minecrell.serverlistplus.core.status.hosts.VirtualHost;
+import net.minecrell.serverlistplus.core.status.hosts.VirtualHosts;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.IntegerRange;
 

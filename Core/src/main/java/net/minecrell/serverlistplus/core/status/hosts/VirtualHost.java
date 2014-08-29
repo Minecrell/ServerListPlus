@@ -22,23 +22,10 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.status;
+package net.minecrell.serverlistplus.core.status.hosts;
 
-import lombok.NonNull;
-import lombok.Value;
+import net.minecrell.serverlistplus.core.status.StatusRequest;
 
-@Value
-public class VirtualNamedHost implements VirtualHost {
-    protected static final String NAME_PREFIX = "Name/";
-
-    private final @NonNull String name;
-
-    @Override
-    public boolean matches(StatusRequest.Target target) {
-        return name.equalsIgnoreCase(target.getName());
-    }
-
-    public static VirtualNamedHost parse(String host) {
-        return new VirtualNamedHost(host);
-    }
+public interface VirtualHost {
+    boolean matches(StatusRequest.Target target);
 }

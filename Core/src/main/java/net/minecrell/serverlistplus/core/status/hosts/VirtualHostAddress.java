@@ -22,9 +22,11 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.status;
+package net.minecrell.serverlistplus.core.status.hosts;
 
 import lombok.Value;
+
+import net.minecrell.serverlistplus.core.status.StatusRequest;
 
 import java.net.InetSocketAddress;
 import java.util.regex.Pattern;
