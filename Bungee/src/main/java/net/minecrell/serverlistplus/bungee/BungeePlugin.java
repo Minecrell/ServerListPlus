@@ -39,6 +39,7 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.InstanceStorage;
+import net.minecrell.serverlistplus.core.util.Randoms;
 
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
@@ -254,7 +255,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         if (Helper.isNullOrEmpty(players)) return null;
 
         // This is horribly inefficient, but I don't have a better idea at the moment..
-        return Iterators.transform(Helper.shuffle(players).iterator(), new Function<ProxiedPlayer, String>() {
+        return Iterators.transform(Randoms.shuffle(players).iterator(), new Function<ProxiedPlayer, String>() {
             @Override
             public String apply(ProxiedPlayer input) {
                 return input.getName();
@@ -320,14 +321,14 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     this.metrics = new BungeeMetricsLite(this);
                     metrics.start();
                 } catch (Throwable e) {
-                    getLogger().log(DEBUG, "Failed to enable plugin statistics: " + Helper.causedError(e));
+                    getLogger().log(DEBUG, "Failed to enable plugin statistics: " + Helper.causedException(e));
                 }
         } else if (metrics != null)
             try {
                 metrics.stop();
                 this.metrics = null;
             } catch (Throwable e) {
-                getLogger().log(DEBUG, "Failed to disable plugin statistics: " + Helper.causedError(e));
+                getLogger().log(DEBUG, "Failed to disable plugin statistics: " + Helper.causedException(e));
             }
     }
 

@@ -31,14 +31,13 @@ import lombok.ToString;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
-import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.IntegerRange;
 
 import java.util.Collection;
 import java.util.List;
 
-import static net.minecrell.serverlistplus.core.util.Helper.nextEntry;
-import static net.minecrell.serverlistplus.core.util.Helper.nextNumber;
+import static net.minecrell.serverlistplus.core.util.Randoms.nextEntry;
+import static net.minecrell.serverlistplus.core.util.Randoms.nextNumber;
 
 @EqualsAndHashCode @ToString
 public class PersonalizedStatusPatch {
@@ -138,6 +137,6 @@ public class PersonalizedStatusPatch {
     }
 
     private String prepareRandomEntry(StatusResponse response, List<String> list) {
-        return response.getStatus().prepare(response, Helper.nextEntry(list));
+        return response.getStatus().prepare(response, nextEntry(list));
     }
 }

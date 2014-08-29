@@ -83,7 +83,7 @@ public final class FaviconSearch {
                             });
                 } catch (IOException e) {
                     core.getLogger().log(WARN, "Unable to walk through file tree: {} -> {}", folder,
-                            Helper.causedError(e));
+                            Helper.causedException(e));
                 }
             } else { // Only this one folder
                 try (DirectoryStream<Path> dir = Files.newDirectoryStream(folder, filter)) {
@@ -91,7 +91,7 @@ public final class FaviconSearch {
                         favicons.add(pluginFolder.relativize(file).toString());
                 } catch (IOException e) {
                     core.getLogger().log(WARN, "Unable to get directory listing: {} -> {}", folder,
-                            Helper.causedError(e));
+                            Helper.causedException(e));
                 }
             }
         }

@@ -25,7 +25,6 @@
 package net.minecrell.serverlistplus.core.favicon;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.config.PluginConf;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

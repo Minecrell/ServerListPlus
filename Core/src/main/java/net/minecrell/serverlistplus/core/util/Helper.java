@@ -24,14 +24,10 @@
 
 package net.minecrell.serverlistplus.core.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
@@ -82,33 +78,7 @@ public final class Helper {
         return c != null ? c.toArray(new String[c.size()]) : null;
     }
 
-    // Randoms
-    public static ThreadLocalRandom random() {
-        return ThreadLocalRandom.current();
-    }
-
-    public static <T> Collection<T> shuffle(Collection<? extends T> collection) {
-        List<T> result = new ArrayList<>(collection);
-        Collections.shuffle(result, random());
-        return result;
-    }
-
-    public static <T> T nextEntry(T[] array) {
-        if (Helper.isNullOrEmpty(array)) return null;
-        return array.length > 1 ? array[random().nextInt(array.length)] : array[0];
-    }
-
-    public static <T> T nextEntry(List<T> list) {
-        if (Helper.isNullOrEmpty(list)) return null;
-        return list.size() > 1 ? list.get(random().nextInt(list.size())) : list.get(0);
-    }
-
-    public static Integer nextNumber(IntegerRange range) {
-        if (range == null) return null;
-        return range.isSingle() ? range.from() : random().nextInt(range.from(), range.to());
-    }
-
-    public static String causedError(Throwable e) {
+    public static String causedException(Throwable e) {
         Throwable cause = Throwables.getRootCause(e);
         return cause.getClass().getName() + ": " + cause.getMessage();
     }

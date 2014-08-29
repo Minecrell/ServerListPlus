@@ -67,7 +67,7 @@ public class ServerListPlusLogger extends JavaLogger<ServerListPlusException> {
                     log(DEBUG, "Deleted old log file: " + path.getFileName());
                 } catch (IOException e) {
                     log(DEBUG, "Unable to delete old log file: " + path.getFileName() + " -> " +
-                            Helper.causedError(e));
+                            Helper.causedException(e));
                     failed = true;
                 }
             }

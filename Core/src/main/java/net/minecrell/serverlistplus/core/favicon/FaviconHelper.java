@@ -89,7 +89,7 @@ public final class FaviconHelper {
         } catch (IOException e) {
             core.getLogger()
                     .log(WARN, "Unable to load favicon from {}: {} -> {}",
-                            source.getLoader(), source.getSource(), Helper.causedError(e))
+                            source.getLoader(), source.getSource(), Helper.causedException(e))
                     .log(DEBUG, e, "Unable to load favicon from {}: {}",
                             source.getLoader(), source.getSource());
             return null;
