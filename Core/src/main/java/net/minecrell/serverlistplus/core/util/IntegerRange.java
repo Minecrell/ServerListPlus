@@ -24,8 +24,12 @@
 
 package net.minecrell.serverlistplus.core.util;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.regex.Pattern;
 
+@EqualsAndHashCode @ToString
 public class IntegerRange {
     private static final Pattern SEPARATOR = Pattern.compile("..", Pattern.LITERAL);
 
@@ -72,18 +76,5 @@ public class IntegerRange {
 
         // Now parse both numbers
         return new IntegerRange(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || !(o instanceof IntegerRange)) return false;
-        IntegerRange intRange = (IntegerRange) o;
-        return from == intRange.from && to == intRange.to;
-    }
-
-    @Override
-    public int hashCode() {
-        return 31 * from + to;
     }
 }
