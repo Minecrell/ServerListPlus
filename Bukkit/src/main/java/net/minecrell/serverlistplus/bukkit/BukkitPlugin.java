@@ -39,7 +39,7 @@ import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Helper;
-import net.minecrell.serverlistplus.core.util.InstanceStorage;
+import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.util.Randoms;
 
 import java.awt.image.BufferedImage;

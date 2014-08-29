@@ -27,7 +27,7 @@ package net.minecrell.serverlistplus.core.plugin;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.status.StatusManager;
-import net.minecrell.serverlistplus.core.util.InstanceStorage;
+import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 
 import java.nio.file.Path;
 import java.util.Iterator;

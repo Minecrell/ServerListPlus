@@ -30,9 +30,9 @@ import net.minecrell.serverlistplus.core.config.UnknownConf;
 import net.minecrell.serverlistplus.core.config.io.IOUtil;
 import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
 import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
-import net.minecrell.serverlistplus.core.util.ClassToInstanceStorage;
+import net.minecrell.serverlistplus.core.config.storage.ClassToInstanceStorage;
 import net.minecrell.serverlistplus.core.util.Helper;
-import net.minecrell.serverlistplus.core.util.InstanceStorage;
+import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
