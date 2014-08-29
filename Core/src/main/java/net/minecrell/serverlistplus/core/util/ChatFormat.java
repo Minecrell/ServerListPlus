@@ -24,7 +24,7 @@
 
 package net.minecrell.serverlistplus.core.util;
 
-public enum Format {
+public enum ChatFormat {
     BLACK ('0'),
     DARK_BLUE ('1'),
     DARK_GREEN ('2'),
@@ -52,7 +52,7 @@ public enum Format {
     public final static char FORMAT_CHAR = '\u00A7';
     private final String format;
 
-    private Format(char code) {
+    private ChatFormat(char code) {
         this.format = new String(new char[] { FORMAT_CHAR, code });
     }
 

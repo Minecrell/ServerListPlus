@@ -37,7 +37,7 @@ import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
-import net.minecrell.serverlistplus.core.util.Format;
+import net.minecrell.serverlistplus.core.util.ChatFormat;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetAddress;
@@ -206,14 +206,14 @@ public class ServerListPlusCore {
         return new StatusRequest(client, resolveClient(client));
     }
 
-    private static final String COMMAND_PREFIX_BASE = Format.GOLD + "[ServerListPlus] ";
-    private static final String COMMAND_PREFIX = COMMAND_PREFIX_BASE + Format.GRAY;
-    private static final String COMMAND_PREFIX_SUCCESS = COMMAND_PREFIX_BASE + Format.GREEN;
-    private static final String COMMAND_PREFIX_ERROR = COMMAND_PREFIX_BASE + Format.RED;
+    private static final String COMMAND_PREFIX_BASE = ChatFormat.GOLD + "[ServerListPlus] ";
+    private static final String COMMAND_PREFIX = COMMAND_PREFIX_BASE + ChatFormat.GRAY;
+    private static final String COMMAND_PREFIX_SUCCESS = COMMAND_PREFIX_BASE + ChatFormat.GREEN;
+    private static final String COMMAND_PREFIX_ERROR = COMMAND_PREFIX_BASE + ChatFormat.RED;
 
     private static final String ADMIN_PERMISSION = "serverlistplus.admin";
 
-    private static final String HELP_HEADER = Format.GOLD + "---- [ServerListPlus Help] ----";
+    private static final String HELP_HEADER = ChatFormat.GOLD + "---- [ServerListPlus Help] ----";
 
     private static final Set<String> SUB_COMMANDS = ImmutableSet.of("reload", "rl", "save", "enable", "disable",
             "clean", "info", "help");
@@ -244,8 +244,8 @@ public class ServerListPlusCore {
 
             if (!SUB_COMMANDS.contains(sub)) {
                 if (admin)
-                    sender.sendMessage(COMMAND_PREFIX + "Unknown command. Type " + Format.DARK_GRAY
-                            + "/slp help" + Format.GRAY + " for a list of available commands.");
+                    sender.sendMessage(COMMAND_PREFIX + "Unknown command. Type " + ChatFormat.DARK_GRAY
+                            + "/slp help" + ChatFormat.GRAY + " for a list of available commands.");
                 else
                     sender.sendMessage(COMMAND_PREFIX + "Unknown command.");
                 return;
@@ -308,11 +308,11 @@ public class ServerListPlusCore {
                             sender.sendMessage(COMMAND_PREFIX + "The " + cacheName + " cache is currently " +
                                     "disabled. There is nothing to clean up.");
                     } else
-                        sender.sendMessage(COMMAND_PREFIX_ERROR + "Unknown cache type. Type " + Format.DARK_RED +
-                                "/slp help" + Format.RED + " for more information.");
+                        sender.sendMessage(COMMAND_PREFIX_ERROR + "Unknown cache type. Type " + ChatFormat.DARK_RED
+                                + "/slp help" + ChatFormat.RED + " for more information.");
                 } else
                     sender.sendMessage(COMMAND_PREFIX_ERROR + "You need to specify the cache type. Type " +
-                            Format.DARK_RED + "/slp help" + Format.RED + " for more information.");
+                            ChatFormat.DARK_RED + "/slp help" + ChatFormat.RED + " for more information.");
             } else if (sub.equals("help")) {
                 sender.sendMessages(
                         HELP_HEADER,
@@ -330,19 +330,19 @@ public class ServerListPlusCore {
             return;
         }
         // Send the sender some information about the plugin
-        sender.sendMessage(Format.GOLD + this.getDisplayName());
+        sender.sendMessage(ChatFormat.GOLD + this.getDisplayName());
         if (info.getDescription() != null)
-            sender.sendMessage(Format.GRAY + info.getDescription());
+            sender.sendMessage(ChatFormat.GRAY + info.getDescription());
         if (info.getAuthor() != null)
-            sender.sendMessage(Format.GOLD + "Author: " + Format.GRAY + info.getAuthor());
+            sender.sendMessage(ChatFormat.GOLD + "Author: " + ChatFormat.GRAY + info.getAuthor());
         if (info.getWebsite() != null)
-            sender.sendMessage(Format.GOLD + "Website: " + Format.GRAY + info.getWebsite());
+            sender.sendMessage(ChatFormat.GOLD + "Website: " + ChatFormat.GRAY + info.getWebsite());
 
         if (admin) {
             if (info.getWiki() != null)
-                sender.sendMessage(Format.GOLD + "Wiki: " + Format.GRAY + info.getWiki());
-            sender.sendMessage(Format.GREEN + "Type " + Format.DARK_GREEN + "/slp help" + Format.GREEN + " for a" +
-                    " list of available commands.");
+                sender.sendMessage(ChatFormat.GOLD + "Wiki: " + ChatFormat.GRAY + info.getWiki());
+            sender.sendMessage(ChatFormat.GREEN + "Type " + ChatFormat.DARK_GREEN + "/slp help" + ChatFormat.GREEN
+                    + " for a list of available commands.");
         }
     }
 
@@ -365,10 +365,10 @@ public class ServerListPlusCore {
 
     private static String buildCommandHelp(String cmd, String usage, String description) {
         StringBuilder help = new StringBuilder();
-        help.append(Format.RED).append("/slp");
+        help.append(ChatFormat.RED).append("/slp");
         if (cmd != null) help.append(' ').append(cmd);
-        if (usage != null) help.append(' ').append(Format.GOLD).append(usage);
-        return help.append(Format.WHITE).append(" - ").append(Format.GRAY).append(description).toString();
+        if (usage != null) help.append(' ').append(ChatFormat.GOLD).append(usage);
+        return help.append(ChatFormat.WHITE).append(" - ").append(ChatFormat.GRAY).append(description).toString();
     }
 
     public ConfigurationManager getConf() {
