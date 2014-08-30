@@ -131,7 +131,10 @@ public class ProtocolLibHandler extends StatusHandler {
                     message = response.getPlayerHover();
                     if (message != null) {
                         if (response.useMultipleSamples()) {
-                            ping.setPlayers(Iterables.transform(Helper.splitLines(message),
+                            count = response.getDynamicSamples();
+
+                            ping.setPlayers(Iterables.transform(
+                                    count != null ? Helper.splitLines(message, count) : Helper.splitLines(message),
                                     new Function<String, WrappedGameProfile>() {
                                 @Override
                                 public WrappedGameProfile apply(String input) {

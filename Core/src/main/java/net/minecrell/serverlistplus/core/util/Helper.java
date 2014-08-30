@@ -54,6 +54,14 @@ public final class Helper {
         return NEW_LINE_SPLITTER.splitToList(s);
     }
 
+    public static Iterable<String> splitLines(String s, int limit) {
+        return NEW_LINE_SPLITTER.limit(limit).split(s);
+    }
+
+    public static List<String> splitLinesCached(String s, int limit) {
+        return NEW_LINE_SPLITTER.limit(limit).splitToList(s);
+    }
+
     public static boolean isNullOrEmpty(Object[] array) {
         return array == null || array.length == 0;
     }
@@ -73,17 +81,6 @@ public final class Helper {
     public static <T> ImmutableList<T> makeImmutableList(Collection<T> elements) {
         if (isNullOrEmpty(elements)) return null;
         return ImmutableList.copyOf(elements);
-    }
-
-    public static <K, V, T extends Map<K, V>> int mergeMaps(T main, Map<K, V> merge) {
-        int counter = 0;
-        for (Map.Entry<K, V> entry : merge.entrySet())
-            // Check if map contains the key...
-            if (!main.containsKey(entry.getKey())) {
-                // And if not, create it!
-                main.put(entry.getKey(), entry.getValue()); counter++;
-            }
-        return counter;
     }
 
     public static String[] toStringArray(Collection<String> c) {

@@ -30,6 +30,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.status.hosts.VirtualHost;
+import net.minecrell.serverlistplus.core.util.CountingIterator;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,6 +50,7 @@ public class StatusResponse {
     private Integer online, max; // The cached player count values
     private boolean playerSlots;
 
+    private boolean dynamicHoverCount = false;
     private Iterator<String> randomPlayers;
     private Map<String, Iterator<String>> randomPlayersMap;
 
@@ -74,8 +76,13 @@ public class StatusResponse {
     }
 
     public Iterator<String> getRandomPlayers() {
-        return randomPlayers != null ? randomPlayers :
-                (this.randomPlayers = getCore().getPlugin().getRandomPlayers());
+        if (randomPlayers != null) return randomPlayers;
+        this.randomPlayers = getCore().getPlugin().getRandomPlayers();
+        if (randomPlayers != null && getCore().getConf(PluginConf.class).Samples.DynamicPlayers) {
+            this.randomPlayers = new CountingIterator<>(randomPlayers);
+            this.dynamicHoverCount = true;
+        }
+        return randomPlayers;
     }
 
     public Iterator<String> getRandomPlayers(String location) {
@@ -174,8 +181,13 @@ public class StatusResponse {
         return status.getPatch().getPlayerHover(this);
     }
 
+    public Integer getDynamicSamples() {
+        if (!dynamicHoverCount) return null;
+        return ((CountingIterator) randomPlayers).getCount();
+    }
+
     public boolean useMultipleSamples() {
-        return getCore().getConf(PluginConf.class).MultipleSamples;
+        return getCore().getConf(PluginConf.class).Samples.Multiple;
     }
 
     public String getPlayerSlots() {

@@ -215,7 +215,10 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     message = response.getPlayerHover();
                     if (message != null) {
                         if (response.useMultipleSamples()) {
-                            List<String> lines = Helper.splitLinesCached(message);
+                            count = response.getDynamicSamples();
+                            List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
+                                    Helper.splitLinesCached(message);
+
                             ServerPing.PlayerInfo[] sample = new ServerPing.PlayerInfo[lines.size()];
                             for (int i = 0; i < sample.length; i++)
                                 sample[i] = new ServerPing.PlayerInfo(lines.get(i), StatusManager.EMPTY_UUID);
