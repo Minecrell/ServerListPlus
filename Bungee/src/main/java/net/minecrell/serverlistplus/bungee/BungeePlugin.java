@@ -45,6 +45,7 @@ import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -212,8 +213,18 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
                     // Player hover
                     message = response.getPlayerHover();
-                    if (message != null) players.setSample(new ServerPing.PlayerInfo[]{
-                            new ServerPing.PlayerInfo(message, StatusManager.EMPTY_UUID) });
+                    if (message != null) {
+                        if (response.useMultipleSamples()) {
+                            List<String> lines = Helper.splitLinesCached(message);
+                            ServerPing.PlayerInfo[] sample = new ServerPing.PlayerInfo[lines.size()];
+                            for (int i = 0; i < sample.length; i++)
+                                sample[i] = new ServerPing.PlayerInfo(lines.get(i), StatusManager.EMPTY_UUID);
+
+                            players.setSample(sample);
+                        } else
+                            players.setSample(new ServerPing.PlayerInfo[]{
+                                    new ServerPing.PlayerInfo(message, StatusManager.EMPTY_UUID) });
+                    }
                 }
             }
         }

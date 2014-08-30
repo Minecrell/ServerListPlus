@@ -27,6 +27,7 @@ package net.minecrell.serverlistplus.core.status;
 import lombok.Getter;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.status.hosts.VirtualHost;
 
@@ -171,6 +172,10 @@ public class StatusResponse {
         }
 
         return status.getPatch().getPlayerHover(this);
+    }
+
+    public boolean useMultipleSamples() {
+        return getCore().getConf(PluginConf.class).MultipleSamples;
     }
 
     public String getPlayerSlots() {

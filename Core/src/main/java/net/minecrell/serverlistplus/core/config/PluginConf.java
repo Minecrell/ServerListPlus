@@ -46,6 +46,7 @@ import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
 public class PluginConf {
     public boolean Stats = true;
     public boolean PlayerTracking = true;
+    public boolean MultipleSamples = true;
     public UnknownConf Unknown = new UnknownConf();
     public FaviconConf Favicon = new FaviconConf();
 

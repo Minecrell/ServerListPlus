@@ -29,9 +29,15 @@ import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
+import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
+
+import javax.annotation.Nullable;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -125,8 +131,19 @@ public class ProtocolLibHandler extends StatusHandler {
 
                     // Player hover
                     message = response.getPlayerHover();
-                    if (message != null) ping.setPlayers(Collections.singleton(
-                            new WrappedGameProfile(StatusManager.EMPTY_UUID, message)));
+                    if (message != null) {
+                        if (response.useMultipleSamples()) {
+                            ping.setPlayers(Iterables.transform(Helper.splitLines(message),
+                                    new Function<String, WrappedGameProfile>() {
+                                @Override
+                                public WrappedGameProfile apply(String input) {
+                                    return new WrappedGameProfile(StatusManager.EMPTY_UUID, input);
+                                }
+                            }));
+                        } else
+                            ping.setPlayers(Collections.singleton(
+                                    new WrappedGameProfile(StatusManager.EMPTY_UUID, message)));
+                    }
                 }
             }
         }

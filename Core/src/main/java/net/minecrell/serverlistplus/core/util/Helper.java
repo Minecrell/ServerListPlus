@@ -26,20 +26,32 @@ package net.minecrell.serverlistplus.core.util;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 public final class Helper {
     private Helper() {}
 
-    private final static Joiner NEWLINE_JOINER = Joiner.on('\n');
+    private final static Joiner NEW_LINE_JOINER = Joiner.on('\n');
 
     public static String joinLines(String... lines) {
-        return NEWLINE_JOINER.join(lines);
+        return NEW_LINE_JOINER.join(lines);
+    }
+
+    private static final Splitter NEW_LINE_SPLITTER = Splitter.on('\n');
+
+    public static Iterable<String> splitLines(String s) {
+        return NEW_LINE_SPLITTER.split(s);
+    }
+
+    public static List<String> splitLinesCached(String s) {
+        return NEW_LINE_SPLITTER.splitToList(s);
     }
 
     public static boolean isNullOrEmpty(Object[] array) {
