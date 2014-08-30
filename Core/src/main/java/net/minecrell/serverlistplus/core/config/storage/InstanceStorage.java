@@ -77,6 +77,8 @@ public interface InstanceStorage<B> extends Iterable<B> {
      */
     <T extends B> T set(Class<T> type, T instance);
 
+    void setAll(InstanceStorage<B> other);
+
     /**
      * Removes an instance of a specified class from the storage.
      * @param type The class of the instance.
@@ -89,4 +91,6 @@ public interface InstanceStorage<B> extends Iterable<B> {
      * @return The instance count.
      */
     int size();
+
+    InstanceStorage<B> withDefaults(InstanceStorage<B> defaults);
 }

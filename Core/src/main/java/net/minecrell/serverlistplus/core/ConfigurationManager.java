@@ -52,8 +52,10 @@ public class ConfigurationManager extends AbstractManager {
 
     protected final YAMLWriter yaml;
 
-    protected @Getter InstanceStorage<Object> storage = InstanceStorages.createOrdered();
-    protected final @Getter InstanceStorage<Object> defaults = InstanceStorages.createOrdered();
+    protected final @Getter InstanceStorage<Object> defaults = InstanceStorages.create();
+    protected @Getter InstanceStorage<Object> storage = InstanceStorages.createOrdered().withDefaults(defaults);
+
+    protected final @Getter InstanceStorage<Object> examples = InstanceStorages.createOrdered();
 
     public ConfigurationManager(ServerListPlusCore core) {
         super(core);
@@ -80,7 +82,7 @@ public class ConfigurationManager extends AbstractManager {
 
         try {
             // Create new storage, will replace the other one when finished loading
-            InstanceStorage<Object> newStorage = InstanceStorages.createOrdered();
+            InstanceStorage<Object> newStorage = InstanceStorages.createOrdered().withDefaults(defaults);
             final boolean confExists = Files.exists(configPath);
 
             if (confExists) {
@@ -106,23 +108,17 @@ public class ConfigurationManager extends AbstractManager {
 
             getLogger().log(REPORT, newStorage.size() + " configurations loaded.");
 
-            // Add missing configurations from default values
-            int generated = InstanceStorages.merge(newStorage, defaults);
             this.storage = newStorage;
 
-            if (generated > 0) {
-                getLogger().log(DEBUG, "Using {} default configurations.", generated);
+            if (examples.size() > newStorage.size()) {
                 if (confExists)
-                    getLogger().log(WARN, generated + " configurations could not be found in the " +
-                            "configuration file. Your configuration might be outdated, " +
-                            "or some of them contain invalid YAML syntax. If you want to regenerate the missing " +
-                            "configuration parts type '/serverlistplus save'. Please note that this will delete " +
-                            "all invalid configuration parts as well as any custom comments. A backup will be " +
-                            "created automatically.");
+                    getLogger().log(WARN, "Could not load all configurations from the configuration file. Please" +
+                            " make sure the syntax is correct. Type '/slp save' if you want to add the missing " +
+                            "parts.");
             }
 
             if (!confExists) try {
-                save(); // Save it if it doesn't exist
+                save(examples); // Save it if it doesn't exist
             } catch (ServerListPlusException ignored) {}
 
             core.getPlugin().configChanged(storage); // Call plugin handlers
@@ -142,6 +138,14 @@ public class ConfigurationManager extends AbstractManager {
     }
 
     public void save() throws ServerListPlusException {
+        InstanceStorage<Object> tmp = InstanceStorages.createOrdered();
+        tmp.setAll(examples);
+        tmp.setAll(storage);
+        this.storage = tmp;
+        save(storage);
+    }
+
+    private void save(InstanceStorage<Object> storage) throws ServerListPlusException {
         getLogger().log(INFO, "Saving configuration...");
 
         Path configPath = getConfigPath();

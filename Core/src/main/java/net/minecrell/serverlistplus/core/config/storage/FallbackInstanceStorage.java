@@ -24,14 +24,20 @@
 
 package net.minecrell.serverlistplus.core.config.storage;
 
-public final class InstanceStorages {
-    private InstanceStorages() {}
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ClassToInstanceMap;
 
-    public static <B> InstanceStorage<B> create() {
-        return ClassToInstanceStorage.create();
+public class FallbackInstanceStorage<B> extends ClassToInstanceStorage<B> {
+    private final InstanceStorage<B> defaults;
+
+    protected FallbackInstanceStorage(ClassToInstanceMap<B> instances, InstanceStorage<B> defaults) {
+        super(instances);
+        this.defaults = Preconditions.checkNotNull(defaults, "defaults");
     }
 
-    public static <B> InstanceStorage<B> createOrdered() {
-        return ClassToInstanceStorage.createLinked();
+    @Override
+    public <T extends B> T get(Class<T> type) {
+        T result = super.get(type);
+        return result != null ? result : defaults.get(type);
     }
 }

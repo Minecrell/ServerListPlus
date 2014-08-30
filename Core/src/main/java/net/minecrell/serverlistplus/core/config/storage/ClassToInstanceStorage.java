@@ -76,6 +76,15 @@ public class ClassToInstanceStorage<B> implements InstanceStorage<B> {
     }
 
     @Override
+    public void setAll(InstanceStorage<B> other) {
+        if (other instanceof ClassToInstanceStorage)
+            instances.putAll(((ClassToInstanceStorage<B>) other).instances);
+        else for (B instance : other) {
+            set(instance);
+        }
+    }
+
+    @Override
     public B remove(Class<? extends B> type) {
         return instances.remove(type);
     }
@@ -83,6 +92,11 @@ public class ClassToInstanceStorage<B> implements InstanceStorage<B> {
     @Override
     public int size() {
         return instances.size();
+    }
+
+    @Override
+    public InstanceStorage<B> withDefaults(InstanceStorage<B> defaults) {
+        return new FallbackInstanceStorage<>(instances, defaults);
     }
 
     @Override

@@ -99,9 +99,9 @@ public class ServerListPlusCore {
         this.configManager = new ConfigurationManager(this);
 
         // Register the configurations
-        registerConf(ServerStatusConf.class, Examples.forServerStatus(), "Status");
-        registerConf(PluginConf.class, Examples.forPlugin(), "Plugin");
-        registerConf(CoreConf.class, new CoreConf(), "Core");
+        registerConf(ServerStatusConf.class, new ServerStatusConf(), Examples.forServerStatus(), "Status");
+        registerConf(PluginConf.class, new PluginConf(), Examples.forPlugin(), "Plugin");
+        registerConf(CoreConf.class, new CoreConf(), null, "Core");
 
         // Initialize the profile manager
         this.profileManager = new ProfileManager(this);
@@ -115,8 +115,9 @@ public class ServerListPlusCore {
         return info.getName() + plugin.getServerType() + " v" + info.getVersion();
     }
 
-    public <T> void registerConf(Class<T> clazz, T def, String alias) {
+    public <T> void registerConf(Class<T> clazz, T def, T example, String alias) {
         if (def != null) configManager.getDefaults().set(clazz, def); // Set default configuration
+        if (example != null) configManager.getExamples().set(clazz, example);
         configManager.getYAML().registerAlias(clazz, alias); // Register alias for the configuration
     }
 
@@ -376,11 +377,11 @@ public class ServerListPlusCore {
     }
 
     public <T> T getConf(Class<T> clazz) {
-        return getConf().getStorage().get(clazz);
+        return configManager.getStorage().get(clazz);
     }
 
     public <T> T getDefaultConf(Class<T> clazz) {
-        return getConf().getDefaults().get(clazz);
+        return configManager.getDefaults().get(clazz);
     }
 
     public ProfileManager getProfiles() {
