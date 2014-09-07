@@ -25,6 +25,7 @@
 package net.minecrell.serverlistplus.core.util;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -35,8 +36,17 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public final class Helper {
     private Helper() {}
+
+    public final static Gson JSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(Date.class, new ISO8601Serializer())
+            .enableComplexMapKeySerialization()
+            .create();
 
     private final static Joiner NEW_LINE_JOINER = Joiner.on('\n');
 

@@ -32,6 +32,7 @@ import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
@@ -46,6 +47,7 @@ import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -135,7 +137,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         @EventHandler
         public void onPlayerLogin(LoginEvent event) {
             PendingConnection con = event.getConnection();
-            core.addClient(con.getAddress().getAddress(), new PlayerIdentity(con.getUniqueId(), con.getName()));
+            core.addClient(con.getAddress().getAddress(), PlayerIdentity.create(con.getUniqueId(), con.getName()));
         }
     }
 
@@ -288,6 +290,16 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public void runAsync(Runnable task) {
+        getProxy().getScheduler().runAsync(this, task);
+    }
+
+    @Override
+    public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
+        return new ScheduledBungeeTask(getProxy().getScheduler().schedule(this, task, repeat, repeat, unit));
+    }
+
+    @Override
     public String colorize(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
@@ -317,7 +329,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void configChanged(InstanceStorage<Object> confs) {
         // Player tracking
-        if (confs.get(PluginConf.class).PlayerTracking) {
+        if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
             if (loginListener == null) {
                 registerListener(this.loginListener = new LoginListener());
                 getLogger().log(DEBUG, "Registered proxy player tracking listener.");

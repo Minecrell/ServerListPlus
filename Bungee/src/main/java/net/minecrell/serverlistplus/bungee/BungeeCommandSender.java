@@ -24,33 +24,34 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import net.minecrell.serverlistplus.core.plugin.AbstractCommandSender;
+import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
+import net.minecrell.serverlistplus.core.util.Wrapper;
 
 import net.md_5.bungee.api.CommandSender;
 
-public class BungeeCommandSender extends AbstractCommandSender<CommandSender> {
+public class BungeeCommandSender extends Wrapper<CommandSender> implements ServerCommandSender {
     public BungeeCommandSender(CommandSender sender) {
         super(sender);
     }
 
     @Override
     public String getName() {
-        return sender.getName();
+        return handle.getName();
     }
 
     @Override
     public void sendMessage(String message) {
-        sender.sendMessage(message);
+        handle.sendMessage(message);
     }
 
     @Override
     public void sendMessages(String... messages) {
         // Deprecated, but compatibility with older BungeeCord versions
-        sender.sendMessages(messages);
+        handle.sendMessages(messages);
     }
 
     @Override
     public boolean hasPermission(String permission) {
-        return sender.hasPermission(permission);
+        return handle.hasPermission(permission);
     }
 }

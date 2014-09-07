@@ -22,35 +22,18 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.core.player;
 
-import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
-import net.minecrell.serverlistplus.core.util.Wrapper;
+import net.minecrell.serverlistplus.core.ServerListPlusException;
 
-import org.bukkit.command.CommandSender;
+import java.net.InetAddress;
 
-public class BukkitCommandSender extends Wrapper<CommandSender> implements ServerCommandSender {
-    public BukkitCommandSender(CommandSender sender) {
-        super(sender);
-    }
+import com.google.common.cache.Cache;
 
-    @Override
-    public String getName() {
-        return handle.getName();
-    }
-
-    @Override
-    public void sendMessage(String message) {
-        handle.sendMessage(message);
-    }
-
-    @Override
-    public void sendMessages(String... messages) {
-        handle.sendMessage(messages);
-    }
-
-    @Override
-    public boolean hasPermission(String permission) {
-        return handle.hasPermission(permission);
-    }
+public interface IdentificationStorage {
+    Cache<InetAddress, PlayerIdentity> getCache();
+    void reload() throws ServerListPlusException;
+    void enable() throws ServerListPlusException;
+    boolean isEnabled();
+    void disable() throws ServerListPlusException;
 }

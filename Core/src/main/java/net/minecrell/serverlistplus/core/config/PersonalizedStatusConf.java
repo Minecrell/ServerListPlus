@@ -24,26 +24,20 @@
 
 package net.minecrell.serverlistplus.core.config;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import net.minecrell.serverlistplus.core.util.IntegerRange;
 
 import java.util.List;
 
-@EqualsAndHashCode @ToString
 public class PersonalizedStatusConf {
     public StatusConf Default;
     public StatusConf Personalized;
 
-    @EqualsAndHashCode @ToString
     public static class StatusConf {
         public List<String> Description;
         public PlayersConf Players;
         public VersionConf Version;
         public FaviconConf Favicon;
 
-        @EqualsAndHashCode @ToString
         public static class PlayersConf {
             public List<IntegerRange> Online, Max;
             public Boolean Hidden;
@@ -51,13 +45,11 @@ public class PersonalizedStatusConf {
             public List<String> Slots;
         }
 
-        @EqualsAndHashCode @ToString
         public static class VersionConf {
             public List<String> Name;
             public Integer Protocol;
         }
 
-        @EqualsAndHashCode @ToString
         public static class FaviconConf {
             public List<String> Files, Folders;
             public List<String> URLs;

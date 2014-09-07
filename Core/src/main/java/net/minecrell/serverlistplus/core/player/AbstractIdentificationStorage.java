@@ -22,35 +22,13 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.core.player;
 
-import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
-import net.minecrell.serverlistplus.core.util.Wrapper;
+import net.minecrell.serverlistplus.core.AbstractManager;
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
 
-import org.bukkit.command.CommandSender;
-
-public class BukkitCommandSender extends Wrapper<CommandSender> implements ServerCommandSender {
-    public BukkitCommandSender(CommandSender sender) {
-        super(sender);
-    }
-
-    @Override
-    public String getName() {
-        return handle.getName();
-    }
-
-    @Override
-    public void sendMessage(String message) {
-        handle.sendMessage(message);
-    }
-
-    @Override
-    public void sendMessages(String... messages) {
-        handle.sendMessage(messages);
-    }
-
-    @Override
-    public boolean hasPermission(String permission) {
-        return handle.hasPermission(permission);
+public abstract class AbstractIdentificationStorage extends AbstractManager implements IdentificationStorage {
+    protected AbstractIdentificationStorage(ServerListPlusCore core) {
+        super(core);
     }
 }

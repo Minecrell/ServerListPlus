@@ -34,19 +34,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
+import static net.minecrell.serverlistplus.core.util.Helper.JSON;
 
 public class ProfileManager extends AbstractManager {
     private static final String DEFAULT_PROFILE = "ServerListPlus";
 
     private static final String PROFILE_FILENAME = "Profiles.json";
-    private static final Gson JSON = new Gson();
 
     // TODO: Implement profiles
     private @Getter boolean enabled;

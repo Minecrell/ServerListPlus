@@ -24,13 +24,25 @@
 
 package net.minecrell.serverlistplus.core.player;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.Value;
 
+import java.util.Date;
 import java.util.UUID;
 
-@Value
+@Data @AllArgsConstructor
 public class PlayerIdentity {
-    private final UUID id;
+    private final UUID uuid;
     private final @NonNull String name;
+    private Date time;
+
+    public static PlayerIdentity create(UUID uuid, String name) {
+        return new PlayerIdentity(uuid, name, new Date());
+    }
+
+    public static PlayerIdentity update(PlayerIdentity identity) {
+        identity.setTime(new Date());
+        return identity;
+    }
 }

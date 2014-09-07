@@ -32,7 +32,10 @@ import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.Examples;
 import net.minecrell.serverlistplus.core.logging.Logger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
+import net.minecrell.serverlistplus.core.player.IdentificationStorage;
+import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.SQLIdentificationStorage;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.status.StatusManager;
@@ -50,7 +53,6 @@ import java.util.Set;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -71,8 +73,7 @@ public class ServerListPlusCore {
     private final ProfileManager profileManager;
     private final StatusManager statusManager;
 
-    private Cache<InetAddress, PlayerIdentity> playerTracker;
-    private String playerTrackerConf;
+    private IdentificationStorage storage;
 
     private String faviconCacheConf;
 
@@ -103,12 +104,17 @@ public class ServerListPlusCore {
         registerConf(PluginConf.class, new PluginConf(), Examples.forPlugin(), "Plugin");
         registerConf(CoreConf.class, new CoreConf(), null, "Core");
 
+        configManager.getYAML().registerAlias(JSONIdentificationStorage.Conf.class, "JSONStorage");
+        configManager.getYAML().registerAlias(SQLIdentificationStorage.Conf.class, "SQLStorage");
+
         // Initialize the profile manager
         this.profileManager = new ProfileManager(this);
+        this.storage = new JSONIdentificationStorage(this);
 
         plugin.initialize(this);
 
         this.reload(); // Now load the configuration!
+        storage.enable();
     }
 
     public String getDisplayName() {
@@ -123,39 +129,7 @@ public class ServerListPlusCore {
 
     private void reloadCaches() {
         CoreConf conf = this.getConf(CoreConf.class);
-        boolean enabled = this.getConf(PluginConf.class).PlayerTracking;
-
-        // Check if player tracker configuration has been changed
-        if (!enabled || (playerTrackerConf == null || conf.Caches == null ||
-                !playerTrackerConf.equals(conf.Caches.PlayerTracking))) {
-
-            if (playerTracker != null) {
-                // Delete the player tracker
-                getLogger().log(DEBUG, "Deleting old player tracking cache due to configuration changes.");
-                playerTracker.invalidateAll();
-                playerTracker.cleanUp();
-                this.playerTracker = null;
-            }
-
-            if (enabled) {
-                getLogger().log(DEBUG, "Creating new player tracking cache...");
-
-                try {
-                    Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
-                    this.playerTrackerConf = conf.Caches.PlayerTracking;
-                    this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
-                } catch (IllegalArgumentException e) {
-                    getLogger().log(e, "Unable to create player tracker cache using configuration settings.");
-                    this.playerTrackerConf = getDefaultConf(CoreConf.class).Caches.PlayerTracking;
-                    this.playerTracker = CacheBuilder.from(playerTrackerConf).build();
-                }
-
-                getLogger().log(DEBUG, "Player tracking cache created.");
-            } else
-                playerTrackerConf = null; // Not enabled, so there is also no cache
-        }
-
-        enabled = statusManager.hasFavicon();
+        boolean enabled = statusManager.hasFavicon();
 
         // Check if favicon cache configuration has been changed
         if (!enabled || (faviconCacheConf == null || conf.Caches == null ||
@@ -169,7 +143,6 @@ public class ServerListPlusCore {
                 getLogger().log(DEBUG, "Creating new favicon cache...");
 
                 try {
-                    Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found!");
                     this.faviconCacheConf = conf.Caches.Favicon;
                     plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 } catch (IllegalArgumentException e) {
@@ -193,14 +166,15 @@ public class ServerListPlusCore {
             getLogger().log(WARN, "Configuration is not enabled, nothing will be changed on the server!");
         statusManager.reload(); // Now actually read and process the configuration
         this.reloadCaches(); // Check for cache setting changes
+        storage.reload();
     }
 
     public void addClient(InetAddress client, PlayerIdentity identity) {
-        if (this.playerTracker != null) playerTracker.put(client, identity);
+        storage.getCache().put(client, identity);
     }
 
     public PlayerIdentity resolveClient(InetAddress client) {
-        return this.playerTracker != null ? playerTracker.getIfPresent(client) : null;
+        return storage.getCache().getIfPresent(client);
     }
 
     public StatusRequest createRequest(InetAddress client) {
@@ -223,7 +197,7 @@ public class ServerListPlusCore {
             "players", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
                 public Cache<?, ?> apply(ServerListPlusCore core) {
-                    return core.playerTracker;
+                    return core.storage.getCache();
                 }
             }, "favicons", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
@@ -272,6 +246,7 @@ public class ServerListPlusCore {
 
                 try { // Save the configuration
                     configManager.save();
+                    ((JSONIdentificationStorage) storage).save();
                     sender.sendMessage(COMMAND_PREFIX_SUCCESS + "Configuration successfully saved.");
                 } catch (ServerListPlusException e) {
                     sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while saving the " +

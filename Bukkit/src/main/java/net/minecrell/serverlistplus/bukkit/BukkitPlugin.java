@@ -35,6 +35,7 @@ import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.status.StatusManager;
@@ -51,11 +52,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -180,7 +181,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             try {
                 uuid = event.getUniqueId();
             } catch (NoSuchMethodError ignored) {}
-            core.addClient(event.getAddress(), new PlayerIdentity(uuid, event.getName()));
+            core.addClient(event.getAddress(), PlayerIdentity.create(uuid, event.getName()));
         }
     }
 
@@ -193,7 +194,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             try {
                 uuid = event.getPlayer().getUniqueId();
             } catch (NoSuchMethodError ignored) {}
-            core.addClient(event.getAddress(), new PlayerIdentity(uuid, event.getPlayer().getName()));
+            core.addClient(event.getAddress(), PlayerIdentity.create(uuid, event.getPlayer().getName()));
         }
     }
 
@@ -280,6 +281,18 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public void runAsync(Runnable task) {
+        getServer().getScheduler().runTaskAsynchronously(this, task);
+    }
+
+    @Override
+    public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
+        repeat = unit.toMillis(repeat) / 50;
+        return new ScheduledBukkitTask(
+                getServer().getScheduler().runTaskTimerAsynchronously(this, task, repeat, repeat));
+    }
+
+    @Override
     public String colorize(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
@@ -305,7 +318,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             getLogger().log(DEBUG, "Creating new request cache...");
 
             try {
-                Preconditions.checkArgument(conf.Caches != null, "Cache configuration section not found");
                 this.requestCacheConf = conf.Caches.Request;
                 this.requestCache = CacheBuilder.from(requestCacheConf).build(requestLoader);
             } catch (IllegalArgumentException e) {
@@ -333,7 +345,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void configChanged(InstanceStorage<Object> confs) {
         // Player tracking
-        if (confs.get(PluginConf.class).PlayerTracking) {
+        if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
             if (loginListener == null) {
                 registerListener(this.loginListener = Environment.isSpigot() || getServer().getOnlineMode()
                         ? new LoginListener() : new OfflineModeLoginListener());

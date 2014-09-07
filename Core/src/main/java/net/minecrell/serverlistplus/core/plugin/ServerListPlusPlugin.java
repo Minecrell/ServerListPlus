@@ -31,6 +31,7 @@ import net.minecrell.serverlistplus.core.status.StatusManager;
 
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import com.google.common.cache.Cache;
@@ -55,6 +56,9 @@ public interface ServerListPlusPlugin {
 
     Cache<?, ?> getRequestCache();
     LoadingCache<FaviconSource, ?> getFaviconCache();
+
+    void runAsync(Runnable task);
+    ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit);
 
     String colorize(String s);
 

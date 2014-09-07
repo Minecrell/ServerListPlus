@@ -22,35 +22,31 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.core.util;
 
-import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
-import net.minecrell.serverlistplus.core.util.Wrapper;
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
-import org.bukkit.command.CommandSender;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
-public class BukkitCommandSender extends Wrapper<CommandSender> implements ServerCommandSender {
-    public BukkitCommandSender(CommandSender sender) {
-        super(sender);
+public class ISO8601Serializer implements JsonSerializer<Date> {
+    private DateFormat iso8601 = buildIso8601Format();
+
+    // Directly from GSON source: http://goo.gl/QdKHl5
+    private DateFormat buildIso8601Format() {
+        DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        iso8601Format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return iso8601Format;
     }
 
     @Override
-    public String getName() {
-        return handle.getName();
-    }
-
-    @Override
-    public void sendMessage(String message) {
-        handle.sendMessage(message);
-    }
-
-    @Override
-    public void sendMessages(String... messages) {
-        handle.sendMessage(messages);
-    }
-
-    @Override
-    public boolean hasPermission(String permission) {
-        return handle.hasPermission(permission);
+    public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+        return src != null ? context.serialize(iso8601.format(src)) : context.serialize(null);
     }
 }

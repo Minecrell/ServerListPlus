@@ -24,11 +24,9 @@
 
 package net.minecrell.serverlistplus.core.config;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import net.minecrell.serverlistplus.core.config.help.Description;
 import net.minecrell.serverlistplus.core.favicon.ResizeStrategy;
+import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 
 import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
 
@@ -42,27 +40,32 @@ import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
         " - ResizeStrategy: The strategy used to resize too small or too big favicons.",
         "     NONE (keep them as is, will probably fail), SCALE (scale them to the correct size)"
 })
-@EqualsAndHashCode @ToString
 public class PluginConf {
     public boolean Stats = true;
-    public boolean PlayerTracking = true;
+    public PlayerTrackingConf PlayerTracking = new PlayerTrackingConf();
     public SamplesConf Samples = new SamplesConf();
     public UnknownConf Unknown = new UnknownConf();
     public FaviconConf Favicon = new FaviconConf();
 
-    @EqualsAndHashCode @ToString
+    public static class PlayerTrackingConf {
+        public boolean Enabled = true;
+        public StorageConf Storage = new JSONIdentificationStorage.Conf();
+
+        public static abstract class StorageConf {
+            public boolean Enabled = true;
+        }
+    }
+
     public static class SamplesConf {
         public boolean Multiple = false;
         public boolean DynamicPlayers = false;
     }
 
-    @EqualsAndHashCode @ToString
     public static class UnknownConf {
         public String PlayerName = "player";
         public String PlayerCount = "???";
     }
 
-    @EqualsAndHashCode @ToString
     public static class FaviconConf {
         public boolean RecursiveFolderSearch = false;
         public ResizeStrategy ResizeStrategy = SCALE;

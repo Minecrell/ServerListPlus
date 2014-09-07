@@ -22,36 +22,21 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.plugin;
+package net.minecrell.serverlistplus.bungee;
 
-import lombok.Getter;
+import net.minecrell.serverlistplus.core.util.Wrapper;
 
-import com.google.common.base.Preconditions;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
-/**
- * A base class that can be used to wrap the implementation specific command sender classes.
- */
-public abstract class AbstractCommandSender<T> implements ServerCommandSender {
-    protected final @Getter T sender;
+public class ScheduledBungeeTask extends Wrapper<ScheduledTask>
+        implements net.minecrell.serverlistplus.core.plugin.ScheduledTask {
 
-    protected AbstractCommandSender(T sender) {
-        this.sender = Preconditions.checkNotNull(sender, "sender");
+    public ScheduledBungeeTask(ScheduledTask handle) {
+        super(handle);
     }
 
     @Override
-    public boolean equals(Object o) {
-        return this == o
-                || o instanceof AbstractCommandSender
-                && sender.equals(((AbstractCommandSender) o).sender);
-    }
-
-    @Override
-    public int hashCode() {
-        return sender.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return this.getName();
+    public void cancel() {
+        handle.cancel();
     }
 }

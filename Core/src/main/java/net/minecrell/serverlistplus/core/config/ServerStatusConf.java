@@ -24,9 +24,6 @@
 
 package net.minecrell.serverlistplus.core.config;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import net.minecrell.serverlistplus.core.config.help.Description;
 
 import java.util.Map;
@@ -57,7 +54,6 @@ import java.util.Map;
         "   - Player count: %online%, %max%, %online@server% %online@world%",
         "   - Random online player name: %random_player%"
 })
-@EqualsAndHashCode(callSuper = true) @ToString(callSuper = true)
 public class ServerStatusConf extends PersonalizedStatusConf {
     public Map<String, PersonalizedStatusConf> Hosts;
 }

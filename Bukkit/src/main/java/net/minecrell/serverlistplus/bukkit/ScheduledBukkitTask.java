@@ -24,33 +24,18 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
-import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
+import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.util.Wrapper;
 
-import org.bukkit.command.CommandSender;
+import org.bukkit.scheduler.BukkitTask;
 
-public class BukkitCommandSender extends Wrapper<CommandSender> implements ServerCommandSender {
-    public BukkitCommandSender(CommandSender sender) {
-        super(sender);
+public class ScheduledBukkitTask extends Wrapper<BukkitTask> implements ScheduledTask {
+    public ScheduledBukkitTask(BukkitTask handle) {
+        super(handle);
     }
 
     @Override
-    public String getName() {
-        return handle.getName();
-    }
-
-    @Override
-    public void sendMessage(String message) {
-        handle.sendMessage(message);
-    }
-
-    @Override
-    public void sendMessages(String... messages) {
-        handle.sendMessage(messages);
-    }
-
-    @Override
-    public boolean hasPermission(String permission) {
-        return handle.hasPermission(permission);
+    public void cancel() {
+        handle.cancel();
     }
 }

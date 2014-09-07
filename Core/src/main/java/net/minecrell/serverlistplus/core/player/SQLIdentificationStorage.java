@@ -22,35 +22,48 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.core.player;
 
-import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
-import net.minecrell.serverlistplus.core.util.Wrapper;
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.ServerListPlusException;
+import net.minecrell.serverlistplus.core.config.PluginConf;
 
-import org.bukkit.command.CommandSender;
+import java.net.InetAddress;
 
-public class BukkitCommandSender extends Wrapper<CommandSender> implements ServerCommandSender {
-    public BukkitCommandSender(CommandSender sender) {
-        super(sender);
+import com.google.common.cache.Cache;
+
+// TODO
+public class SQLIdentificationStorage extends AbstractIdentificationStorage {
+    public static class Conf extends PluginConf.PlayerTrackingConf.StorageConf {
+        public String Connection;
+    }
+
+    public SQLIdentificationStorage(ServerListPlusCore core) {
+        super(core);
     }
 
     @Override
-    public String getName() {
-        return handle.getName();
+    public Cache<InetAddress, PlayerIdentity> getCache() {
+        return null;
     }
 
     @Override
-    public void sendMessage(String message) {
-        handle.sendMessage(message);
+    public void reload() throws ServerListPlusException {
+
     }
 
     @Override
-    public void sendMessages(String... messages) {
-        handle.sendMessage(messages);
+    public void enable() throws ServerListPlusException {
+
     }
 
     @Override
-    public boolean hasPermission(String permission) {
-        return handle.hasPermission(permission);
+    public boolean isEnabled() {
+        return false;
+    }
+
+    @Override
+    public void disable() throws ServerListPlusException {
+
     }
 }
