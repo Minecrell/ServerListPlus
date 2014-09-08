@@ -53,4 +53,9 @@ public class BukkitCommandSender extends Wrapper<CommandSender> implements Serve
     public boolean hasPermission(String permission) {
         return handle.hasPermission(permission);
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
