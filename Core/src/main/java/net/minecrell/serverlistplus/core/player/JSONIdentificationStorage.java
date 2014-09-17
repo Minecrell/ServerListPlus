@@ -150,7 +150,8 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
             throw getLogger().process(e, "Failed to load player storage.");
         }
 
-        this.saveTask = core.getPlugin().scheduleAsync(new SaveTask(), 5, TimeUnit.MINUTES);
+        TimeUnitValue delay = ((Conf) core.getConf(PluginConf.class).PlayerTracking.Storage).SaveDelay;
+        this.saveTask = core.getPlugin().scheduleAsync(new SaveTask(), delay.getValue(), delay.getUnit());
     }
 
     @Override
