@@ -53,7 +53,8 @@ public final class FaviconHelper {
     }
 
     private static final String SKIN_URL = "http://skins.minecraft.net/MinecraftSkins/%s.png";
-    private static final String CHAR_URL = "http://s3.amazonaws.com/MinecraftSkins/char.png";
+    private static final String STEVE_URL = "https://minecraft.net/images/steve.png";
+    private static final String ALEX_URL = "https://minecraft.net/images/alex.png";
 
     private static final int HEAD_X = 8, HEAD_Y = 8;
     private static final int HELM_X = 40, HELM_Y = 8;
@@ -64,7 +65,8 @@ public final class FaviconHelper {
         try { // First try if it is already a valid URL
             url = new URL(name);
         } catch(MalformedURLException e) {
-            if (name.equalsIgnoreCase("char")) url = new URL(CHAR_URL);
+            if (name.equalsIgnoreCase("char") || name.equalsIgnoreCase("steve")) url = new URL(STEVE_URL);
+            else if (name.equalsIgnoreCase("alex")) url = new URL(ALEX_URL);
             else url = new URL(String.format(SKIN_URL, name));
         }
 
