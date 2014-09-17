@@ -56,19 +56,22 @@ public abstract class AbstractPropertyUtils extends PropertyUtils {
     protected Map<String, Property> getPropertiesMap(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
         if (bAccess == BeanAccess.FIELD) {
             Map<String, Property> properties = new LinkedHashMap<>();
-
-            for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-                for (Field field : c.getDeclaredFields()) {
-                    int modifiers = field.getModifiers();
-                    if (!Modifier.isStatic(modifiers) && !Modifier.isTransient(modifiers)
-                            && !properties.containsKey(field.getName())) {
-                        properties.put(Helper.toLowerCase(field.getName()), new FieldProperty(field));
-                    }
-                }
-            }
-
+            findProperties(type, properties);
             propertiesCache.put(type, properties);
             return properties;
         } else return super.getPropertiesMap(type, bAccess);
+    }
+
+    private static void findProperties(Class<?> clazz, Map<String, Property> properties) {
+        Class<?> superClass = clazz.getSuperclass(); // Process super classes first
+        if (superClass != null) findProperties(superClass, properties);
+
+        for (Field field : clazz.getDeclaredFields()) {
+            int modifiers = field.getModifiers();
+            if (!Modifier.isStatic(modifiers) && !Modifier.isTransient(modifiers)
+                    && !properties.containsKey(field.getName())) {
+                properties.put(Helper.toLowerCase(field.getName()), new FieldProperty(field));
+            }
+        }
     }
 }

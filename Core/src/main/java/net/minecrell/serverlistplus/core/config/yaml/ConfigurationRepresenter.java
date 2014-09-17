@@ -24,16 +24,29 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Represent;
+import org.yaml.snakeyaml.representer.Representer;
 
-public class OutdatedConfigurationRepresenter extends ConfigurationRepresenter {
-    @Override
-    protected Node representScalar(Tag tag, String value, Character style) {
-        if (style == null && value != null && value.indexOf('\n') > -1)
-            // Use literal style to generate nice output for multiple lines on CraftBukkit
-            style = DumperOptions.ScalarStyle.LITERAL.getChar();
-        return super.representScalar(tag, value, style);
+public class ConfigurationRepresenter extends Representer {
+
+    public ConfigurationRepresenter() {
+        multiRepresenters.put(ConfigurationSerializable.class, new RepresentConfigurationSerializable());
+    }
+
+    @Override // Skip null values for configuration generating
+    protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object value, Tag tag) {
+        return value != null ? super.representJavaBeanProperty(javaBean, property, value, tag) : null;
+    }
+
+    public class RepresentConfigurationSerializable implements Represent {
+
+        @Override
+        public Node representData(Object data) {
+            return represent(((ConfigurationSerializable) data).serialize());
+        }
     }
 }

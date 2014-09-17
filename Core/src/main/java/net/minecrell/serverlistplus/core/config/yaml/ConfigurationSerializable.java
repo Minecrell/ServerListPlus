@@ -24,15 +24,6 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.nodes.NodeTuple;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
-
-public class NullSkippingRepresenter extends Representer {
-
-    @Override // Skip null values for configuration generating
-    protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object value, Tag tag) {
-        return value != null ? super.representJavaBeanProperty(javaBean, property, value, tag) : null;
-    }
+public interface ConfigurationSerializable {
+    Object serialize();
 }

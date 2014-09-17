@@ -30,6 +30,7 @@ import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.io.IOHelper;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
+import net.minecrell.serverlistplus.core.util.TimeUnitValue;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -54,7 +55,9 @@ import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
 import static net.minecrell.serverlistplus.core.util.Helper.JSON;
 
 public class JSONIdentificationStorage extends AbstractIdentificationStorage {
-    public static class Conf extends PluginConf.PlayerTrackingConf.StorageConf {}
+    public static class Conf extends PluginConf.PlayerTrackingConf.StorageConf {
+        public TimeUnitValue SaveDelay = new TimeUnitValue(TimeUnit.MINUTES, 5);
+    }
 
     public static final String STORAGE_FILE = "PlayerCache.json";
     public static final Type STORAGE_TYPE = new TypeToken<Map<InetAddress, PlayerIdentity>>(){}.getType();

@@ -25,13 +25,15 @@
 package net.minecrell.serverlistplus.core.util;
 
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+
+import net.minecrell.serverlistplus.core.config.yaml.ConfigurationSerializable;
 
 import java.util.regex.Pattern;
 
-@EqualsAndHashCode @ToString
-public class IntegerRange {
-    private static final Pattern SEPARATOR = Pattern.compile("..", Pattern.LITERAL);
+@EqualsAndHashCode
+public class IntegerRange implements ConfigurationSerializable {
+    private static final String SEPARATOR = "..";
+    private static final Pattern SEPARATOR_PATTERN = Pattern.compile(SEPARATOR, Pattern.LITERAL);
 
     private final int from, to;
 
@@ -45,12 +47,12 @@ public class IntegerRange {
         this.to = to;
     }
 
-    public IntegerRange(IntegerRange other) {
+    protected IntegerRange(IntegerRange other) {
         this(other.from, other.to);
     }
 
     public IntegerRange(String range) {
-        this(from(range));
+        this(parse(range));
     }
 
     public boolean isSingle() {
@@ -65,16 +67,26 @@ public class IntegerRange {
         return to;
     }
 
-    public static IntegerRange from(String range) {
+    public static IntegerRange parse(String range) {
         try {
             return new IntegerRange(Integer.parseInt(range));
         } catch (NumberFormatException ignored) {}
 
         // Let's try to parse the range
-        String[] parts = SEPARATOR.split(range, 2);
+        String[] parts = SEPARATOR_PATTERN.split(range, 2);
         if (parts.length != 2) throw new IllegalArgumentException("Invalid range: " + range);
 
         // Now parse both numbers
         return new IntegerRange(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+    }
+
+    @Override
+    public String toString() {
+        return serialize().toString();
+    }
+
+    @Override
+    public Object serialize() {
+        return isSingle() ? from : from + SEPARATOR + to;
     }
 }

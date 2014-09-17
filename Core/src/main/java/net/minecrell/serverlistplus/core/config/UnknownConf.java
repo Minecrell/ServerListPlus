@@ -24,6 +24,6 @@
 
 package net.minecrell.serverlistplus.core.config;
 
-public final class UnknownConf  {
+public final class UnknownConf {
 
 }

@@ -47,7 +47,7 @@ public final class ServerListPlusYAML {
 
         // Plugin classes are loaded from a different class loader, that's why we need this
         Constructor constructor = new UnknownConfigurationConstructor(core);
-        Representer representer = new NullSkippingRepresenter(); // Skip null properties
+        Representer representer = new ConfigurationRepresenter(); // Skip null properties
 
         boolean outdatedYaml = false;
 
