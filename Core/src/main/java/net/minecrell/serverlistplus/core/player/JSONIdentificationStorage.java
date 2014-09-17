@@ -41,6 +41,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -65,6 +66,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     private Cache<InetAddress, PlayerIdentity> cache;
     private String cacheConf;
 
+    private final AtomicBoolean changed = new AtomicBoolean();
     private ScheduledTask saveTask;
 
     public JSONIdentificationStorage(ServerListPlusCore core) {
@@ -74,6 +76,28 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     @Override
     public Cache<InetAddress, PlayerIdentity> getCache() {
         return cache;
+    }
+
+    @Override
+    public boolean has(InetAddress client) {
+        return resolve(client) != null;
+    }
+
+    @Override
+    public PlayerIdentity resolve(InetAddress client) {
+        return cache.getIfPresent(client);
+    }
+
+    @Override
+    public void create(InetAddress client, PlayerIdentity identity) {
+        cache.put(client, identity);
+        changed.set(true);
+    }
+
+    @Override
+    public void update(InetAddress client) {
+        resolve(client).update();
+        changed.set(true);
     }
 
     public Path getStoragePath() {
@@ -150,6 +174,8 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
             throw getLogger().process(e, "Failed to load player storage.");
         }
 
+        changed.set(false);
+
         TimeUnitValue delay = ((Conf) core.getConf(PluginConf.class).PlayerTracking.Storage).SaveDelay;
         this.saveTask = core.getPlugin().scheduleAsync(new SaveTask(), delay.getValue(), delay.getUnit());
     }
@@ -160,7 +186,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     }
 
     public synchronized void save() throws ServerListPlusException {
-        if (!isEnabled()) return;
+        if (!isEnabled() || !changed.compareAndSet(true, false)) return;
         getLogger().log(INFO, "Saving player identities...");
         Path storagePath = getStoragePath();
         getLogger().log(DEBUG, "Storage location: " + storagePath);

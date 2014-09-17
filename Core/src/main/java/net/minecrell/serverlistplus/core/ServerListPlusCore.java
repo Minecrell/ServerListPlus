@@ -171,15 +171,16 @@ public class ServerListPlusCore {
     }
 
     public void updateClient(InetAddress client, UUID uuid, String playerName) {
-        PlayerIdentity identity = storage.getCache().getIfPresent(client);
+        PlayerIdentity identity = resolveClient(client);
         if (identity == null)
-            storage.getCache().put(client, PlayerIdentity.create(uuid, playerName));
-        else
-            identity.update();
+            storage.create(client, PlayerIdentity.create(uuid, playerName));
+        else {
+            storage.update(client);
+        }
     }
 
     public PlayerIdentity resolveClient(InetAddress client) {
-        return storage.getCache().getIfPresent(client);
+        return storage.resolve(client);
     }
 
     public StatusRequest createRequest(InetAddress client) {

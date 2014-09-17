@@ -32,6 +32,13 @@ import com.google.common.cache.Cache;
 
 public interface IdentificationStorage {
     Cache<InetAddress, PlayerIdentity> getCache();
+
+    boolean has(InetAddress client);
+    PlayerIdentity resolve(InetAddress client);
+
+    void create(InetAddress client, PlayerIdentity identity);
+    void update(InetAddress client);
+
     void reload() throws ServerListPlusException;
     void enable() throws ServerListPlusException;
     boolean isEnabled();
