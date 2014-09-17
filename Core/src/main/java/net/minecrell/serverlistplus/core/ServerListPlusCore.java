@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -169,8 +170,12 @@ public class ServerListPlusCore {
         storage.reload();
     }
 
-    public void addClient(InetAddress client, PlayerIdentity identity) {
-        storage.getCache().put(client, identity);
+    public void updateClient(InetAddress client, UUID uuid, String playerName) {
+        PlayerIdentity identity = storage.getCache().getIfPresent(client);
+        if (identity == null)
+            storage.getCache().put(client, PlayerIdentity.create(uuid, playerName));
+        else
+            identity.update();
     }
 
     public PlayerIdentity resolveClient(InetAddress client) {

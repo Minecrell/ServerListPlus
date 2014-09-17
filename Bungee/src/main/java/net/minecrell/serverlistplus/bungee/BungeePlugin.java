@@ -31,7 +31,6 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -67,6 +66,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.LoginEvent;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
@@ -79,7 +79,7 @@ import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
 
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
-    private Listener loginListener, pingListener;
+    private Listener connectionListener, pingListener;
 
     private BungeeMetricsLite metrics;
 
@@ -131,13 +131,21 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     // Player tracking
-    public final class LoginListener implements Listener {
-        private LoginListener() {}
+    public final class ConnectionListener implements Listener {
+        private ConnectionListener() {}
 
         @EventHandler
         public void onPlayerLogin(LoginEvent event) {
-            PendingConnection con = event.getConnection();
-            core.addClient(con.getAddress().getAddress(), PlayerIdentity.create(con.getUniqueId(), con.getName()));
+            handleConnection(event.getConnection());
+        }
+
+        @EventHandler
+        public void onPlayerLogout(PlayerDisconnectEvent event) {
+            handleConnection(event.getPlayer().getPendingConnection());
+        }
+
+        private void handleConnection(PendingConnection con) {
+            core.updateClient(con.getAddress().getAddress(), con.getUniqueId(), con.getName());
         }
     }
 
@@ -330,13 +338,13 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     public void configChanged(InstanceStorage<Object> confs) {
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
-            if (loginListener == null) {
-                registerListener(this.loginListener = new LoginListener());
+            if (connectionListener == null) {
+                registerListener(this.connectionListener = new ConnectionListener());
                 getLogger().log(DEBUG, "Registered proxy player tracking listener.");
             }
-        } else if (loginListener != null) {
-            unregisterListener(loginListener);
-            this.loginListener = null;
+        } else if (connectionListener != null) {
+            unregisterListener(connectionListener);
+            this.connectionListener = null;
             getLogger().log(DEBUG, "Unregistered proxy player tracking listener.");
         }
 

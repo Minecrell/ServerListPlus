@@ -34,7 +34,6 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -76,6 +75,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.CachedServerIcon;
 
 import org.mcstats.MetricsLite;
@@ -88,7 +88,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private ServerListPlusCore core;
 
     private StatusHandler bukkit, protocol;
-    private Listener loginListener;
+    private Listener loginListener, disconnectListener;
 
     private MetricsLite metrics;
 
@@ -178,10 +178,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         @EventHandler
         public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
             UUID uuid = null;
-            try {
-                uuid = event.getUniqueId();
-            } catch (NoSuchMethodError ignored) {}
-            core.addClient(event.getAddress(), PlayerIdentity.create(uuid, event.getName()));
+            try { uuid = event.getUniqueId(); } catch (NoSuchMethodError ignored) {}
+            core.updateClient(event.getAddress(), uuid, event.getName());
         }
     }
 
@@ -194,7 +192,18 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             try {
                 uuid = event.getPlayer().getUniqueId();
             } catch (NoSuchMethodError ignored) {}
-            core.addClient(event.getAddress(), PlayerIdentity.create(uuid, event.getPlayer().getName()));
+            core.updateClient(event.getAddress(), uuid, event.getPlayer().getName());
+        }
+    }
+
+    public final class DisconnectListener implements Listener {
+        private DisconnectListener() {}
+
+        @EventHandler
+        public void onPlayerDisconnect(PlayerQuitEvent event) {
+            UUID uuid = null;
+            try { uuid = event.getPlayer().getUniqueId(); } catch (NoSuchMethodError ignored) {}
+            core.updateClient(event.getPlayer().getAddress().getAddress(), uuid, event.getPlayer().getName());
         }
     }
 
@@ -349,12 +358,25 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (loginListener == null) {
                 registerListener(this.loginListener = Environment.isSpigot() || getServer().getOnlineMode()
                         ? new LoginListener() : new OfflineModeLoginListener());
-                getLogger().log(DEBUG, "Registered player tracking listener.");
+                getLogger().log(DEBUG, "Registered player login listener.");
             }
-        } else if (loginListener != null) {
-            unregisterListener(loginListener);
-            this.loginListener = null;
-            getLogger().log(DEBUG, "Unregistered player tracking listener.");
+
+            if (disconnectListener == null) {
+                registerListener(this.disconnectListener = new DisconnectListener());
+                getLogger().log(DEBUG, "Registered player disconnect listener.");
+            }
+        } else {
+            if (loginListener != null) {
+                unregisterListener(loginListener);
+                this.loginListener = null;
+                getLogger().log(DEBUG, "Unregistered player login listener.");
+            }
+
+            if (disconnectListener != null) {
+                unregisterListener(disconnectListener);
+                this.disconnectListener = null;
+                getLogger().log(DEBUG, "Unregistered player disconnect listener.");
+            }
         }
 
         // Plugin statistics

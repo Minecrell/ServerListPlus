@@ -194,6 +194,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
         this.cache = null;
     }
 
+    // TODO: Java 8
     private class SaveTask implements Runnable {
 
         @Override

@@ -37,12 +37,11 @@ public class PlayerIdentity {
     private final @NonNull String name;
     private Date time;
 
-    public static PlayerIdentity create(UUID uuid, String name) {
-        return new PlayerIdentity(uuid, name, new Date());
+    public void update() {
+        this.time = new Date();
     }
 
-    public static PlayerIdentity update(PlayerIdentity identity) {
-        identity.setTime(new Date());
-        return identity;
+    public static PlayerIdentity create(UUID uuid, String name) {
+        return new PlayerIdentity(uuid, name, new Date());
     }
 }
