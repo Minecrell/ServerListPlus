@@ -22,7 +22,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.github.johnrengelman.shadow'
+plugins { id 'com.github.johnrengelman.shadow' version '1.1.2' }
 
 repositories {
     maven { url 'http://repo.md-5.net/content/groups/public' }

@@ -22,19 +22,11 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    // Add Gradle shadow plugin: https://github.com/johnrengelman/shadow
-    repositories { jcenter() }
-    dependencies { classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.1' }
-}
-
-import com.github.jengelman.gradle.plugins.shadow.ShadowJavaPlugin;
-
 allprojects {
     version = '3.4-SNAPSHOT'
 
     apply plugin: 'java'
-    sourceCompatibility = 1.7 // TODO: Update to Java 8 sometime in the future
+    sourceCompatibility = 1.7 // TODO: Update to Java 8 in the future
 
     repositories {
         mavenCentral()
@@ -67,7 +59,7 @@ subprojects {
         compile 'org.projectlombok:lombok:1.14.4'
     }
 
-    plugins.withType(ShadowJavaPlugin) {
+    plugins.withId('com.github.johnrengelman.shadow') {
         shadowJar {
             classifier = ''
             baseName = rootProject.name + project.name
@@ -77,10 +69,11 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
+    gradleVersion = '2.1'
 }
 
 task universal(type: Jar) {
+    // TODO: I should probaby improve this...
     baseName = "${rootProject.name}Universal"
     duplicatesStrategy 'exclude' // Skip the second plugin.yml of the Bungee plugin
     universalProjects.each {
