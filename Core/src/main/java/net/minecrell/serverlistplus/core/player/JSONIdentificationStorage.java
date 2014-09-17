@@ -134,7 +134,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
                     identities = JSON.fromJson(reader, STORAGE_TYPE);
                 }
 
-                cache.putAll(identities);
+                if (identities != null) cache.putAll(identities);
             }
 
             getLogger().log(DEBUG, "Player identities successfully reloaded from file.");
@@ -156,6 +156,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     }
 
     public synchronized void save() throws ServerListPlusException {
+        if (!isEnabled()) return;
         getLogger().log(INFO, "Saving player identities...");
         Path storagePath = getStoragePath();
         getLogger().log(DEBUG, "Storage location: " + storagePath);
