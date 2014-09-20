@@ -48,6 +48,26 @@ public class SQLIdentificationStorage extends AbstractIdentificationStorage {
     }
 
     @Override
+    public boolean has(InetAddress client) {
+        return false;
+    }
+
+    @Override
+    public PlayerIdentity resolve(InetAddress client) {
+        return null;
+    }
+
+    @Override
+    public void create(InetAddress client, PlayerIdentity identity) {
+
+    }
+
+    @Override
+    public void update(InetAddress client) {
+
+    }
+
+    @Override
     public void reload() throws ServerListPlusException {
 
     }
