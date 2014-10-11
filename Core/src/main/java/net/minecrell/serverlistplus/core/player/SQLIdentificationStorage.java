@@ -30,8 +30,6 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 
 import java.net.InetAddress;
 
-import com.google.common.cache.Cache;
-
 // TODO
 public class SQLIdentificationStorage extends AbstractIdentificationStorage {
     public static class Conf extends PluginConf.PlayerTrackingConf.StorageConf {
@@ -40,11 +38,6 @@ public class SQLIdentificationStorage extends AbstractIdentificationStorage {
 
     public SQLIdentificationStorage(ServerListPlusCore core) {
         super(core);
-    }
-
-    @Override
-    public Cache<InetAddress, PlayerIdentity> getCache() {
-        return null;
     }
 
     @Override

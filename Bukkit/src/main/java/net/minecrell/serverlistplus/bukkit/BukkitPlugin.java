@@ -80,9 +80,7 @@ import org.bukkit.util.CachedServerIcon;
 
 import org.mcstats.MetricsLite;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.logging.Logger.*;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;

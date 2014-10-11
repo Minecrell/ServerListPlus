@@ -36,7 +36,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 public class ISO8601Serializer implements JsonSerializer<Date> {
-    private DateFormat iso8601 = buildIso8601Format();
+    private final DateFormat iso8601 = buildIso8601Format();
 
     // Directly from GSON source: http://goo.gl/QdKHl5
     private DateFormat buildIso8601Format() {

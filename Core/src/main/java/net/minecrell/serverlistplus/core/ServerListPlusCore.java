@@ -200,12 +200,7 @@ public class ServerListPlusCore {
             "clean", "info", "help");
 
     private static final Map<String, Function<ServerListPlusCore, Cache<?, ?>>> CACHE_TYPES = ImmutableMap.of(
-            "players", new Function<ServerListPlusCore, Cache<?, ?>>() {
-                @Override
-                public Cache<?, ?> apply(ServerListPlusCore core) {
-                    return core.storage.getCache();
-                }
-            }, "favicons", new Function<ServerListPlusCore, Cache<?, ?>>() {
+            "favicons", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
                 public Cache<?, ?> apply(ServerListPlusCore core) {
                     return core.getPlugin().getFaviconCache();

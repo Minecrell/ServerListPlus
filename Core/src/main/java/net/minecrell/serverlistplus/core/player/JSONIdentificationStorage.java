@@ -26,7 +26,6 @@ package net.minecrell.serverlistplus.core.player;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
-import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.io.IOHelper;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
@@ -43,15 +42,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.MapMaker;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
 import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
 import static net.minecrell.serverlistplus.core.util.Helper.JSON;
 
@@ -63,8 +60,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     public static final String STORAGE_FILE = "PlayerCache.json";
     public static final Type STORAGE_TYPE = new TypeToken<Map<InetAddress, PlayerIdentity>>(){}.getType();
 
-    private Cache<InetAddress, PlayerIdentity> cache;
-    private String cacheConf;
+    private Map<InetAddress, PlayerIdentity> storage;
 
     private final AtomicBoolean changed = new AtomicBoolean();
     private ScheduledTask saveTask;
@@ -74,23 +70,18 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     }
 
     @Override
-    public Cache<InetAddress, PlayerIdentity> getCache() {
-        return cache;
-    }
-
-    @Override
     public boolean has(InetAddress client) {
         return resolve(client) != null;
     }
 
     @Override
     public PlayerIdentity resolve(InetAddress client) {
-        return cache.getIfPresent(client);
+        return storage.get(client);
     }
 
     @Override
     public void create(InetAddress client, PlayerIdentity identity) {
-        cache.put(client, identity);
+        storage.put(client, identity);
         changed.set(true);
     }
 
@@ -106,48 +97,12 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
 
     @Override
     public void reload() throws ServerListPlusException {
-        reload(true);
-    }
-
-    private synchronized void reload(boolean copy) throws ServerListPlusException {
-        if (copy && !isEnabled()) return; // Don't copy when not enabled
-
-        CoreConf conf = core.getConf(CoreConf.class);
-        // Chech if the cache configuration has been changed
-        if (cacheConf == null || cache == null || !cacheConf.equals(conf.Caches.JSONStorage)) {
-            getLogger().log(DEBUG, "Creating new player tracking cache...");
-
-            Cache<InetAddress, PlayerIdentity> cache;
-            String cacheConf;
-            try {
-                cacheConf = conf.Caches.JSONStorage;
-                cache = CacheBuilder.from(cacheConf).build();
-            } catch (IllegalArgumentException e) {
-                getLogger().log(ERROR, e, "Unable to create player tracking cache using configuration settings");
-                cacheConf = core.getDefaultConf(CoreConf.class).Caches.JSONStorage;
-                cache = CacheBuilder.from(cacheConf).build();
-            }
-
-            if (this.cache != null) {
-                getLogger().log(DEBUG, "Deleting old player tracking cache due to configuration changes.");
-
-                if (copy) {
-                    getLogger().log(DEBUG, "Copying old entries to the new player tracking cache.");
-                    cache.putAll(this.cache.asMap());
-                    this.cache.invalidateAll();
-                    this.cache.cleanUp();
-                }
-            }
-
-            this.cache = cache;
-            this.cacheConf = cacheConf;
-        }
+        // Nothing to do here
     }
 
     @Override
     public synchronized void enable() throws ServerListPlusException {
         if (isEnabled()) return;
-        this.reload(false);
 
         getLogger().log(INFO, "Reloading saved player identities...");
         Path storagePath = getStoragePath();
@@ -161,7 +116,8 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
                     identities = JSON.fromJson(reader, STORAGE_TYPE);
                 }
 
-                if (identities != null) cache.putAll(identities);
+                this.storage = new MapMaker().makeMap();
+                if (identities != null) storage.putAll(identities);
             }
 
             getLogger().log(DEBUG, "Player identities successfully reloaded from file.");
@@ -182,7 +138,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
 
     @Override
     public boolean isEnabled() {
-        return cache != null;
+        return storage != null;
     }
 
     public synchronized void save() throws ServerListPlusException {
@@ -198,7 +154,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
             }
 
             try (BufferedWriter writer = IOHelper.newBufferedWriter(storagePath)) {
-                JSON.toJson(cache.asMap(), STORAGE_TYPE, writer);
+                JSON.toJson(storage, STORAGE_TYPE, writer);
             }
 
             getLogger().log(DEBUG, "Successfully saved profiles to the storage!");
@@ -217,7 +173,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
         }
 
         save();
-        this.cache = null;
+        this.storage = null;
     }
 
     // TODO: Java 8

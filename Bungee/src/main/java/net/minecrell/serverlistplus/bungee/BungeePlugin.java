@@ -73,9 +73,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.logging.Logger.*;
 
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;

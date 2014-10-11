@@ -28,11 +28,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusException;
 
 import java.net.InetAddress;
 
-import com.google.common.cache.Cache;
-
 public interface IdentificationStorage {
-    Cache<InetAddress, PlayerIdentity> getCache();
-
     boolean has(InetAddress client);
     PlayerIdentity resolve(InetAddress client);
 
