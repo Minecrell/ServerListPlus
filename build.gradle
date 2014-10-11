@@ -68,10 +68,6 @@ subprojects {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
-}
-
 task universal(type: Jar) {
     // TODO: I should probaby improve this...
     baseName = "${rootProject.name}Universal"
