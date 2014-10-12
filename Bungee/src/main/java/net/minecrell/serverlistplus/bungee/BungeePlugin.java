@@ -110,6 +110,13 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
     }
 
+    @Override
+    public void onDisable() {
+        try {
+            core.stop();
+        } catch (ServerListPlusException ignored) {}
+    }
+
     // Commands
     public final class ServerListPlusCommand extends Command implements TabExecutor {
         private ServerListPlusCommand() {

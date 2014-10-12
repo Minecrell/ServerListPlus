@@ -118,6 +118,11 @@ public class ServerListPlusCore {
         storage.enable();
     }
 
+    public void stop() throws ServerListPlusException {
+        getLogger().log(INFO, "Stopping...");
+        storage.disable();
+    }
+
     public String getDisplayName() {
         return info.getName() + plugin.getServerType() + " v" + info.getVersion();
     }

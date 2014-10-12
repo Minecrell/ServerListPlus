@@ -148,6 +148,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void onDisable() {
+        try {
+            core.stop();
+        } catch (ServerListPlusException ignored) {}
         getLogger().info(getDisplayName() + " disabled.");
         // BungeeCord closes the log handlers automatically, but Bukkit does not
         for (Handler handler : getLogger().getHandlers())
