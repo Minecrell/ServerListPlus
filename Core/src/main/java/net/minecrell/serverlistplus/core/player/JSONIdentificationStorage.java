@@ -108,6 +108,8 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
         Path storagePath = getStoragePath();
         getLogger().log(DEBUG, "Storage location: " + storagePath);
 
+        this.storage = new MapMaker().makeMap();
+
         try {
             if (Files.exists(storagePath)) {
                 Map<InetAddress, PlayerIdentity> identities;
@@ -116,7 +118,6 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
                     identities = JSON.fromJson(reader, STORAGE_TYPE);
                 }
 
-                this.storage = new MapMaker().makeMap();
                 if (identities != null) storage.putAll(identities);
             }
 
