@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
@@ -51,9 +53,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 
@@ -241,12 +240,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public Integer getOnlinePlayers(String location) {
-        Collection<Player> players = getPlayersInWorld(location);
+        Collection<? extends Player> players = getPlayersInWorld(location);
         return players != null ? players.size() : null;
     }
 
-    @Override
-    public Iterator<String> getRandomPlayers() {
+    private Collection<? extends Player> getPlayers() {
         Collection<? extends Player> players;
 
         try { // Meh, compatibility
@@ -261,34 +259,31 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             }
         }
 
-        return getRandomPlayers(players);
+        return players;
     }
 
-    private <T> T getSynchronously(Callable<T> task) {
-        Future<T> f = getServer().getScheduler().callSyncMethod(this, task);
+    @Override
+    public Iterator<String> getRandomPlayers() {
+        return getRandomPlayers(getPlayers());
+    }
 
-        try {
-            return f.get();
-        } catch (InterruptedException e) {
-            throw Throwables.propagate(e);
-        } catch (ExecutionException e) {
-            throw Throwables.propagate(e.getCause());
+    private Collection<? extends Player> getPlayersInWorld(String name) {
+        final World world = getServer().getWorld(name);
+        if (world == null) {
+            return null;
         }
-    }
 
-    private Collection<Player> getPlayersInWorld(final String world) {
-        return getSynchronously(new Callable<Collection<Player>>() {
+        return Collections2.filter(getPlayers(), new Predicate<Player>() {
             @Override
-            public Collection<Player> call() throws Exception {
-                World w = getServer().getWorld(world);
-                return w != null ? w.getPlayers() : null;
+            public boolean apply(Player player) {
+                return player.getWorld().equals(world);
             }
         });
     }
 
     @Override
     public Iterator<String> getRandomPlayers(String location) {
-        Collection<Player> players = getPlayersInWorld(location);
+        Collection<? extends Player> players = getPlayersInWorld(location);
         return players != null ? getRandomPlayers(players) : null;
     }
 
