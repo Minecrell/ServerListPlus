@@ -35,7 +35,6 @@ import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.IdentificationStorage;
 import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
-import net.minecrell.serverlistplus.core.player.SQLIdentificationStorage;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.status.StatusManager;
@@ -106,7 +105,7 @@ public class ServerListPlusCore {
         registerConf(CoreConf.class, new CoreConf(), null, "Core");
 
         configManager.getYAML().registerAlias(JSONIdentificationStorage.Conf.class, "JSONStorage");
-        configManager.getYAML().registerAlias(SQLIdentificationStorage.Conf.class, "SQLStorage");
+        //configManager.getYAML().registerAlias(SQLIdentificationStorage.Conf.class, "SQLStorage");
 
         // Initialize the profile manager
         this.profileManager = new ProfileManager(this);
