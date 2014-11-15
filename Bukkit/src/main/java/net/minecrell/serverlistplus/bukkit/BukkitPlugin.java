@@ -51,6 +51,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 
@@ -238,8 +241,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public Integer getOnlinePlayers(String location) {
-        World world = getServer().getWorld(location);
-        return world != null ? world.getPlayers().size() : null;
+        Collection<Player> players = getPlayersInWorld(location);
+        return players != null ? players.size() : null;
     }
 
     @Override
@@ -261,10 +264,32 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         return getRandomPlayers(players);
     }
 
+    private <T> T getSynchronously(Callable<T> task) {
+        Future<T> f = getServer().getScheduler().callSyncMethod(this, task);
+
+        try {
+            return f.get();
+        } catch (InterruptedException e) {
+            throw Throwables.propagate(e);
+        } catch (ExecutionException e) {
+            throw Throwables.propagate(e.getCause());
+        }
+    }
+
+    private Collection<Player> getPlayersInWorld(final String world) {
+        return getSynchronously(new Callable<Collection<Player>>() {
+            @Override
+            public Collection<Player> call() throws Exception {
+                World w = getServer().getWorld(world);
+                return w != null ? w.getPlayers() : null;
+            }
+        });
+    }
+
     @Override
     public Iterator<String> getRandomPlayers(String location) {
-        World world = getServer().getWorld(location);
-        return world != null ? getRandomPlayers(world.getPlayers()) : null;
+        Collection<Player> players = getPlayersInWorld(location);
+        return players != null ? getRandomPlayers(players) : null;
     }
 
     private static Iterator<String> getRandomPlayers(Collection<? extends Player> players) {

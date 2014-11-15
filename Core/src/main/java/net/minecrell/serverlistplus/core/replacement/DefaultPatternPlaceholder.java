@@ -41,7 +41,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(final ServerListPlusCore core, String s) {
             final Matcher matcher = matcher(s);
-            return replace(s, new ContinousIterator<Object>() {
+            return Patterns.replace(matcher, s, new ContinousIterator<Object>() {
                 private final String unknown = Matcher.quoteReplacement(core.getConf(PluginConf.class).Unknown
                         .PlayerCount);
 
