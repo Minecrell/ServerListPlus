@@ -36,7 +36,7 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven { url 'http://repo.minecrell.net' }
+        maven { url 'http://repo.minecrell.net/releases' }
     }
 }
 
