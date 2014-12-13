@@ -24,7 +24,6 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import net.minecrell.metrics.BungeeMetricsLite;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -43,19 +42,18 @@ import net.minecrell.serverlistplus.core.util.Randoms;
 
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Iterators;
 
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
@@ -72,6 +70,8 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
+
+import net.minecrell.metrics.BungeeMetricsLite;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.*;
 
@@ -283,13 +283,13 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     private static Iterator<String> getRandomPlayers(Collection<ProxiedPlayer> players) {
         if (Helper.isNullOrEmpty(players)) return null;
 
-        // This is horribly inefficient, but I don't have a better idea at the moment..
-        return Iterators.transform(Randoms.shuffle(players).iterator(), new Function<ProxiedPlayer, String>() {
-            @Override
-            public String apply(ProxiedPlayer input) {
-                return input.getName();
-            }
-        });
+        List<String> result = new ArrayList<>(players.size());
+
+        for (ProxiedPlayer player : players) {
+            result.add(player.getName());
+        }
+
+        return Randoms.shuffle(result).iterator();
     }
 
     @Override

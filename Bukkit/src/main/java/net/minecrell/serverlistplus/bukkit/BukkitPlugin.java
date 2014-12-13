@@ -24,8 +24,6 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
@@ -48,6 +46,7 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -56,7 +55,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
@@ -64,7 +62,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Iterators;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -238,12 +235,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         return result.isPresent() ? result.get() : null;
     }
 
-    @Override
-    public Integer getOnlinePlayers(String location) {
-        Collection<? extends Player> players = getPlayersInWorld(location);
-        return players != null ? players.size() : null;
-    }
-
     private Collection<? extends Player> getPlayers() {
         Collection<? extends Player> players;
 
@@ -263,47 +254,56 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public Iterator<String> getRandomPlayers() {
-        return getRandomPlayers(getPlayers());
+    public Integer getOnlinePlayers(String location) {
+        World world = getServer().getWorld(location);
+        if (world == null) return null;
+
+        int count = 0;
+        for (Player player : getPlayers()) {
+            if (player.getWorld().equals(world)) count++;
+        }
+
+        return count;
     }
 
-    private Collection<? extends Player> getPlayersInWorld(String name) {
-        final World world = getServer().getWorld(name);
+    @Override
+    public Iterator<String> getRandomPlayers() {
+        Collection<? extends Player> players = getPlayers();
+        List<String> result = new ArrayList<>(players.size());
+
+        for (Player player : players) {
+            result.add(player.getName());
+        }
+
+        return Randoms.shuffle(result).iterator();
+    }
+
+    @Override
+    public Iterator<String> getRandomPlayers(String worldName) {
+        final World world = getServer().getWorld(worldName);
         if (world == null) {
             return null;
         }
 
-        return Collections2.filter(getPlayers(), new Predicate<Player>() {
-            @Override
-            public boolean apply(Player player) {
-                return player.getWorld().equals(world);
+        Collection<? extends Player> players = getPlayers();
+        List<String> result = new ArrayList<>();
+
+        for (Player player : players) {
+            if (player.getWorld().equals(world)) {
+                result.add(player.getName());
             }
-        });
-    }
+        }
 
-    @Override
-    public Iterator<String> getRandomPlayers(String location) {
-        Collection<? extends Player> players = getPlayersInWorld(location);
-        return players != null ? getRandomPlayers(players) : null;
-    }
+        if (result.isEmpty())
+            return null;
 
-    private static Iterator<String> getRandomPlayers(Collection<? extends Player> players) {
-        if (Helper.isNullOrEmpty(players)) return null;
-
-        // This is horribly inefficient, but I don't have a better idea at the moment..
-        return Iterators.transform(Randoms.shuffle(players).iterator(), new Function<Player, String>() {
-            @Override
-            public String apply(Player input) {
-                return input.getName();
-            }
-        });
+        return Randoms.shuffle(result).iterator();
     }
 
     @Override
     public Cache<?, ?> getRequestCache() {
         return requestCache;
     }
-
 
     @Override
     public LoadingCache<FaviconSource, Optional<CachedServerIcon>> getFaviconCache() {

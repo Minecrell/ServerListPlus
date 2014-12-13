@@ -24,7 +24,6 @@
 
 package net.minecrell.serverlistplus.core.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -42,10 +41,9 @@ public final class Randoms {
         return ThreadLocalRandom.current();
     }
 
-    public static <T> Collection<T> shuffle(Collection<? extends T> collection) {
-        List<T> result = new ArrayList<>(collection);
-        Collections.shuffle(result, random());
-        return result;
+    public static <T> Collection<T> shuffle(List<T> list) {
+        Collections.shuffle(list, random());
+        return list;
     }
 
     public static <T> T nextEntry(T[] array) {
