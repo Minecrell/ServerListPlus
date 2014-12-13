@@ -245,7 +245,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                 players = Arrays.asList((Player[]) legacy_getOnlinePlayers.invoke(getServer()));
             } catch (InvocationTargetException ex) {
                 throw Throwables.propagate(ex.getCause());
-            } catch (Exception ex) {
+            } catch (IllegalAccessException ex) {
                 throw Throwables.propagate(ex);
             }
         }
