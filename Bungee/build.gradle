@@ -22,7 +22,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins { id 'com.github.johnrengelman.shadow' version '1.1.2' }
+plugins { id 'com.github.johnrengelman.shadow' version '1.2.0' }
 
 repositories {
     maven { url 'https://oss.sonatype.org/content/groups/public' }
