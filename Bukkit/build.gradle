@@ -61,7 +61,8 @@ shadowJar {
     relocate "${javaPackage}.core", "${pluginPackage}.core"
     relocate 'org.mcstats', "${pluginPackage}.metrics"
 
-    // TODO: Use the libraries included in Minecraft for now
-    relocate 'com.google.common', 'net.minecraft.util.com.google.common'
-    relocate 'com.google.gson', 'net.minecraft.util.com.google.gson'
+    // TODO: Spigot 1.8, add support for both somehow?
+    //relocate 'com.google.common', 'net.minecraft.util.com.google.common'
+    //relocate 'com.google.gson', 'net.minecraft.util.com.google.gson'
+    relocate 'com.google.gson', 'org.bukkit.craftbukkit.libs.com.google.gson'
 }

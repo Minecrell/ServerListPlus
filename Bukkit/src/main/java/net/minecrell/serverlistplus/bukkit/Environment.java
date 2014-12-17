@@ -53,6 +53,7 @@ public final class Environment {
 
     public static boolean checkProtocolLib(Server server) {
         Plugin plugin = server.getPluginManager().getPlugin("ProtocolLib");
-        return plugin.isEnabled() && plugin.getClass().getName().equals("com.comphenix.protocol.ProtocolLibrary");
+        return plugin != null &&
+                plugin.isEnabled() && plugin.getClass().getName().equals("com.comphenix.protocol.ProtocolLibrary");
     }
 }
