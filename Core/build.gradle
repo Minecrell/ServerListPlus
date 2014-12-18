@@ -23,7 +23,7 @@
  */
 
 dependencies {
-    compile 'com.google.guava:guava:15.0',
+    compile 'com.google.guava:guava:17.0',
             'org.yaml:snakeyaml:1.13',
             'com.google.code.gson:gson:2.2.4'
 }
