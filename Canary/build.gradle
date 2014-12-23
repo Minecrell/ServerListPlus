@@ -22,5 +22,36 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'ServerListPlus'
-include 'Core', 'Bungee', 'Bukkit', 'Canary'
+plugins { id 'com.github.johnrengelman.shadow' version '1.2.0' }
+
+repositories {
+    maven { url 'http://repo.visualillusionsent.net/repository/public' }
+    maven { url 'https://libraries.minecraft.net' }
+}
+
+ext {
+    // TODO: Better fix?
+    resourceTokens = resourceTokens.clone()
+    pluginPackage = "${javaPackage}.canary"
+    pluginClass = "${pluginPackage}.CanaryPlugin"
+    resourceTokens.PluginClass = pluginClass.toString()
+}
+
+dependencies {
+    compile project(':Core')
+    compile 'net.canarymod:CanaryLib:1.1.3'
+}
+
+processResources {
+    include 'Canary.inf'
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
+}
+
+shadowJar {
+    dependencies {
+        include project(':Core')
+        include dependency('org.yaml:snakeyaml')
+    }
+
+    relocate 'org.yaml.snakeyaml', 'net.minecrell.serverlistplus.canary.lib.org.yaml.snakeyaml'
+}

@@ -1,0 +1,4 @@
+main-class = @PluginClass@
+name = @Name@
+author = @Author@
+version = @Version@

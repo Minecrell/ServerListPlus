@@ -34,8 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Level;
 
-public class ServerListPlusLogger extends JavaLogger<ServerListPlusException> {
-    private static final String LOG_PREFIX = "[Core] "; // Prefix used by core log messages
+public abstract class ServerListPlusLogger extends AbstractLogger<ServerListPlusException> {
+    protected static final String LOG_PREFIX = "[Core] "; // Prefix used by core log messages
 
     private final ServerListPlusCore core;
 
@@ -49,11 +49,6 @@ public class ServerListPlusLogger extends JavaLogger<ServerListPlusException> {
         } catch (Exception e) {
             log(WARN, e, "Unable to delete old log files.");
         }
-    }
-
-    @Override
-    public java.util.logging.Logger getLogger() {
-        return core.getPlugin().getLogger();
     }
 
     private boolean deleteOldFiles(Path folder) throws IOException {
@@ -74,16 +69,6 @@ public class ServerListPlusLogger extends JavaLogger<ServerListPlusException> {
         }
 
         return failed;
-    }
-
-    @Override
-    public Logger log(Level level, String message) {
-        return super.log(level, LOG_PREFIX + message);
-    }
-
-    @Override
-    public Logger log(Level level, Throwable thrown, String message) {
-        return super.log(level, thrown, LOG_PREFIX + message);
     }
 
     @Override

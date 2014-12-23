@@ -22,5 +22,20 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'ServerListPlus'
-include 'Core', 'Bungee', 'Bukkit', 'Canary'
+package net.minecrell.serverlistplus.canary;
+
+import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
+import net.minecrell.serverlistplus.core.util.Wrapper;
+
+import java.util.concurrent.ScheduledFuture;
+
+public class ScheduledCanaryTask extends Wrapper<ScheduledFuture<?>> implements ScheduledTask {
+    public ScheduledCanaryTask(ScheduledFuture<?> handle) {
+        super(handle);
+    }
+
+    @Override
+    public void cancel() {
+        getHandle().cancel(false);
+    }
+}

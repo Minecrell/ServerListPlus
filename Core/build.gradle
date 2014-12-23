@@ -24,7 +24,7 @@
 
 dependencies {
     compile 'com.google.guava:guava:17.0',
-            'org.yaml:snakeyaml:1.13',
+            'org.yaml:snakeyaml:1.14',
             'com.google.code.gson:gson:2.2.4'
 }
 

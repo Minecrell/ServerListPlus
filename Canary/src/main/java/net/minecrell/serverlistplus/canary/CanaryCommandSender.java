@@ -22,5 +22,37 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'ServerListPlus'
-include 'Core', 'Bungee', 'Bukkit', 'Canary'
+package net.minecrell.serverlistplus.canary;
+
+import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
+import net.minecrell.serverlistplus.core.util.Wrapper;
+
+import net.canarymod.chat.MessageReceiver;
+
+public class CanaryCommandSender extends Wrapper<MessageReceiver> implements ServerCommandSender {
+    public CanaryCommandSender(MessageReceiver handle) {
+        super(handle);
+    }
+
+    @Override
+    public String getName() {
+        return getHandle().getName();
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        getHandle().message(message);
+    }
+
+    @Override
+    public void sendMessages(String... messages) {
+        for (String message : messages) {
+            sendMessage(message);
+        }
+    }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        return getHandle().hasPermission(permission);
+    }
+}

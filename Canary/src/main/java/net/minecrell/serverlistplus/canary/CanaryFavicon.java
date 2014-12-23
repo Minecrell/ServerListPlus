@@ -22,13 +22,31 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.logging;
+package net.minecrell.serverlistplus.canary;
 
-public abstract class WrappedLogger<E extends Throwable, T> extends AbstractLogger<E> {
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
-    protected WrappedLogger(Class<? extends E> exceptionClass) {
-        super(exceptionClass);
+import javax.imageio.ImageIO;
+
+import com.google.common.base.Preconditions;
+import com.google.common.io.BaseEncoding;
+
+public final class CanaryFavicon {
+    private CanaryFavicon() {}
+
+    public static String create(BufferedImage image) {
+        Preconditions.checkArgument(image.getWidth() == 64 && image.getHeight() == 64, "Invalid favicon bounds");
+
+        byte[] buf;
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            ImageIO.write(image, "PNG", out);
+            buf = out.toByteArray();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+
+        return "data:image/png;base64," + BaseEncoding.base64().encode(buf);
     }
-
-    public abstract T getLogger();
 }
