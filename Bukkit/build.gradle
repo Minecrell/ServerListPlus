@@ -52,6 +52,27 @@ processResources {
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
 }
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+task v1_7(type: ShadowJar, dependsOn: build) {
+    from sourceSets.main.output
+    classifier = '1.7.X'
+    baseName = rootProject.name + project.name
+    exclude 'META-INF/'
+    configurations = [project.configurations.runtime]
+
+    dependencies {
+        include project(':Core')
+        include dependency('org.mcstats.bukkit:metrics-lite:R7')
+    }
+
+    relocate 'org.mcstats', "${pluginPackage}.metrics"
+
+    relocate "${javaPackage}.core", "${pluginPackage}.core"
+    relocate 'com.google.common', 'net.minecraft.util.com.google.common'
+    relocate 'com.google.gson', 'net.minecraft.util.com.google.gson'
+}
+
 shadowJar {
     dependencies {
         include project(':Core')
