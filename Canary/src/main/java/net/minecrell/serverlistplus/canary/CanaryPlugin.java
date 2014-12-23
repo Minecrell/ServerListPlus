@@ -49,7 +49,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -103,6 +102,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     @SneakyThrows
     public CanaryPlugin() {
+        SnakeYAML.load(this);
         this.PROFILES_FIELD = ServerListPingHook.class.getDeclaredField("profiles");
         PROFILES_FIELD.setAccessible(true);
     }
@@ -167,8 +167,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     public final class PingListener implements PluginListener {
         private PingListener() {}
 
-        @HookHandler @SneakyThrows
-        public void onServerListPing(final ServerListPingHook hook) {
+        @HookHandler
+        public void onServerListPing(final ServerListPingHook hook) throws Exception {
             StatusRequest request = core.createRequest(hook.getRequesterAddress());
 
             StatusResponse response = request.createResponse(core.getStatus(), new ResponseFetcher() {
@@ -209,20 +209,24 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             // Player hover
             message = response.getPlayerHover();
             if (message != null) {
+                List<GameProfile> profiles = hook.getProfiles();
+                if (!(profiles instanceof ArrayList)) {
+                    profiles = new ArrayList<>();
+                    PROFILES_FIELD.set(hook, profiles);
+                } else {
+                    profiles.clear();
+                }
+
                 if (response.useMultipleSamples()) {
                     count = response.getDynamicSamples();
                     List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
                             Helper.splitLinesCached(message);
 
-                    List<GameProfile> profiles = new ArrayList<>(lines.size());
-
                     for (String line: lines) {
                         profiles.add(new GameProfile(StatusManager.EMPTY_UUID, line));
                     }
-
-                    PROFILES_FIELD.set(hook, profiles); // Hehe, HACKS
                 } else
-                    PROFILES_FIELD.set(hook, Collections.singletonList(new GameProfile(StatusManager.EMPTY_UUID, message)));
+                    profiles.add(new GameProfile(StatusManager.EMPTY_UUID, message));
             }
         }
     }
