@@ -27,6 +27,9 @@ package net.minecrell.serverlistplus.core.config;
 import net.minecrell.serverlistplus.core.config.help.Description;
 import net.minecrell.serverlistplus.core.favicon.ResizeStrategy;
 import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
+import net.minecrell.serverlistplus.core.util.TimeUnitValue;
+
+import java.util.concurrent.TimeUnit;
 
 import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
 
@@ -67,6 +70,7 @@ public class PluginConf {
     }
 
     public static class FaviconConf {
+        public TimeUnitValue Timeout = new TimeUnitValue(TimeUnit.SECONDS, 10);
         public boolean RecursiveFolderSearch = false;
         public ResizeStrategy ResizeStrategy = SCALE;
     }

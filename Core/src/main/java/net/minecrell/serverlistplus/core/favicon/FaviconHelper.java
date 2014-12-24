@@ -27,6 +27,7 @@ package net.minecrell.serverlistplus.core.favicon;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.util.TimeUnitValue;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -34,6 +35,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+
 import javax.imageio.ImageIO;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
@@ -48,8 +51,14 @@ public final class FaviconHelper {
         return ImageIO.read(in);
     }
 
-    public static BufferedImage fromURL(URL url) throws IOException {
-        return ImageIO.read(url);
+    public static BufferedImage fromURL(URL url, TimeUnitValue timeout) throws IOException {
+        URLConnection con = url.openConnection();
+        int time = (int) timeout.getUnit().toMillis(timeout.getValue());
+        con.setConnectTimeout(time);
+        con.setReadTimeout(time);
+        try (InputStream in = con.getInputStream()) {
+            return fromStream(in);
+        }
     }
 
     private static final String SKIN_URL = "http://skins.minecraft.net/MinecraftSkins/%s.png";
@@ -60,7 +69,7 @@ public final class FaviconHelper {
     private static final int HELM_X = 40, HELM_Y = 8;
     private static final int HEAD_SIZE = 8;
 
-    public static BufferedImage fromSkin(String name, boolean helm) throws IOException {
+    public static BufferedImage fromSkin(String name, boolean helm, TimeUnitValue timeout) throws IOException {
         URL url;
         try { // First try if it is already a valid URL
             url = new URL(name);
@@ -70,7 +79,7 @@ public final class FaviconHelper {
             else url = new URL(String.format(SKIN_URL, name));
         }
 
-        BufferedImage skin = fromURL(url);
+        BufferedImage skin = fromURL(url, timeout);
         if (helm) {
             Graphics2D g = skin.createGraphics();
             g.copyArea(HELM_X, HELM_Y, HEAD_SIZE, HEAD_SIZE, HEAD_X - HELM_X, HEAD_Y - HELM_Y);
