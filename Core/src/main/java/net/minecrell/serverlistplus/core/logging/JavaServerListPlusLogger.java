@@ -24,22 +24,27 @@
 
 package net.minecrell.serverlistplus.core.logging;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+
 import java.util.logging.Level;
 
-public abstract class JavaLogger<E extends Throwable> extends WrappedLogger<E, java.util.logging.Logger> {
-    public JavaLogger(Class<? extends E> exceptionClass) {
-        super(exceptionClass);
+public class JavaServerListPlusLogger extends ServerListPlusLogger {
+    private final java.util.logging.Logger logger;
+
+    public JavaServerListPlusLogger(ServerListPlusCore core, java.util.logging.Logger logger) {
+        super(core);
+        this.logger = logger;
     }
 
     @Override
-    public Logger log(Level level, String message) {
-        getLogger().log(level, message);
+    public JavaServerListPlusLogger log(Level level, String message) {
+        logger.log(level, LOG_PREFIX + message);
         return this;
     }
 
     @Override
-    public Logger log(Level level, Throwable thrown, String message) {
-        getLogger().log(level, message, thrown);
+    public JavaServerListPlusLogger log(Level level, Throwable thrown, String message) {
+        logger.log(level, LOG_PREFIX + message, thrown);
         return this;
     }
 }

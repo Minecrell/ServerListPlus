@@ -30,6 +30,7 @@ package net.minecrell.serverlistplus.core.plugin;
 public enum ServerType {
     BUKKIT ("Bukkit"), SPIGOT ("Spigot"),
     BUNGEE ("Bungee"),
+    CANARY ("Canary"),
     CUSTOM;
 
     private final String displayName;

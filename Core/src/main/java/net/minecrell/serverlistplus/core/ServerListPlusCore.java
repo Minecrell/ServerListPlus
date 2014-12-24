@@ -31,7 +31,6 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.Examples;
 import net.minecrell.serverlistplus.core.logging.Logger;
-import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.IdentificationStorage;
 import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
@@ -79,10 +78,10 @@ public class ServerListPlusCore {
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
-        this.logger = new ServerListPlusLogger(this);
+        this.logger = plugin.createLogger(this);
         this.info = CoreDescription.load(this);
 
-        plugin.getLogger().info("Starting...");
+        getLogger().log(INFO, "Starting...");
 
         // Print some information about the environment
         getLogger().log(REPORT, Helper.joinLines(

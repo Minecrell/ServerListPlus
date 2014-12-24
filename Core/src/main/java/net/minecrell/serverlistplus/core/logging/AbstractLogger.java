@@ -55,52 +55,52 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
     protected abstract E createException(String message, Throwable thrown);
 
     @Override
-    public final Logger log(Level level, String message, Object arg) {
+    public final Logger<E> log(Level level, String message, Object arg) {
         return log(level, format(message, arg));
     }
 
     @Override
-    public final Logger log(Level level, String message, Object... args) {
+    public final Logger<E> log(Level level, String message, Object... args) {
         return log(level, format(message, args));
     }
 
     /*@Override
-    public final Logger logf(Level level, String message, Object... args) {
+    public final Logger<E> logf(Level level, String message, Object... args) {
         return log(level, formatAdvanced(message, args));
     }*/
 
     @Override
-    public final Logger log(Throwable thrown, String message) {
+    public final Logger<E> log(Throwable thrown, String message) {
         return log(ERROR, thrown, message);
     }
 
     @Override
-    public final Logger log(Throwable thrown, String message, Object arg) {
+    public final Logger<E> log(Throwable thrown, String message, Object arg) {
         return log(ERROR, thrown, message, arg);
     }
 
     @Override
-    public final Logger log(Throwable thrown, String message, Object... args) {
+    public final Logger<E> log(Throwable thrown, String message, Object... args) {
         return log(ERROR, thrown, message, args);
     }
 
     /*@Override
-    public final Logger logf(Throwable thrown, String message, Object... args) {
+    public final Logger<E> logf(Throwable thrown, String message, Object... args) {
         return logf(ERROR, thrown, message, args);
     }*/
 
     @Override
-    public final Logger log(Level level, Throwable thrown, String message, Object arg) {
+    public final Logger<E> log(Level level, Throwable thrown, String message, Object arg) {
         return log(level, thrown, format(message, arg));
     }
 
     @Override
-    public final Logger log(Level level, Throwable thrown, String message, Object... args) {
+    public final Logger<E> log(Level level, Throwable thrown, String message, Object... args) {
         return log(level, thrown, format(message, args));
     }
 
     /*@Override
-    public final Logger logf(Level level, Throwable thrown, String message, Object... args) {
+    public final Logger<E> logf(Level level, Throwable thrown, String message, Object... args) {
         return log(level, thrown, formatAdvanced(message, args));
     }*/
 

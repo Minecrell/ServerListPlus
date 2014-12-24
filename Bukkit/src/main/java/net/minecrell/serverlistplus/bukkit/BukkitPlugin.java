@@ -34,6 +34,8 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
+import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -325,6 +327,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public String colorize(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    @Override
+    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
+        return new JavaServerListPlusLogger(core, getLogger());
     }
 
     @Override
