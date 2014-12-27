@@ -109,7 +109,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     @Override
     public boolean enable() {
-        this.pluginFolder = Paths.get("config", getName());
+        this.pluginFolder = Paths.get(Canary.getWorkingPath(), "config", getName());
 
         try {
             this.core = new ServerListPlusCore(this);
