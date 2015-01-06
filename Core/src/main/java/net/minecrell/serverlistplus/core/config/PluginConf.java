@@ -54,6 +54,12 @@ public class PluginConf {
         public boolean Enabled = true;
         public StorageConf Storage = new JSONIdentificationStorage.Conf();
 
+        public PlayerTrackingConf() {}
+
+        public PlayerTrackingConf(boolean enabled)  {
+            this.Enabled = enabled;
+        }
+
         public static abstract class StorageConf {
             public boolean Enabled = true;
         }

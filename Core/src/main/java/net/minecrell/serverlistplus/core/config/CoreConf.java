@@ -34,8 +34,6 @@ public class CoreConf {
     public CachesConf Caches = new CachesConf();
 
     public static class CachesConf {
-        public String JSONStorage = "";
-        public String SQLStorage = "refreshAfterWrite=2h";
         public String Favicon = "maximumSize=2048,expireAfterWrite=6h";
         public String Request = "expireAfterWrite=2m";
     }
