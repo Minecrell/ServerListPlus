@@ -97,6 +97,10 @@ public final class Helper {
         return c != null ? c.toArray(new String[c.size()]) : null;
     }
 
+    public static <T> T getLastElement(List<T> list) {
+        return list.isEmpty() ? null : list.get(list.size() - 1);
+    }
+
     public static String causedException(Throwable e) {
         Throwable cause = Throwables.getRootCause(e);
         return cause.getClass().getName() + ": " + cause.getMessage();

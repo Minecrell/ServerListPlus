@@ -31,6 +31,7 @@ public enum ServerType {
     BUKKIT ("Bukkit"), SPIGOT ("Spigot"),
     BUNGEE ("Bungee"),
     CANARY ("Canary"),
+    SPONGE ("Sponge"),
     CUSTOM;
 
     private final String displayName;

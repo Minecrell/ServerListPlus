@@ -103,6 +103,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     @Override
     public synchronized void enable() throws ServerListPlusException {
         if (isEnabled()) return;
+        if (!core.getConf(PluginConf.class).PlayerTracking.Storage.Enabled) return;
 
         getLogger().log(INFO, "Reloading saved player identities...");
         Path storagePath = getStoragePath();
@@ -134,7 +135,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
         changed.set(false);
 
         TimeUnitValue delay = ((Conf) core.getConf(PluginConf.class).PlayerTracking.Storage).SaveDelay;
-        this.saveTask = core.getPlugin().scheduleAsync(new SaveTask(), delay.getValue(), delay.getUnit());
+        //this.saveTask = core.getPlugin().scheduleAsync(new SaveTask(), delay.getValue(), delay.getUnit());
     }
 
     @Override

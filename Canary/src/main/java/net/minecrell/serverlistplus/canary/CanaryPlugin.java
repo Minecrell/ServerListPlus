@@ -40,6 +40,7 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.serverlistplus.core.util.SnakeYAML;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
@@ -102,7 +103,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     @SneakyThrows
     public CanaryPlugin() {
-        SnakeYAML.load(this);
+        SnakeYAML.load();
         this.PROFILES_FIELD = ServerListPingHook.class.getDeclaredField("profiles");
         PROFILES_FIELD.setAccessible(true);
     }
@@ -291,7 +292,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     @Override
     public LoadingCache<FaviconSource, ?> getFaviconCache() {
-        return null;
+        return faviconCache;
     }
 
     @Override

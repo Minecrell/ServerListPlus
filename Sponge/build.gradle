@@ -22,6 +22,27 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'ServerListPlus'
-include 'Core', 'Bungee', 'Bukkit', 'Canary', 'Sponge'
+plugins { id 'com.github.johnrengelman.shadow' version '1.2.0' }
 
+repositories {
+    maven { url 'https://repo.spongepowered.org/maven' }
+}
+
+ext {
+    // TODO: Better fix?
+    resourceTokens = resourceTokens.clone()
+    pluginPackage = "${javaPackage}.sponge"
+    pluginClass = "${pluginPackage}.SpongePlugin"
+    resourceTokens.PluginClass = pluginClass.toString()
+}
+
+dependencies {
+    compile project(':Core')
+    compile 'org.spongepowered:spongeapi:1.1-SNAPSHOT'
+}
+
+shadowJar {
+    dependencies {
+        include project(':Core')
+    }
+}

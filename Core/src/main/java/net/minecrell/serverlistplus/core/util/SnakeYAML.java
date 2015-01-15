@@ -22,7 +22,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.canary;
+package net.minecrell.serverlistplus.core.util;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -37,9 +37,9 @@ import java.nio.file.StandardOpenOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 
+import com.google.common.io.BaseEncoding;
+
 import lombok.SneakyThrows;
-import net.canarymod.plugin.Plugin;
-import org.apache.commons.codec.binary.Hex;
 
 public final class SnakeYAML {
 
@@ -50,21 +50,19 @@ public final class SnakeYAML {
     private static final String SNAKE_YAML =
             MAVEN_CENTRAL + "org/yaml/snakeyaml/" + YAML_VERSION + "/" + SNAKE_YAML_JAR;
 
-    private static final String EXPECTED_HASH = "c2df91929ed06a25001939929bff5120e0ea3fd4"; // SHA-1
+    private static final String EXPECTED_HASH = "C2DF91929ED06A25001939929BFF5120E0EA3FD4"; // SHA-1
 
     @SneakyThrows
-    public static void load(Plugin plugin) {
-        try { // Check if it is already loaded
+    public static void load() {
+        /*try { // Check if it is already loaded
             Class.forName("org.yaml.snakeyaml.Yaml");
             return;
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {}*/
 
         Path path = Paths.get("lib", SNAKE_YAML_JAR);
 
         if (Files.notExists(path)) {
             Files.createDirectories(path.getParent());
-
-            plugin.getLogman().info("Downloading SnakeYAML...");
 
             URL url = new URL(SNAKE_YAML);
             MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
@@ -74,12 +72,10 @@ public final class SnakeYAML {
                 out.transferFrom(source, 0, Long.MAX_VALUE);
             }
 
-            if (!new String(Hex.encodeHex(sha1.digest())).equals(EXPECTED_HASH)) {
+            if (!BaseEncoding.base16().encode(sha1.digest()).equals(EXPECTED_HASH)) {
                 Files.delete(path);
                 throw new IllegalStateException("Downloaded SnakeYAML, but checksum check failed. Please try again later.");
             }
-
-            plugin.getLogman().info("Successfully downloaded!");
         }
 
         loadJAR(path);
