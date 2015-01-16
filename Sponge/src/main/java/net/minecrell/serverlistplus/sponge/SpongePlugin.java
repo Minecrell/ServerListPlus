@@ -40,6 +40,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.player.PlayerJoinEvent;
 import org.spongepowered.api.event.player.PlayerQuitEvent;
@@ -80,9 +81,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
                 public Optional<Favicon> load(FaviconSource source) throws Exception {
                     // Try loading the favicon
                     BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    return Optional.absent();
-                    /*if (image == null) return Optional.absent(); // Favicon loading failed
-                    else return Optional.of(game.getRegistry().loadFavicon(image)); // Success!*/
+                    if (image == null) return Optional.absent(); // Favicon loading failed
+                    else return Optional.of(game.getRegistry().loadFavicon(image)); // Success!
                 }
             };
     private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
@@ -221,7 +221,22 @@ public class SpongePlugin implements ServerListPlusPlugin {
                     count = response.getMaxPlayers();
                     if (count != null) players.setMax(count);
 
-                    // TODO: hover
+                    message = response.getPlayerHover();
+                    if (message != null) {
+                        List<GameProfile> profiles = players.getProfiles();
+                        profiles.clear();
+
+                        if (response.useMultipleSamples()) {
+                            count = response.getDynamicSamples();
+                            List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
+                                    Helper.splitLinesCached(message);
+
+                            for (String line : lines) {
+                                profiles.add(game.getRegistry().createGameProfile(StatusManager.EMPTY_UUID, line));
+                            }
+                        } else
+                            profiles.add(game.getRegistry().createGameProfile(StatusManager.EMPTY_UUID, message));
+                    }
                 }
             }
         }

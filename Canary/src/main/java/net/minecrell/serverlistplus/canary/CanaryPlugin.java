@@ -223,7 +223,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
                     List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
                             Helper.splitLinesCached(message);
 
-                    for (String line: lines) {
+                    for (String line : lines) {
                         profiles.add(new GameProfile(StatusManager.EMPTY_UUID, line));
                     }
                 } else
