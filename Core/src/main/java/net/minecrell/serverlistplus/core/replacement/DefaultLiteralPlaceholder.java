@@ -53,7 +53,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(StatusResponse response, String s) {
             PlayerIdentity identity = response.getRequest().getIdentity();
-            return identity != null ? replace(s, identity.getName()) : super.replace(response, s);
+            return identity != null ? replace(s, identity.getUuid().toString()) : super.replace(response, s);
         }
 
         @Override

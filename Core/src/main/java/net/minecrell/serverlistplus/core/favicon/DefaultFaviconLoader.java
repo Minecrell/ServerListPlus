@@ -25,8 +25,6 @@
 package net.minecrell.serverlistplus.core.favicon;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.config.PluginConf;
-import net.minecrell.serverlistplus.core.util.TimeUnitValue;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -48,26 +46,22 @@ public enum DefaultFaviconLoader implements FaviconLoader {
     }, URL {
         @Override
         public BufferedImage load(ServerListPlusCore core, String url) throws IOException {
-            return FaviconHelper.fromURL(new URL(url), getTimeout(core));
+            return FaviconHelper.fromURL(core, new URL(url));
         }
     }, SKIN_HEAD {
         @Override
         public BufferedImage load(ServerListPlusCore core, String name) throws IOException {
-            return FaviconHelper.fromSkin(name, false, getTimeout(core));
+            return FaviconHelper.fromSkin(core, name, false);
         }
     }, SKIN_HELM {
         @Override
         public BufferedImage load(ServerListPlusCore core, String name) throws IOException {
-            return FaviconHelper.fromSkin(name, true, getTimeout(core));
+            return FaviconHelper.fromSkin(core, name, true);
         }
     }, BASE64 { // Encoded favicon
         @Override
         public BufferedImage load(ServerListPlusCore core, String base64) throws IOException {
             return FaviconHelper.fromStream(BaseEncoding.base64().decodingStream(new StringReader(base64)));
         }
-    };
-
-    private static TimeUnitValue getTimeout(ServerListPlusCore core) {
-        return core.getConf(PluginConf.class).Favicon.Timeout;
     }
 }
