@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.core.util;
 
+import lombok.SneakyThrows;
+
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -38,8 +40,6 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 
 import com.google.common.io.BaseEncoding;
-
-import lombok.SneakyThrows;
 
 public final class SnakeYAML {
 

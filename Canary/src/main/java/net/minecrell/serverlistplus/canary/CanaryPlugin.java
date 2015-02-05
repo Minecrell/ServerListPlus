@@ -24,6 +24,8 @@
 
 package net.minecrell.serverlistplus.canary;
 
+import lombok.SneakyThrows;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -63,7 +65,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import com.mojang.authlib.GameProfile;
-import lombok.SneakyThrows;
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.world.World;

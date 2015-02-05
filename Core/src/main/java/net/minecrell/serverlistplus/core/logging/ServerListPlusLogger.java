@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Level;
 
 public abstract class ServerListPlusLogger extends AbstractLogger<ServerListPlusException> {
     protected static final String LOG_PREFIX = "[Core] "; // Prefix used by core log messages
