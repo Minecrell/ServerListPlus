@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -37,19 +39,17 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.player.PlayerJoinEvent;
-import org.spongepowered.api.event.player.PlayerQuitEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerJoinEvent;
+import org.spongepowered.api.event.entity.living.player.PlayerQuitEvent;
 import org.spongepowered.api.event.server.StatusPingEvent;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.ConfigDir;
-import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.api.status.Favicon;
 import org.spongepowered.api.text.message.Messages;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -63,9 +63,6 @@ import org.spongepowered.api.world.World;
 public class SpongePlugin implements ServerListPlusPlugin {
     @Inject protected Game game;
     @Inject protected Logger logger;
-
-    @DefaultConfig(sharedRoot = true) @Inject
-    protected File configFile;
 
     @ConfigDir(sharedRoot = false) @Inject
     protected File configDir;

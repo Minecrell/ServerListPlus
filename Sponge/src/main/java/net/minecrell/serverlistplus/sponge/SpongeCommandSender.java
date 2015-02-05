@@ -27,6 +27,6 @@ public class SpongeCommandSender extends Wrapper<CommandSource> implements Serve
 
     @Override
     public boolean hasPermission(String permission) {
-        return true; // fail
+        return handle.hasPermission(permission);
     }
 }
