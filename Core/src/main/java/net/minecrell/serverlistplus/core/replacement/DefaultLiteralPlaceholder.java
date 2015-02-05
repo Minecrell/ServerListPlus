@@ -30,6 +30,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
+import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 
 import java.util.Iterator;
@@ -46,6 +47,19 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         public String replace(ServerListPlusCore core, String s) {
             // Use unknown player name
             return replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
+        }
+    },
+    UUID ("%uuid%") {
+        @Override
+        public String replace(StatusResponse response, String s) {
+            PlayerIdentity identity = response.getRequest().getIdentity();
+            return identity != null ? replace(s, identity.getName()) : super.replace(response, s);
+        }
+
+        @Override
+        public String replace(ServerListPlusCore core, String s) {
+            // Use unknown UUID
+            return replace(s, StatusManager.EMPTY_ID);
         }
     },
     ONLINE_PLAYERS ("%online%") {
