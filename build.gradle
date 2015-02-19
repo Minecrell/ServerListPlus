@@ -84,3 +84,8 @@ task universal(type: Jar) {
         from zipTree(project(it).shadowJar.archivePath) // And add it to our universal JAR
     }
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+
