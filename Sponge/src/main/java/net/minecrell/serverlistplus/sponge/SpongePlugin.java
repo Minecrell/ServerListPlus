@@ -275,7 +275,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public String getServerImplementation() {
-        return "Sponge v" + game.getAPIVersion() + " (" + game.getImplementationVersion() + ")";
+        return "Sponge v" + game.getApiVersion() + " (" + game.getImplementationVersion() + ")";
     }
 
     @Override
