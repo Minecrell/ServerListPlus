@@ -26,6 +26,7 @@ package net.minecrell.serverlistplus.core.util;
 
 import lombok.SneakyThrows;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -38,6 +39,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.Set;
 
 import com.google.common.io.BaseEncoding;
 
@@ -52,13 +54,32 @@ public final class SnakeYAML {
 
     private static final String EXPECTED_HASH = "C2DF91929ED06A25001939929BFF5120E0EA3FD4"; // SHA-1
 
+    private static boolean isLoaded(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            try {
+                // Remove the class from LaunchClassLoader cache if present
+                ClassLoader classLoader = SnakeYAML.class.getClassLoader();
+                Field invalidClasses = classLoader.getClass().getDeclaredField("invalidClasses");
+                invalidClasses.setAccessible(true);
+
+                @SuppressWarnings("unchecked")
+                Set<String> classes  = (Set<String>) invalidClasses.get(classLoader);
+                if (classes != null) {
+                    classes.remove(className);
+                }
+            } catch (Exception ignore) {
+            }
+        }
+
+        return false;
+    }
+
     @SneakyThrows
     public static void load() {
-        /*try { // Check if it is already loaded
-            Class.forName("org.yaml.snakeyaml.Yaml");
-            return;
-        } catch (ClassNotFoundException ignored) {}*/
-
+        if (isLoaded("org.yaml.snakeyaml.Yaml")) return;
         Path path = Paths.get("lib", SNAKE_YAML_JAR);
 
         if (Files.notExists(path)) {
