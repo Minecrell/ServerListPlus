@@ -36,6 +36,7 @@ public class SpongeCommandSender extends Wrapper<CommandSource> implements Serve
 
     @Override
     public String getName() {
+
         return "SPONGE"; // fail
     }
 
@@ -46,11 +47,16 @@ public class SpongeCommandSender extends Wrapper<CommandSource> implements Serve
 
     @Override
     public void sendMessages(String... messages) {
-        getHandle().sendMessage(messages);
+        handle.sendMessage(messages);
     }
 
     @Override
     public boolean hasPermission(String permission) {
         return handle.hasPermission(permission);
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

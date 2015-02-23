@@ -44,7 +44,6 @@ import net.minecrell.serverlistplus.core.util.SnakeYAML;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -150,7 +149,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         @Override
         public boolean testPermission(CommandSource source) {
-            return false; // fail
+            return true;
         }
 
         @Override
@@ -180,15 +179,15 @@ public class SpongePlugin implements ServerListPlusPlugin {
         private LoginListener() {}
 
         @Subscribe
-        public void onJoin(PlayerJoinEvent event) throws UnknownHostException {
-            // TODO
-            core.updateClient(InetAddress.getLocalHost(), event.getPlayer().getUniqueId(), event.getPlayer().getName());
+        public void onPlayerJoin(PlayerJoinEvent event) throws UnknownHostException {
+            core.updateClient(event.getPlayer().getConnection().getAddress().getAddress(),
+                    event.getPlayer().getUniqueId(), event.getPlayer().getName());
         }
 
         @Subscribe
-        public void onQuit(PlayerQuitEvent event) throws UnknownHostException {
-            // TODO
-            core.updateClient(InetAddress.getLocalHost(), event.getPlayer().getUniqueId(), event.getPlayer().getName());
+        public void onPlayerQuit(PlayerQuitEvent event) throws UnknownHostException {
+            core.updateClient(event.getPlayer().getConnection().getAddress().getAddress(),
+                    event.getPlayer().getUniqueId(), event.getPlayer().getName());
         }
     }
 
@@ -340,12 +339,12 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public void runAsync(Runnable task) {
-        throw new UnsupportedOperationException();
+        game.getAsyncScheduler().runTask(this, task);
     }
 
     @Override
     public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
-        throw new UnsupportedOperationException();
+        return new ScheduledSpongeTask(game.getAsyncScheduler().runRepeatingTask(this, task, unit, repeat).get());
     }
 
     private static final Pattern COLOR_CODE = Pattern.compile("(?i)&([0-9A-FK-OR])");

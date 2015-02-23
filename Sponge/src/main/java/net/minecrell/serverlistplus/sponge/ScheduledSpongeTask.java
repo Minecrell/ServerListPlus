@@ -22,42 +22,21 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.canary;
+package net.minecrell.serverlistplus.sponge;
 
-import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
+import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.util.Wrapper;
 
-import net.canarymod.chat.MessageReceiver;
+import org.spongepowered.api.service.scheduler.Task;
 
-public class CanaryCommandSender extends Wrapper<MessageReceiver> implements ServerCommandSender {
-    public CanaryCommandSender(MessageReceiver handle) {
+public class ScheduledSpongeTask extends Wrapper<Task> implements ScheduledTask {
+
+    public ScheduledSpongeTask(Task handle) {
         super(handle);
     }
 
     @Override
-    public String getName() {
-        return handle.getName();
-    }
-
-    @Override
-    public void sendMessage(String message) {
-        handle.message(message);
-    }
-
-    @Override
-    public void sendMessages(String... messages) {
-        for (String message : messages) {
-            sendMessage(message);
-        }
-    }
-
-    @Override
-    public boolean hasPermission(String permission) {
-        return handle.hasPermission(permission);
-    }
-
-    @Override
-    public String toString() {
-        return getName();
+    public void cancel() {
+        handle.cancel();
     }
 }

@@ -36,6 +36,6 @@ public class ScheduledCanaryTask extends Wrapper<ScheduledFuture<?>> implements 
 
     @Override
     public void cancel() {
-        getHandle().cancel(false);
+        handle.cancel(false);
     }
 }
