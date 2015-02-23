@@ -60,7 +60,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     public static final String STORAGE_FILE = "PlayerCache.json";
     public static final Type STORAGE_TYPE = new TypeToken<Map<InetAddress, PlayerIdentity>>(){}.getType();
 
-    private Map<InetAddress, PlayerIdentity> storage;
+    private Map<InetAddress, PlayerIdentity> storage = new MapMaker().makeMap();
 
     private final AtomicBoolean changed = new AtomicBoolean();
     private ScheduledTask saveTask;
@@ -109,8 +109,6 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
         Path storagePath = getStoragePath();
         getLogger().log(DEBUG, "Storage location: " + storagePath);
 
-        this.storage = new MapMaker().makeMap();
-
         try {
             if (Files.exists(storagePath)) {
                 Map<InetAddress, PlayerIdentity> identities;
@@ -135,12 +133,12 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
         changed.set(false);
 
         TimeUnitValue delay = ((Conf) core.getConf(PluginConf.class).PlayerTracking.Storage).SaveDelay;
-        //this.saveTask = core.getPlugin().scheduleAsync(new SaveTask(), delay.getValue(), delay.getUnit());
+        this.saveTask = core.getPlugin().scheduleAsync(new SaveTask(), delay.getValue(), delay.getUnit());
     }
 
     @Override
     public boolean isEnabled() {
-        return storage != null;
+        return saveTask != null;
     }
 
     public synchronized void save() throws ServerListPlusException {
@@ -175,7 +173,6 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
         }
 
         save();
-        this.storage = null;
     }
 
     // TODO: Java 8
