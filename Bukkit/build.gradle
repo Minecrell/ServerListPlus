@@ -26,7 +26,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
     maven { url 'http://repo.bukkit.org/content/groups/public' }
-    maven { url 'http://repo.comphenix.net/content/groups/public' }
+    maven { url 'http://ci.shadowvolt.com/plugin/repository/everything' }
     maven { url 'http://repo.mcstats.org/content/repositories/public' }
 }
 
@@ -42,7 +42,7 @@ dependencies {
     compile project(':Core')
     compile 'com.google.guava:guava:15.0', // TODO: Better fix for guava compilation in Bukkit
             'org.bukkit:bukkit:1.7.9-R0.2',
-            'com.comphenix.protocol:ProtocolLib:3.4.0',
+            'com.comphenix.protocol:ProtocolLib:3.6.3-SNAPSHOT',
             'org.mcstats.bukkit:metrics-lite:R7'
 }
 
@@ -60,7 +60,7 @@ shadowJar {
     relocate "${javaPackage}.core", "${pluginPackage}.core"
     relocate 'org.mcstats', "${pluginPackage}.metrics"
 
-    // Spigot 1.8
-    // relocate 'com.google.common', 'net.minecraft.util.com.google.common'
-    relocate 'com.google.gson', 'org.bukkit.craftbukkit.libs.com.google.gson'
+    // Spigot 1.8.3
+    //relocate 'com.google.common', 'net.minecraft.util.com.google.common'
+    //relocate 'com.google.gson', 'org.bukkit.craftbukkit.libs.com.google.gson'
 }
