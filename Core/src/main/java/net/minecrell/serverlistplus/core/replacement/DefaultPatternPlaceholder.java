@@ -112,7 +112,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
 
     protected final @Getter Pattern pattern;
 
-    private DefaultPatternPlaceholder(Pattern pattern) {
+    DefaultPatternPlaceholder(Pattern pattern) {
         this.pattern = pattern;
     }
 

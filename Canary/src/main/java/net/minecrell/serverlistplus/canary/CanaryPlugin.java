@@ -248,7 +248,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     @Override
     public String getServerImplementation() {
-        return Canary.getImplementationTitle() + " v" + Canary.getServer().getCanaryModVersion() + " (MC: " + Canary.getServer().getName() + ")";
+        return Canary.getImplementationTitle() + " v" + Canary.getServer().getCanaryModVersion() + " (MC: " + Canary.getServer().getName() + ')';
     }
 
     @Override

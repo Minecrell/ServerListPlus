@@ -39,7 +39,7 @@ public class ISO8601Serializer implements JsonSerializer<Date> {
     private final DateFormat iso8601 = buildIso8601Format();
 
     // Directly from GSON source: http://goo.gl/QdKHl5
-    private DateFormat buildIso8601Format() {
+    private static DateFormat buildIso8601Format() {
         DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         iso8601Format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return iso8601Format;

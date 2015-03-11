@@ -27,35 +27,35 @@ package net.minecrell.serverlistplus.core.logging;
 import java.util.logging.Level;
 
 public interface Logger<E extends Throwable> {
-    public static final Level
+    Level
             DEBUG = Level.FINE,
             REPORT = Level.CONFIG,
             INFO = Level.INFO,
             WARN = Level.WARNING,
             ERROR = Level.SEVERE;
 
-    public Logger<E> log(Level level, String message);
-    public Logger<E> log(Level level, String message, Object arg);
-    public Logger<E> log(Level level, String message, Object... args);
+    Logger<E> log(Level level, String message);
+    Logger<E> log(Level level, String message, Object arg);
+    Logger<E> log(Level level, String message, Object... args);
     //public Logger logf(Level level, String message, Object... args);
 
-    public Logger<E> log(Throwable thrown, String message);
-    public Logger<E> log(Throwable thrown, String message, Object arg);
-    public Logger<E> log(Throwable thrown, String message, Object... args);
+    Logger<E> log(Throwable thrown, String message);
+    Logger<E> log(Throwable thrown, String message, Object arg);
+    Logger<E> log(Throwable thrown, String message, Object... args);
     //public Logger logf(Throwable thrown, String message, Object... args);
 
-    public Logger<E> log(Level level, Throwable thrown, String message);
-    public Logger<E> log(Level level, Throwable thrown, String message, Object arg);
-    public Logger<E> log(Level level, Throwable thrown, String message, Object... args);
+    Logger<E> log(Level level, Throwable thrown, String message);
+    Logger<E> log(Level level, Throwable thrown, String message, Object arg);
+    Logger<E> log(Level level, Throwable thrown, String message, Object... args);
     //public Logger logf(Level level, Throwable thrown, String message, Object... args);
 
-    public E process(Throwable thrown, String message);
-    public E process(Throwable thrown, String message, Object arg);
-    public E process(Throwable thrown, String message, Object... args);
+    E process(Throwable thrown, String message);
+    E process(Throwable thrown, String message, Object arg);
+    E process(Throwable thrown, String message, Object... args);
     //public E processf(Throwable thrown, String message, Object... args);
 
-    public E process(Level level, Throwable thrown, String message);
-    public E process(Level level, Throwable thrown, String message, Object arg);
-    public E process(Level level, Throwable thrown, String message, Object... args);
+    E process(Level level, Throwable thrown, String message);
+    E process(Level level, Throwable thrown, String message, Object arg);
+    E process(Level level, Throwable thrown, String message, Object... args);
     //public E processf(Level level, Throwable thrown, String message, Object... args);
 }

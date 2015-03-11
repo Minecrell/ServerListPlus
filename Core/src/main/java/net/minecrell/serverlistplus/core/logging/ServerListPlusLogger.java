@@ -38,7 +38,7 @@ public abstract class ServerListPlusLogger extends AbstractLogger<ServerListPlus
 
     private final ServerListPlusCore core;
 
-    public ServerListPlusLogger(ServerListPlusCore core) {
+    protected ServerListPlusLogger(ServerListPlusCore core) {
         super(ServerListPlusCoreException.class);
         this.core = core;
 

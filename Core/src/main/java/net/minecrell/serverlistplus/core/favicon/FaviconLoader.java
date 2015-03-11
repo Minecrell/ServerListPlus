@@ -30,5 +30,5 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public interface FaviconLoader {
-    public BufferedImage load(ServerListPlusCore core, String source) throws IOException;
+    BufferedImage load(ServerListPlusCore core, String source) throws IOException;
 }

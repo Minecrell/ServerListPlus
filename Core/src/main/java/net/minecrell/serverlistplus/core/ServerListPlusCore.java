@@ -89,8 +89,8 @@ public class ServerListPlusCore {
                 "---",
                 "Plugin: " + getDisplayName(),
                 "Server: " + plugin.getServerImplementation(),
-                "Java: " + JAVA_VERSION.value() + " (" + JAVA_VM_NAME.value() + ")",
-                "OS: " + OS_NAME.value() + ", " + OS_VERSION.value() + " (" + OS_ARCH.value() + ")",
+                "Java: " + JAVA_VERSION.value() + " (" + JAVA_VM_NAME.value() + ')',
+                "OS: " + OS_NAME.value() + ", " + OS_VERSION.value() + " (" + OS_ARCH.value() + ')',
                 "---"
         ));
 
@@ -265,7 +265,7 @@ public class ServerListPlusCore {
                 try { // Enable / disable the ServerListPlus profile
                     profileManager.setEnabled(enable);
                     sender.sendMessage(COMMAND_PREFIX_SUCCESS + "ServerListPlus has been successfully " + (enable ?
-                            "enabled" : "disabled") + "!");
+                            "enabled" : "disabled") + '!');
                 } catch (ServerListPlusException e) {
                     sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while " +
                             (enable ? "enabling" : "disabling") + " ServerListPlus.");

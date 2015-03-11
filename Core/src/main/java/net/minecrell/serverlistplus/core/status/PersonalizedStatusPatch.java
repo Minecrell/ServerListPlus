@@ -136,7 +136,7 @@ public class PersonalizedStatusPatch {
         return favicon;
     }
 
-    private String prepareRandomEntry(StatusResponse response, List<String> list) {
+    private static String prepareRandomEntry(StatusResponse response, List<String> list) {
         return response.getStatus().prepare(response, nextEntry(list));
     }
 }

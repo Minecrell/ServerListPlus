@@ -274,7 +274,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public String getServerImplementation() {
-        return "Sponge v" + game.getApiVersion() + " (" + game.getImplementationVersion() + ")";
+        return "Sponge v" + game.getApiVersion() + " (" + game.getImplementationVersion() + ')';
     }
 
     @Override
@@ -351,7 +351,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public String colorize(String s) {
-        return COLOR_CODE.matcher(s).replaceAll("\u00A7$1");
+        return COLOR_CODE.matcher(s).replaceAll("§$1");
     }
 
     @Override

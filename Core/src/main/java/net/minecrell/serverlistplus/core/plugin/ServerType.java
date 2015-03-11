@@ -36,9 +36,9 @@ public enum ServerType {
 
     private final String displayName;
 
-    private ServerType() { this(null); }
+    ServerType() { this(null); }
 
-    private ServerType(String displayName) {
+    ServerType(String displayName) {
         this.displayName = displayName;
     }
 

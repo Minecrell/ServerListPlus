@@ -37,7 +37,7 @@ import com.google.common.base.Preconditions;
 public abstract class PatternPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
     protected final @Getter Pattern pattern;
 
-    public PatternPlaceholder(Pattern pattern) {
+    protected PatternPlaceholder(Pattern pattern) {
         this.pattern = Preconditions.checkNotNull(pattern, "pattern");
     }
 

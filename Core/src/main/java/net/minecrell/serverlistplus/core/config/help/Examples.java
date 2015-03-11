@@ -29,6 +29,7 @@ import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public final class Examples {
     private Examples() {}
@@ -51,7 +52,7 @@ public final class Examples {
 
         // Player hover
         conf.Default.Players = new ServerStatusConf.StatusConf.PlayersConf();
-        conf.Default.Players.Hover = Arrays.asList(
+        conf.Default.Players.Hover = Collections.singletonList(
                 Helper.joinLines(
                         "&aWelcome to &lA Minecraft Server&a!",
                         "&aCurrently &e&l%online% &aplayers are playing on our server!"
@@ -73,7 +74,7 @@ public final class Examples {
 
         // Player hover
         conf.Personalized.Players = new ServerStatusConf.StatusConf.PlayersConf();
-        conf.Personalized.Players.Hover = Arrays.asList(
+        conf.Personalized.Players.Hover = Collections.singletonList(
                 Helper.joinLines(
                         "&aWelcome back, &l%player%&a!",
                         "&aCurrently &e&l%online% &aplayers are playing on our server!"

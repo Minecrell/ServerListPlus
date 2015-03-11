@@ -40,11 +40,11 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
         this.exceptionClass = Preconditions.checkNotNull(errorClass, "exceptionClass");
     }
 
-    protected String format(String s, Object arg) {
+    protected static String format(String s, Object arg) {
         return Literals.replace(s, ARG_PATTERN, Iterators.singletonIterator(arg));
     }
 
-    protected String format(String s, Object[] args) {
+    protected static String format(String s, Object[] args) {
         return Literals.replace(s, ARG_PATTERN, args);
     }
 

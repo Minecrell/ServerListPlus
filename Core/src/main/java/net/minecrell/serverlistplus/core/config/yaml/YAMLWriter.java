@@ -64,7 +64,7 @@ public class YAMLWriter {
 
     public void registerAlias(Class<?> clazz, String alias) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(alias), "empty alias");
-        Tag tag = new Tag("!" + alias);
+        Tag tag = new Tag('!' + alias);
         // Add tag to representer and constructor to "notify" them about the alias
         snakeYAML.getRepresenter().addClassTag(clazz, tag);
         snakeYAML.getConstructor().addTypeDescription(new TypeDescription(clazz, tag));

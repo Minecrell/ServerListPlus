@@ -49,10 +49,10 @@ public enum ChatFormat {
     ITALIC ('o'),
     RESET ('r');
 
-    public final static char FORMAT_CHAR = '\u00A7';
+    public final static char FORMAT_CHAR = '§';
     private final String format;
 
-    private ChatFormat(char code) {
+    ChatFormat(char code) {
         this.format = new String(new char[] { FORMAT_CHAR, code });
     }
 

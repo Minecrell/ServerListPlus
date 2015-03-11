@@ -103,7 +103,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
 
     protected final @Getter String literal;
 
-    private DefaultLiteralPlaceholder(String literal) {
+    DefaultLiteralPlaceholder(String literal) {
         this.literal = literal;
     }
 

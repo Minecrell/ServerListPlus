@@ -25,6 +25,7 @@
 package net.minecrell.serverlistplus.bukkit.handlers;
 
 import net.minecrell.serverlistplus.bukkit.BukkitPlugin;
+import net.minecrell.serverlistplus.bukkit.BukkitPluginBase;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusResponse;

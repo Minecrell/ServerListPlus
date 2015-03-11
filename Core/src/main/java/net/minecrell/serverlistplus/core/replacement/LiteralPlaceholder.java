@@ -33,7 +33,7 @@ import java.util.Iterator;
 public abstract class LiteralPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
     private final @Getter String literal;
 
-    public LiteralPlaceholder(String literal) {
+    protected LiteralPlaceholder(String literal) {
         this.literal = literal;
     }
 
