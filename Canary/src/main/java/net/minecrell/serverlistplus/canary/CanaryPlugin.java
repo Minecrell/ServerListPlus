@@ -47,6 +47,7 @@ import net.minecrell.serverlistplus.core.util.SnakeYAML;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -172,6 +173,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
         @HookHandler
         public void onServerListPing(final ServerListPingHook hook) throws Exception {
             StatusRequest request = core.createRequest(hook.getRequesterAddress());
+            request.setProtocolVersion(hook.getRequesterProtocol());
+            request.setTarget(InetSocketAddress.createUnresolved(hook.getHostNamePinged(), hook.getPortPinged()));
 
             StatusResponse response = request.createResponse(core.getStatus(), new ResponseFetcher() {
                 @Override
@@ -186,7 +189,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
                 @Override
                 public int getProtocolVersion() {
-                    return 0; // I DON'T KNOW :(
+                    return hook.getRequesterProtocol(); // :|
                 }
             });
 
