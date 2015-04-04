@@ -66,15 +66,16 @@ import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.entity.living.player.PlayerJoinEvent;
-import org.spongepowered.api.event.entity.living.player.PlayerQuitEvent;
+import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
+import org.spongepowered.api.event.entity.player.PlayerQuitEvent;
 import org.spongepowered.api.event.server.StatusPingEvent;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.status.Favicon;
-import org.spongepowered.api.text.message.Messages;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.util.command.CommandCallable;
 import org.spongepowered.api.util.command.CommandException;
@@ -153,17 +154,17 @@ public class SpongePlugin implements ServerListPlusPlugin {
         }
 
         @Override
-        public Optional<String> getShortDescription() {
-            return Optional.absent();
+        public String getShortDescription(CommandSource source) {
+            return "";
         }
 
         @Override
-        public Optional<String> getHelp() {
-            return Optional.absent();
+        public Text getHelp(CommandSource source) {
+            return Texts.of();
         }
 
         @Override
-        public String getUsage() {
+        public String getUsage(CommandSource source) {
             return "";
         }
 
@@ -220,7 +221,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
             // Description
             String message = response.getDescription();
-            if (message != null) ping.setDescription(Messages.of(message));
+            if (message != null) ping.setDescription(Texts.of(message));
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
@@ -284,11 +285,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public Integer getOnlinePlayers(String location) {
-        World world = game.getServer().get().getWorld(location).orNull();
+        World world = game.getServer().getWorld(location).orNull();
         if (world == null) return null;
 
         int count = 0;
-        for (Player player : game.getServer().get().getOnlinePlayers()) {
+        for (Player player : game.getServer().getOnlinePlayers()) {
             if (player.getWorld().equals(world)) count++;
         }
 
@@ -297,7 +298,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public Iterator<String> getRandomPlayers() {
-        Collection<Player> players = game.getServer().get().getOnlinePlayers();
+        Collection<Player> players = game.getServer().getOnlinePlayers();
         List<String> result = new ArrayList<>(players.size());
 
         for (Player player : players) {
@@ -309,10 +310,10 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public Iterator<String> getRandomPlayers(String location) {
-        World world = game.getServer().get().getWorld(location).orNull();
+        World world = game.getServer().getWorld(location).orNull();
         if (world == null) return null;
 
-        Collection<Player> players = game.getServer().get().getOnlinePlayers();
+        Collection<Player> players = game.getServer().getOnlinePlayers();
         List<String> result = new ArrayList<>();
 
         for (Player player : players) {
