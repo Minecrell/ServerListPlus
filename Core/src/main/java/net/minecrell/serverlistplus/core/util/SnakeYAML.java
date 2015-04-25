@@ -79,7 +79,7 @@ public final class SnakeYAML {
 
     @SneakyThrows
     public static void load() {
-        if (isLoaded("org.yaml.snakeyaml.Yaml")) return;
+        //if (isLoaded("org.yaml.snakeyaml.Yaml")) return;
         Path path = Paths.get("lib", SNAKE_YAML_JAR);
 
         if (Files.notExists(path)) {

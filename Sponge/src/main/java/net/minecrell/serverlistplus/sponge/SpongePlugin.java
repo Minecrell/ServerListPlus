@@ -80,6 +80,7 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.util.command.CommandCallable;
 import org.spongepowered.api.util.command.CommandException;
+import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.World;
 
@@ -142,10 +143,16 @@ public class SpongePlugin implements ServerListPlusPlugin {
     public final class ServerListPlusCommand implements CommandCallable {
 
         @Override
-        public boolean call(CommandSource source, String arguments, List<String> parents) throws CommandException {
+        public Optional<CommandResult> process(CommandSource source, String arguments) throws CommandException {
             String[] args = arguments.isEmpty() ? new String[0] : ARGUMENT_PATTERN.split(arguments);
-            core.executeCommand(new SpongeCommandSender(source), Helper.getLastElement(parents), args);
-            return true;
+            core.executeCommand(new SpongeCommandSender(source), "serverlistplus", args);
+            return Optional.of(CommandResult.success());
+        }
+
+        @Override
+        public List<String> getSuggestions(CommandSource source, String arguments) throws CommandException {
+            return core.tabComplete(new SpongeCommandSender(source), "serverlistplus",
+                    ARGUMENT_PATTERN.split(arguments));
         }
 
         @Override
@@ -154,25 +161,20 @@ public class SpongePlugin implements ServerListPlusPlugin {
         }
 
         @Override
-        public String getShortDescription(CommandSource source) {
-            return "";
+        public Optional<Text> getShortDescription(CommandSource source) {
+            return Optional.absent();
         }
 
         @Override
-        public Text getHelp(CommandSource source) {
+        public Optional<Text> getHelp(CommandSource source) {
+            return Optional.absent();
+        }
+
+        @Override
+        public Text getUsage(CommandSource source) {
             return Texts.of();
         }
 
-        @Override
-        public String getUsage(CommandSource source) {
-            return "";
-        }
-
-        @Override
-        public List<String> getSuggestions(CommandSource source, String arguments) throws CommandException {
-            return core.tabComplete(new SpongeCommandSender(source), "serverlistplus",
-                    ARGUMENT_PATTERN.split(arguments));
-        }
     }
 
     // Player tracking

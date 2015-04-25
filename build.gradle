@@ -62,7 +62,7 @@ ext {
 
 subprojects {
     dependencies {
-        compile 'org.projectlombok:lombok:1.16.2'
+        compile 'org.projectlombok:lombok:1.16.4'
     }
 
     plugins.withId('com.github.johnrengelman.shadow') {
