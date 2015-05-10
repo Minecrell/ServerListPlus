@@ -37,7 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
-    ONLINE_AT (Pattern.compile("%online@(\\w+)%")) {
+    ONLINE_AT (Pattern.compile("%online@((?:\\w|[-_])+)%")) {
         @Override
         public String replace(final ServerListPlusCore core, String s) {
             final Matcher matcher = matcher(s);
@@ -53,7 +53,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
             });
         }
     },
-    RANDOM_PLAYER_AT (Pattern.compile("%random_player@(\\w+)%")) {
+    RANDOM_PLAYER_AT (Pattern.compile("%random_player@((?:\\w|[-_])+)%")) {
         @Override
         public String replace(final StatusResponse response, String s) {
             final Matcher matcher = matcher(s);
@@ -72,7 +72,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
             return replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
         }
     },
-    PLAYER_LIST (Pattern.compile("%random_players(?:@(\\w+))?(?:,(\\d+))?(?:\\|([^%]+))?%", Pattern.MULTILINE)) {
+    PLAYER_LIST (Pattern.compile("%random_players(?:@((?:\\w|[-_])+))?(?:,(\\d+))?(?:\\|([^%]+))?%", Pattern.MULTILINE)) {
         private static final int DEFAULT_LIMIT = 5;
         private static final String DEFAULT_DELIMITER = "\n";
 
