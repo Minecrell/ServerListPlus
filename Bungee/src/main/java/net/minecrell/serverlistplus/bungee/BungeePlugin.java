@@ -165,13 +165,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             if (event.getResponse() == null) return; // Check if response is not empty
 
             PendingConnection con = event.getConnection();
-            if (con.getListener().isPingPassthrough()) {
-                ServerInfo forcedHost = AbstractReconnectHandler.getForcedHost(con);
-                if (forcedHost != null) {
-                    return; // The server is handling the ping
-                }
-            }
-
             StatusRequest request = core.createRequest(con.getAddress().getAddress());
 
             request.setProtocolVersion(con.getVersion());
