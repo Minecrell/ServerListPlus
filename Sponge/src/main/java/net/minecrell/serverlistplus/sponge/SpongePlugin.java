@@ -65,6 +65,7 @@ import com.google.common.cache.LoadingCache;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameProfile;
+import org.spongepowered.api.Platform;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
@@ -183,14 +184,14 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         @Subscribe
         public void onPlayerJoin(PlayerJoinEvent event) throws UnknownHostException {
-            core.updateClient(event.getPlayer().getConnection().getAddress().getAddress(),
-                    event.getPlayer().getUniqueId(), event.getPlayer().getName());
+            core.updateClient(event.getEntity().getConnection().getAddress().getAddress(),
+                    event.getEntity().getUniqueId(), event.getEntity().getName());
         }
 
         @Subscribe
         public void onPlayerQuit(PlayerQuitEvent event) throws UnknownHostException {
-            core.updateClient(event.getPlayer().getConnection().getAddress().getAddress(),
-                    event.getPlayer().getUniqueId(), event.getPlayer().getName());
+            core.updateClient(event.getEntity().getConnection().getAddress().getAddress(),
+                    event.getEntity().getUniqueId(), event.getEntity().getName());
         }
     }
 
@@ -277,7 +278,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public String getServerImplementation() {
-        return "Sponge v" + game.getApiVersion() + " (" + game.getImplementationVersion() + ')';
+        Platform platform = game.getPlatform();
+        return platform.getName() + " v" + platform.getVersion() + " (API " + platform.getApiVersion() + ')';
     }
 
     @Override
