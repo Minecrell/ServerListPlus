@@ -110,10 +110,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
             };
     private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
 
-    public SpongePlugin() {
-        SnakeYAML.load();
-    }
-
     @Subscribe
     public void enable(PreInitializationEvent event) {
         try {
