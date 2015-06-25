@@ -45,8 +45,5 @@ dependencies {
 shadowJar {
     dependencies {
         include project(':Core')
-        include dependency('org.yaml:snakeyaml')
     }
-
-    relocate 'org.yaml', 'net.minecrell.serverlistplus.sponge.lib.org.yaml'
 }
