@@ -42,7 +42,7 @@ public class SpongeCommandSender extends Wrapper<CommandSource> implements Serve
 
     @Override
     public void sendMessage(String message) {
-        handle.sendMessage(Texts.fromLegacy(message));
+        handle.sendMessage(Texts.legacy().fromUnchecked(message));
     }
 
     @Override

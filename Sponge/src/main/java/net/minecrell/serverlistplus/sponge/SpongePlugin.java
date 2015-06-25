@@ -340,12 +340,13 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public void runAsync(Runnable task) {
-        game.getAsyncScheduler().runTask(this, task);
+        game.getScheduler().getTaskBuilder().async().execute(task).submit(this);
     }
 
     @Override
     public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
-        return new ScheduledSpongeTask(game.getAsyncScheduler().runRepeatingTask(this, task, unit, repeat).get());
+        return new ScheduledSpongeTask(game.getScheduler().getTaskBuilder()
+                .async().interval(repeat, unit).execute(task).submit(this));
     }
 
     private static final Pattern COLOR_CODE = Pattern.compile("(?i)&([0-9A-FK-OR])");
