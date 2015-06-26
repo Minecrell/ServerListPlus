@@ -42,7 +42,6 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
-import net.minecrell.serverlistplus.core.util.SnakeYAML;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
