@@ -32,6 +32,7 @@ import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 
 import java.util.Iterator;
 
@@ -53,13 +54,28 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(StatusResponse response, String s) {
             PlayerIdentity identity = response.getRequest().getIdentity();
-            return identity != null ? replace(s, identity.getUuid().toString()) : super.replace(response, s);
+            return identity != null ?
+                    replace(s, UUIDs.STANDARD.toString(identity.getUuid())) : super.replace(response, s);
         }
 
         @Override
         public String replace(ServerListPlusCore core, String s) {
             // Use unknown UUID
-            return replace(s, StatusManager.EMPTY_ID);
+            return replace(s, UUIDs.STANDARD.toString(StatusManager.EMPTY_UUID));
+        }
+    },
+    DASHLESS_UUID ("%_uuid_%") {
+        @Override
+        public String replace(StatusResponse response, String s) {
+            PlayerIdentity identity = response.getRequest().getIdentity();
+            return identity != null ?
+                    replace(s, UUIDs.NO_DASHES.toString(identity.getUuid())) : super.replace(response, s);
+        }
+
+        @Override
+        public String replace(ServerListPlusCore core, String s) {
+            // Use unknown UUID
+            return replace(s, UUIDs.NO_DASHES.toString(StatusManager.EMPTY_UUID));
         }
     },
     ONLINE_PLAYERS ("%online%") {
