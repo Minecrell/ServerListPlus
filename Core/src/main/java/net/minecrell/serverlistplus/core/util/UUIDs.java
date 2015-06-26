@@ -24,12 +24,12 @@
 
 package net.minecrell.serverlistplus.core.util;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import java.util.UUID;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.UnsignedLongs;
 
-import java.util.UUID;
+import static com.google.common.base.Preconditions.checkArgument;
 
 public final class UUIDs {
 
