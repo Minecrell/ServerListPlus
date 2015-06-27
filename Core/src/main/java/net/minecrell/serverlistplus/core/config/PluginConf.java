@@ -35,7 +35,12 @@ import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
 @Description({
         "Stats: Enable/disable sending plugin statistics.",
         "PlayerTracking: Enable/disable tracking of player names to their IP-Addresses.",
-        "Unknown: Placeholder replacement if real value is unknown.",
+        "  - Persistence can be disabled with the toggle in the Storage section.",
+        "Samples: Toggle using multiple player infos for the player hover message.",
+        "    May prevent the annoying ... and x more ... message for bigger servers",
+        "    DynamicPlayers is special and aligns the number with the number of",
+        "    random players used in placeholders.",
+        "Unknown: Placeholder replacement if the real value is unknown.",
         "Favicon: Options for the creation / downloading of favicons:",
         " - RecursiveFolderSearch: Also search for favicons in sub directories.",
         " - SkinSource: The URL to get the Minecraft Skins from. (%s -> player name)",
