@@ -1,6 +1,6 @@
 # ServerListPlus
 
-[ServerListPlus](http://git.io/slp) is the most customizable server status ping plugin for Minecraft. It provides an easy-to-use configuration for almost everything possible using the server status ping. The plugin aims to become the universal solution for server status ping customization, available for Bukkit/Spigot and for BungeeCord servers.
+[ServerListPlus](http://git.io/slp) is an extremely customizable server status ping plugin for Minecraft. It provides an easy-to-use configuration for almost everything possible using the server status ping. The plugin aims to become the universal solution for server status ping customization, available for Bukkit/Spigot and for BungeeCord servers.
 
 ## Features
 [ServerListPlus](http://git.io/slp) is the most customizable server status ping plugin for Minecraft. It allows you to customize:
@@ -20,8 +20,8 @@ Please refer to the [features page in the wiki](https://github.com/Minecrell/Ser
 You can download the plugin from these official download sites:
 - [GitHub Releases](http://git.io/slp-releases) (recommended)
 - [SpigotMC](http://www.spigotmc.org/resources/serverlistplus.241/)
-- [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/)
-- [Development Builds](http://ci.minecrell.net/job/ServerListPlus/) (unstable, not recommended)
+- [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/) (possibly outdated)
+- [Development Builds](http://ci.minecrell.net/job/ServerListPlus/) (possibly unstable)
 
 ## Compilation
 To compile the plugin, simply clone the repository and build the plugin using Gradle:
