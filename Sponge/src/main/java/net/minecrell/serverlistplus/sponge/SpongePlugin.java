@@ -83,7 +83,7 @@ import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.World;
 
-@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4-SNAPSHOT")
+@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4.1-SNAPSHOT")
 public class SpongePlugin implements ServerListPlusPlugin {
     @Inject protected Game game;
     @Inject protected Logger logger;
