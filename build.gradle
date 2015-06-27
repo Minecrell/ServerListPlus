@@ -5,7 +5,6 @@
  *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
  *
  *  ServerListPlus - http://git.io/slp
- *    > The most customizable server status ping plugin for Minecraft!
  *  Copyright (c) 2014, Minecrell <https://github.com/Minecrell>
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -42,7 +41,7 @@ allprojects {
 
 ext {
     // Placeholders for configuration filtering
-    description = 'The most customizable server status ping plugin for Minecraft!'
+    description = 'An extremely customizable server status ping plugin for Minecraft'
     author = 'Minecrell <https://github.com/Minecrell>'
 
     javaPackage = 'net.minecrell.serverlistplus'

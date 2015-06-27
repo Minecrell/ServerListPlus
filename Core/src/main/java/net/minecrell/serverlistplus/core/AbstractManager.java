@@ -5,7 +5,6 @@
  *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
  *
  *  ServerListPlus - http://git.io/slp
- *    > The most customizable server status ping plugin for Minecraft!
  *  Copyright (c) 2014, Minecrell <https://github.com/Minecrell>
  *
  *     This program is free software: you can redistribute it and/or modify
