@@ -24,7 +24,7 @@
 plugins { id 'com.github.johnrengelman.shadow' version '1.2.1' }
 
 repositories {
-    maven { url 'http://repo.visualillusionsent.net/repository/public' }
+    maven { url 'http://nexus.visualillusionsent.net/content/groups/public' }
     maven { url 'http://repo.mcstats.org/content/repositories/releases' }
     maven { url 'https://libraries.minecraft.net' }
 }
