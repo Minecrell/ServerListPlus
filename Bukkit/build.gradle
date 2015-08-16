@@ -26,6 +26,7 @@ plugins { id 'com.github.johnrengelman.shadow' version '1.2.2' }
 repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots' }
     maven { url 'http://repo.dmulloy2.net/content/repositories/releases' }
+    maven { url 'http://repo.dmulloy2.net/content/repositories/snapshots' }
     maven { url 'http://repo.mcstats.org/content/repositories/releases' }
 }
 
