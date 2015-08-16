@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins { id 'com.github.johnrengelman.shadow' version '1.2.1' }
+plugins { id 'com.github.johnrengelman.shadow' version '1.2.2' }
 
 repositories {
     maven { url 'http://nexus.visualillusionsent.net/content/repositories/releases' }
