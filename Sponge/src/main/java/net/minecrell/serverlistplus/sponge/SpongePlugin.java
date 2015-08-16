@@ -138,10 +138,10 @@ public class SpongePlugin implements ServerListPlusPlugin {
     public final class ServerListPlusCommand implements CommandCallable {
 
         @Override
-        public Optional<CommandResult> process(CommandSource source, String arguments) throws CommandException {
+        public CommandResult process(CommandSource source, String arguments) throws CommandException {
             String[] args = arguments.isEmpty() ? new String[0] : ARGUMENT_PATTERN.split(arguments);
             core.executeCommand(new SpongeCommandSender(source), "serverlistplus", args);
-            return Optional.of(CommandResult.success());
+            return CommandResult.success();
         }
 
         @Override
@@ -338,12 +338,12 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public void runAsync(Runnable task) {
-        game.getScheduler().getTaskBuilder().async().execute(task).submit(this);
+        game.getScheduler().createTaskBuilder().async().execute(task).submit(this);
     }
 
     @Override
     public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
-        return new ScheduledSpongeTask(game.getScheduler().getTaskBuilder()
+        return new ScheduledSpongeTask(game.getScheduler().createTaskBuilder()
                 .async().interval(repeat, unit).execute(task).submit(this));
     }
 
