@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.bungee;
 
+import de.albionco.gssentials.utils.Messenger;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -287,7 +288,9 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         List<String> result = new ArrayList<>(players.size());
 
         for (ProxiedPlayer player : players) {
-            result.add(player.getName());
+            if (!Messenger.isHidden(player)) {
+                result.add(player.getName());
+            }
         }
 
         return Randoms.shuffle(result).iterator();
