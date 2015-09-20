@@ -24,7 +24,6 @@
 package net.minecrell.serverlistplus.core.status;
 
 import lombok.Value;
-
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.util.IntegerRange;
 

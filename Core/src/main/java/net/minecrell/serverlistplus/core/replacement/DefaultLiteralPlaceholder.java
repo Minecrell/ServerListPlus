@@ -24,7 +24,6 @@
 package net.minecrell.serverlistplus.core.replacement;
 
 import lombok.Getter;
-
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;

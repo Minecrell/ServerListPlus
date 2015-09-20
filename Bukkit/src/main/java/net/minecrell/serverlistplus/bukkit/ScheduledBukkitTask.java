@@ -25,7 +25,6 @@ package net.minecrell.serverlistplus.bukkit;
 
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.util.Wrapper;
-
 import org.bukkit.scheduler.BukkitTask;
 
 public class ScheduledBukkitTask extends Wrapper<BukkitTask> implements ScheduledTask {

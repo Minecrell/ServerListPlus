@@ -23,14 +23,14 @@
 
 package net.minecrell.serverlistplus.core.config;
 
+import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
+
 import net.minecrell.serverlistplus.core.config.help.Description;
 import net.minecrell.serverlistplus.core.favicon.ResizeStrategy;
 import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 import net.minecrell.serverlistplus.core.util.TimeUnitValue;
 
 import java.util.concurrent.TimeUnit;
-
-import static net.minecrell.serverlistplus.core.favicon.ResizeStrategy.SCALE;
 
 @Description({
         "Stats: Enable/disable sending plugin statistics.",

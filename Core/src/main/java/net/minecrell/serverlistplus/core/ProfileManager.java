@@ -23,8 +23,14 @@
 
 package net.minecrell.serverlistplus.core;
 
-import lombok.Getter;
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
+import static net.minecrell.serverlistplus.core.util.Helper.JSON;
 
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import lombok.Getter;
 import net.minecrell.serverlistplus.core.config.io.IOHelper;
 
 import java.io.BufferedReader;
@@ -32,14 +38,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
-import static net.minecrell.serverlistplus.core.util.Helper.JSON;
 
 public class ProfileManager extends AbstractManager {
     private static final String DEFAULT_PROFILE = "ServerListPlus";

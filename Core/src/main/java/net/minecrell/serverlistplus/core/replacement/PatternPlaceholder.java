@@ -23,15 +23,13 @@
 
 package net.minecrell.serverlistplus.core.replacement;
 
+import com.google.common.base.Preconditions;
 import lombok.Getter;
-
 import net.minecrell.serverlistplus.core.replacement.util.Patterns;
 
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.common.base.Preconditions;
 
 public abstract class PatternPlaceholder extends AbstractDynamicReplacer implements DynamicPlaceholder {
     protected final @Getter Pattern pattern;

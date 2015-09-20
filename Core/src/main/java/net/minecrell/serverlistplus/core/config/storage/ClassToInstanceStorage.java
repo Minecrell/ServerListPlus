@@ -23,13 +23,13 @@
 
 package net.minecrell.serverlistplus.core.config.storage;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * An {@link InstanceStorage} backed by a {@link ClassToInstanceStorage}.

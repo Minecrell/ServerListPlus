@@ -23,6 +23,15 @@
 
 package net.minecrell.serverlistplus.bukkit.handlers;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.comphenix.protocol.wrappers.WrappedServerPing;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import net.minecrell.serverlistplus.bukkit.BukkitPlugin;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
@@ -32,17 +41,6 @@ import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
-import com.comphenix.protocol.wrappers.WrappedServerPing;
 
 public class ProtocolLibHandler extends StatusHandler {
     private StatusPacketListener listener;

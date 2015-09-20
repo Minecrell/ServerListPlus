@@ -23,9 +23,8 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import net.minecrell.serverlistplus.core.util.Wrapper;
-
 import net.md_5.bungee.api.scheduler.ScheduledTask;
+import net.minecrell.serverlistplus.core.util.Wrapper;
 
 public class ScheduledBungeeTask extends Wrapper<ScheduledTask>
         implements net.minecrell.serverlistplus.core.plugin.ScheduledTask {

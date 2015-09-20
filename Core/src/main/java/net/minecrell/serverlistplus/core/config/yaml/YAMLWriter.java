@@ -23,20 +23,17 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import lombok.Getter;
-
-import net.minecrell.serverlistplus.core.config.help.Descriptions;
-import net.minecrell.serverlistplus.core.util.Helper;
-
-import java.io.IOException;
-import java.io.Writer;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
-
+import lombok.Getter;
+import net.minecrell.serverlistplus.core.config.help.Descriptions;
+import net.minecrell.serverlistplus.core.util.Helper;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.nodes.Tag;
+
+import java.io.IOException;
+import java.io.Writer;
 
 public class YAMLWriter {
     public static final String COMMENT_PREFIX = "# ";

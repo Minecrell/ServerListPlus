@@ -23,16 +23,14 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.config.UnknownConf;
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
 import com.google.common.base.Throwables;
-
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.config.UnknownConf;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Node;
-
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
 public class UnknownConfigurationConstructor extends CustomClassLoaderConstructor {
     private final ServerListPlusCore core;

@@ -23,10 +23,12 @@
 
 package net.minecrell.serverlistplus.core.status;
 
+import static net.minecrell.serverlistplus.core.util.Randoms.nextEntry;
+import static net.minecrell.serverlistplus.core.util.Randoms.nextNumber;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
@@ -34,9 +36,6 @@ import net.minecrell.serverlistplus.core.util.IntegerRange;
 
 import java.util.Collection;
 import java.util.List;
-
-import static net.minecrell.serverlistplus.core.util.Randoms.nextEntry;
-import static net.minecrell.serverlistplus.core.util.Randoms.nextNumber;
 
 @EqualsAndHashCode @ToString
 public class PersonalizedStatusPatch {

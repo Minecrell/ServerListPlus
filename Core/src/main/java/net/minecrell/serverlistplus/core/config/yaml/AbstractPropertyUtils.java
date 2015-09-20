@@ -24,6 +24,10 @@
 package net.minecrell.serverlistplus.core.config.yaml;
 
 import net.minecrell.serverlistplus.core.util.Helper;
+import org.yaml.snakeyaml.introspector.BeanAccess;
+import org.yaml.snakeyaml.introspector.FieldProperty;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.introspector.PropertyUtils;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
@@ -33,11 +37,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.yaml.snakeyaml.introspector.BeanAccess;
-import org.yaml.snakeyaml.introspector.FieldProperty;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.introspector.PropertyUtils;
 
 public abstract class AbstractPropertyUtils extends PropertyUtils {
     protected AbstractPropertyUtils() {

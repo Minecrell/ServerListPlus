@@ -23,14 +23,19 @@
 
 package net.minecrell.serverlistplus.core;
 
-import lombok.Getter;
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
+import lombok.Getter;
 import net.minecrell.serverlistplus.core.config.UnknownConf;
 import net.minecrell.serverlistplus.core.config.io.IOHelper;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorages;
 import net.minecrell.serverlistplus.core.config.yaml.ServerListPlusYAML;
 import net.minecrell.serverlistplus.core.config.yaml.YAMLWriter;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -40,10 +45,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
-
-import org.yaml.snakeyaml.error.YAMLException;
-
-import static net.minecrell.serverlistplus.core.logging.Logger.*;
 
 public class ConfigurationManager extends AbstractManager {
     public static final String CONFIG_FILENAME = "ServerListPlus.yml";

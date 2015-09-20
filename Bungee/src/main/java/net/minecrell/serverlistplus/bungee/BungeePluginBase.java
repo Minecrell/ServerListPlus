@@ -23,10 +23,10 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import java.nio.file.Path;
-
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+
+import java.nio.file.Path;
 
 public abstract class BungeePluginBase extends Plugin {
 

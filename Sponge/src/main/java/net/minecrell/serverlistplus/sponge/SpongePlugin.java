@@ -23,6 +23,13 @@
 
 package net.minecrell.serverlistplus.sponge;
 
+import com.google.common.base.Optional;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheBuilderSpec;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.eventbus.Subscribe;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -39,6 +46,27 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import org.slf4j.Logger;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.GameProfile;
+import org.spongepowered.api.Platform;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.event.server.ClientPingServerEvent;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.config.ConfigDir;
+import org.spongepowered.api.status.Favicon;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.util.annotation.NonnullByDefault;
+import org.spongepowered.api.util.command.CommandCallable;
+import org.spongepowered.api.util.command.CommandException;
+import org.spongepowered.api.util.command.CommandResult;
+import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.world.World;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -52,36 +80,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-
-import com.google.common.base.Optional;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-
-import org.slf4j.Logger;
-import org.spongepowered.api.Game;
-import org.spongepowered.api.GameProfile;
-import org.spongepowered.api.Platform;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
-import org.spongepowered.api.event.entity.player.PlayerQuitEvent;
-import org.spongepowered.api.event.server.StatusPingEvent;
-import org.spongepowered.api.event.state.PreInitializationEvent;
-import org.spongepowered.api.event.state.ServerStoppingEvent;
-import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.service.config.ConfigDir;
-import org.spongepowered.api.status.Favicon;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.util.annotation.NonnullByDefault;
-import org.spongepowered.api.util.command.CommandCallable;
-import org.spongepowered.api.util.command.CommandException;
-import org.spongepowered.api.util.command.CommandResult;
-import org.spongepowered.api.util.command.CommandSource;
-import org.spongepowered.api.world.World;
 
 @Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4.1-SNAPSHOT")
 public class SpongePlugin implements ServerListPlusPlugin {
@@ -108,8 +106,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
             };
     private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
 
-    @Subscribe
-    public void enable(PreInitializationEvent event) {
+    @Listener
+    public void enable(GamePreInitializationEvent event) {
         try {
             this.core = new ServerListPlusCore(this);
             logger.info("Successfully loaded!");
@@ -126,7 +124,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Subscribe
-    public void disable(ServerStoppingEvent event) {
+    public void disable(GameStoppingServerEvent event) {
         try {
             core.stop();
         } catch (ServerListPlusException ignored) {}
@@ -177,15 +175,15 @@ public class SpongePlugin implements ServerListPlusPlugin {
         private LoginListener() {}
 
         @Subscribe
-        public void onPlayerJoin(PlayerJoinEvent event) throws UnknownHostException {
-            core.updateClient(event.getEntity().getConnection().getAddress().getAddress(),
-                    event.getEntity().getUniqueId(), event.getEntity().getName());
+        public void onPlayerJoin(ClientConnectionEvent.Login event) throws UnknownHostException {
+            core.updateClient(event.getConnection().getAddress().getAddress(),
+                    event.getProfile().getUniqueId(), event.getProfile().getName());
         }
 
         @Subscribe
-        public void onPlayerQuit(PlayerQuitEvent event) throws UnknownHostException {
-            core.updateClient(event.getEntity().getConnection().getAddress().getAddress(),
-                    event.getEntity().getUniqueId(), event.getEntity().getName());
+        public void onPlayerQuit(ClientConnectionEvent.Disconnect event) throws UnknownHostException {
+            core.updateClient(event.getTargetEntity().getConnection().getAddress().getAddress(),
+                    event.getTargetEntity().getUniqueId(), event.getTargetEntity().getName());
         }
     }
 
@@ -193,11 +191,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
         private PingListener() {}
 
         @Subscribe
-        public void onStatusPing(StatusPingEvent event) {
+        public void onStatusPing(ClientPingServerEvent event) {
             StatusRequest request = core.createRequest(event.getClient().getAddress().getAddress());
 
-            StatusPingEvent.Response ping = event.getResponse();
-            final StatusPingEvent.Response.Players players = ping.getPlayers().orNull();
+            ClientPingServerEvent.Response ping = event.getResponse();
+            final ClientPingServerEvent.Response.Players players = ping.getPlayers().orNull();
 
             StatusResponse response = request.createResponse(core.getStatus(), new ResponseFetcher() {
                 @Override
@@ -386,11 +384,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
             if (loginListener == null) {
-                game.getEventManager().register(this, this.loginListener = new LoginListener());
+                game.getEventManager().registerListeners(this, this.loginListener = new LoginListener());
                 logger.debug("Registered player tracking listener.");
             }
         } else if (loginListener != null) {
-            game.getEventManager().unregister(loginListener);
+            game.getEventManager().unregisterListeners(loginListener);
             this.loginListener = null;
             logger.debug("Unregistered player tracking listener.");
         }
@@ -401,11 +399,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
         // Status listener
         if (status.hasChanges()) {
             if (pingListener == null) {
-                game.getEventManager().register(this, this.pingListener = new PingListener());
+                game.getEventManager().registerListeners(this, this.pingListener = new PingListener());
                 logger.debug("Registered ping listener.");
             }
         } else if (pingListener != null) {
-            game.getEventManager().unregister(pingListener);
+            game.getEventManager().unregisterListeners(pingListener);
             this.pingListener = null;
             logger.debug("Unregistered ping listener.");
         }

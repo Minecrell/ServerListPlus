@@ -24,7 +24,6 @@
 package net.minecrell.serverlistplus.core.replacement;
 
 import lombok.Getter;
-
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
 
 import java.util.Iterator;

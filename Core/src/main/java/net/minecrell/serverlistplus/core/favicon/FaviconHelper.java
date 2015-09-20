@@ -23,6 +23,16 @@
 
 package net.minecrell.serverlistplus.core.favicon;
 
+import static com.google.common.net.HttpHeaders.ACCEPT;
+import static com.google.common.net.HttpHeaders.USER_AGENT;
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+
+import com.google.common.base.Strings;
+import com.google.common.io.BaseEncoding;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.util.Helper;
@@ -41,18 +51,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
-
-import com.google.common.base.Strings;
-import com.google.common.io.BaseEncoding;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import static com.google.common.net.HttpHeaders.ACCEPT;
-import static com.google.common.net.HttpHeaders.USER_AGENT;
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
 public final class FaviconHelper {
     private FaviconHelper() {}

@@ -23,11 +23,11 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
-import java.nio.file.Path;
-
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.nio.file.Path;
 
 public abstract class BukkitPluginBase extends JavaPlugin {
     public String getVersion() {

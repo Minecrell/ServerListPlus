@@ -25,7 +25,6 @@ package net.minecrell.serverlistplus.sponge;
 
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.util.Wrapper;
-
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.CommandSource;
 

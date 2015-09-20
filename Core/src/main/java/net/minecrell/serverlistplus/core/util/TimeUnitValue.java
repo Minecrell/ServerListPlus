@@ -23,17 +23,15 @@
 
 package net.minecrell.serverlistplus.core.util;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-
-import net.minecrell.serverlistplus.core.config.yaml.ConfigurationSerializable;
-
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import net.minecrell.serverlistplus.core.config.yaml.ConfigurationSerializable;
+
+import java.util.concurrent.TimeUnit;
 
 @Value @RequiredArgsConstructor
 public class TimeUnitValue implements ConfigurationSerializable {

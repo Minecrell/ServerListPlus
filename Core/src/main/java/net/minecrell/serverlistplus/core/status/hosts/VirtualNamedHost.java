@@ -25,7 +25,6 @@ package net.minecrell.serverlistplus.core.status.hosts;
 
 import lombok.NonNull;
 import lombok.Value;
-
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 
 @Value

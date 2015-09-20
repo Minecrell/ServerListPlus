@@ -23,10 +23,8 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import lombok.Getter;
-
 import com.google.common.base.Preconditions;
-
+import lombok.Getter;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;

@@ -23,6 +23,9 @@
 
 package net.minecrell.serverlistplus.core.favicon;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+
+import com.google.common.collect.ImmutableSet;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.util.Helper;
@@ -41,10 +44,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
-
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
 public final class FaviconSearch {
     private FaviconSearch() {}

@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.canary;
 
+import com.google.common.io.BaseEncoding;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
@@ -39,8 +40,6 @@ import java.nio.file.StandardOpenOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Set;
-
-import com.google.common.io.BaseEncoding;
 
 public final class SnakeYAML {
 

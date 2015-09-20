@@ -23,20 +23,18 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import lombok.RequiredArgsConstructor;
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
+import lombok.RequiredArgsConstructor;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.UnknownConf;
 import net.minecrell.serverlistplus.core.util.Helper;
-
-import java.beans.IntrospectionException;
-import java.util.Map;
-
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.Property;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import java.beans.IntrospectionException;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class OutdatedConfigurationPropertyUtils extends AbstractPropertyUtils {

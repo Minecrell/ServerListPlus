@@ -23,10 +23,9 @@
 
 package net.minecrell.serverlistplus.canary;
 
+import net.canarymod.chat.MessageReceiver;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.util.Wrapper;
-
-import net.canarymod.chat.MessageReceiver;
 
 public class CanaryCommandSender extends Wrapper<MessageReceiver> implements ServerCommandSender {
     public CanaryCommandSender(MessageReceiver handle) {

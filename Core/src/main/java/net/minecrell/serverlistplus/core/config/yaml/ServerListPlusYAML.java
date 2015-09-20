@@ -23,16 +23,15 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.io.IOHelper;
-
-import java.io.IOException;
-
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import java.io.IOException;
 
 public final class ServerListPlusYAML {
     private ServerListPlusYAML() {}

@@ -23,9 +23,8 @@
 
 package net.minecrell.serverlistplus.bukkit.handlers;
 
-import net.minecrell.serverlistplus.bukkit.BukkitPlugin;
-
 import com.google.common.base.Preconditions;
+import net.minecrell.serverlistplus.bukkit.BukkitPlugin;
 
 public abstract class StatusHandler {
     protected final BukkitPlugin bukkit;

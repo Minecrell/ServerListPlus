@@ -23,14 +23,14 @@
 
 package net.minecrell.serverlistplus.canary;
 
+import com.google.common.base.Preconditions;
+import com.google.common.io.BaseEncoding;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-
-import com.google.common.base.Preconditions;
-import com.google.common.io.BaseEncoding;
 
 public final class CanaryFavicon {
     private CanaryFavicon() {}

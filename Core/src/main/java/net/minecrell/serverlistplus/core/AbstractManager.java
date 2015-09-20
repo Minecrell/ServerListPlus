@@ -23,11 +23,9 @@
 
 package net.minecrell.serverlistplus.core;
 
-import lombok.Getter;
-
-import net.minecrell.serverlistplus.core.logging.Logger;
-
 import com.google.common.base.Preconditions;
+import lombok.Getter;
+import net.minecrell.serverlistplus.core.logging.Logger;
 
 public abstract class AbstractManager {
     protected final @Getter ServerListPlusCore core;

@@ -24,7 +24,6 @@
 package net.minecrell.serverlistplus.core.util;
 
 import lombok.EqualsAndHashCode;
-
 import net.minecrell.serverlistplus.core.config.yaml.ConfigurationSerializable;
 
 import java.util.regex.Pattern;

@@ -23,11 +23,10 @@
 
 package net.minecrell.serverlistplus.core.replacement.util;
 
+import com.google.common.collect.Iterators;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.util.Iterator;
-
-import com.google.common.collect.Iterators;
 
 public final class Literals {
     private Literals() {}

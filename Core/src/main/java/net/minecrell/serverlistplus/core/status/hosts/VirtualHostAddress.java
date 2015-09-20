@@ -23,14 +23,12 @@
 
 package net.minecrell.serverlistplus.core.status.hosts;
 
+import com.google.common.base.Strings;
 import lombok.Value;
-
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 
 import java.net.InetSocketAddress;
 import java.util.regex.Pattern;
-
-import com.google.common.base.Strings;
 
 @Value
 public class VirtualHostAddress implements VirtualHost {

@@ -23,6 +23,9 @@
 
 package net.minecrell.serverlistplus.core.plugin;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilderSpec;
+import com.google.common.cache.LoadingCache;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
@@ -32,10 +35,6 @@ import net.minecrell.serverlistplus.core.status.StatusManager;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.LoadingCache;
 
 /**
  * Represents a plugin container running the ServerListPlus core.

@@ -23,13 +23,13 @@
 
 package net.minecrell.serverlistplus.core.favicon;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import static java.awt.RenderingHints.KEY_INTERPOLATION;
+import static java.awt.RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
 
 import com.google.common.base.Preconditions;
 
-import static java.awt.RenderingHints.KEY_INTERPOLATION;
-import static java.awt.RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 public enum ResizeStrategy {
     NONE {

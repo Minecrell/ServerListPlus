@@ -23,6 +23,14 @@
 
 package net.minecrell.serverlistplus.core.player;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.util.Helper.JSON;
+
+import com.google.common.collect.MapMaker;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -40,16 +48,6 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.google.common.collect.MapMaker;
-
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
-
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
-import static net.minecrell.serverlistplus.core.util.Helper.JSON;
 
 public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     public static class Conf extends PluginConf.PlayerTrackingConf.StorageConf {

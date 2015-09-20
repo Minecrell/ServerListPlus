@@ -23,17 +23,15 @@
 
 package net.minecrell.serverlistplus.core.status;
 
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.Value;
-
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-
-import com.google.common.base.Preconditions;
 
 @Getter
 public class StatusRequest {

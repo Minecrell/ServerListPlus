@@ -23,6 +23,7 @@
 
 package net.minecrell.serverlistplus.core.favicon;
 
+import com.google.common.io.BaseEncoding;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 
 import java.awt.image.BufferedImage;
@@ -31,8 +32,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
 import java.nio.file.Files;
-
-import com.google.common.io.BaseEncoding;
 
 public enum DefaultFaviconLoader implements FaviconLoader {
     FILE {

@@ -23,8 +23,24 @@
 
 package net.minecrell.serverlistplus.core;
 
-import lombok.Getter;
+import static com.google.common.base.StandardSystemProperty.JAVA_CLASS_VERSION;
+import static com.google.common.base.StandardSystemProperty.JAVA_VERSION;
+import static com.google.common.base.StandardSystemProperty.JAVA_VM_NAME;
+import static com.google.common.base.StandardSystemProperty.OS_ARCH;
+import static com.google.common.base.StandardSystemProperty.OS_NAME;
+import static com.google.common.base.StandardSystemProperty.OS_VERSION;
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilderSpec;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import lombok.Getter;
 import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
@@ -47,16 +63,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-
-import static com.google.common.base.StandardSystemProperty.*;
-import static net.minecrell.serverlistplus.core.logging.Logger.*;
 
 /**
  * Represents the core part of the ServerListPlus plugin.

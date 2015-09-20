@@ -24,7 +24,6 @@
 package net.minecrell.serverlistplus.bukkit;
 
 import net.minecrell.serverlistplus.core.plugin.ServerType;
-
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 

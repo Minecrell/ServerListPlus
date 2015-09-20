@@ -23,9 +23,9 @@
 
 package net.minecrell.serverlistplus.core.util;
 
-import java.util.Iterator;
-
 import com.google.common.collect.ForwardingIterator;
+
+import java.util.Iterator;
 
 public class CountingIterator<T> extends ForwardingIterator<T> {
     private final Iterator<T> handle;

@@ -23,12 +23,11 @@
 
 package net.minecrell.serverlistplus.core.logging;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterators;
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
 
 import java.util.logging.Level;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterators;
 
 public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
     public static final String ARG_PATTERN = "{}";

@@ -23,10 +23,10 @@
 
 package net.minecrell.serverlistplus.core;
 
+import com.google.common.base.Preconditions;
+
 import java.net.URL;
 import java.util.Properties;
-
-import com.google.common.base.Preconditions;
 
 public class CoreDescription {
     private final String name, version;

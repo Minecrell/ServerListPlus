@@ -23,8 +23,9 @@
 
 package net.minecrell.serverlistplus.core.status;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
-
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
@@ -35,9 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 
 public class StatusResponse {
     private final @Getter StatusRequest request;

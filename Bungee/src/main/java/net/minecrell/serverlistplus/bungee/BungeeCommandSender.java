@@ -23,10 +23,9 @@
 
 package net.minecrell.serverlistplus.bungee;
 
+import net.md_5.bungee.api.CommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.util.Wrapper;
-
-import net.md_5.bungee.api.CommandSender;
 
 public class BungeeCommandSender extends Wrapper<CommandSender> implements ServerCommandSender {
     public BungeeCommandSender(CommandSender sender) {

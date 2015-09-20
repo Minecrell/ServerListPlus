@@ -23,17 +23,16 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.UnknownConf;
 import net.minecrell.serverlistplus.core.util.Helper;
-
-import java.beans.IntrospectionException;
-
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.MissingProperty;
 import org.yaml.snakeyaml.introspector.Property;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import java.beans.IntrospectionException;
 
 public class ConfigurationPropertyUtils extends AbstractPropertyUtils {
     private final ServerListPlusCore core;

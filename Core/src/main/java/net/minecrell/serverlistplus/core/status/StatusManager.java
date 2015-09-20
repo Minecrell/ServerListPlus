@@ -23,8 +23,16 @@
 
 package net.minecrell.serverlistplus.core.status;
 
-import lombok.Getter;
+import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.collect.Multimap;
+import lombok.Getter;
 import net.minecrell.serverlistplus.core.AbstractManager;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PersonalizedStatusConf;
@@ -44,16 +52,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSetMultimap;
-import com.google.common.collect.Multimap;
-
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
 
 public class StatusManager extends AbstractManager {
     public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format

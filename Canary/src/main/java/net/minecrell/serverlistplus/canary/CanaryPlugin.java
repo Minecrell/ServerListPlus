@@ -23,8 +23,28 @@
 
 package net.minecrell.serverlistplus.canary;
 
+import com.google.common.base.Optional;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheBuilderSpec;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.mojang.authlib.GameProfile;
 import lombok.SneakyThrows;
-
+import net.canarymod.Canary;
+import net.canarymod.api.entity.living.humanoid.Player;
+import net.canarymod.api.world.World;
+import net.canarymod.chat.MessageReceiver;
+import net.canarymod.chat.TextFormat;
+import net.canarymod.commandsys.Command;
+import net.canarymod.commandsys.CommandDependencyException;
+import net.canarymod.commandsys.CommandListener;
+import net.canarymod.hook.HookHandler;
+import net.canarymod.hook.player.DisconnectionHook;
+import net.canarymod.hook.player.PreConnectionHook;
+import net.canarymod.hook.system.ServerListPingHook;
+import net.canarymod.plugin.Plugin;
+import net.canarymod.plugin.PluginListener;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -41,6 +61,7 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.visualillusionsent.utils.TaskManager;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
@@ -55,30 +76,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import com.google.common.base.Optional;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-
-import com.mojang.authlib.GameProfile;
-import net.canarymod.Canary;
-import net.canarymod.api.entity.living.humanoid.Player;
-import net.canarymod.api.world.World;
-import net.canarymod.chat.MessageReceiver;
-import net.canarymod.chat.TextFormat;
-import net.canarymod.commandsys.Command;
-import net.canarymod.commandsys.CommandDependencyException;
-import net.canarymod.commandsys.CommandListener;
-import net.canarymod.hook.HookHandler;
-import net.canarymod.hook.player.DisconnectionHook;
-import net.canarymod.hook.player.PreConnectionHook;
-import net.canarymod.hook.system.ServerListPingHook;
-import net.canarymod.plugin.Plugin;
-import net.canarymod.plugin.PluginListener;
-import net.visualillusionsent.utils.TaskManager;
 
 public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     private ServerListPlusCore core;

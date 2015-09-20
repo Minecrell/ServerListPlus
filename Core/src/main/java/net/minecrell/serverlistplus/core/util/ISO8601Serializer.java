@@ -23,16 +23,16 @@
 
 package net.minecrell.serverlistplus.core.util;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 
 public class ISO8601Serializer implements JsonSerializer<Date> {
     private final DateFormat iso8601 = buildIso8601Format();
