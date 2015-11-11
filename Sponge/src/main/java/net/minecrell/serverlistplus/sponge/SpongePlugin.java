@@ -23,13 +23,11 @@
 
 package net.minecrell.serverlistplus.sponge;
 
-import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.eventbus.Subscribe;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -76,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -100,7 +99,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
                 public Optional<Favicon> load(FaviconSource source) throws Exception {
                     // Try loading the favicon
                     BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.absent(); // Favicon loading failed
+                    if (image == null) return Optional.empty(); // Favicon loading failed
                     else return Optional.of(game.getRegistry().loadFavicon(image)); // Success!
                 }
             };
@@ -123,7 +122,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
                 "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
     }
 
-    @Subscribe
+    @Listener
     public void disable(GameStoppingServerEvent event) {
         try {
             core.stop();
@@ -154,13 +153,13 @@ public class SpongePlugin implements ServerListPlusPlugin {
         }
 
         @Override
-        public Optional<Text> getShortDescription(CommandSource source) {
-            return Optional.absent();
+        public Optional<? extends Text> getShortDescription(CommandSource source) {
+            return Optional.empty();
         }
 
         @Override
-        public Optional<Text> getHelp(CommandSource source) {
-            return Optional.absent();
+        public Optional<? extends Text> getHelp(CommandSource source) {
+            return Optional.empty();
         }
 
         @Override
@@ -174,13 +173,13 @@ public class SpongePlugin implements ServerListPlusPlugin {
     public final class LoginListener {
         private LoginListener() {}
 
-        @Subscribe
+        @Listener
         public void onPlayerJoin(ClientConnectionEvent.Login event) throws UnknownHostException {
             core.updateClient(event.getConnection().getAddress().getAddress(),
                     event.getProfile().getUniqueId(), event.getProfile().getName());
         }
 
-        @Subscribe
+        @Listener
         public void onPlayerQuit(ClientConnectionEvent.Disconnect event) throws UnknownHostException {
             core.updateClient(event.getTargetEntity().getConnection().getAddress().getAddress(),
                     event.getTargetEntity().getUniqueId(), event.getTargetEntity().getName());
@@ -190,12 +189,12 @@ public class SpongePlugin implements ServerListPlusPlugin {
     public final class PingListener {
         private PingListener() {}
 
-        @Subscribe
+        @Listener
         public void onStatusPing(ClientPingServerEvent event) {
             StatusRequest request = core.createRequest(event.getClient().getAddress().getAddress());
 
             ClientPingServerEvent.Response ping = event.getResponse();
-            final ClientPingServerEvent.Response.Players players = ping.getPlayers().orNull();
+            final ClientPingServerEvent.Response.Players players = ping.getPlayers().orElse(null);
 
             StatusResponse response = request.createResponse(core.getStatus(), new ResponseFetcher() {
                 @Override
@@ -281,7 +280,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public Integer getOnlinePlayers(String location) {
-        World world = game.getServer().getWorld(location).orNull();
+        World world = game.getServer().getWorld(location).orElse(null);
         if (world == null) return null;
 
         int count = 0;
@@ -306,7 +305,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public Iterator<String> getRandomPlayers(String location) {
-        World world = game.getServer().getWorld(location).orNull();
+        World world = game.getServer().getWorld(location).orElse(null);
         if (world == null) return null;
 
         Collection<Player> players = game.getServer().getOnlinePlayers();
