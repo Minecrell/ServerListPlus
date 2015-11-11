@@ -48,7 +48,6 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
-import net.minecrell.metrics.BungeeMetricsLite;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -79,7 +78,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     private ServerListPlusCore core;
     private Listener connectionListener, pingListener;
 
-    private BungeeMetricsLite metrics;
+    //private BungeeMetricsLite metrics;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -359,7 +358,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         }
 
         // Plugin statistics
-        if (confs.get(PluginConf.class).Stats) {
+        /*if (confs.get(PluginConf.class).Stats) {
             if (metrics == null)
                 try {
                     this.metrics = new BungeeMetricsLite(this);
@@ -374,6 +373,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             } catch (Throwable e) {
                 getLogger().log(DEBUG, "Failed to disable plugin statistics: " + Helper.causedException(e));
             }
+        */
     }
 
     @Override
