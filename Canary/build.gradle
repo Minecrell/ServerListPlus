@@ -39,7 +39,9 @@ ext {
 
 dependencies {
     compile project(':Core')
-    compile 'net.canarymod:CanaryLib:1.2.0'
+    compile('net.canarymod:CanaryLib:1.2.0') {
+        exclude module: 'metrics'
+    }
 }
 
 processResources {
