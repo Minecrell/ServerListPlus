@@ -176,6 +176,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
+            if (core == null) return; // Too early, we haven't finished initializing yet
+
             UUID uuid = null;
             try { uuid = event.getUniqueId(); } catch (NoSuchMethodError ignored) {}
             core.updateClient(event.getAddress(), uuid, event.getName());
@@ -187,6 +189,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(PlayerLoginEvent event) {
+            if (core == null) return; // Too early, we haven't finished initializing yet
+
             UUID uuid = null;
             try {
                 uuid = event.getPlayer().getUniqueId();
@@ -200,6 +204,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerDisconnect(PlayerQuitEvent event) {
+            if (core == null) return; // Too early, we haven't finished initializing yet
+
             UUID uuid = null;
             try { uuid = event.getPlayer().getUniqueId(); } catch (NoSuchMethodError ignored) {}
             core.updateClient(event.getPlayer().getAddress().getAddress(), uuid, event.getPlayer().getName());

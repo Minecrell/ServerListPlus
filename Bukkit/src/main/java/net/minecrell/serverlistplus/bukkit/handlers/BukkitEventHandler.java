@@ -44,6 +44,7 @@ public class BukkitEventHandler extends StatusHandler {
 
         @EventHandler
         public void onServerListPing(final ServerListPingEvent event) {
+            if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
             StatusResponse response = bukkit.getCore().createRequest(event.getAddress()).createResponse(
                     bukkit.getCore().getStatus(), new ResponseFetcher() {
                         @Override

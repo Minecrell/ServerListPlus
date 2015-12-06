@@ -57,6 +57,8 @@ public class ProtocolLibHandler extends StatusHandler {
 
         @Override // Handshake
         public void onPacketReceiving(PacketEvent event) {
+            if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
+
             PacketContainer packet = event.getPacket();
             if (packet.getProtocols().read(0) != PacketType.Protocol.STATUS) return;
 
@@ -66,13 +68,15 @@ public class ProtocolLibHandler extends StatusHandler {
             String host = packet.getStrings().read(0);
             if (host.endsWith(".")) // SRV records can end with a . depending on DNS / client.
                 host = host.substring(0, host.length() - 1);
-            
+
             int port = packet.getIntegers().read(1);
             request.setTarget(InetSocketAddress.createUnresolved(host, port));
         }
 
         @Override // Status ping
         public void onPacketSending(PacketEvent event) {
+            if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
+
             final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
             // Make sure players have not been hidden when getting the player count
             boolean playersVisible = ping.isPlayersVisible();

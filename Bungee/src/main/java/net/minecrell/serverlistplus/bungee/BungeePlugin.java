@@ -149,6 +149,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         }
 
         private void handleConnection(PendingConnection con) {
+            if (core == null) return; // Too early, we haven't finished initializing yet
             core.updateClient(con.getAddress().getAddress(), con.getUniqueId(), con.getName());
         }
     }
@@ -159,6 +160,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onProxyPing(ProxyPingEvent event) {
+            if (core == null) return; // Too early, we haven't finished initializing yet
             if (event.getResponse() == null) return; // Check if response is not empty
 
             PendingConnection con = event.getConnection();
