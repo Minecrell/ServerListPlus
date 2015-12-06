@@ -46,24 +46,24 @@ import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.GameProfile;
 import org.spongepowered.api.Platform;
+import org.spongepowered.api.command.CommandCallable;
+import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.event.server.ClientPingServerEvent;
+import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.service.config.ConfigDir;
-import org.spongepowered.api.status.Favicon;
+import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
-import org.spongepowered.api.util.command.CommandCallable;
-import org.spongepowered.api.util.command.CommandException;
-import org.spongepowered.api.util.command.CommandResult;
-import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.World;
 
 import java.awt.image.BufferedImage;
@@ -118,7 +118,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
             return;
         }
 
-        game.getCommandDispatcher().register(this, new ServerListPlusCommand(), "serverlistplus", "serverlist+",
+        game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "serverlist+",
                 "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
     }
 
@@ -270,7 +270,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
     @Override
     public String getServerImplementation() {
         Platform platform = game.getPlatform();
-        return platform.getName() + " v" + platform.getVersion() + " (API " + platform.getApiVersion() + ')';
+        return platform.getImplementation().getName() + " v" + platform.getImplementation().getVersion()
+                + " (" + platform.getApi().getName() + " v" + platform.getApi().getVersion() + ')';
     }
 
     @Override

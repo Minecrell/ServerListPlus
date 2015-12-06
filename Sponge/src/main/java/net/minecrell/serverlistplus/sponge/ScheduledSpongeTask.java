@@ -25,7 +25,7 @@ package net.minecrell.serverlistplus.sponge;
 
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.util.Wrapper;
-import org.spongepowered.api.service.scheduler.Task;
+import org.spongepowered.api.scheduler.Task;
 
 public class ScheduledSpongeTask extends Wrapper<Task> implements ScheduledTask {
 
