@@ -62,7 +62,7 @@ import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.api.world.World;
 
@@ -164,7 +164,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         @Override
         public Text getUsage(CommandSource source) {
-            return Texts.of();
+            return Text.of();
         }
 
     }
@@ -215,7 +215,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
             // Description
             String message = response.getDescription();
-            if (message != null) ping.setDescription(Texts.of(message));
+            if (message != null) ping.setDescription(TextSerializers.LEGACY_FORMATTING_CODE.deserialize(message));
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
@@ -345,11 +345,9 @@ public class SpongePlugin implements ServerListPlusPlugin {
                 .async().interval(repeat, unit).execute(task).submit(this));
     }
 
-    private static final Pattern COLOR_CODE = Pattern.compile("(?i)&([0-9A-FK-OR])");
-
     @Override
     public String colorize(String s) {
-        return COLOR_CODE.matcher(s).replaceAll("§$1");
+        return TextSerializers.FORMATTING_CODE.replaceCodes(s, TextSerializers.LEGACY_FORMATTING_CODE);
     }
 
     @Override

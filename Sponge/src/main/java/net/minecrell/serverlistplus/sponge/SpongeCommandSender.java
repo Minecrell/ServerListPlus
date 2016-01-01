@@ -26,7 +26,7 @@ package net.minecrell.serverlistplus.sponge;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.util.Wrapper;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class SpongeCommandSender extends Wrapper<CommandSource> implements ServerCommandSender {
     public SpongeCommandSender(CommandSource handle) {
@@ -40,7 +40,7 @@ public class SpongeCommandSender extends Wrapper<CommandSource> implements Serve
 
     @Override
     public void sendMessage(String message) {
-        handle.sendMessage(Texts.legacy().fromUnchecked(message));
+        handle.sendMessage(TextSerializers.LEGACY_FORMATTING_CODE.deserialize(message));
     }
 
     @Override
