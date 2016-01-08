@@ -140,7 +140,7 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
 
     public synchronized void save() throws ServerListPlusException {
         if (!isEnabled() || !changed.compareAndSet(true, false)) return;
-        getLogger().log(INFO, "Saving player identities...");
+        getLogger().log(DEBUG, "Saving player identities...");
         Path storagePath = getStoragePath();
         getLogger().log(DEBUG, "Storage location: " + storagePath);
 
