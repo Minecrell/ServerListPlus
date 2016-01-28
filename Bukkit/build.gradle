@@ -27,7 +27,7 @@ repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots' }
     maven { url 'http://repo.dmulloy2.net/content/repositories/releases' }
     maven { url 'http://repo.dmulloy2.net/content/repositories/snapshots' }
-    //maven { url 'http://repo.mcstats.org/content/repositories/releases' }
+    maven { url 'http://repo.mcstats.org/content/repositories/releases' }
 }
 
 ext {
@@ -42,9 +42,9 @@ dependencies {
     compile project(':Core')
     compile 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT',
             'com.comphenix.protocol:ProtocolLib:3.6.4'
-    /*compile('org.mcstats.bukkit:metrics-lite:R7') {
+    compile('org.mcstats.bukkit:metrics-lite:R7') {
         exclude module: 'bukkit'
-    }*/
+    }
 }
 
 processResources {
@@ -63,10 +63,10 @@ task v1_7(type: ShadowJar, dependsOn: build) {
 
     dependencies {
         include project(':Core')
-        //include dependency('org.mcstats.bukkit:metrics-lite:R7')
+        include dependency('org.mcstats.bukkit:metrics-lite:R7')
     }
 
-    //relocate 'org.mcstats', "${pluginPackage}.metrics"
+    relocate 'org.mcstats', "${pluginPackage}.metrics"
 
     relocate "${javaPackage}.core", "${pluginPackage}.core"
     relocate 'com.google.common', 'net.minecraft.util.com.google.common'
@@ -82,10 +82,10 @@ task v1_8(type: ShadowJar, dependsOn: build) {
 
     dependencies {
         include project(':Core')
-        //include dependency('org.mcstats.bukkit:metrics-lite:R7')
+        include dependency('org.mcstats.bukkit:metrics-lite:R7')
     }
 
-    //relocate 'org.mcstats', "${pluginPackage}.metrics"
+    relocate 'org.mcstats', "${pluginPackage}.metrics"
 
     // Spigot 1.8
     relocate "${javaPackage}.core", "${pluginPackage}.core"
@@ -96,8 +96,8 @@ task v1_8(type: ShadowJar, dependsOn: build) {
 shadowJar {
     dependencies {
         include project(':Core')
-        //include dependency('org.mcstats.bukkit:metrics-lite:R7')
+        include dependency('org.mcstats.bukkit:metrics-lite:R7')
     }
 
-    //relocate 'org.mcstats', "${pluginPackage}.metrics"
+    relocate 'org.mcstats', "${pluginPackage}.metrics"
 }

@@ -66,6 +66,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.CachedServerIcon;
+import org.mcstats.MetricsLite;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
@@ -86,7 +87,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private StatusHandler bukkit, protocol;
     private Listener loginListener, disconnectListener;
 
-    //private MetricsLite metrics;
+    private MetricsLite metrics;
 
     private Method legacy_getOnlinePlayers;
 
@@ -411,7 +412,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         }
 
         // Plugin statistics
-        /*
         if (confs.get(PluginConf.class).Stats) {
             if (metrics == null)
                 try {
@@ -428,7 +428,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             } catch (Throwable e) {
                 getLogger().log(DEBUG, "Failed to disable plugin statistics: " + Helper.causedException(e));
             }
-        */
     }
 
     @Override
