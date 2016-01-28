@@ -72,7 +72,7 @@ public class StatusManager extends AbstractManager {
     }
 
     public boolean hasChanges() {
-        return isEnabled() && patch != null && patch.hasChanges();
+        return isEnabled() && ((patch != null && patch.hasChanges()) || (hosts != null && !hosts.isEmpty()));
     }
 
     public boolean hasFavicon() {
@@ -185,8 +185,12 @@ public class StatusManager extends AbstractManager {
         public Map<VirtualHost, PersonalizedStatusPatch> prepareHosts(Map<String, PersonalizedStatusConf> conf) {
             if (conf == null) return ImmutableMap.of();
             ImmutableMap.Builder<VirtualHost, PersonalizedStatusPatch> builder = ImmutableMap.builder();
-            for (Map.Entry<String, PersonalizedStatusConf> entry : conf.entrySet())
-                builder.put(VirtualHosts.parse(entry.getKey()), preparePersonalizedPatch(entry.getValue()));
+            for (Map.Entry<String, PersonalizedStatusConf> entry : conf.entrySet()) {
+                PersonalizedStatusPatch patch = preparePersonalizedPatch(entry.getValue());
+                if (patch.hasChanges()) {
+                    builder.put(VirtualHosts.parse(entry.getKey()), patch);
+                }
+            }
             return builder.build();
         }
 
