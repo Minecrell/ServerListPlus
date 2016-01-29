@@ -55,7 +55,7 @@ ext {
     ];
 
     universalProjects = [
-            ':Bukkit', ':Bungee', ':Canary'
+            ':Bukkit', ':Bungee', ':Canary', ':Sponge'
     ]
 }
 
@@ -87,4 +87,3 @@ task universal(type: Jar) {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.10'
 }
-
