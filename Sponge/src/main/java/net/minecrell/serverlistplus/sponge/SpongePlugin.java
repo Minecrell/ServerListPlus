@@ -69,7 +69,6 @@ import org.spongepowered.api.world.World;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -178,13 +177,13 @@ public class SpongePlugin implements ServerListPlusPlugin {
         private LoginListener() {}
 
         @Listener
-        public void onPlayerJoin(ClientConnectionEvent.Login event) throws UnknownHostException {
+        public void onPlayerJoin(ClientConnectionEvent.Login event) {
             core.updateClient(event.getConnection().getAddress().getAddress(),
                     event.getProfile().getUniqueId(), event.getProfile().getName());
         }
 
         @Listener
-        public void onPlayerQuit(ClientConnectionEvent.Disconnect event) throws UnknownHostException {
+        public void onPlayerQuit(ClientConnectionEvent.Disconnect event) {
             core.updateClient(event.getTargetEntity().getConnection().getAddress().getAddress(),
                     event.getTargetEntity().getUniqueId(), event.getTargetEntity().getName());
         }
