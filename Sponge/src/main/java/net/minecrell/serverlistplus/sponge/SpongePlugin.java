@@ -44,6 +44,7 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.statslite.SpongeStatsLite;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Platform;
@@ -87,6 +88,9 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @ConfigDir(sharedRoot = false) @Inject
     protected File configDir;
+
+    @Inject
+    protected SpongeStatsLite stats;
 
     private ServerListPlusCore core;
 
@@ -389,6 +393,17 @@ public class SpongePlugin implements ServerListPlusPlugin {
             game.getEventManager().unregisterListeners(loginListener);
             this.loginListener = null;
             logger.debug("Unregistered player tracking listener.");
+        }
+
+        // Plugin statistics
+        if (confs.get(PluginConf.class).Stats) {
+            try {
+                this.stats.start();
+            } catch (Throwable e) {
+                this.logger.debug("Failed to enable plugin statistics: " + Helper.causedException(e));
+            }
+        } else {
+            this.stats.stop();
         }
     }
 

@@ -24,6 +24,7 @@
 plugins { id 'com.github.johnrengelman.shadow' version '1.2.2' }
 
 repositories {
+    maven { url 'http://repo.minecrell.net/snapshots' }
     maven { url 'https://repo.spongepowered.org/maven' }
 }
 
@@ -38,10 +39,14 @@ ext {
 dependencies {
     compile project(':Core')
     compile 'org.spongepowered:spongeapi:3.0.0'
+    compile 'net.minecrell:statslite-sponge:0.1-SNAPSHOT'
 }
 
 shadowJar {
     dependencies {
         include project(':Core')
+        include dependency('net.minecrell:statslite-sponge')
     }
+
+    relocate 'net.minecrell.statslite', 'net.minecrell.serverlistplus.statslite'
 }
