@@ -397,11 +397,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         // Plugin statistics
         if (confs.get(PluginConf.class).Stats) {
-            try {
-                this.stats.start();
-            } catch (Throwable e) {
-                this.logger.debug("Failed to enable plugin statistics: " + Helper.causedException(e));
-            }
+            this.stats.start();
         } else {
             this.stats.stop();
         }
