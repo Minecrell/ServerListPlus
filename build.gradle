@@ -25,26 +25,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.2'
 }
 
-ext {
-    // Placeholders for configuration filtering
-    description = 'An extremely customizable server status ping plugin for Minecraft'
-    author = 'Minecrell <https://github.com/Minecrell>'
-
-    javaPackage = 'net.minecrell.serverlistplus'
-    resourceTokens = [
-            'Name': rootProject.name,
-            'Description': description,
-            'Version': version,
-            'Author': author,
-            'Website': 'http://git.io/slp',
-            'Wiki': 'http://git.io/slp-wiki'
-    ];
-
-    universalProjects = [
-            ':Bukkit', ':Bungee', ':Canary', ':Sponge'
-    ]
-}
-
 allprojects {
     group = 'net.minecrell'
     version = '3.4.1-SNAPSHOT'
@@ -99,6 +79,26 @@ allprojects {
             scopes.PROVIDED.plus += [configurations.provided]
         }
     }
+}
+
+ext {
+    // Placeholders for configuration filtering
+    description = 'An extremely customizable server status ping plugin for Minecraft'
+    author = 'Minecrell <https://github.com/Minecrell>'
+
+    javaPackage = 'net.minecrell.serverlistplus'
+    resourceTokens = [
+            'Name': rootProject.name,
+            'Description': description,
+            'Version': version,
+            'Author': author,
+            'Website': 'http://git.io/slp',
+            'Wiki': 'http://git.io/slp-wiki'
+    ];
+
+    universalProjects = [
+            ':Bukkit', ':Bungee', ':Canary', ':Sponge'
+    ]
 }
 
 dependencies {
