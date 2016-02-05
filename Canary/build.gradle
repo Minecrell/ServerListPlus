@@ -21,12 +21,15 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins { id 'com.github.johnrengelman.shadow' version '1.2.2' }
-
 repositories {
-    maven { url 'http://nexus.visualillusionsent.net/content/repositories/releases' }
-    maven { url 'http://repo.mcstats.org/content/repositories/releases' }
-    maven { url 'https://libraries.minecraft.net' }
+    maven {
+        name = 'canary'
+        url = 'http://nexus.visualillusionsent.net/content/repositories/releases'
+    }
+    maven {
+        name = 'minecraft'
+        url = 'https://libraries.minecraft.net'
+    }
 }
 
 ext {
@@ -38,7 +41,6 @@ ext {
 }
 
 dependencies {
-    compile project(':Core')
     compile('net.canarymod:CanaryLib:1.2.0') {
         exclude module: 'metrics'
     }
@@ -47,10 +49,4 @@ dependencies {
 processResources {
     include 'Canary.inf'
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
-}
-
-shadowJar {
-    dependencies {
-        include project(':Core')
-    }
 }

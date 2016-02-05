@@ -21,13 +21,23 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins { id 'com.github.johnrengelman.shadow' version '1.2.2' }
-
 repositories {
-    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots' }
-    maven { url 'http://repo.dmulloy2.net/content/repositories/releases' }
-    maven { url 'http://repo.dmulloy2.net/content/repositories/snapshots' }
-    maven { url 'http://repo.mcstats.org/content/repositories/releases' }
+    maven {
+        name = 'spigot'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
+    }
+    maven {
+        name = 'dmulloy2'
+        url = 'http://repo.dmulloy2.net/content/repositories/releases'
+    }
+    maven {
+        name = 'dmulloy2-snapshots'
+        url = 'http://repo.dmulloy2.net/content/repositories/snapshots'
+    }
+    maven {
+        name = 'mcstats'
+        url = 'http://repo.mcstats.org/content/repositories/releases'
+    }
 }
 
 ext {
@@ -39,11 +49,10 @@ ext {
 }
 
 dependencies {
-    compile project(':Core')
-    compile 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT',
-            'com.comphenix.protocol:ProtocolLib:3.6.4'
+    compile 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
+    compile 'com.comphenix.protocol:ProtocolLib:3.6.4'
     compile('org.mcstats.bukkit:metrics-lite:R7') {
-        exclude module: 'bukkit'
+        transitive = false
     }
 }
 
@@ -52,52 +61,44 @@ processResources {
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
 }
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
-task v1_7(type: ShadowJar, dependsOn: build) {
-    from sourceSets.main.output
-    classifier = '1.7.X'
-    baseName = rootProject.name + project.name
-    exclude 'META-INF/'
-    configurations = [project.configurations.runtime]
-
-    dependencies {
-        include project(':Core')
-        include dependency('org.mcstats.bukkit:metrics-lite:R7')
-    }
-
-    relocate 'org.mcstats', "${pluginPackage}.metrics"
-
-    relocate "${javaPackage}.core", "${pluginPackage}.core"
-    relocate 'com.google.common', 'net.minecraft.util.com.google.common'
-    relocate 'com.google.gson', 'net.minecraft.util.com.google.gson'
-}
-
-task v1_8(type: ShadowJar, dependsOn: build) {
-    from sourceSets.main.output
-    classifier = '1.8'
-    baseName = rootProject.name + project.name
-    exclude 'META-INF/'
-    configurations = [project.configurations.runtime]
-
-    dependencies {
-        include project(':Core')
-        include dependency('org.mcstats.bukkit:metrics-lite:R7')
-    }
-
-    relocate 'org.mcstats', "${pluginPackage}.metrics"
-
-    // Spigot 1.8
-    relocate "${javaPackage}.core", "${pluginPackage}.core"
-    //relocate 'com.google.common', 'net.minecraft.util.com.google.common'
-    relocate 'com.google.gson', 'org.bukkit.craftbukkit.libs.com.google.gson'
-}
-
 shadowJar {
     dependencies {
-        include project(':Core')
         include dependency('org.mcstats.bukkit:metrics-lite')
     }
 
     relocate 'org.mcstats', "${pluginPackage}.metrics"
+}
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+task v1_7_X(type: ShadowJar) {
+    classifier = '1.7.X'
+    relocate 'com.google.common', 'net.minecraft.util.com.google.common'
+    relocate 'com.google.gson', 'net.minecraft.util.com.google.gson'
+}
+
+task v1_8(type: ShadowJar) {
+    classifier = '1.8'
+    relocate 'com.google.gson', 'org.bukkit.craftbukkit.libs.com.google.gson'
+}
+
+configure([v1_7_X, v1_8]) {
+    classifier = "$project.name-$classifier"
+    from sourceSets.main.output
+
+    baseName = rootProject.name + project.name
+    exclude 'META-INF/'
+    configurations = [project.configurations.runtime]
+
+    dependencies {
+        include project(':')
+        include dependency('org.mcstats.bukkit:metrics-lite:R7')
+    }
+
+    relocate 'org.mcstats', "${pluginPackage}.metrics"
+}
+
+artifacts {
+    archives v1_7_X
+    archives v1_8
 }

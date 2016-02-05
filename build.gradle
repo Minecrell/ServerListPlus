@@ -21,22 +21,8 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-allprojects {
-    version = '3.4.1-SNAPSHOT'
-
-    apply plugin: 'java'
-    sourceCompatibility = 1.7 // TODO: Update to Java 8 in the future
-    targetCompatibility = 1.7
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-        options.deprecation = true
-    }
-
-    repositories {
-        mavenCentral()
-        maven { url 'http://repo.minecrell.net/releases' }
-    }
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.2'
 }
 
 ext {
@@ -59,31 +45,152 @@ ext {
     ]
 }
 
-subprojects {
-    dependencies {
-        compile 'org.projectlombok:lombok:1.16.6'
+allprojects {
+    group = 'net.minecrell'
+    version = '3.4.1-SNAPSHOT'
+
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    // TODO: Update to Java 8
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+
+    configurations {
+        provided
     }
 
-    plugins.withId('com.github.johnrengelman.shadow') {
-        shadowJar {
-            classifier = ''
-            baseName = rootProject.name + project.name
-            exclude 'META-INF/'
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'minecrell'
+            url = 'http://repo.minecrell.net/releases'
+        }
+        maven {
+            name = 'minecrell-snapshots'
+            url = 'http://repo.minecrell.net/snapshots'
+        }
+    }
+
+    dependencies {
+        provided 'org.projectlombok:lombok:1.16.6'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.deprecation = true
+    }
+
+    sourceSets {
+        main {
+            compileClasspath += configurations.provided
+        }
+    }
+
+    eclipse {
+        classpath {
+            plusConfigurations += [configurations.provided]
+        }
+    }
+
+    idea {
+        module {
+            scopes.PROVIDED.plus += [configurations.provided]
         }
     }
 }
 
-task universal(type: Jar) {
-    // TODO: I should probaby improve this...
-    baseName = "${rootProject.name}Universal"
-    duplicatesStrategy 'exclude' // Skip the second plugin.yml of the Bungee plugin
-    universalProjects.each {
-        evaluationDependsOn it // Load the projects completely first
-        dependsOn project(it).tasks.shadowJar // Now wait to complete the plugin creation
-        from zipTree(project(it).shadowJar.archivePath) // And add it to our universal JAR
+dependencies {
+    compile 'com.google.guava:guava:17.0'
+    compile 'org.yaml:snakeyaml:1.15'
+    compile 'com.google.code.gson:gson:2.2.4'
+}
+
+processResources {
+    include 'HEADER'
+    include 'LICENSE'
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
+}
+
+processResources << {
+    // Create an ABOUT file with information about the core
+    def prop = new Properties();
+    prop.putAll resourceTokens
+    prop.store new File(destinationDir, 'ABOUT').newOutputStream(), null
+}
+
+subprojects {
+    archivesBaseName = "$rootProject.name$archivesBaseName"
+
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    dependencies {
+        compile rootProject
+    }
+
+    shadowJar {
+        baseName = rootProject.name
+        classifier = project.name
+
+        dependencies {
+            include project(rootProject.path)
+        }
+    }
+
+    artifacts {
+        archives shadowJar
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.10'
+// Wait for evaluation of subprojects
+subprojects.each {
+    rootProject.evaluationDependsOn it.path
+}
+
+apply plugin: 'maven-publish'
+
+
+task universal(type: Jar) {
+    classifier = 'Universal'
+
+    // TODO: I should probaby improve this...
+    duplicatesStrategy 'exclude' // Skip the second plugin.yml of the Bungee plugin
+    universalProjects.each {
+        def p = project(it)
+        dependsOn p.tasks.shadowJar // Now wait to complete the plugin creation
+        from zipTree(p.tasks.shadowJar.archivePath) // And add it to our universal JAR
+    }
+}
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+
+    subprojects {
+        from sourceSets.main.allSource
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact universal
+            artifact sourceJar
+
+            subprojects {
+                tasks.withType(tasks.shadowJar.class) {
+                    artifact it
+                }
+            }
+
+            repositories {
+                maven {
+                    url = System.getenv('REPO_' + (version.endsWith('-SNAPSHOT') ? 'SNAPSHOTS' : 'RELEASES')) ?: "$buildDir/repo"
+                }
+            }
+        }
+    }
 }

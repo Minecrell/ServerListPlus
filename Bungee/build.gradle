@@ -21,11 +21,11 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins { id 'com.github.johnrengelman.shadow' version '1.2.2' }
-
 repositories {
-    maven { url 'http://repo.minecrell.net/snapshots' }
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven {
+        name = 'sonatype-snapshots'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
 }
 
 ext {
@@ -37,13 +37,12 @@ ext {
 }
 
 dependencies {
-    compile project(':Core')
     compile 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
     compile 'net.minecrell:statslite-bungee:0.1-SNAPSHOT'
 }
 
 processResources {
-    include 'plugin.yml'
+    include 'bungee.yml'
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
 }
 
@@ -52,14 +51,13 @@ processResources << {
     copy {
         from destinationDir
         into destinationDir
-        include 'plugin.yml'
-        rename 'plugin.yml', 'bungee.yml'
+        include 'bungee.yml'
+        rename 'bungee.yml', 'plugin.yml'
     }
 }
 
 shadowJar {
     dependencies {
-        include project(':Core')
         include dependency('net.minecrell:statslite-bungee')
     }
 
