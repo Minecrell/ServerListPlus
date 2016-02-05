@@ -83,10 +83,10 @@ task v1_8(type: ShadowJar) {
 }
 
 configure([v1_7_X, v1_8]) {
+    baseName = rootProject.name
     classifier = "$project.name-$classifier"
-    from sourceSets.main.output
 
-    baseName = rootProject.name + project.name
+    from sourceSets.main.output
     exclude 'META-INF/'
     configurations = [project.configurations.runtime]
 
