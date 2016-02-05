@@ -150,7 +150,6 @@ subprojects.each {
 
 apply plugin: 'maven-publish'
 
-
 task universal(type: Jar) {
     classifier = 'Universal'
 
@@ -170,6 +169,11 @@ task sourceJar(type: Jar) {
     subprojects {
         from sourceSets.main.allSource
     }
+}
+
+artifacts {
+    archives universal
+    archives sourceJar
 }
 
 publishing {
