@@ -21,35 +21,19 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+package net.minecrell.serverlistplus.sponge.protocol;
 
-repositories {
-    maven {
-        name = 'sponge'
-        url = 'https://repo.spongepowered.org/maven'
-    }
-}
+import net.minecrell.serverlistplus.core.status.StatusResponse;
+import org.spongepowered.api.event.server.ClientPingServerEvent;
 
-ext {
-    // TODO: Better fix?
-    resourceTokens = resourceTokens.clone()
-    pluginPackage = "${javaPackage}.sponge"
-    pluginClass = "${pluginPackage}.SpongePlugin"
-    resourceTokens.PluginClass = pluginClass.toString()
-}
+import java.util.OptionalInt;
 
-dependencies {
-    compile 'org.spongepowered:spongeapi:3.0.0'
-    compile 'net.minecrell:statslite-sponge:0.1'
+public interface StatusProtocolHandler {
 
-    compile 'net.minecrell:statusprotocol:0.1'
-}
+    OptionalInt getProtocolVersion(ClientPingServerEvent event);
 
-shadowJar {
-    dependencies {
-        include dependency('net.minecrell:statslite-sponge')
-    }
+    OptionalInt getProtocolVersion(org.spongepowered.api.network.status.StatusResponse response);
 
-    relocate 'net.minecrell.statslite', 'net.minecrell.serverlistplus.statslite'
+    void setVersion(ClientPingServerEvent.Response ping, StatusResponse response);
+
 }

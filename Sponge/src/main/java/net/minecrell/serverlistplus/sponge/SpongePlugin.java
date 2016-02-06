@@ -28,6 +28,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.inject.Inject;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -44,6 +45,9 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.serverlistplus.sponge.protocol.DummyStatusProtocolHandler;
+import net.minecrell.serverlistplus.sponge.protocol.StatusProtocolHandler;
+import net.minecrell.serverlistplus.sponge.protocol.StatusProtocolHandlerImpl;
 import net.minecrell.statslite.SpongeStatsLite;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
@@ -61,6 +65,7 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.event.server.ClientPingServerEvent;
 import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -78,10 +83,9 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
-
-@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4.1-SNAPSHOT")
+@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4.1-SNAPSHOT", dependencies = "after:statusprotocol")
 public class SpongePlugin implements ServerListPlusPlugin {
+
     @Inject protected Game game;
     @Inject protected Logger logger;
 
@@ -90,6 +94,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Inject
     protected SpongeStatsLite stats;
+
+    private final StatusProtocolHandler handler;
 
     private ServerListPlusCore core;
 
@@ -107,6 +113,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
                 }
             };
     private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
+
+    @Inject
+    public SpongePlugin(PluginManager pluginManager) {
+        this.handler = pluginManager.isLoaded("statusprotocol") ? new StatusProtocolHandlerImpl() : new DummyStatusProtocolHandler();
+    }
 
     @Listener
     public void enable(GamePreInitializationEvent event) {
@@ -195,8 +206,9 @@ public class SpongePlugin implements ServerListPlusPlugin {
         @Listener
         public void onStatusPing(ClientPingServerEvent event) {
             StatusRequest request = core.createRequest(event.getClient().getAddress().getAddress());
+            handler.getProtocolVersion(event).ifPresent(request::setProtocolVersion);
 
-            ClientPingServerEvent.Response ping = event.getResponse();
+            final ClientPingServerEvent.Response ping = event.getResponse();
             final ClientPingServerEvent.Response.Players players = ping.getPlayers().orElse(null);
 
             StatusResponse response = request.createResponse(core.getStatus(), new ResponseFetcher() {
@@ -212,13 +224,16 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
                 @Override
                 public int getProtocolVersion() {
-                    return 0; // idk
+                    return handler.getProtocolVersion(ping).orElse(-1);
                 }
             });
 
             // Description
             String message = response.getDescription();
             if (message != null) ping.setDescription(TextSerializers.LEGACY_FORMATTING_CODE.deserialize(message));
+
+            // Version
+            handler.setVersion(ping, response);
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
