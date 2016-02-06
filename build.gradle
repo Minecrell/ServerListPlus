@@ -47,10 +47,6 @@ allprojects {
             name = 'minecrell'
             url = 'http://repo.minecrell.net/releases'
         }
-        maven {
-            name = 'minecrell-snapshots'
-            url = 'http://repo.minecrell.net/snapshots'
-        }
     }
 
     dependencies {

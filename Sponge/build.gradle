@@ -41,7 +41,7 @@ ext {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:3.0.0'
-    compile 'net.minecrell:statslite-sponge:0.1-SNAPSHOT'
+    compile 'net.minecrell:statslite-sponge:0.1'
 }
 
 shadowJar {
