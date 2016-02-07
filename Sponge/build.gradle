@@ -25,6 +25,7 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 repositories {
+    mavenLocal()
     maven {
         name = 'sponge'
         url = 'https://repo.spongepowered.org/maven'
@@ -41,14 +42,14 @@ ext {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:3.0.0'
-    compile 'net.minecrell:statslite-sponge:0.1'
+    compile 'net.minecrell.mcstats:statslite-sponge:0.2'
 
     compile 'net.minecrell:statusprotocol:0.1'
 }
 
 shadowJar {
     dependencies {
-        include dependency('net.minecrell:statslite-sponge')
+        include dependency('net.minecrell.mcstats:statslite-sponge')
     }
 
     relocate 'net.minecrell.statslite', 'net.minecrell.serverlistplus.statslite'
