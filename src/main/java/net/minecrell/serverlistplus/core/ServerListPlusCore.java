@@ -89,12 +89,12 @@ public class ServerListPlusCore {
         try {
             if (Float.parseFloat(JAVA_CLASS_VERSION.value()) < 52.0) {
                 getLogger().log(WARN, "You're using Java 7 or lower. Keep in mind future versions of ServerListPlus " +
-                        "may require Java 8 or higher. Java 8 contains various improvements, especially regarding " +
+                        "will require Java 8 or higher. Java 8 contains various improvements, especially regarding " +
                         "performance. If possible, please upgrade as soon as possible.");
             }
         } catch (NumberFormatException ignored) {
             getLogger().log(WARN, "Failed to detect Java version. If you're using Java 7 or lower, keep in mind " +
-                    "future versions of ServerListPlus may require Java 8 or higher. Java 8 contains various " +
+                    "future versions of ServerListPlus will require Java 8 or higher. Java 8 contains various " +
                     "improvements, especially regarding performance. If possible, please upgrade as soon as possible.");
         }
 
