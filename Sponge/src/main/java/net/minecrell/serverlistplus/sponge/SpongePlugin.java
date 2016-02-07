@@ -123,7 +123,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
     public void enable(GamePreInitializationEvent event) {
         if (this.handler.isDummy()) {
             this.logger.warn("You don't have StatusProtocol installed. Support for custom player slots will be disabled. Please install it from "
-                    + "https://github.com/Minecrell/statusprotocol/releases if you intend to use these features.");
+                    + "https://github.com/Minecrell/statusprotocol/releases if you intend to use this feature.");
         }
 
         try {
