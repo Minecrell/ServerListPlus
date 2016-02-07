@@ -423,9 +423,9 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public void statusChanged(StatusManager status) {
+    public void statusChanged(StatusManager status, boolean hasChanges) {
         // Status listener
-        if (status.hasChanges()) {
+        if (hasChanges) {
             if (pingListener == null) {
                 game.getEventManager().registerListeners(this, this.pingListener = new PingListener());
                 logger.debug("Registered ping listener.");

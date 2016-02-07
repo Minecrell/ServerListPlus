@@ -369,9 +369,9 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void statusChanged(StatusManager status) {
+    public void statusChanged(StatusManager status, boolean hasChanges) {
         // Status listener
-        if (status.hasChanges()) {
+        if (hasChanges) {
             if (pingListener == null) {
                 registerListener(this.pingListener = new PingListener());
                 getLogger().log(DEBUG, "Registered proxy ping listener.");

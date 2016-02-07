@@ -115,7 +115,7 @@ public class ProfileManager extends AbstractManager {
             this.enabled = state;
             this.save();
             if (enabled) core.reload();
-            else core.getPlugin().statusChanged(core.getStatus());
+            else core.getPlugin().statusChanged(core.getStatus(), core.getStatus().hasChanges());
         }
     }
 }

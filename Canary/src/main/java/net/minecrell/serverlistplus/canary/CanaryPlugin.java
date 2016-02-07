@@ -354,9 +354,9 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public void statusChanged(StatusManager status) {
+    public void statusChanged(StatusManager status, boolean hasChanges) {
         // Status listener
-        if (status.hasChanges()) {
+        if (hasChanges) {
             if (pingListener == null) {
                 registerListener(this.pingListener = new PingListener());
                 getLogman().debug("Registered proxy ping listener.");

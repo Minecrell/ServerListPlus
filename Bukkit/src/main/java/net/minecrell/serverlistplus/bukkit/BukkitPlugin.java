@@ -431,9 +431,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void statusChanged(StatusManager status) {
+    public void statusChanged(StatusManager status, boolean hasChanges) {
         // Status packet listener
-        if (status.hasChanges()) {
+        if (hasChanges) {
             if (bukkit.register())
                 getLogger().log(DEBUG, "Registered ping event handler.");
             if (protocol == null)

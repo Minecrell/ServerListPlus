@@ -103,7 +103,13 @@ public class StatusManager extends AbstractManager {
             this.favicons = false;
         }
 
-        core.getPlugin().statusChanged(this);
+        boolean changes = this.hasChanges();
+        if (!changes) {
+            getLogger().log(WARN, "There was no configuration found to apply to the status ping. The plugin will be disabled until you add "
+                    + "something to your configuration.");
+        }
+
+        core.getPlugin().statusChanged(this, changes);
     }
 
     protected class Preparation implements Function<String, String> {
