@@ -139,7 +139,7 @@ public class ServerListPlusCore {
     }
 
     public String getDisplayName() {
-        return info.getName() + plugin.getServerType() + " v" + info.getVersion();
+        return info.getName() + " v" + info.getVersion() + " (" + plugin.getServerType() + ')';
     }
 
     public <T> void registerConf(Class<T> clazz, T def, T example, String alias) {
