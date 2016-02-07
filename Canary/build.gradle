@@ -30,6 +30,10 @@ repositories {
         name = 'minecraft'
         url = 'https://libraries.minecraft.net'
     }
+    maven {
+        name = 'mcstats-snapshots'
+        url = 'http://repo.mcstats.org/content/repositories/snapshots'
+    }
 }
 
 ext {
@@ -44,9 +48,20 @@ dependencies {
     compile('net.canarymod:CanaryLib:1.2.0') {
         exclude module: 'metrics'
     }
+    compile('org.mcstats.canary:metrics-lite:R8-SNAPSHOT') {
+        transitive = false
+    }
 }
 
 processResources {
     include 'Canary.inf'
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
+}
+
+shadowJar {
+    dependencies {
+        include dependency('org.mcstats.canary:metrics-lite')
+    }
+
+    relocate 'org.mcstats', "${pluginPackage}.metrics"
 }

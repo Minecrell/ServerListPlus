@@ -62,6 +62,7 @@ import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import net.visualillusionsent.utils.TaskManager;
+import org.mcstats.MetricsLite;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
@@ -82,6 +83,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     private Path pluginFolder;
     private PluginListener loginListener, pingListener;
+
+    private MetricsLite metrics;
 
     private final Field PROFILES_FIELD;
 
@@ -124,7 +127,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
         try {
             registerCommands(new ServerListPlusCommand(), false);
         } catch (CommandDependencyException e) {
-            throw new AssertionError(e);
+            getLogman().error("Failed to register command", e);
+            return false;
         }
 
         return true;
@@ -141,7 +145,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
         private ServerListPlusCommand() {}
 
         @Command(aliases = {"serverlistplus", "serverlist+", "serverlist", "slp", "sl+", "s++", "serverping+",
-                "serverping", "spp", "slus"}, permissions = {}, description = "ServerListPlus", toolTip = "")
+                "serverping", "spp", "slus"}, permissions = "", description = "ServerListPlus", toolTip = "")
         public void onCommand(MessageReceiver sender, String[] args) {
             core.executeCommand(new CanaryCommandSender(sender), args[0], Arrays.copyOfRange(args, 1, args.length));
         }
@@ -351,6 +355,23 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             this.loginListener = null;
             getLogman().debug("Unregistered proxy player tracking listener.");
         }
+
+        // Plugin statistics
+        if (confs.get(PluginConf.class).Stats) {
+            if (metrics == null)
+                try {
+                    this.metrics = new MetricsLite(this);
+                    metrics.start();
+                } catch (Throwable e) {
+                    getLogman().debug("Failed to enable plugin statistics: {}", Helper.causedException(e));
+                }
+        } else if (metrics != null)
+            try {
+                metrics.disable();
+                this.metrics = null;
+            } catch (Throwable e) {
+                getLogman().debug("Failed to disable plugin statistics: ", Helper.causedException(e));
+            }
     }
 
     @Override

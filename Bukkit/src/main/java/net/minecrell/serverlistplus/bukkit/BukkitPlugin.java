@@ -416,7 +416,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (metrics == null)
                 try {
                     this.metrics = new MetricsLite(this);
-                    metrics.enable();
                     metrics.start();
                 } catch (Throwable e) {
                     getLogger().log(DEBUG, "Failed to enable plugin statistics: " + Helper.causedException(e));
