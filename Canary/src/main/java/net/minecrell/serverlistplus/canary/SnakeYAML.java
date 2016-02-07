@@ -45,12 +45,12 @@ public final class SnakeYAML {
 
     private static final String MAVEN_CENTRAL = "https://repo1.maven.org/maven2/";
 
-    private static final String YAML_VERSION = "1.15";
+    private static final String YAML_VERSION = "1.16";
     private static final String SNAKE_YAML_JAR = "snakeyaml-" + YAML_VERSION + ".jar";
     private static final String SNAKE_YAML =
             MAVEN_CENTRAL + "org/yaml/snakeyaml/" + YAML_VERSION + '/' + SNAKE_YAML_JAR;
 
-    private static final String EXPECTED_HASH = "3B132BEA69E8EE099F416044970997BDE80F4EA6"; // SHA-1
+    private static final String EXPECTED_HASH = "D64FB662C9E42789149F5078A62A22EDDA786C6A"; // SHA-1
 
     private static boolean isLoaded(String className) {
         try {
