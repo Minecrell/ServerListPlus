@@ -86,8 +86,6 @@ public class ServerListPlusCore {
         this.logger = plugin.createLogger(this);
         this.info = CoreDescription.load(this);
 
-        getLogger().log(INFO, "Starting...");
-
         try {
             if (Float.parseFloat(JAVA_CLASS_VERSION.value()) < 52.0) {
                 getLogger().log(WARN, "You're using Java 7 or lower. Keep in mind future versions of ServerListPlus " +
@@ -101,8 +99,7 @@ public class ServerListPlusCore {
         }
 
         // Print some information about the environment
-        getLogger().log(REPORT, Helper.joinLines(
-                "Plugin Information:",
+        getLogger().log(REPORT, Helper.joinLines("",
                 "---",
                 "Plugin: " + getDisplayName(),
                 "Server: " + plugin.getServerImplementation(),
@@ -134,7 +131,6 @@ public class ServerListPlusCore {
     }
 
     public void stop() throws ServerListPlusException {
-        getLogger().log(INFO, "Stopping...");
         storage.disable();
     }
 
@@ -184,7 +180,8 @@ public class ServerListPlusCore {
         configManager.reload(); // Reload configuration from disk
         this.profileManager.reload(); // Reload profile storage from disk
         if (!profileManager.isEnabled())
-            getLogger().log(WARN, "Configuration is not enabled, nothing will be changed on the server!");
+            getLogger().log(WARN, "Configuration is not enabled, nothing will be changed on the server! Please execute /slp enable to enable the "
+                    + "configuration.");
         statusManager.reload(); // Now actually read and process the configuration
         this.reloadCaches(); // Check for cache setting changes
         storage.reload();
@@ -251,7 +248,6 @@ public class ServerListPlusCore {
                 sender.sendMessage(COMMAND_PREFIX_ERROR + "You do not have permission for this command.");
 
             else if (sub.equals("reload") || sub.equals("rl")) {
-                getLogger().log(INFO, "Reloading configuration at request of {}!", sender);
                 sender.sendMessage(COMMAND_PREFIX + "Reloading configuration...");
 
                 try { // Reload the configuration
@@ -262,7 +258,6 @@ public class ServerListPlusCore {
                             "configuration.");
                 }
             } else if (sub.equals("save")) {
-                getLogger().log(INFO, "Saving configuration at request of {}!", sender);
                 sender.sendMessage(COMMAND_PREFIX + "Saving configuration...");
 
                 try { // Save the configuration
@@ -276,7 +271,6 @@ public class ServerListPlusCore {
             } else if (sub.equals("enable") || sub.equals("disable")) {
                 boolean enable = sub.equalsIgnoreCase("enable");
                 String tmp = enable ? "Enabling" : "Disabling";
-                getLogger().log(INFO, "{} ServerListPlus at request of {}...", tmp, sender);
                 sender.sendMessage(COMMAND_PREFIX + tmp + " ServerListPlus...");
 
                 try { // Enable / disable the ServerListPlus profile
@@ -294,7 +288,7 @@ public class ServerListPlusCore {
                     if (cacheType != null) {
                         Cache<?, ?> cache = cacheType.apply(this);
                         if (cache != null) {
-                            getLogger().log(INFO, "Cleaning {} cache at request of {}...", cacheName, sender);
+                            getLogger().log(INFO, "Cleaning {} cache...", cacheName);
                             cache.invalidateAll();
                             cache.cleanUp();
                             getLogger().log(DEBUG, "Done.");

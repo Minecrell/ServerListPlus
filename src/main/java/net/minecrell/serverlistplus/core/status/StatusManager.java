@@ -104,7 +104,7 @@ public class StatusManager extends AbstractManager {
         }
 
         boolean changes = this.hasChanges();
-        if (!changes) {
+        if (isEnabled() && !changes) {
             getLogger().log(WARN, "There was no configuration found to apply to the status ping. The plugin will be disabled until you add "
                     + "something to your configuration.");
         }
