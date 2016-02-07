@@ -30,6 +30,8 @@ import java.util.OptionalInt;
 
 public interface StatusProtocolHandler {
 
+    boolean isDummy();
+
     OptionalInt getProtocolVersion(ClientPingServerEvent event);
 
     OptionalInt getProtocolVersion(org.spongepowered.api.network.status.StatusResponse response);

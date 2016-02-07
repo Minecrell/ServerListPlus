@@ -32,6 +32,11 @@ import java.util.OptionalInt;
 public final class StatusProtocolHandlerImpl implements StatusProtocolHandler {
 
     @Override
+    public boolean isDummy() {
+        return false;
+    }
+
+    @Override
     public OptionalInt getProtocolVersion(ClientPingServerEvent event) {
         return StatusProtocol.getProtocolVersion(event.getClient().getVersion());
     }
