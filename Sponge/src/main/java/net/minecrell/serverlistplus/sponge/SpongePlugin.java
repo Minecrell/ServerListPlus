@@ -83,7 +83,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4.1-SNAPSHOT", dependencies = "after:statusprotocol")
+@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4.1", dependencies = "after:statusprotocol")
 public class SpongePlugin implements ServerListPlusPlugin {
 
     @Inject protected Game game;

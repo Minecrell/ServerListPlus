@@ -27,7 +27,7 @@ plugins {
 
 allprojects {
     group = 'net.minecrell'
-    version = '3.4.1-SNAPSHOT'
+    version = '3.4.1'
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
