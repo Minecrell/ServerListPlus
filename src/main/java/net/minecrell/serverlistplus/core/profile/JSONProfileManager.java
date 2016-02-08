@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core;
+package net.minecrell.serverlistplus.core.profile;
 
 import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
@@ -31,6 +31,9 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
+import net.minecrell.serverlistplus.core.AbstractManager;
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.io.IOHelper;
 
 import java.io.BufferedReader;
@@ -39,7 +42,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class ProfileManager extends AbstractManager {
+public class JSONProfileManager extends AbstractManager {
     private static final String DEFAULT_PROFILE = "ServerListPlus";
 
     private static final String PROFILE_FILENAME = "Profiles.json";
@@ -47,12 +50,12 @@ public class ProfileManager extends AbstractManager {
     // TODO: Implement profiles
     private @Getter boolean enabled;
 
-    public ProfileManager(ServerListPlusCore core) {
+    public JSONProfileManager(ServerListPlusCore core) {
         super(core);
     }
 
     public Path getProfilePath() {
-        return core.getConf().getPluginFolder().resolve(PROFILE_FILENAME);
+        return core.getPlugin().getPluginFolder().resolve(PROFILE_FILENAME);
     }
 
     public void reload() throws ServerListPlusException {

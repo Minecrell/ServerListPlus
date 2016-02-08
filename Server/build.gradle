@@ -21,6 +21,28 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'ServerListPlus'
-include 'Bungee', 'Bukkit', 'Canary', 'Sponge'
-include 'Server'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+ext {
+    nettyVersion = '4.1.0.CR1'
+}
+
+dependencies {
+    compile 'com.google.guava:guava:19.0'
+    compile 'org.yaml:snakeyaml:1.16'
+    compile 'com.google.code.gson:gson:2.5'
+    compile "io.netty:netty-all:$nettyVersion"
+    compile "io.netty:netty-transport-native-epoll:$nettyVersion"
+}
+
+shadowJar {
+    dependencies {
+        include dependency('com.google.guava:guava')
+        include dependency('org.yaml:snakeyaml')
+        include dependency('com.google.code.gson:gson')
+
+        include dependency('io.netty:netty-all')
+        include dependency('io.netty:netty-transport-native-epoll')
+    }
+}
