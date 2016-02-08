@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class JSONProfileManager extends AbstractManager {
+public class JSONProfileManager extends AbstractManager implements ProfileManager {
     private static final String DEFAULT_PROFILE = "ServerListPlus";
 
     private static final String PROFILE_FILENAME = "Profiles.json";
@@ -58,6 +58,7 @@ public class JSONProfileManager extends AbstractManager {
         return core.getPlugin().getPluginFolder().resolve(PROFILE_FILENAME);
     }
 
+    @Override
     public void reload() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
         getLogger().log(DEBUG, "Reloading profiles from: " + profilePath);
@@ -86,6 +87,7 @@ public class JSONProfileManager extends AbstractManager {
         }
     }
 
+    @Override
     public void save() throws ServerListPlusException {
         Path profilePath = this.getProfilePath();
         getLogger().log(DEBUG, "Saving profiles to: " + profilePath);
@@ -113,6 +115,7 @@ public class JSONProfileManager extends AbstractManager {
         }
     }
 
+    @Override
     public void setEnabled(boolean state) throws ServerListPlusException {
         if (this.enabled != state) {
             this.enabled = state;

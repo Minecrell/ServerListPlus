@@ -31,6 +31,7 @@ public enum ServerType {
     BUNGEE ("BungeeCord"),
     CANARY ("Canary"),
     SPONGE ("Sponge"),
+    SERVER ("Server"),
     CUSTOM;
 
     private final String displayName;

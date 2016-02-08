@@ -51,6 +51,8 @@ import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.core.profile.JSONProfileManager;
+import net.minecrell.serverlistplus.core.profile.ProfileManager;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.ChatFormat;
@@ -82,6 +84,10 @@ public class ServerListPlusCore {
     private String faviconCacheConf;
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
+        this(plugin, null);
+    }
+
+    public ServerListPlusCore(ServerListPlusPlugin plugin, ProfileManager profileManager) throws ServerListPlusException {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = plugin.createLogger(this);
         this.info = CoreDescription.load(this);
@@ -121,7 +127,7 @@ public class ServerListPlusCore {
         //configManager.getYAML().registerAlias(SQLIdentificationStorage.Conf.class, "SQLStorage");
 
         // Initialize the profile manager
-        this.profileManager = new ProfileManager(this);
+        this.profileManager = profileManager != null ? profileManager : new JSONProfileManager(this);
         this.storage = new JSONIdentificationStorage(this);
 
         plugin.initialize(this);
