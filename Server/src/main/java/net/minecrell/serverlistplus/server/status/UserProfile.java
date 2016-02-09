@@ -8,6 +8,6 @@ import java.util.UUID;
 public class UserProfile {
 
     private final String name;
-    private final UUID uuid;
+    private final UUID id;
 
 }

@@ -36,6 +36,10 @@ dependencies {
     compile "io.netty:netty-transport-native-epoll:$nettyVersion"
 }
 
+jar {
+    manifest.attributes('Main-Class': 'net.minecrell.serverlistplus.server.Main')
+}
+
 shadowJar {
     dependencies {
         include dependency('com.google.guava:guava')

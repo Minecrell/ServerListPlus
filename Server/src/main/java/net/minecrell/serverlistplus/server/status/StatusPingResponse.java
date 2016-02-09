@@ -27,7 +27,7 @@ public final class StatusPingResponse {
     }
 
     private String description = "";
-    private final Version version = new Version("ServerListPlus", 0);
+    private final Version version = new Version("ServerListPlus", -1);
     private Players players = null;
     private String favicon;
 

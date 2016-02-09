@@ -222,6 +222,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
             StatusPingResponse.Players newPlayers = players;
             if (newPlayers == null) {
                 newPlayers = new StatusPingResponse.Players(0, 0, null);
+                ping.setPlayers(newPlayers);
             }
 
             // Online players
