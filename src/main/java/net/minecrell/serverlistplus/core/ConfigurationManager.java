@@ -81,11 +81,12 @@ public class ConfigurationManager extends AbstractManager {
         getLogger().log(DEBUG, "Configuration location: " + configPath);
 
         try {
-            // Create new storage, will replace the other one when finished loading
-            InstanceStorage<Object> newStorage = InstanceStorages.createOrdered().withDefaults(defaults);
             final boolean confExists = Files.exists(configPath);
 
+            InstanceStorage<Object> newStorage;
             if (confExists) {
+                newStorage = InstanceStorages.createOrdered().withDefaults(defaults);
+
                 // Open the configuration file
                 try (BufferedReader reader = IOHelper.newBufferedReader(configPath)) {
                     Iterator<Object> itr = yaml.snakeYAML().getYaml().loadAll(reader).iterator();
@@ -104,9 +105,12 @@ public class ConfigurationManager extends AbstractManager {
                         }
                     }
                 }
-            }
 
-            getLogger().log(REPORT, newStorage.size() + " configurations loaded.");
+
+                getLogger().log(REPORT, newStorage.size() + " configurations loaded.");
+            } else {
+                newStorage = InstanceStorages.createOrdered().withDefaults(examples);
+            }
 
             this.storage = newStorage;
 
@@ -121,7 +125,7 @@ public class ConfigurationManager extends AbstractManager {
                 save(examples); // Save it if it doesn't exist
             } catch (ServerListPlusException ignored) {}
 
-            core.getPlugin().configChanged(storage); // Call plugin handlers
+            core.getPlugin().configChanged(core, storage); // Call plugin handlers
             getLogger().log(DEBUG, "Configuration successfully reloaded!");
         } catch (YAMLException e) {
             throw getLogger().process(e, "Unable to parse the configuration. Make sure the YAML syntax is " +
@@ -160,7 +164,7 @@ public class ConfigurationManager extends AbstractManager {
                 Files.copy(configPath, backupPath, StandardCopyOption.REPLACE_EXISTING);
             } else
                 // Create plugin folder if it doesn't exist already
-                Files.createDirectories(configPath.getParent());
+                Files.createDirectories(configPath.toAbsolutePath().getParent());
 
             try (BufferedWriter writer = IOHelper.newBufferedWriter(configPath)) {
                 yaml.writeHeader(writer);

@@ -140,14 +140,14 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
 
     public synchronized void save() throws ServerListPlusException {
         if (!isEnabled() || !changed.compareAndSet(true, false)) return;
-        getLogger().log(DEBUG, "Saving player identities...");
+        getLogger().log(INFO, "Saving player identities...");
         Path storagePath = getStoragePath();
         getLogger().log(DEBUG, "Storage location: " + storagePath);
 
         try {
             if (Files.notExists(storagePath)) {
                 // Actually this should have been already created by the configuration manager...
-                Files.createDirectories(storagePath.getParent());
+                Files.createDirectories(storagePath.toAbsolutePath().getParent());
             }
 
             try (BufferedWriter writer = IOHelper.newBufferedWriter(storagePath)) {
@@ -166,10 +166,10 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     public void disable() throws ServerListPlusException {
         if (saveTask != null) {
             saveTask.cancel();
-            this.saveTask = null;
         }
 
         save();
+        this.saveTask = null;
     }
 
     // TODO: Java 8

@@ -42,10 +42,8 @@ public abstract class ServerListPlusLogger extends AbstractLogger<ServerListPlus
         this.core = core;
 
         try {
-            if (deleteOldFiles(core.getPlugin().getPluginFolder()))
-                log(WARN, "Unable to delete all old log files.");
-        } catch (Exception e) {
-            log(WARN, e, "Unable to delete old log files.");
+            deleteOldFiles(core.getPlugin().getPluginFolder());
+        } catch (Exception ignored) {
         }
     }
 

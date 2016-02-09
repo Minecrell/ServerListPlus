@@ -347,7 +347,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void configChanged(InstanceStorage<Object> confs) {
+    public void configChanged(ServerListPlusCore core, InstanceStorage<Object> confs) {
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
             if (connectionListener == null) {
