@@ -38,7 +38,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter implements Packe
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        this.client.setAddress((InetSocketAddress) ctx.channel().localAddress());
+        this.client.setAddress((InetSocketAddress) ctx.channel().remoteAddress());
     }
 
     @Override
