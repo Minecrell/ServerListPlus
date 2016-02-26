@@ -25,13 +25,13 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 ext {
-    nettyVersion = '4.1.0.CR1'
+    nettyVersion = '4.1.0.CR3'
 }
 
 dependencies {
     compile 'com.google.guava:guava:19.0'
-    compile 'org.yaml:snakeyaml:1.16'
-    compile 'com.google.code.gson:gson:2.5'
+    compile 'org.yaml:snakeyaml:1.17'
+    compile 'com.google.code.gson:gson:2.6.1'
     compile "io.netty:netty-all:$nettyVersion"
     compile "io.netty:netty-transport-native-epoll:$nettyVersion"
 }
