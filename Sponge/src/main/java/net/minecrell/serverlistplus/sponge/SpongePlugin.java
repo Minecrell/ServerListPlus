@@ -64,6 +64,7 @@ import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.event.server.ClientPingServerEvent;
 import org.spongepowered.api.network.status.Favicon;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.profile.GameProfile;
@@ -83,7 +84,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4.1", dependencies = "after:statusprotocol")
+@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "3.4.1", dependencies = @Dependency(id = "statusprotocol", optional = true))
 public class SpongePlugin implements ServerListPlusPlugin {
 
     @Inject protected Game game;
@@ -195,7 +196,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
         @Listener
         public void onPlayerJoin(ClientConnectionEvent.Login event) {
             core.updateClient(event.getConnection().getAddress().getAddress(),
-                    event.getProfile().getUniqueId(), event.getProfile().getName());
+                    event.getProfile().getUniqueId(), event.getProfile().getName().get());
         }
 
         @Listener
@@ -270,10 +271,10 @@ public class SpongePlugin implements ServerListPlusPlugin {
                                     Helper.splitLinesCached(message);
 
                             for (String line : lines) {
-                                profiles.add(game.getRegistry().createGameProfile(StatusManager.EMPTY_UUID, line));
+                                profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, line));
                             }
                         } else
-                            profiles.add(game.getRegistry().createGameProfile(StatusManager.EMPTY_UUID, message));
+                            profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, message));
                     }
                 }
             }

@@ -40,7 +40,7 @@ ext {
 }
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:3.0.0'
+    compile 'org.spongepowered:spongeapi:4.0.0-SNAPSHOT'
     compile 'net.minecrell.mcstats:statslite-sponge:0.2.1'
 
     compile 'net.minecrell:statusprotocol:0.1'
