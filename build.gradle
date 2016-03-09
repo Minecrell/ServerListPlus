@@ -27,6 +27,7 @@ plugins {
 
 allprojects {
     group = 'net.minecrell'
+    description = 'An extremely customizable server status ping plugin for Minecraft'
     version = '3.4.3-SNAPSHOT'
 
     apply plugin: 'java'
@@ -79,7 +80,7 @@ allprojects {
 
 ext {
     // Placeholders for configuration filtering
-    description = 'An extremely customizable server status ping plugin for Minecraft'
+    description = rootProject.description
     author = 'Minecrell <https://github.com/Minecrell>'
 
     javaPackage = 'net.minecrell.serverlistplus'
