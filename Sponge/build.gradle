@@ -39,7 +39,7 @@ sponge {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:4.0.3'
-    compile 'net.minecrell.mcstats:statslite-sponge:0.2.1'
+    compile 'net.minecrell.mcstats:statslite-sponge:0.2.2'
 
     compile 'net.minecrell:statusprotocol:0.1'
 }
@@ -49,5 +49,5 @@ shadowJar {
         include dependency('net.minecrell.mcstats:statslite-sponge')
     }
 
-    relocate 'net.minecrell.statslite', 'net.minecrell.serverlistplus.statslite'
+    relocate 'net.minecrell.mcstats', 'net.minecrell.serverlistplus.mcstats'
 }
