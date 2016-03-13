@@ -41,7 +41,7 @@ dependencies {
     compile 'org.spongepowered:spongeapi:4.0.3'
     compile 'net.minecrell.mcstats:statslite-sponge:0.2.2'
 
-    compile 'net.minecrell:statusprotocol:0.1'
+    compile 'net.minecrell:statusprotocol:0.2'
 }
 
 shadowJar {
