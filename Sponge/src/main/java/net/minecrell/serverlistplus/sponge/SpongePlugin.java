@@ -118,7 +118,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Inject
     public SpongePlugin(PluginManager pluginManager) {
-        this.handler = pluginManager.isLoaded("statusprotocol") ? new StatusProtocolHandlerImpl() : new DummyStatusProtocolHandler();
+        this.handler = pluginManager.isLoaded("net.minecrell.statusprotocol") ? new StatusProtocolHandlerImpl() : new DummyStatusProtocolHandler();
     }
 
     @Listener
