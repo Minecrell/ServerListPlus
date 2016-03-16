@@ -24,16 +24,12 @@
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-ext {
-    nettyVersion = '4.1.0.CR3'
-}
-
 dependencies {
+    compile 'io.netty:netty-all:4.1.0.CR3'
+
     compile 'com.google.guava:guava:19.0'
     compile 'org.yaml:snakeyaml:1.17'
-    compile 'com.google.code.gson:gson:2.6.1'
-    compile "io.netty:netty-all:$nettyVersion"
-    compile "io.netty:netty-transport-native-epoll:$nettyVersion"
+    compile 'com.google.code.gson:gson:2.6.2'
 }
 
 jar {
@@ -42,11 +38,10 @@ jar {
 
 shadowJar {
     dependencies {
+        include dependency('io.netty:netty-all')
+
         include dependency('com.google.guava:guava')
         include dependency('org.yaml:snakeyaml')
         include dependency('com.google.code.gson:gson')
-
-        include dependency('io.netty:netty-all')
-        include dependency('io.netty:netty-transport-native-epoll')
     }
 }
