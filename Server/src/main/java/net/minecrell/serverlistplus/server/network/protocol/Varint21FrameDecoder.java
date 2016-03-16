@@ -39,7 +39,7 @@ public class Varint21FrameDecoder extends ByteToMessageDecoder {
             }
         }
 
-        throw new CorruptedFrameException("length wider than 21-bit");
+        throw new CorruptedFrameException("Length wider than 21-bit");
     }
 
 }
