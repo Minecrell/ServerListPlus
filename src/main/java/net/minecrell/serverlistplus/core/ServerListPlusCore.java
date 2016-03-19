@@ -280,9 +280,14 @@ public class ServerListPlusCore {
                 sender.sendMessage(COMMAND_PREFIX + tmp + " ServerListPlus...");
 
                 try { // Enable / disable the ServerListPlus profile
-                    profileManager.setEnabled(enable);
-                    sender.sendMessage(COMMAND_PREFIX_SUCCESS + "ServerListPlus has been successfully " + (enable ?
-                            "enabled" : "disabled") + '!');
+                    if (profileManager.setEnabled(enable)) {
+                        sender.sendMessage(COMMAND_PREFIX_SUCCESS + "ServerListPlus has been successfully " + (enable ?
+                                "enabled" : "disabled") + '!');
+                    } else {
+                        enable = profileManager.isEnabled();
+                        sender.sendMessage(COMMAND_PREFIX_SUCCESS + "No changes. ServerListPlus is already " + (enable ?
+                                "enabled" : "disabled") + '!');
+                    }
                 } catch (ServerListPlusException e) {
                     sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while " +
                             (enable ? "enabling" : "disabling") + " ServerListPlus.");

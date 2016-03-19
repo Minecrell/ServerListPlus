@@ -116,12 +116,15 @@ public class JSONProfileManager extends AbstractManager implements ProfileManage
     }
 
     @Override
-    public void setEnabled(boolean state) throws ServerListPlusException {
+    public boolean setEnabled(boolean state) throws ServerListPlusException {
         if (this.enabled != state) {
             this.enabled = state;
             this.save();
             if (enabled) core.reload();
             else core.getPlugin().statusChanged(core.getStatus(), core.getStatus().hasChanges());
+            return true;
         }
+
+        return false;
     }
 }

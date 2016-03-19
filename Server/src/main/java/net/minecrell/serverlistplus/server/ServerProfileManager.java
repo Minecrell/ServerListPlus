@@ -11,7 +11,8 @@ public final class ServerProfileManager implements ProfileManager {
     }
 
     @Override
-    public void setEnabled(boolean state) throws ServerListPlusException {
+    public boolean setEnabled(boolean state) throws ServerListPlusException {
+        return false;
     }
 
     @Override
