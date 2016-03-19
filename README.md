@@ -3,25 +3,26 @@
 [ServerListPlus](http://git.io/slp) is an extremely customizable server status ping plugin for Minecraft. It provides an easy-to-use configuration for almost everything possible using the server status ping. The plugin aims to become the universal solution for server status ping customization, available for Bukkit/Spigot and for BungeeCord servers.
 
 ## Features
-[ServerListPlus](http://git.io/slp) is the most customizable server status ping plugin for Minecraft. It allows you to customize:
-- [**Descriptions**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#descriptions) (MotD)!
-- [**Favicons**](https://github.com/Minecrell/ServerListPlus/wiki/Favicons) (Server icons): Load from files, URLs, or for example - use the player's head!
-- [**Maximum player count!**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#player-count)
-- [**Custom player slot format!**](https://github.com/Minecrell/ServerListPlus/wiki/Player-Slots)
-- [**Player Hover Message**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#player-hover-messages): Display a message when a player hovers the player count in the server list!
-- [**Virtual/Forced Hosts**](https://github.com/Minecrell/ServerListPlus/wiki/Virtual-Hosts): Customize your server status ping depending on the IP used to ping your server!
-- Add multiple entries to choose a random one from your list!
-- Personalize your status ping by adding the player's name to your messages!
-- Use symbols or special characters directly by in your configuration without any escaping!
+[ServerListPlus](https://git.io/slp) provides options in the configuration for:
 
-Please refer to the [features page in the wiki](https://github.com/Minecrell/ServerListPlus/wiki/Features) for even more available features.
+- [**Description/Motd**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#descriptions)
+- [**Favicons**](https://github.com/Minecrell/ServerListPlus/wiki/Favicons) (Server icons): Load from files, URLs, oruse the player's head for example
+- [**Maximum player count**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#player-count)
+- [**Custom player slot format**](https://github.com/Minecrell/ServerListPlus/wiki/Player-Slots)
+- [**Player Hover Message**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#player-hover-messages): Displayed when a player hovers the player count in the server list
+- [**Virtual/Forced Hosts**](https://github.com/Minecrell/ServerListPlus/wiki/Virtual-Hosts): Use a custom configuration if players ping the server by using a special IP/hostname to connect with
+- Multiple entries to choose a random one from the list
+- Personalize the status ping by adding the player's name to the messages
 
-## Download
+The [features page in the wiki](https://github.com/Minecrell/ServerListPlus/wiki/Features) describes all features in detail.
+
+# Download
 You can download the plugin from these official download sites:
 - [GitHub Releases](http://git.io/slp-releases) (recommended)
 - [SpigotMC](http://www.spigotmc.org/resources/serverlistplus.241/)
-- [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/) (possibly outdated)
-- [Development Builds](http://ci.minecrell.net/job/ServerListPlus/) (possibly unstable)
+- [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/) (Possibly outdated)
+- [Sponge](https://forums.spongepowered.org/t/7520?u=minecrell)
+- [Development Builds](https://ci.minecrell.net/job/ServerListPlus/) (unstable, not recommended)
 
 ## Compilation
 To compile the plugin, simply clone the repository and build the plugin using Gradle:
