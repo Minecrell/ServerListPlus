@@ -11,6 +11,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
@@ -46,6 +47,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Timer;
@@ -254,15 +256,34 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         return ping;
     }
 
+    private static final ImmutableSet<String> COMMAND_ALIASES = ImmutableSet.of("serverlistplus", "serverlist+",
+            "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
     private static final Splitter COMMAND_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
 
     public boolean processCommand(String command) {
-        if (command.equals("stop")) {
-            return stop();
+        if (command.charAt(0) == '/') {
+            command = command.substring(1);
+        }
+
+        int pos = command.indexOf(' ');
+        if (pos >= 0) {
+            String root = command.substring(0, pos).toLowerCase(Locale.ENGLISH);
+            if (COMMAND_ALIASES.contains(root)) {
+                command = command.substring(pos + 1);
+            }
         }
 
         List<String> args = COMMAND_SPLITTER.splitToList(command);
+        String subcommand = args.get(0);
+        if (subcommand.equalsIgnoreCase("stop")) {
+            return this.stop();
+        }
+
         this.core.executeCommand(ConsoleCommandSender.INSTANCE, "serverlistplus", args.toArray(new String[args.size()]));
+        if (subcommand.equalsIgnoreCase("help")) {
+            ConsoleCommandSender.INSTANCE.sendMessage("/slp stop - Stop the server.");
+        }
+
         return false;
     }
 
