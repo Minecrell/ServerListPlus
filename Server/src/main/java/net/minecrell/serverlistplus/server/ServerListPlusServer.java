@@ -265,21 +265,30 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
             command = command.substring(1);
         }
 
+        String root = command;
         int pos = command.indexOf(' ');
         if (pos >= 0) {
-            String root = command.substring(0, pos).toLowerCase(Locale.ENGLISH);
-            if (COMMAND_ALIASES.contains(root)) {
-                command = command.substring(pos + 1);
-            }
+            root = command.substring(0, pos).toLowerCase(Locale.ENGLISH);
         }
 
+        if (COMMAND_ALIASES.contains(root)) {
+            if (pos >= 0) {
+                command = command.substring(pos + 1);
+            } else {
+                command = "";
+            }
+        } else {
+            root = "serverlistplus";
+        }
+
+        command = command.trim();
         List<String> args = COMMAND_SPLITTER.splitToList(command);
-        String subcommand = args.get(0);
+        String subcommand = args.isEmpty() ? "" : args.get(0);
         if (subcommand.equalsIgnoreCase("stop")) {
             return this.stop();
         }
 
-        this.core.executeCommand(ConsoleCommandSender.INSTANCE, "serverlistplus", args.toArray(new String[args.size()]));
+        this.core.executeCommand(ConsoleCommandSender.INSTANCE, root, args.toArray(new String[args.size()]));
         if (subcommand.equalsIgnoreCase("help")) {
             ConsoleCommandSender.INSTANCE.sendMessage("/slp stop - Stop the server.");
         }
