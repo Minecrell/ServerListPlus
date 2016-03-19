@@ -38,7 +38,6 @@ import net.minecrell.serverlistplus.server.status.StatusClient;
 import net.minecrell.serverlistplus.server.status.StatusPingResponse;
 import net.minecrell.serverlistplus.server.status.UserProfile;
 import net.minecrell.serverlistplus.server.util.FormattingCodes;
-import net.minecrell.serverlistplus.server.util.RunnableTimerTask;
 
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
@@ -50,8 +49,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -65,7 +64,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
 
     private final NetworkManager network;
 
-    private final Timer timer = new Timer(true);
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private boolean started;
 
@@ -343,14 +342,12 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
 
     @Override
     public void runAsync(Runnable task) {
-        this.timer.schedule(new RunnableTimerTask(task), 0); // TODO: Remove
+        this.scheduler.execute(task);
     }
 
     @Override
     public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
-        TimerTask timerTask = new RunnableTimerTask(task);
-        this.timer.scheduleAtFixedRate(timerTask, 0, unit.toMillis(repeat));
-        return new ScheduledTimerTask(timerTask);
+        return new ScheduledFutureTask(this.scheduler.scheduleAtFixedRate(task, 0, repeat, unit));
     }
 
     @Override

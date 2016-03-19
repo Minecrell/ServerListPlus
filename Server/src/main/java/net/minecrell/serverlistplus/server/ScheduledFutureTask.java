@@ -4,16 +4,16 @@ import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.util.Wrapper;
 
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
 
-public final class ScheduledTimerTask extends Wrapper<TimerTask> implements ScheduledTask {
+public final class ScheduledFutureTask extends Wrapper<ScheduledFuture<?>> implements ScheduledTask {
 
-    public ScheduledTimerTask(TimerTask handle) {
+    public ScheduledFutureTask(ScheduledFuture<?> handle) {
         super(handle);
     }
 
     @Override
     public void cancel() {
-        this.handle.cancel();
+        this.handle.cancel(false);
     }
-
 }
