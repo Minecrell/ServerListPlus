@@ -109,7 +109,7 @@ public class ConfigurationManager extends AbstractManager {
 
                 getLogger().log(REPORT, newStorage.size() + " configurations loaded.");
             } else {
-                newStorage = InstanceStorages.createOrdered().withDefaults(examples);
+                newStorage = InstanceStorages.createOrdered().withDefaults(examples.withDefaults(defaults));
             }
 
             this.storage = newStorage;
