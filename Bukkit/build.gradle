@@ -92,7 +92,7 @@ configure([v1_7_X, v1_8]) {
 
     dependencies {
         include project(':')
-        include dependency('org.mcstats.bukkit:metrics-lite:R7')
+        include dependency('org.mcstats.bukkit:metrics-lite')
     }
 
     relocate 'org.mcstats', "${pluginPackage}.metrics"
