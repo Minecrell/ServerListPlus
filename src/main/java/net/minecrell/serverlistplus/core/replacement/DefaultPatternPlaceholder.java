@@ -26,11 +26,16 @@ package net.minecrell.serverlistplus.core.replacement;
 import lombok.Getter;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.replacement.util.Patterns;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.ContinousIterator;
+import net.minecrell.serverlistplus.core.util.TimeFormatter;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -105,6 +110,72 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(ServerListPlusCore core, String s) {
             return replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
+        }
+    },
+    LAST_ONLINE(Pattern.compile("%last_online(?:_precise)?_duration(?:@([\\w-]+))?%")) {
+
+        @Override
+        public String replace(StatusResponse response, String s) {
+            PlayerIdentity identity = response.getRequest().getIdentity();
+            if (identity == null) {
+                return super.replace(response, s);
+            }
+
+            final Date date = identity.getTime();
+            if (date == null) {
+                return super.replace(response, s);
+            }
+
+            final Matcher matcher = matcher(s);
+            return Patterns.replace(matcher, s, new ContinousIterator<Object>() {
+                @Override
+                public Object next() {
+                    boolean exact = matcher.group().startsWith("%last_online_precise");
+                    TimeFormatter formatter = TimeFormatter.get(matcher.group(1));
+                    return exact ? formatter.formatPreciseDuration(date) : formatter.formatDuration(date);
+                }
+            });
+        }
+
+        @Override
+        public String replace(ServerListPlusCore core, String s) {
+            return replace(s, core.getConf(PluginConf.class).Unknown.Date);
+        }
+    },
+    LAST_ONLINE_DATE(Pattern.compile("%last_online_date(?:time)?(?:\\|(.*?))?(?:@([\\w-]+))?%")) {
+        @Override
+        public String replace(StatusResponse response, String s) {
+            PlayerIdentity identity = response.getRequest().getIdentity();
+            if (identity == null) {
+                return super.replace(response, s);
+            }
+
+            final Date date = identity.getTime();
+            if (date == null) {
+                return super.replace(response, s);
+            }
+
+            final Matcher matcher = matcher(s);
+            return Patterns.replace(matcher, s, new ContinousIterator<Object>() {
+                @Override
+                public Object next() {
+                    boolean dateTime = matcher.group().startsWith("%last_online_datetime");
+
+                    TimeFormatter formatter = TimeFormatter.get(matcher.group(2));
+
+                    String format = matcher.group(1);
+                    if (format == null) {
+                        format = "DEFAULT";
+                    }
+
+                    return dateTime ? formatter.formatDateTime(date, format) : formatter.formatDate(date, format);
+                }
+            });
+        }
+
+        @Override
+        public String replace(ServerListPlusCore core, String s) {
+            return replace(s, core.getConf(PluginConf.class).Unknown.Date);
         }
     };
 

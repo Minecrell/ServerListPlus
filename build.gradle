@@ -102,6 +102,7 @@ dependencies {
     compile 'com.google.guava:guava:17.0'
     compile 'org.yaml:snakeyaml:1.15'
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
 }
 
 processResources {
@@ -132,7 +133,11 @@ subprojects {
 
         dependencies {
             include project(rootProject.path)
+            include dependency('org.ocpsoft.prettytime:prettytime')
         }
+
+        exclude 'META-INF/services/**'
+        relocate 'org.ocpsoft.prettytime', 'net.minecrell.serverlistplus.core.lib.prettytime'
     }
 
     artifacts {

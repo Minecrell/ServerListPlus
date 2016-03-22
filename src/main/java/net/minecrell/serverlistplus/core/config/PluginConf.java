@@ -77,6 +77,7 @@ public class PluginConf {
     public static class UnknownConf {
         public String PlayerName = "player";
         public String PlayerCount = "???";
+        public String Date = "???";
     }
 
     public static class FaviconConf {
