@@ -22,7 +22,7 @@ You can download the plugin from these official download sites:
 - [SpigotMC](http://www.spigotmc.org/resources/serverlistplus.241/)
 - [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/) (possibly outdated)
 - [Sponge](https://forums.spongepowered.org/t/7520?u=minecrell)
-- [Aquifer](https://aquifermc.org/resources/serverlistplus.9/)
+- [Aquifer](https://aquifermc.org/resources/serverlistplus.10/)
 - [Development Builds](https://ci.minecrell.net/job/ServerListPlus/) (unstable, not recommended)
 
 ## Compilation
