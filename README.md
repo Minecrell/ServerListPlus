@@ -20,8 +20,9 @@ The [features page in the wiki](https://github.com/Minecrell/ServerListPlus/wiki
 You can download the plugin from these official download sites:
 - [GitHub Releases](http://git.io/slp-releases) (recommended)
 - [SpigotMC](http://www.spigotmc.org/resources/serverlistplus.241/)
-- [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/) (Possibly outdated)
+- [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/) (possibly outdated)
 - [Sponge](https://forums.spongepowered.org/t/7520?u=minecrell)
+- [Aquifer](https://aquifermc.org/resources/serverlistplus.9/)
 - [Development Builds](https://ci.minecrell.net/job/ServerListPlus/) (unstable, not recommended)
 
 ## Compilation
