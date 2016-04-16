@@ -25,7 +25,7 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 dependencies {
-    compile 'io.netty:netty-all:4.1.0.CR3'
+    compile 'io.netty:netty-all:4.1.0.CR7'
 
     compile 'com.google.guava:guava:19.0'
     compile 'org.yaml:snakeyaml:1.17'
