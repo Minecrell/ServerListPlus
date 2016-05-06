@@ -34,8 +34,8 @@ import lombok.SneakyThrows;
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.world.World;
+import net.canarymod.chat.ChatFormat;
 import net.canarymod.chat.MessageReceiver;
-import net.canarymod.chat.TextFormat;
 import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
 import net.canarymod.commandsys.CommandListener;
@@ -312,7 +312,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     @Override
     public String colorize(String s) {
-        return COLOR_CODE.matcher(s).replaceAll(TextFormat.MARKER + "$1");
+        return COLOR_CODE.matcher(s).replaceAll(ChatFormat.MARKER + "$1");
     }
 
     @Override
