@@ -30,6 +30,7 @@ import java.util.List;
 public class PersonalizedStatusConf {
     public StatusConf Default;
     public StatusConf Personalized;
+    public StatusConf Banned;
 
     public static class StatusConf {
         public List<String> Description;

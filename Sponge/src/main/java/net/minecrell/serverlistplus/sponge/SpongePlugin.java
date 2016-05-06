@@ -37,6 +37,7 @@ import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -68,6 +69,7 @@ import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.profile.GameProfile;
+import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -437,5 +439,14 @@ public class SpongePlugin implements ServerListPlusPlugin {
             this.pingListener = null;
             logger.debug("Unregistered ping listener.");
         }
+    }
+
+    @Override
+    public boolean isBanned(PlayerIdentity playerIdentity) {
+        if (game.getServiceManager().provide(BanService.class).isPresent()) {
+            final GameProfile profile = GameProfile.of(playerIdentity.getUuid(), playerIdentity.getName());
+            return game.getServiceManager().provide(BanService.class).get().isBanned(profile);
+        }
+        return false;
     }
 }

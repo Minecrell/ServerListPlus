@@ -57,6 +57,7 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -381,5 +382,10 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.pingListener = null;
             getLogger().log(DEBUG, "Unregistered proxy ping listener.");
         }
+    }
+
+    @Override
+    public boolean isBanned(PlayerIdentity playerIdentity) {
+        return false;
     }
 }

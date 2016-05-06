@@ -52,6 +52,7 @@ import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -387,5 +388,10 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             this.pingListener = null;
             getLogman().debug("Unregistered proxy ping listener.");
         }
+    }
+
+    @Override
+    public boolean isBanned(PlayerIdentity playerIdentity) {
+        return Canary.bans().isBanned(playerIdentity.getUuid().toString());
     }
 }
