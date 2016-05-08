@@ -26,6 +26,7 @@ package net.minecrell.serverlistplus.core.player;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
 
 import java.util.Date;
 import java.util.UUID;
@@ -38,6 +39,10 @@ public class PlayerIdentity {
 
     public void update() {
         this.time = new Date();
+    }
+
+    public boolean isBanned(ServerListPlusCore core) {
+        return core.getPlugin().isBanned(this);
     }
 
     public static PlayerIdentity create(UUID uuid, String name) {

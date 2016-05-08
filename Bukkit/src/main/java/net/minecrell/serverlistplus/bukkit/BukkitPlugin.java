@@ -46,6 +46,7 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
+import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -53,6 +54,7 @@ import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import org.bukkit.BanList;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -449,5 +451,10 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (protocol != null && protocol.unregister())
                 getLogger().log(DEBUG, "Unregistered status protocol handler.");
         }
+    }
+
+    @Override
+    public boolean isBanned(PlayerIdentity playerIdentity) {
+        return getServer().getBanList(BanList.Type.NAME).isBanned(playerIdentity.getName());
     }
 }

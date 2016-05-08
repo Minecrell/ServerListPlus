@@ -41,14 +41,16 @@ import java.util.List;
 public class PersonalizedStatusPatch {
     private final StatusPatch def;
     private final @Getter StatusPatch personalized;
+    private final @Getter StatusPatch banned;
 
     public PersonalizedStatusPatch() {
-        this(null, null);
+        this(null, null, null);
     }
 
-    public PersonalizedStatusPatch(StatusPatch def, StatusPatch personalized) {
+    public PersonalizedStatusPatch(StatusPatch def, StatusPatch personalized, StatusPatch banned) {
         this.def = def != null ? def : StatusPatch.empty();
         this.personalized = personalized != null ? personalized : StatusPatch.empty();
+        this.banned = banned != null ? banned : StatusPatch.empty();
     }
 
     public StatusPatch getDefault() {
@@ -70,63 +72,146 @@ public class PersonalizedStatusPatch {
     // Getters
     public Boolean hidePlayers(StatusResponse response) {
         Boolean result;
-        return response.getRequest().isIdentified() && (result = personalized.getHidePlayers()) != null ?
-                result : def.getHidePlayers();
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getHidePlayers() != null) {
+                return banned.getHidePlayers();
+            }
+
+            if (personalized.getHidePlayers() != null) {
+                return personalized.getHidePlayers();
+            }
+        }
+
+        return def.getHidePlayers();
     }
 
     public Integer getOnlinePlayers(StatusResponse response) {
         List<IntegerRange> result;
-        return nextNumber(nextEntry(
-                response.getRequest().isIdentified() && (result = personalized.getOnline()) != null ?
-                        result : def.getOnline()));
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getOnline() != null) {
+                return nextNumber(nextEntry(banned.getOnline()));
+            }
+
+            if (personalized.getOnline() != null) {
+                return nextNumber(nextEntry(personalized.getOnline()));
+            }
+        }
+
+        return nextNumber(nextEntry(def.getOnline()));
     }
 
     public Integer getMaxPlayers(StatusResponse response) {
         List<IntegerRange> result;
-        return nextNumber(nextEntry(
-                response.getRequest().isIdentified() && (result = personalized.getMax()) != null ?
-                        result : def.getMax()));
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getMax() != null) {
+                return nextNumber(nextEntry(banned.getMax()));
+            }
+
+            if (personalized.getMax() != null) {
+                return nextNumber(nextEntry(personalized.getMax()));
+            }
+        }
+
+        return nextNumber(nextEntry(def.getMax()));
     }
 
     public String getDescription(StatusResponse response) {
         List<String> result;
-        return prepareRandomEntry(response,
-                response.getRequest().isIdentified() && (result = personalized.getDescriptions()) != null ?
-                        result : def.getDescriptions());
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getDescriptions() != null) {
+                return prepareRandomEntry(response, banned.getDescriptions());
+            }
+
+            if (personalized.getDescriptions() != null) {
+                return prepareRandomEntry(response, personalized.getDescriptions());
+            }
+        }
+
+        return prepareRandomEntry(response, def.getDescriptions());
     }
 
     public String getPlayerHover(StatusResponse response) {
         List<String> result;
-        return prepareRandomEntry(response,
-                response.getRequest().isIdentified() && (result = personalized.getPlayerHovers()) != null ?
-                        result : def.getPlayerHovers());
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getPlayerHovers() != null) {
+                return prepareRandomEntry(response, banned.getPlayerHovers());
+            }
+
+            if (personalized.getPlayerHovers() != null) {
+                return prepareRandomEntry(response, personalized.getPlayerHovers());
+            }
+        }
+
+        return prepareRandomEntry(response, def.getPlayerHovers());
     }
 
     public String getPlayerSlots(StatusResponse response) {
         List<String> result;
-        return prepareRandomEntry(response,
-                response.getRequest().isIdentified() && (result = personalized.getSlots()) != null ?
-                        result : def.getSlots());
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getSlots() != null) {
+                return prepareRandomEntry(response, banned.getSlots());
+            }
+
+            if (personalized.getSlots() != null) {
+                return prepareRandomEntry(response, personalized.getSlots());
+            }
+        }
+
+        return prepareRandomEntry(response, def.getSlots());
     }
 
     public String getVersion(StatusResponse response) {
         List<String> result;
-        return prepareRandomEntry(response,
-                response.getRequest().isIdentified() && (result = personalized.getVersions()) != null ?
-                        result : def.getVersions());
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getVersions() != null) {
+                return prepareRandomEntry(response, banned.getVersions());
+            }
+
+            if (personalized.getVersions() != null) {
+                return prepareRandomEntry(response, personalized.getVersions());
+            }
+        }
+
+        return prepareRandomEntry(response, def.getVersions());
     }
 
     public Integer getProtocolVersion(StatusResponse response) {
         Integer result;
-        return response.getRequest().isIdentified() && (result = personalized.getProtocolVersion()) != null ?
-                result : def.getProtocolVersion();
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getProtocolVersion() != null) {
+                return banned.getProtocolVersion();
+            }
+
+            if (personalized.getProtocolVersion() != null) {
+                return personalized.getProtocolVersion();
+            }
+        }
+
+        return nextNumber(nextEntry(def.getMax()));
     }
 
     public FaviconSource getFavicon(StatusResponse response) {
         List<FaviconSource> result;
-        FaviconSource favicon = nextEntry(
-                response.getRequest().isIdentified() && (result = personalized.getFavicons()) != null ?
-                        result : def.getFavicons());
+        FaviconSource favicon = null;
+        if (response.getRequest().isIdentified()) {
+            if (response.getRequest().getIdentity().isBanned(response.getCore())
+                    && banned.getFavicons() != null) {
+                favicon = nextEntry(banned.getFavicons());
+            } else if (personalized.getFavicons() != null) {
+                favicon = nextEntry(personalized.getFavicons());
+            }
+        } else {
+            favicon = nextEntry(def.getFavicons());
+        }
+
         if (favicon == null) return null;
         Collection<DynamicReplacer> replacer = response.getStatus().getReplacers(favicon.getSource());
         if (replacer.size() > 0) return favicon.withSource(ReplacementManager.replaceDynamic(response,

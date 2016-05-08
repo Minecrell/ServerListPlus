@@ -124,7 +124,8 @@ public class StatusManager extends AbstractManager {
         }
 
         public PersonalizedStatusPatch preparePersonalizedPatch(PersonalizedStatusConf conf) {
-            return new PersonalizedStatusPatch(preparePatch(conf.Default), preparePatch(conf.Personalized));
+            return new PersonalizedStatusPatch(preparePatch(conf.Default), preparePatch(conf.Personalized),
+                    preparePatch(conf.Banned));
         }
 
         public StatusPatch preparePatch(PersonalizedStatusConf.StatusConf conf) {
