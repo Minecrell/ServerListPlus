@@ -7,6 +7,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import net.minecrell.serverlistplus.server.ServerListPlusServer;
 import net.minecrell.serverlistplus.server.network.protocol.MinecraftDecoder;
@@ -48,8 +49,7 @@ public final  class NetworkManager extends ChannelInitializer<Channel> {
                 .group(bossGroup, workerGroup)
                 .channel(Netty.getServerChannel())
                 .option(ChannelOption.SO_REUSEADDR, true)
-                .childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 1024 * 1024 * 10)
-                .childOption(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 1024 * 1024)
+                .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(1024 * 1024, 1024 * 1024 * 10))
                 .childAttr(PROTOCOL_STATE, ProtocolState.HANDSHAKE)
                 .childHandler(this)
                 .bind(this.address)
