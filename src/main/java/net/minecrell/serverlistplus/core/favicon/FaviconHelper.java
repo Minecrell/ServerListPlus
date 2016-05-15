@@ -92,7 +92,7 @@ public final class FaviconHelper {
 
     private static BufferedImage fromSkin(ServerListPlusCore core, URL url, boolean helm) throws IOException {
         BufferedImage skin = fromURL(core, url);
-        if (helm) {
+        if (helm && !isSolidColor(skin, HELM_X, HELM_Y, HEAD_SIZE, HEAD_SIZE)) {
             Graphics2D g = skin.createGraphics();
             g.copyArea(HELM_X, HELM_Y, HEAD_SIZE, HEAD_SIZE, HEAD_X - HELM_X, HEAD_Y - HELM_Y);
             g.dispose();
@@ -168,4 +168,17 @@ public final class FaviconHelper {
             return null;
         }
     }
+
+    private static boolean isSolidColor(BufferedImage image, int x, int y, int width, int height) {
+        int base = image.getRGB(x, y);
+        for (; x < width; x++) {
+            for (; y < height; y++) {
+                if (base != image.getRGB(x, y)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
