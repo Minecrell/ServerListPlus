@@ -1,46 +1,19 @@
-/*
- *        _____                     __    _     _   _____ _
- *       |   __|___ ___ _ _ ___ ___|  |  |_|___| |_|  _  | |_ _ ___
- *       |__   | -_|  _| | | -_|  _|  |__| |_ -|  _|   __| | | |_ -|
- *       |_____|___|_|  \_/|___|_| |_____|_|___|_| |__|  |_|___|___|
- *
- *  ServerListPlus - http://git.io/slp
- *  Copyright (c) 2014, Minecrell <https://github.com/Minecrell>
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'net.minecrell.licenser' version '0.1.5'
 }
 
 allprojects {
     group = 'net.minecrell'
     description = 'An extremely customizable server status ping plugin for Minecraft'
-    version = '3.4.7-SNAPSHOT'
+    version = '4.0-SNAPSHOT'
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
     apply plugin: 'idea'
 
-    // TODO: Update to Java 8
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
-
-    configurations {
-        provided
-    }
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
 
     repositories {
         mavenCentral()
@@ -50,72 +23,26 @@ allprojects {
         }
     }
 
-    dependencies {
-        provided 'org.projectlombok:lombok:1.16.8'
-    }
-
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
         options.deprecation = true
     }
 
-    sourceSets {
-        main {
-            compileClasspath += configurations.provided
-        }
+    apply plugin: 'net.minecrell.licenser'
+
+    license {
+        header = rootProject.file('HEADER')
+        include '**/*.java'
     }
-
-    eclipse {
-        classpath {
-            plusConfigurations += [configurations.provided]
-        }
-    }
-
-    idea {
-        module {
-            scopes.PROVIDED.plus += [configurations.provided]
-        }
-    }
-}
-
-ext {
-    // Placeholders for configuration filtering
-    description = rootProject.description
-    author = 'Minecrell <https://github.com/Minecrell>'
-
-    javaPackage = 'net.minecrell.serverlistplus'
-    resourceTokens = [
-            'Name': rootProject.name,
-            'Description': description,
-            'Version': version,
-            'Author': author,
-            'Website': 'http://git.io/slp',
-            'Wiki': 'http://git.io/slp-wiki'
-    ];
-
-    universalProjects = [
-            ':Bukkit', ':Bungee', ':Canary', ':Sponge'
-    ]
 }
 
 dependencies {
     compile 'com.google.guava:guava:17.0'
-    compile 'org.yaml:snakeyaml:1.15'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
 }
 
 processResources {
-    include 'HEADER'
-    include 'LICENSE'
-    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
-}
-
-processResources << {
-    // Create an ABOUT file with information about the core
-    def prop = new Properties();
-    prop.putAll resourceTokens
-    prop.store new File(destinationDir, 'ABOUT').newOutputStream(), null
+    from file('LICENSE')
 }
 
 subprojects {
@@ -133,11 +60,7 @@ subprojects {
 
         dependencies {
             include project(rootProject.path)
-            include dependency('org.ocpsoft.prettytime:prettytime')
         }
-
-        exclude 'META-INF/services/**'
-        relocate 'org.ocpsoft.prettytime', 'net.minecrell.serverlistplus.core.lib.prettytime'
     }
 
     artifacts {
@@ -154,14 +77,6 @@ apply plugin: 'maven-publish'
 
 task universal(type: Jar) {
     classifier = 'Universal'
-
-    // TODO: I should probaby improve this...
-    duplicatesStrategy 'exclude' // Skip the second plugin.yml of the Bungee plugin
-    universalProjects.each {
-        def p = project(it)
-        dependsOn p.tasks.shadowJar // Now wait to complete the plugin creation
-        from zipTree(p.tasks.shadowJar.archivePath) // And add it to our universal JAR
-    }
 }
 
 task sourceJar(type: Jar) {
