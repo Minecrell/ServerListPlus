@@ -49,7 +49,7 @@ ext {
 }
 
 dependencies {
-    compile 'org.bukkit:bukkit:1.9-R0.1-SNAPSHOT'
+    compile 'org.bukkit:bukkit:1.9.4-R0.1-SNAPSHOT'
     compile 'com.comphenix.protocol:ProtocolLib:3.6.5'
     compile('org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT') {
         transitive = false
