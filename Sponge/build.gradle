@@ -34,7 +34,7 @@ ext {
 }
 
 sponge {
-    plugin.id = 'erverlistplus'
+    plugin.id = 'serverlistplus'
 }
 
 dependencies {
