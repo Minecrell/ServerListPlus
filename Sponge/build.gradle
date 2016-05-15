@@ -22,7 +22,7 @@
  */
 
 plugins {
-    id 'org.spongepowered.plugin' version '0.5.1'
+    id 'org.spongepowered.plugin' version '0.5.2'
 }
 
 ext {
@@ -34,14 +34,14 @@ ext {
 }
 
 sponge {
-    plugin.id = 'net.minecrell.serverlistplus'
+    plugin.id = 'erverlistplus'
 }
 
 dependencies {
     compile 'org.spongepowered:spongeapi:4.0.3'
     compile 'net.minecrell.mcstats:statslite-sponge:0.2.2'
 
-    compile 'net.minecrell:statusprotocol:0.2'
+    compile 'net.minecrell:statusprotocol:0.3'
 }
 
 shadowJar {

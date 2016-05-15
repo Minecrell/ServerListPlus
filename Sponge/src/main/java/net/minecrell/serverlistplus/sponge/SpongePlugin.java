@@ -86,8 +86,8 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-@Plugin(id = "net.minecrell.serverlistplus", name = "ServerListPlus",
-        dependencies = @Dependency(id = "net.minecrell.statusprotocol", optional = true))
+@Plugin(id = "serverlistplus", name = "ServerListPlus",
+        dependencies = @Dependency(id = "statusprotocol", optional = true))
 public class SpongePlugin implements ServerListPlusPlugin {
 
     @Inject protected Game game;
@@ -120,7 +120,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Inject
     public SpongePlugin(PluginManager pluginManager) {
-        this.handler = pluginManager.isLoaded("net.minecrell.statusprotocol") ? new StatusProtocolHandlerImpl() : new DummyStatusProtocolHandler();
+        this.handler = pluginManager.isLoaded("statusprotocol") ? new StatusProtocolHandlerImpl() : new DummyStatusProtocolHandler();
     }
 
     @Listener
