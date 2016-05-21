@@ -1,0 +1,11 @@
+plugins {
+    id 'org.spongepowered.plugin' version '0.5.2'
+}
+
+sponge {
+    plugin.id = 'serverlistplus'
+}
+
+dependencies {
+    compile 'org.spongepowered:spongeapi:4.0.3'
+}
