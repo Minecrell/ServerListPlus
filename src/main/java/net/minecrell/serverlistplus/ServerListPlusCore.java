@@ -25,7 +25,7 @@ import net.minecrell.serverlistplus.logger.Logger;
 
 import java.util.Objects;
 
-public class ServerListPlusCore implements ServerListPlus {
+public final class ServerListPlusCore implements ServerListPlus {
 
     private final ImplementationType implType;
     private final ServerListPlusImpl impl;
