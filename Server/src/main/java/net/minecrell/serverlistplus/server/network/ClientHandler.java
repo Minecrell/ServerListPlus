@@ -25,11 +25,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter implements Packe
     private StatusClient client = new StatusClient();
 
     public static ProtocolState getState(ChannelHandlerContext ctx) {
-        return ctx.attr(PROTOCOL_STATE).get();
+        return ctx.channel().attr(PROTOCOL_STATE).get();
     }
 
     public static void setState(ChannelHandlerContext ctx, ProtocolState state) {
-        ctx.attr(PROTOCOL_STATE).set(state);
+        ctx.channel().attr(PROTOCOL_STATE).set(state);
     }
 
     private void checkState(ChannelHandlerContext ctx, ProtocolState state) {
