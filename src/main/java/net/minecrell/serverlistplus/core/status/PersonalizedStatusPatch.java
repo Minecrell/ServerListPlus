@@ -32,7 +32,6 @@ import lombok.ToString;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
-import net.minecrell.serverlistplus.core.util.IntegerRange;
 
 import java.util.Collection;
 import java.util.List;
@@ -71,7 +70,6 @@ public class PersonalizedStatusPatch {
 
     // Getters
     public Boolean hidePlayers(StatusResponse response) {
-        Boolean result;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
                     && banned.getHidePlayers() != null) {
@@ -87,7 +85,6 @@ public class PersonalizedStatusPatch {
     }
 
     public Integer getOnlinePlayers(StatusResponse response) {
-        List<IntegerRange> result;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
                     && banned.getOnline() != null) {
@@ -103,7 +100,6 @@ public class PersonalizedStatusPatch {
     }
 
     public Integer getMaxPlayers(StatusResponse response) {
-        List<IntegerRange> result;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
                     && banned.getMax() != null) {
@@ -119,7 +115,6 @@ public class PersonalizedStatusPatch {
     }
 
     public String getDescription(StatusResponse response) {
-        List<String> result;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
                     && banned.getDescriptions() != null) {
@@ -135,7 +130,6 @@ public class PersonalizedStatusPatch {
     }
 
     public String getPlayerHover(StatusResponse response) {
-        List<String> result;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
                     && banned.getPlayerHovers() != null) {
@@ -151,7 +145,6 @@ public class PersonalizedStatusPatch {
     }
 
     public String getPlayerSlots(StatusResponse response) {
-        List<String> result;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
                     && banned.getSlots() != null) {
@@ -167,7 +160,6 @@ public class PersonalizedStatusPatch {
     }
 
     public String getVersion(StatusResponse response) {
-        List<String> result;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
                     && banned.getVersions() != null) {
@@ -183,7 +175,6 @@ public class PersonalizedStatusPatch {
     }
 
     public Integer getProtocolVersion(StatusResponse response) {
-        Integer result;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
                     && banned.getProtocolVersion() != null) {
@@ -195,11 +186,10 @@ public class PersonalizedStatusPatch {
             }
         }
 
-        return nextNumber(nextEntry(def.getMax()));
+        return def.getProtocolVersion();
     }
 
     public FaviconSource getFavicon(StatusResponse response) {
-        List<FaviconSource> result;
         FaviconSource favicon = null;
         if (response.getRequest().isIdentified()) {
             if (response.getRequest().getIdentity().isBanned(response.getCore())
