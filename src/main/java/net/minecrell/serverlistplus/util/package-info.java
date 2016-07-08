@@ -16,12 +16,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.impl;
-
-import net.minecrell.serverlistplus.ServerListPlus;
-
-public interface ServerListPlusImpl {
-
-    ServerListPlus getCore();
-
-}
+@NonnullByDefault
+package net.minecrell.serverlistplus.util;

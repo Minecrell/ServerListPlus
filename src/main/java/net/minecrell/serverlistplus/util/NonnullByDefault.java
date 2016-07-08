@@ -16,15 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api;
+package net.minecrell.serverlistplus.util;
 
-import net.minecrell.serverlistplus.impl.ImplementationType;
-import net.minecrell.serverlistplus.logger.Logger;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public interface ServerListPlus {
+import javax.annotation.Nonnull;
+import javax.annotation.meta.TypeQualifierDefault;
 
-    ImplementationType getImplementationType();
-
-    Logger getLogger();
+@Nonnull
+@TypeQualifierDefault({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface NonnullByDefault {
 
 }

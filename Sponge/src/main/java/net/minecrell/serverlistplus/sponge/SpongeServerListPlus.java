@@ -19,12 +19,14 @@
 package net.minecrell.serverlistplus.sponge;
 
 import com.google.inject.Inject;
-import net.minecrell.serverlistplus.ServerListPlusCore;
+import net.minecrell.serverlistplus.ServerListPlus;
 import net.minecrell.serverlistplus.impl.ImplementationType;
 import net.minecrell.serverlistplus.impl.ServerListPlusImpl;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 import java.nio.file.Path;
@@ -34,27 +36,25 @@ public final class SpongeServerListPlus implements ServerListPlusImpl {
 
     private final Game game;
     private final Logger logger;
-    private final Path configDir;
 
-    private final ServerListPlusCore core;
+    private final ServerListPlus core;
 
     @Inject
     public SpongeServerListPlus(Game game, Logger logger, @ConfigDir(sharedRoot = false) Path configDir) {
         this.game = game;
         this.logger = logger;
-        this.configDir = configDir;
 
-        this.core = new ServerListPlusCore(ImplementationType.SPONGE, this, new Slf4jLogger(logger));
+        this.core = new ServerListPlus(ImplementationType.SPONGE, this, new Slf4jLogger(logger), configDir);
     }
 
     @Override
-    public ServerListPlusCore getCore() {
+    public ServerListPlus getCore() {
         return this.core;
     }
 
-    @Override
-    public Path getConfigFolder() {
-        return configDir;
+    @Listener
+    public void onPreInit(GamePreInitializationEvent event) {
+        this.core.initialize();
     }
 
 }

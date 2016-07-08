@@ -16,12 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.impl;
+package net.minecrell.serverlistplus.manager;
 
 import net.minecrell.serverlistplus.ServerListPlus;
+import net.minecrell.serverlistplus.logger.Logger;
 
-public interface ServerListPlusImpl {
+import java.util.Objects;
 
-    ServerListPlus getCore();
+public abstract class Manager {
+
+    protected final ServerListPlus core;
+
+    public Manager(ServerListPlus core) {
+        this.core = Objects.requireNonNull(core, "core");
+    }
+
+    public final ServerListPlus getCore() {
+        return this.core;
+    }
+
+    protected final Logger getLogger() {
+        return this.core.getLogger();
+    }
 
 }

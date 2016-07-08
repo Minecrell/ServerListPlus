@@ -1,5 +1,5 @@
 plugins {
-    id 'org.spongepowered.plugin' version '0.5.2'
+    id 'org.spongepowered.plugin' version '0.6'
 }
 
 sponge {
@@ -7,5 +7,5 @@ sponge {
 }
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:4.0.3'
+    compile 'org.spongepowered:spongeapi:4.1.0'
 }

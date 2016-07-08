@@ -18,7 +18,7 @@
 
 package net.minecrell.serverlistplus.logger;
 
-import net.minecrell.serverlistplus.api.util.Literals;
+import net.minecrell.serverlistplus.util.Literals;
 
 import java.util.Objects;
 

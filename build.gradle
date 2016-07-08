@@ -1,6 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
-    id 'net.minecrell.licenser' version '0.1.5'
+    id 'net.minecrell.licenser' version '0.2.1'
 }
 
 allprojects {
@@ -39,6 +39,9 @@ allprojects {
 dependencies {
     compile 'com.google.guava:guava:17.0'
     compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.yaml:snakeyaml:1.15'
+
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.1'
 }
 
 processResources {

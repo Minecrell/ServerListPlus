@@ -16,12 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.impl;
+package net.minecrell.serverlistplus.util;
 
-import net.minecrell.serverlistplus.ServerListPlus;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public interface ServerListPlusImpl {
+import javax.annotation.Nullable;
+import javax.annotation.meta.TypeQualifierDefault;
 
-    ServerListPlus getCore();
+@Nullable
+@TypeQualifierDefault({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface NullableByDefault {
 
 }

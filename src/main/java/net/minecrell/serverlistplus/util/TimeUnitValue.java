@@ -16,12 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.impl;
+package net.minecrell.serverlistplus.util;
 
-import net.minecrell.serverlistplus.ServerListPlus;
+import java.util.concurrent.TimeUnit;
 
-public interface ServerListPlusImpl {
+public final class TimeUnitValue {
 
-    ServerListPlus getCore();
+    private static final String[] symbols = {"ns", "μs", "ms", "s", "min", "h", "d"};
+    private static final TimeUnit[] units = TimeUnit.values();
+
+    private final TimeUnit unit;
+    private final long value;
+
+    public TimeUnitValue(TimeUnit unit, long value) {
+        this.unit = unit;
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return value + symbols[unit.ordinal()];
+    }
 
 }

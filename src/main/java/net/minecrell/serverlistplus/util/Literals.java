@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.api.util;
+package net.minecrell.serverlistplus.util;
 
 import java.util.Objects;
 

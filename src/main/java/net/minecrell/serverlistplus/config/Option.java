@@ -16,12 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.impl;
+package net.minecrell.serverlistplus.config;
 
-import net.minecrell.serverlistplus.ServerListPlus;
+import net.minecrell.serverlistplus.util.NonnullByDefault;
 
-public interface ServerListPlusImpl {
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    ServerListPlus getCore();
+@NonnullByDefault
+@Documented
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Option {
+
+    String name();
+
+    // TODO: Description
 
 }

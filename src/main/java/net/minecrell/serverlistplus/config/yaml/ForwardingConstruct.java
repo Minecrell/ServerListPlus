@@ -16,12 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.impl;
+package net.minecrell.serverlistplus.config.yaml;
 
-import net.minecrell.serverlistplus.ServerListPlus;
+import org.yaml.snakeyaml.constructor.Construct;
+import org.yaml.snakeyaml.nodes.Node;
 
-public interface ServerListPlusImpl {
+import java.util.Objects;
 
-    ServerListPlus getCore();
+abstract class ForwardingConstruct implements Construct {
+
+    private final Construct handle;
+
+    ForwardingConstruct(Construct handle) {
+        this.handle = Objects.requireNonNull(handle, "handle");
+    }
+
+    @Override
+    public Object construct(Node node) {
+        return this.handle.construct(node);
+    }
+
+    @Override
+    public void construct2ndStep(Node node, Object object) {
+        this.handle.construct2ndStep(node, object);
+    }
 
 }
