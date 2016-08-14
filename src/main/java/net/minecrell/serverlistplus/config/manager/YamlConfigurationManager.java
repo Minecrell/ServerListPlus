@@ -31,7 +31,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class YamlConfigurationManager extends ConfigurationManager {
 
     protected final ServerListPlusYaml yaml;
 
-    private final Map<String, ConfigRegistration<?>> registry = new HashMap<>();
+    private final Map<String, ConfigRegistration<?>> registry = new LinkedHashMap<>();
 
     public YamlConfigurationManager(ServerListPlus core, Path configDir) {
         super(core, configDir);
