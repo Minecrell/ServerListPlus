@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 @NullableByDefault
+@Description("Changes the appearance of your server in the server list.")
 public class StatusProfileConfig {
 
     @Option(name = "Enabled")

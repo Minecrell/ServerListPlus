@@ -20,37 +20,18 @@ package net.minecrell.serverlistplus.config;
 
 import net.minecrell.serverlistplus.util.NonnullByDefault;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 @NonnullByDefault
-@Description("Changes general settings for the plugin.")
-public class PluginConfig {
+@Documented
+@Target(ElementType.TYPE) // TODO: Field
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Description {
 
-    @Option(name = "Metrics")
-    private boolean metrics = true;
-
-    @Option(name = "PlayerTracking")
-    private PlayerTracking playerTracking = new PlayerTracking();
-
-    public boolean isMetrics() {
-        return metrics;
-    }
-
-    public void setMetrics(boolean metrics) {
-        this.metrics = metrics;
-    }
-
-    public PlayerTracking getPlayerTracking() {
-        return playerTracking;
-    }
-
-    public void setPlayerTracking(PlayerTracking playerTracking) {
-        this.playerTracking = playerTracking;
-    }
-
-    public static class PlayerTracking {
-
-        @Option(name = "Enabled")
-        private boolean enabled = true;
-
-    }
+    String[] value();
 
 }

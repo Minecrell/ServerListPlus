@@ -34,6 +34,4 @@ public @interface Option {
 
     String name();
 
-    // TODO: Description
-
 }

@@ -19,6 +19,7 @@
 package net.minecrell.serverlistplus.config.manager;
 
 import net.minecrell.serverlistplus.ServerListPlus;
+import net.minecrell.serverlistplus.config.Description;
 import net.minecrell.serverlistplus.config.MappedElement;
 import net.minecrell.serverlistplus.config.yaml.ServerListPlusYaml;
 import net.minecrell.serverlistplus.config.yaml.YamlConfigReader;
@@ -32,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -173,9 +175,21 @@ public class YamlConfigurationManager extends ConfigurationManager {
             }
 
             try (YamlConfigWriter writer = this.yaml.createWriter(Files.newBufferedWriter(path))) {
-                // TODO: Header
+                writer.writeComment(key.substring(0, 1).toUpperCase(Locale.ENGLISH) + key.substring(1) + " configuration file");
+                writer.writeComment("ServerListPlus v4.0-SNAPSHOT - https://git.io/slp"); // TODO
+                writer.writeNewLine();
 
-                writer.writeComment(key);
+                if (registration.description != null) {
+                    for (String line : registration.description) {
+                        writer.writeComment(line);
+                    }
+
+                    writer.writeNewLine();
+                }
+
+                writer.writeComment("Please refer to the wiki for instructions how to use this configuration.");
+                writer.writeComment("https://git.io/slp-wiki, https://git.io/slp-wiki-" + key);
+
                 writer.writeNewLine();
 
                 writer.writeConfig(registration.get());
@@ -197,8 +211,17 @@ public class YamlConfigurationManager extends ConfigurationManager {
         protected T def;
         @Nullable protected T loaded;
 
-        protected ConfigRegistration(T def) {
+        @Nullable private final String[] description;
+
+        protected ConfigRegistration(@Nullable Class<?> valueType, T def) {
             this.def = Objects.requireNonNull(def, "def");
+
+            if (valueType != null) {
+                Description description = valueType.getAnnotation(Description.class);
+                this.description = description != null ? description.value() : null;
+            } else {
+                this.description = null;
+            }
         }
 
         protected T get() {
@@ -237,7 +260,7 @@ public class YamlConfigurationManager extends ConfigurationManager {
             private Class<? extends T> type;
 
             protected Object(Class<T> type, T def) {
-                super(def);
+                super(type, def);
                 this.type = Objects.requireNonNull(type, "type");
             }
 
@@ -258,7 +281,7 @@ public class YamlConfigurationManager extends ConfigurationManager {
             private Class<? extends T> type;
 
             public List(Class<T> type, java.util.List<T> def) {
-                super(def);
+                super(type, def);
                 this.type = Objects.requireNonNull(type, "type");
             }
 
@@ -280,7 +303,7 @@ public class YamlConfigurationManager extends ConfigurationManager {
             private Class<? extends V> valueType;
 
             public Map(Class<K> keyType, Class<V> valueType, java.util.Map<K, V> def) {
-                super(def);
+                super(valueType, def);
                 this.keyType = Objects.requireNonNull(keyType, "keyType");
                 this.valueType = Objects.requireNonNull(valueType, "valueType");
             }
