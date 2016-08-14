@@ -47,7 +47,11 @@ public final class ImplementationType {
 
     @Override
     public String toString() {
-        return name + " (" + (official ? "Official" : "Unofficial") + ')';
+        if (official) {
+            return name;
+        } else {
+            return name + ", unofficial";
+        }
     }
 
 }

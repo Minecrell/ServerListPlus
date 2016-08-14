@@ -28,21 +28,37 @@ import net.minecrell.serverlistplus.logger.Logger;
 
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.function.Function;
+
+import javax.annotation.Nullable;
 
 public final class ServerListPlus {
 
     private final ImplementationType implType;
+    private final String version;
+
     private final ServerListPlusImpl impl;
     private final Logger logger;
 
     private final ConfigurationManager configManager;
 
-    public ServerListPlus(ImplementationType implType, ServerListPlusImpl impl, Logger logger, Path configDir) {
-        this.implType = Objects.requireNonNull(implType, "implType");
-        this.impl = Objects.requireNonNull(impl, "impl");
-        this.logger = Objects.requireNonNull(logger, "logger");
+    private ServerListPlus(Builder builder) {
+        this.implType = builder.implType;
+        this.impl = builder.impl;
+        this.logger = builder.logger;
 
-        this.configManager = new YamlConfigurationManager(this, configDir); // TODO: Allow customization
+        if (builder.configManager != null) {
+            this.configManager = builder.configManager.apply(this);
+        } else {
+            this.configManager = new YamlConfigurationManager(this, builder.configDir);
+        }
+
+        if (builder.version != null) {
+            this.version = builder.version;
+        } else {
+            String version = getClass().getPackage().getImplementationVersion();
+            this.version = version != null ? version : "Unknown";
+        }
 
         this.configManager.registerConfigMap("status", String.class, StatusProfileConfig.class, StatusProfileConfig.getDefaults());
         this.configManager.registerConfig("plugin", PluginConfig.class, new PluginConfig());
@@ -52,12 +68,54 @@ public final class ServerListPlus {
         return this.implType;
     }
 
+    public String getName() {
+        return "ServerListPlus (" + getImplementationType().getName() + ')';
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
     public Logger getLogger() {
         return this.logger;
     }
 
     public void initialize() {
         this.configManager.reload();
+    }
+
+    public static final class Builder {
+
+        private final ImplementationType implType;
+        private final ServerListPlusImpl impl;
+        private final Logger logger;
+        private final Path configDir;
+
+        @Nullable private String version;
+
+        @Nullable private Function<ServerListPlus, ConfigurationManager> configManager;
+
+        public Builder(ImplementationType implType, ServerListPlusImpl impl, Logger logger, Path configDir) {
+            this.implType = Objects.requireNonNull(implType, "implType");
+            this.impl = Objects.requireNonNull(impl, "impl");
+            this.logger = Objects.requireNonNull(logger, "logger");
+            this.configDir = Objects.requireNonNull(configDir, "configDir");
+        }
+
+        public Builder version(String version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder configManager(Function<ServerListPlus, ConfigurationManager> configManager) {
+            this.configManager = configManager;
+            return this;
+        }
+
+        public ServerListPlus build() {
+            return new ServerListPlus(this);
+        }
+
     }
 
 }

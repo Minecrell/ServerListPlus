@@ -44,7 +44,7 @@ public final class SpongeServerListPlus implements ServerListPlusImpl {
         this.game = game;
         this.logger = logger;
 
-        this.core = new ServerListPlus(ImplementationType.SPONGE, this, new Slf4jLogger(logger), configDir);
+        this.core = new ServerListPlus.Builder(ImplementationType.SPONGE, this, new Slf4jLogger(logger), configDir).build();
     }
 
     @Override

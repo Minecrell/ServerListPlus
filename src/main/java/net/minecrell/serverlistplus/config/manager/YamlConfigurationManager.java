@@ -176,7 +176,7 @@ public class YamlConfigurationManager extends ConfigurationManager {
 
             try (YamlConfigWriter writer = this.yaml.createWriter(Files.newBufferedWriter(path))) {
                 writer.writeComment(key.substring(0, 1).toUpperCase(Locale.ENGLISH) + key.substring(1) + " configuration file");
-                writer.writeComment("ServerListPlus v4.0-SNAPSHOT - https://git.io/slp"); // TODO
+                writer.writeComment(core.getName() + ' ' + core.getVersion() + " - https://git.io/slp"); // TODO
                 writer.writeNewLine();
 
                 if (registration.description != null) {

@@ -71,6 +71,15 @@ subprojects {
     }
 }
 
+allprojects {
+    tasks.withType(Jar) {
+        manifest.attributes(
+                'Implementation-Title': archivesBaseName,
+                'Implementation-Version': version
+        )
+    }
+}
+
 // Wait for evaluation of subprojects
 subprojects.each {
     rootProject.evaluationDependsOn it.path
