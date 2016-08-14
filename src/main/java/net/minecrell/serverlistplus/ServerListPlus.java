@@ -18,6 +18,7 @@
 
 package net.minecrell.serverlistplus;
 
+import net.minecrell.serverlistplus.config.PluginConfig;
 import net.minecrell.serverlistplus.config.StatusProfileConfig;
 import net.minecrell.serverlistplus.config.manager.ConfigurationManager;
 import net.minecrell.serverlistplus.config.manager.YamlConfigurationManager;
@@ -44,6 +45,7 @@ public final class ServerListPlus {
         this.configManager = new YamlConfigurationManager(this, configDir); // TODO: Allow customization
 
         this.configManager.registerConfigMap("status", String.class, StatusProfileConfig.class, StatusProfileConfig.getDefaults());
+        this.configManager.registerConfig("plugin", PluginConfig.class, new PluginConfig());
     }
 
     public ImplementationType getImplementationType() {
