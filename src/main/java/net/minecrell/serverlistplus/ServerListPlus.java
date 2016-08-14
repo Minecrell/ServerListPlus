@@ -76,11 +76,17 @@ public final class ServerListPlus {
         return version;
     }
 
+    public String getDisplayName() {
+        return getName() + ' ' + version + " - https://git.io/slp";
+    }
+
     public Logger getLogger() {
         return this.logger;
     }
 
     public void initialize() {
+        logger.info(getDisplayName());
+
         this.configManager.reload();
     }
 

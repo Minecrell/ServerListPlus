@@ -101,8 +101,6 @@ public class YamlConfigurationManager extends ConfigurationManager {
 
     @Override
     public synchronized void reload() {
-        getLogger().info("Reloading configurations...");
-
         this.registry.forEach(this::reloadConfig);
     }
 
@@ -143,8 +141,6 @@ public class YamlConfigurationManager extends ConfigurationManager {
 
     @Override
     public synchronized void save() {
-        getLogger().info("Saving configurations...");
-
         this.registry.forEach(this::saveConfig);
     }
 
@@ -176,7 +172,7 @@ public class YamlConfigurationManager extends ConfigurationManager {
 
             try (YamlConfigWriter writer = this.yaml.createWriter(Files.newBufferedWriter(path))) {
                 writer.writeComment(key.substring(0, 1).toUpperCase(Locale.ENGLISH) + key.substring(1) + " configuration file");
-                writer.writeComment(core.getName() + ' ' + core.getVersion() + " - https://git.io/slp"); // TODO
+                writer.writeComment(core.getDisplayName());
                 writer.writeNewLine();
 
                 if (registration.description != null) {
