@@ -105,10 +105,10 @@ public class StatusProfileConfig {
     public static class Players {
 
         @Option(name = "Online")
-        private List<String> online;
+        private List<Object> online;
 
         @Option(name = "Max")
-        private List<String> max;
+        private List<Object> max;
 
         @Option(name = "Hidden")
         private Boolean hidden;
@@ -119,19 +119,19 @@ public class StatusProfileConfig {
         @Option(name = "Hover")
         private List<String> hover;
 
-        public List<String> getOnline() {
+        public List<Object> getOnline() {
             return online;
         }
 
-        public void setOnline(List<String> online) {
+        public void setOnline(List<Object> online) {
             this.online = online;
         }
 
-        public List<String> getMax() {
+        public List<Object> getMax() {
             return max;
         }
 
-        public void setMax(List<String> max) {
+        public void setMax(List<Object> max) {
             this.max = max;
         }
 
@@ -217,8 +217,8 @@ public class StatusProfileConfig {
         Players players = new Players();
         config.setPlayers(players);
 
-        players.setOnline(Arrays.asList("100", "200"));
-        players.setMax(Arrays.asList("300", "700"));
+        players.setOnline(Arrays.asList(100, 200));
+        players.setMax(Arrays.asList(300, 700));
 
         return ImmutableMap.of("Default", config);
     }
