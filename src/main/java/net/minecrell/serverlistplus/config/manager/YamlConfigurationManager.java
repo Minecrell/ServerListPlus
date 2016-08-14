@@ -27,6 +27,7 @@ import net.minecrell.serverlistplus.config.yaml.YamlConfigWriter;
 import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.IOException;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -129,7 +130,7 @@ public class YamlConfigurationManager extends ConfigurationManager {
             return true;
         } catch (YAMLException e) {
             getLogger().error("Failed to parse configuration '{}' from {}. Make sure the YAML syntax is valid!", key, path, e);
-        } catch (MalformedInputException e) {
+        } catch (CharacterCodingException e) {
             getLogger().error("Your configuration '{}' from {} contains invalid special characters. Please save your configuration using UTF-8 "
                     + "instead.", key, path, e);
         } catch (IOException e) {
