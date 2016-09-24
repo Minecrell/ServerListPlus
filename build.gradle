@@ -51,7 +51,7 @@ allprojects {
     }
 
     dependencies {
-        provided 'org.projectlombok:lombok:1.16.8'
+        provided 'org.projectlombok:lombok:1.16.10'
     }
 
     tasks.withType(JavaCompile) {
