@@ -240,7 +240,17 @@ public class StatusManager extends AbstractManager {
         return s != null ? ReplacementManager.replaceDynamic(response, s, replacers.get(s)) : null;
     }
 
-    Collection<DynamicReplacer> getReplacers(String s) {
-        return replacers.get(s);
+    FaviconSource prepare(StatusResponse response, FaviconSource favicon) {
+        if (favicon == null) {
+            return null;
+        }
+
+        Collection<DynamicReplacer> replacer = replacers.get(favicon.getSource());
+        if (replacer.size() > 0) {
+            return favicon.withSource(ReplacementManager.replaceDynamic(response, favicon.getSource(), replacer));
+        } else {
+            return favicon;
+        }
     }
+
 }

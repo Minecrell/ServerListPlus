@@ -30,10 +30,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
-import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 
-import java.util.Collection;
 import java.util.List;
 
 @EqualsAndHashCode @ToString
@@ -71,8 +68,7 @@ public class PersonalizedStatusPatch {
     // Getters
     public Boolean hidePlayers(StatusResponse response) {
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getHidePlayers() != null) {
+            if (banned.getHidePlayers() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return banned.getHidePlayers();
             }
 
@@ -86,8 +82,7 @@ public class PersonalizedStatusPatch {
 
     public Integer getOnlinePlayers(StatusResponse response) {
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getOnline() != null) {
+            if (banned.getOnline() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return nextNumber(nextEntry(banned.getOnline()));
             }
 
@@ -101,8 +96,7 @@ public class PersonalizedStatusPatch {
 
     public Integer getMaxPlayers(StatusResponse response) {
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getMax() != null) {
+            if (banned.getMax() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return nextNumber(nextEntry(banned.getMax()));
             }
 
@@ -116,8 +110,7 @@ public class PersonalizedStatusPatch {
 
     public String getDescription(StatusResponse response) {
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getDescriptions() != null) {
+            if (banned.getDescriptions() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return prepareRandomEntry(response, banned.getDescriptions());
             }
 
@@ -131,8 +124,7 @@ public class PersonalizedStatusPatch {
 
     public String getPlayerHover(StatusResponse response) {
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getPlayerHovers() != null) {
+            if (banned.getPlayerHovers() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return prepareRandomEntry(response, banned.getPlayerHovers());
             }
 
@@ -146,8 +138,7 @@ public class PersonalizedStatusPatch {
 
     public String getPlayerSlots(StatusResponse response) {
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getSlots() != null) {
+            if (banned.getSlots() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return prepareRandomEntry(response, banned.getSlots());
             }
 
@@ -161,8 +152,7 @@ public class PersonalizedStatusPatch {
 
     public String getVersion(StatusResponse response) {
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getVersions() != null) {
+            if (banned.getVersions() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return prepareRandomEntry(response, banned.getVersions());
             }
 
@@ -176,8 +166,7 @@ public class PersonalizedStatusPatch {
 
     public Integer getProtocolVersion(StatusResponse response) {
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getProtocolVersion() != null) {
+            if (banned.getProtocolVersion() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return banned.getProtocolVersion();
             }
 
@@ -190,26 +179,23 @@ public class PersonalizedStatusPatch {
     }
 
     public FaviconSource getFavicon(StatusResponse response) {
-        FaviconSource favicon = null;
         if (response.getRequest().isIdentified()) {
-            if (response.getRequest().getIdentity().isBanned(response.getCore())
-                    && banned.getFavicons() != null) {
-                favicon = nextEntry(banned.getFavicons());
+            if (banned.getFavicons() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
+                return prepareFavicon(response, banned.getFavicons());
             } else if (personalized.getFavicons() != null) {
-                favicon = nextEntry(personalized.getFavicons());
+                return prepareFavicon(response, personalized.getFavicons());
             }
-        } else {
-            favicon = nextEntry(def.getFavicons());
         }
 
-        if (favicon == null) return null;
-        Collection<DynamicReplacer> replacer = response.getStatus().getReplacers(favicon.getSource());
-        if (replacer.size() > 0) return favicon.withSource(ReplacementManager.replaceDynamic(response,
-                favicon.getSource(), replacer));
-        return favicon;
+        return prepareFavicon(response, def.getFavicons());
     }
 
     private static String prepareRandomEntry(StatusResponse response, List<String> list) {
         return response.getStatus().prepare(response, nextEntry(list));
     }
+
+    private static FaviconSource prepareFavicon(StatusResponse response, List<FaviconSource> favicons) {
+        return response.getStatus().prepare(response, nextEntry(favicons));
+    }
+
 }
