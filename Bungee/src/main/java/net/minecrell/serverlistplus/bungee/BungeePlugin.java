@@ -41,6 +41,7 @@ import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.AsyncEvent;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
@@ -211,13 +212,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                 if (protocol != null) version.setProtocol(protocol);
             }
 
-            // Favicon
-            FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
-                Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
-                if (icon.isPresent()) ping.setFavicon(icon.get());
-            }
-
             if (players != null) {
                 if (response.hidePlayers()) {
                     ping.setPlayers(null);
@@ -248,7 +242,49 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     }
                 }
             }
+
+            // Favicon
+            FaviconSource favicon = response.getFavicon();
+            if (favicon != null) {
+                Optional<Favicon> icon;
+                // Check if instanceof AsyncEvent for compatibility with 1.7.10
+                if (event instanceof AsyncEvent) {
+                    icon = faviconCache.getIfPresent(favicon);
+                } else {
+                    icon = faviconCache.getUnchecked(favicon);
+                }
+
+                if (icon == null) {
+                    // Load favicon asynchronously
+                    event.registerIntent(BungeePlugin.this);
+                    getProxy().getScheduler().runAsync(BungeePlugin.this, new AsyncFaviconLoader(event, favicon));
+                } else if (icon.isPresent()) {
+                    ping.setFavicon(icon.get());
+                }
+            }
         }
+    }
+
+    private final class AsyncFaviconLoader implements Runnable {
+
+        private final ProxyPingEvent event;
+        private final FaviconSource source;
+
+        private AsyncFaviconLoader(ProxyPingEvent event, FaviconSource source) {
+            this.event = event;
+            this.source = source;
+        }
+
+        @Override
+        public void run() {
+            Optional<Favicon> favicon = faviconCache.getUnchecked(this.source);
+            if (favicon.isPresent()) {
+                event.getResponse().setFavicon(favicon.get());
+            }
+
+            event.completeIntent(BungeePlugin.this);
+        }
+
     }
 
     @Override
