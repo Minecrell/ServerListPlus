@@ -182,7 +182,9 @@ public class PersonalizedStatusPatch {
         if (response.getRequest().isIdentified()) {
             if (banned.getFavicons() != null && response.getRequest().getIdentity().isBanned(response.getCore())) {
                 return prepareFavicon(response, banned.getFavicons());
-            } else if (personalized.getFavicons() != null) {
+            }
+
+            if (personalized.getFavicons() != null) {
                 return prepareFavicon(response, personalized.getFavicons());
             }
         }
