@@ -77,14 +77,8 @@ public class JSONIdentificationStorage extends AbstractIdentificationStorage {
     }
 
     @Override
-    public void create(InetAddress client, PlayerIdentity identity) {
+    public void update(InetAddress client, PlayerIdentity identity) {
         storage.put(client, identity);
-        changed.set(true);
-    }
-
-    @Override
-    public void update(InetAddress client) {
-        resolve(client).update();
         changed.set(true);
     }
 

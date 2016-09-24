@@ -31,8 +31,7 @@ public interface IdentificationStorage {
     boolean has(InetAddress client);
     PlayerIdentity resolve(InetAddress client);
 
-    void create(InetAddress client, PlayerIdentity identity);
-    void update(InetAddress client);
+    void update(InetAddress client, PlayerIdentity identity);
 
     void reload() throws ServerListPlusException;
     void enable() throws ServerListPlusException;

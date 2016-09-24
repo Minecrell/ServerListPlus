@@ -194,12 +194,7 @@ public class ServerListPlusCore {
     }
 
     public void updateClient(InetAddress client, UUID uuid, String playerName) {
-        PlayerIdentity identity = resolveClient(client);
-        if (identity == null)
-            storage.create(client, PlayerIdentity.create(uuid, playerName));
-        else {
-            storage.update(client);
-        }
+        storage.update(client, PlayerIdentity.create(uuid, playerName));
     }
 
     public PlayerIdentity resolveClient(InetAddress client) {

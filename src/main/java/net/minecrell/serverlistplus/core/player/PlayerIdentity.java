@@ -35,11 +35,7 @@ import java.util.UUID;
 public class PlayerIdentity {
     private final UUID uuid;
     private final @NonNull String name;
-    private Date time;
-
-    public void update() {
-        this.time = new Date();
-    }
+    private final Date time;
 
     public boolean isBanned(ServerListPlusCore core) {
         return core.getPlugin().isBanned(this);
@@ -48,4 +44,5 @@ public class PlayerIdentity {
     public static PlayerIdentity create(UUID uuid, String name) {
         return new PlayerIdentity(uuid, name, new Date());
     }
+
 }
