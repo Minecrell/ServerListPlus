@@ -42,7 +42,6 @@ public final class Helper {
     private Helper() {}
 
     public final static Gson JSON = new GsonBuilder()
-            .setPrettyPrinting()
             .registerTypeAdapter(Date.class, new ISO8601Serializer())
             .enableComplexMapKeySerialization()
             .create();
