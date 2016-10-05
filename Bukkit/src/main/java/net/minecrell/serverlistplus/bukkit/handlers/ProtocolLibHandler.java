@@ -66,11 +66,8 @@ public class ProtocolLibHandler extends StatusHandler {
             request.setProtocolVersion(packet.getIntegers().read(0));
 
             String host = packet.getStrings().read(0);
-            if (host.endsWith(".")) // SRV records can end with a . depending on DNS / client.
-                host = host.substring(0, host.length() - 1);
-
             int port = packet.getIntegers().read(1);
-            request.setTarget(InetSocketAddress.createUnresolved(host, port));
+            request.setTarget(host, port);
         }
 
         @Override // Status ping

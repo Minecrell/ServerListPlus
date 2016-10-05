@@ -174,7 +174,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
         public void onServerListPing(final ServerListPingHook hook) throws Exception {
             StatusRequest request = core.createRequest(hook.getRequesterAddress());
             request.setProtocolVersion(hook.getRequesterProtocol());
-            request.setTarget(InetSocketAddress.createUnresolved(hook.getHostNamePinged(), hook.getPortPinged()));
+            request.setTarget(hook.getHostNamePinged(), hook.getPortPinged());
 
             StatusResponse response = request.createResponse(core.getStatus(), new ResponseFetcher() {
                 @Override

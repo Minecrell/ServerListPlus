@@ -115,4 +115,10 @@ public final class Helper {
     public static String toLowerCase(String s) {
         return s.toLowerCase(Locale.ENGLISH);
     }
+
+    public static String substringBefore(String s, char c) {
+        int pos = s.indexOf(c);
+        return pos >= 0 ? s.substring(0, pos) : s;
+    }
+
 }

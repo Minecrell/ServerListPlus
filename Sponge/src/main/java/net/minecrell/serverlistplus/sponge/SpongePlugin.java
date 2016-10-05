@@ -215,6 +215,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
         @Listener
         public void onStatusPing(ClientPingServerEvent event) {
             StatusRequest request = core.createRequest(event.getClient().getAddress().getAddress());
+            event.getClient().getVirtualHost().ifPresent(request::setTarget);
             handler.getProtocolVersion(event).ifPresent(request::setProtocolVersion);
 
             final ClientPingServerEvent.Response ping = event.getResponse();

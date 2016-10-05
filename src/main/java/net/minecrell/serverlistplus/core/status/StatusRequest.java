@@ -29,6 +29,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.Value;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -47,6 +48,10 @@ public class StatusRequest {
 
     public boolean isIdentified() {
         return identity != null;
+    }
+
+    public void setTarget(String host, int port) {
+        setTarget(InetSocketAddress.createUnresolved(cleanVirtualHost(host), port));
     }
 
     public void setTarget(InetSocketAddress host) {
@@ -87,4 +92,23 @@ public class StatusRequest {
         private final @NonNull InetSocketAddress host;
         private final String name;
     }
+
+    /**
+     * Returns the cleaned hostname for the input sent by the client.
+     *
+     * @param host The host sent by the client
+     * @return The cleaned hostname
+     */
+    public static String cleanVirtualHost(String host) {
+        // FML appends a marker to the host to recognize FML clients (\0FML\0)
+        host = Helper.substringBefore(host, '\0');
+
+        // When clients connect with a SRV record, there host contains a trailing '.'
+        if (host.endsWith(".")) {
+            host = host.substring(0, host.length() - 1);
+        }
+
+        return host;
+    }
+
 }

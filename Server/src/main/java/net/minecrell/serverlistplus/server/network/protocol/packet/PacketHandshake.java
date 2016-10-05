@@ -10,14 +10,14 @@ import net.minecrell.serverlistplus.server.network.protocol.ProtocolState;
 public class PacketHandshake implements ClientPacket {
 
     private int protocolVersion;
-    private String ip;
+    private String host;
     private int port;
     private ProtocolState nextState;
 
     @Override
     public void read(ByteBuf buf) {
         this.protocolVersion = MinecraftProtocol.readVarInt(buf);
-        this.ip = MinecraftProtocol.readString(buf, 255);
+        this.host = MinecraftProtocol.readString(buf, 255);
         this.port = buf.readUnsignedShort();
         this.nextState = MinecraftProtocol.readVarInt(buf) == 1 ? ProtocolState.STATUS : ProtocolState.LOGIN;
     }
