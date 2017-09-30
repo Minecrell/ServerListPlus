@@ -16,36 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bungee;
+package net.minecrell.serverlistplus.platform;
 
-import net.md_5.bungee.api.plugin.Plugin;
-import net.minecrell.serverlistplus.ServerListPlus;
-import net.minecrell.serverlistplus.platform.PlatformType;
-import net.minecrell.serverlistplus.platform.ServerListPlusPlatform;
-import org.slf4j.LoggerFactory;
+public final class PlatformType {
 
-public final class ServerListPlusBungee extends Plugin implements ServerListPlusPlatform {
+    public static final PlatformType BUNGEE = new PlatformType("Bungee", true);
 
-    private ServerListPlus core;
+    private final String name;
+    private final boolean official;
 
-    @Override
-    public void onLoad() {
-        this.core = new ServerListPlus(this, LoggerFactory.getLogger(getLogger().getName()));
+    public PlatformType(String name) {
+        this(name, false);
+    }
+
+    private PlatformType(String name, boolean official) {
+        this.name = name;
+        this.official = official;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isOfficial() {
+        return official;
     }
 
     @Override
-    public void onEnable() {
-        core.initialize();
-    }
-
-    @Override
-    public PlatformType getType() {
-        return PlatformType.BUNGEE;
-    }
-
-    @Override
-    public ServerListPlus getCore() {
-        return core;
+    public String toString() {
+        if (official) {
+            return name;
+        } else {
+            return name + " [Unofficial]";
+        }
     }
 
 }

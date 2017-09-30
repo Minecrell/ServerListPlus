@@ -21,6 +21,11 @@ allprojects {
         mavenCentral()
     }
 
+    dependencies {
+        // Optional at runtime
+        compileOnly("com.google.code.findbugs:jsr305:3.0.2")
+    }
+
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
         options.isDeprecation = true
@@ -75,6 +80,10 @@ subprojects {
 val processResources: AbstractCopyTask by tasks
 
 dependencies {
+    // Required at runtime
+    compile("org.slf4j:slf4j-api:1.7.25")
+
+    // Provided
     compileOnly("com.google.guava:guava:21.0")
     compileOnly("com.google.code.gson:gson:2.8.0")
     compileOnly("org.yaml:snakeyaml:1.18")
