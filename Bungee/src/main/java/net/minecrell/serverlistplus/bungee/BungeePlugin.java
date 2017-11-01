@@ -20,8 +20,9 @@ package net.minecrell.serverlistplus.bungee;
 
 import net.md_5.bungee.api.plugin.Plugin;
 import net.minecrell.serverlistplus.ServerListPlus;
-import net.minecrell.serverlistplus.platform.PlatformType;
+import net.minecrell.serverlistplus.config.loader.yaml.YamlConfigurationLoader;
 import net.minecrell.serverlistplus.platform.Platform;
+import net.minecrell.serverlistplus.platform.PlatformType;
 import org.slf4j.LoggerFactory;
 
 public final class BungeePlugin extends Plugin implements Platform {
@@ -30,7 +31,8 @@ public final class BungeePlugin extends Plugin implements Platform {
 
     @Override
     public void onLoad() {
-        this.core = new ServerListPlus(this, LoggerFactory.getLogger(getLogger().getName()));
+        this.core = new ServerListPlus(this, LoggerFactory.getLogger(getLogger().getName()),
+                new YamlConfigurationLoader(getDataFolder().toPath()));
     }
 
     @Override

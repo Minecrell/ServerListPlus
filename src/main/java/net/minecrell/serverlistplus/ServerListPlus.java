@@ -21,6 +21,9 @@ package net.minecrell.serverlistplus;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import net.minecrell.serverlistplus.config.ConfigurationManager;
+import net.minecrell.serverlistplus.config.loader.ConfigurationLoader;
+import net.minecrell.serverlistplus.config.processor.status.StatusProfileConfigurationProcessor;
 import net.minecrell.serverlistplus.platform.Platform;
 import org.slf4j.Logger;
 
@@ -40,9 +43,11 @@ public final class ServerListPlus {
     private final String name;
     private final String version;
 
+    private final ConfigurationManager configurationManager;
+
     private boolean initialized;
 
-    public ServerListPlus(Platform platform, Logger logger) {
+    public ServerListPlus(Platform platform, Logger logger, ConfigurationLoader configurationLoader) {
         checkState(instance == null, "ServerListPlus was already initialized");
         this.platform = platform;
         this.logger = logger;
@@ -50,6 +55,9 @@ public final class ServerListPlus {
         Package p = getClass().getPackage();
         this.name = firstNonNull(p.getSpecificationTitle(), "ServerListPlus");
         this.version = firstNonNull(p.getSpecificationVersion(), "Unknown");
+
+        this.configurationManager = new ConfigurationManager(logger, configurationLoader);
+        configurationManager.registerProcessor(new StatusProfileConfigurationProcessor());
 
         instance = this;
     }
@@ -78,11 +86,22 @@ public final class ServerListPlus {
         return getDisplayName() + " v" + version;
     }
 
+    public ConfigurationManager getConfigurationManager() {
+        return configurationManager;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
     public void initialize() {
         checkState(!initialized, "Already initialized");
         initialized = true;
 
         logger.info("Initializing {}", getDisplayVersion());
+
+        // Load configuration
+        configurationManager.reload();
     }
 
 }
