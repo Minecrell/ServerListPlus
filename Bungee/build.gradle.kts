@@ -12,5 +12,5 @@ dependencies {
 
 bungee {
     name = rootProject.name
-    main = "net.minecrell.serverlistplus.bungee.ServerListPlusBungee"
+    main = "net.minecrell.serverlistplus.bungee.BungeePlugin"
 }

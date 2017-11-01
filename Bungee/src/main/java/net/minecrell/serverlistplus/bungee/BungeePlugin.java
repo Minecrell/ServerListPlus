@@ -21,10 +21,10 @@ package net.minecrell.serverlistplus.bungee;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.minecrell.serverlistplus.ServerListPlus;
 import net.minecrell.serverlistplus.platform.PlatformType;
-import net.minecrell.serverlistplus.platform.ServerListPlusPlatform;
+import net.minecrell.serverlistplus.platform.Platform;
 import org.slf4j.LoggerFactory;
 
-public final class ServerListPlusBungee extends Plugin implements ServerListPlusPlatform {
+public final class BungeePlugin extends Plugin implements Platform {
 
     private ServerListPlus core;
 

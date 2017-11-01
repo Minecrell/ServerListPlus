@@ -20,7 +20,7 @@ package net.minecrell.serverlistplus.platform;
 
 import net.minecrell.serverlistplus.ServerListPlus;
 
-public interface ServerListPlusPlatform {
+public interface Platform {
 
     PlatformType getType();
 

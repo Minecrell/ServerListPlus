@@ -21,7 +21,7 @@ package net.minecrell.serverlistplus;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import net.minecrell.serverlistplus.platform.ServerListPlusPlatform;
+import net.minecrell.serverlistplus.platform.Platform;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
@@ -35,14 +35,14 @@ public final class ServerListPlus {
         return instance;
     }
 
-    private final ServerListPlusPlatform platform;
+    private final Platform platform;
     private final Logger logger;
     private final String name;
     private final String version;
 
     private boolean initialized;
 
-    public ServerListPlus(ServerListPlusPlatform platform, Logger logger) {
+    public ServerListPlus(Platform platform, Logger logger) {
         checkState(instance == null, "ServerListPlus was already initialized");
         this.platform = platform;
         this.logger = logger;
@@ -54,7 +54,7 @@ public final class ServerListPlus {
         instance = this;
     }
 
-    public ServerListPlusPlatform getPlatform() {
+    public Platform getPlatform() {
         return platform;
     }
 
