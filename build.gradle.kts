@@ -90,6 +90,10 @@ dependencies {
 
 processResources {
     from(file("LICENSE"))
+    expand(mapOf(
+            "name" to project.name,
+            "version" to project.version
+    ))
 }
 
 val sourceJar = task<Jar>("sourceJar") {

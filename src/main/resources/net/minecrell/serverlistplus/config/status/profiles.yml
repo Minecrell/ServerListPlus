@@ -1,0 +1,10 @@
+# Profiles configuration file
+# ${name} v${version}
+
+# Please refer to the wiki for instructions: https://git.io/slp-wiki
+
+default:
+  description:
+  - |-
+    &aA Minecraft Server
+    &eHello World!

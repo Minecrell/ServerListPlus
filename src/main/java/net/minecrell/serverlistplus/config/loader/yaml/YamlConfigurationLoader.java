@@ -57,8 +57,8 @@ public class YamlConfigurationLoader extends FileConfigurationLoader {
         this.constructor.registerType(baseType, new Tag('!' + typeId), type);
     }
 
-    private <T> T load(String name, Class<T> type) throws ConfigurationFileException {
-        Path path = getConfigPath(name);
+    private <T> T load(String name, Class<T> type, Class<?> context) throws ConfigurationFileException {
+        Path path = prepareConfig(name, context);
 
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             return yaml.loadAs(reader, type);
@@ -76,21 +76,21 @@ public class YamlConfigurationLoader extends FileConfigurationLoader {
     @Override
     public <T> T loadConfig(String name, Class<T> type) throws ConfigurationFileException {
         this.constructor.reset();
-        return load(name, type);
+        return load(name, type, type);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> List<T> loadListConfig(String name, Class<T> type) throws ConfigurationFileException {
         this.constructor.setListType(type);
-        return load(name, List.class);
+        return load(name, List.class, type);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <K, V> Map<K, V> loadMapConfig(String name, Class<K> keyType, Class<V> valueType) throws ConfigurationFileException {
         this.constructor.setMapType(keyType, valueType);
-        return load(name, Map.class);
+        return load(name, Map.class, valueType);
     }
 
 }

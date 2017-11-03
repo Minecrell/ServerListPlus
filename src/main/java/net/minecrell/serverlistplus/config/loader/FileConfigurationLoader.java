@@ -18,6 +18,10 @@
 
 package net.minecrell.serverlistplus.config.loader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +40,38 @@ public abstract class FileConfigurationLoader implements ConfigurationLoader {
         return this.configDir;
     }
 
-    protected Path getConfigPath(String key) {
-        return configDir.resolve(key + fileExtension);
+    protected String getConfigFileName(String name) {
+        return name + fileExtension;
+    }
+
+    protected Path getConfigPath(String name) {
+        return configDir.resolve(getConfigFileName(name));
+    }
+
+    protected Path prepareConfig(String name, Class<?> context) throws ConfigurationFileException {
+        Path path = getConfigPath(name);
+
+        if (Files.notExists(path)) {
+            copyDefault(name, path, context);
+        }
+
+        return path;
+    }
+
+    private void copyDefault(String name, Path path, Class<?> context) throws ConfigurationFileException {
+        URL resource = context.getResource(getConfigFileName(name));
+        if (resource == null) {
+            return;
+        }
+
+        try {
+            Files.createDirectories(configDir);
+            try (InputStream in = resource.openStream()) {
+                Files.copy(in, path);
+            }
+        } catch (IOException e) {
+            throw new ConfigurationFileException("Failed to copy default configuration '" + name + "' to " + path, e, name, path);
+        }
     }
 
     @Override
