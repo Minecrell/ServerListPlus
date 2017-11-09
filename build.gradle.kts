@@ -85,7 +85,7 @@ dependencies {
     // Provided
     compileOnly("com.google.guava:guava:21.0")
     compileOnly("com.google.code.gson:gson:2.8.0")
-    compileOnly("org.yaml:snakeyaml:1.18")
+    compileOnly("org.yaml:snakeyaml:1.19")
 }
 
 processResources {
