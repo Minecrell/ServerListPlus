@@ -24,7 +24,7 @@
 repositories {
     maven {
         name = 'canary'
-        url = 'http://nexus.visualillusionsent.net/content/repositories/releases'
+        url = 'http://repo.visualillusionsent.net/repository/internal'
     }
     maven {
         name = 'minecraft'
