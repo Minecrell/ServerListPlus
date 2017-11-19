@@ -25,6 +25,7 @@ package net.minecrell.serverlistplus.core.config.yaml;
 
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.NodeId;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Represent;
@@ -37,8 +38,20 @@ public class ConfigurationRepresenter extends Representer {
     }
 
     @Override // Skip null values for configuration generating
-    protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object value, Tag tag) {
-        return value != null ? super.representJavaBeanProperty(javaBean, property, value, tag) : null;
+    protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object value, Tag customTag) {
+        if (value != null) {
+            NodeTuple tuple = super.representJavaBeanProperty(javaBean, property, value, customTag);
+            Node valueNode = tuple.getValueNode();
+
+            // Avoid using tags for enums
+            if (customTag == null && valueNode.getNodeId() == NodeId.scalar && value instanceof Enum<?>) {
+                valueNode.setTag(Tag.STR);
+            }
+
+            return tuple;
+        } else {
+            return null;
+        }
     }
 
     public class RepresentConfigurationSerializable implements Represent {
