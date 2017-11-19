@@ -34,6 +34,7 @@ repositories {
         name = 'dmulloy2-snapshots'
         url = 'http://repo.dmulloy2.net/nexus/repository/snapshots'
     }
+    mavenLocal()
     maven {
         name = 'mcstats-snapshots'
         url = 'http://repo.mcstats.org/content/repositories/snapshots'
