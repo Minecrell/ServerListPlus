@@ -16,39 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.platform;
+package net.minecrell.serverlistplus.module;
 
-public final class PlatformType {
+public interface Component {
 
-    public static final PlatformType BUNGEE = new PlatformType("Bungee", true);
-
-    private final String name;
-    private final boolean official;
-
-    public PlatformType(String name) {
-        this(name, false);
+    default void initialize() {
     }
 
-    private PlatformType(String name, boolean official) {
-        this.name = name;
-        this.official = official;
+    default void enable() {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public boolean isOfficial() {
-        return official;
-    }
-
-    @Override
-    public String toString() {
-        if (official) {
-            return name;
-        } else {
-            return name + " [Unofficial]";
-        }
+    default void disable() {
     }
 
 }

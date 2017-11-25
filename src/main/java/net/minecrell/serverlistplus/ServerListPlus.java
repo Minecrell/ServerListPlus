@@ -24,12 +24,21 @@ import static com.google.common.base.Preconditions.checkState;
 import net.minecrell.serverlistplus.config.ConfigurationManager;
 import net.minecrell.serverlistplus.config.loader.ConfigurationLoader;
 import net.minecrell.serverlistplus.config.processor.status.StatusProfileConfigurationProcessor;
-import net.minecrell.serverlistplus.platform.Platform;
+import net.minecrell.serverlistplus.module.Component;
 import org.slf4j.Logger;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
 public final class ServerListPlus {
+
+    public enum State {
+        LOADED, INITIALIZED, ENABLED, DISABLED
+    }
 
     @Nullable private static ServerListPlus instance;
 
@@ -43,9 +52,9 @@ public final class ServerListPlus {
     private final String name;
     private final String version;
 
-    private final ConfigurationManager configurationManager;
-
-    private boolean initialized;
+    private final List<Component> components = new ArrayList<>();
+    private final Map<Class<? extends Component>, Component> componentLookup = new HashMap<>();
+    private State state = State.LOADED;
 
     public ServerListPlus(Platform platform, Logger logger, ConfigurationLoader configurationLoader) {
         checkState(instance == null, "ServerListPlus was already initialized");
@@ -56,7 +65,9 @@ public final class ServerListPlus {
         this.name = firstNonNull(p.getSpecificationTitle(), "ServerListPlus");
         this.version = firstNonNull(p.getSpecificationVersion(), "Unknown");
 
-        this.configurationManager = new ConfigurationManager(logger, configurationLoader);
+        ConfigurationManager configurationManager = new ConfigurationManager(logger, configurationLoader);
+        registerComponent(configurationManager);
+
         configurationManager.registerProcessor(new StatusProfileConfigurationProcessor());
 
         instance = this;
@@ -79,29 +90,68 @@ public final class ServerListPlus {
     }
 
     public String getDisplayName() {
-        return name + " (" + platform.getType() + ')';
+        return name + " (" + platform + ')';
     }
 
     public String getDisplayVersion() {
         return getDisplayName() + " v" + version;
     }
 
-    public ConfigurationManager getConfigurationManager() {
-        return configurationManager;
+    @SuppressWarnings("unchecked")
+    public <T extends Component> T getComponent(Class<T> moduleClass) {
+        return (T) componentLookup.get(moduleClass);
     }
 
-    public boolean isInitialized() {
-        return initialized;
+    @SuppressWarnings("unchecked")
+    public void registerComponent(Component component) {
+        registerComponent((Class<Component>) component.getClass(), component);
+    }
+
+    public <T extends Component> void registerComponent(Class<T> moduleClass, T module) {
+        if (componentLookup.containsKey(moduleClass)) {
+            throw new IllegalArgumentException(moduleClass + " is already registered");
+        }
+
+        if (components.contains(module)) {
+            throw new IllegalArgumentException(module + " is already registered");
+        }
+
+        componentLookup.put(moduleClass, module);
+        components.add(module);
+    }
+
+    public State getState() {
+        return state;
     }
 
     public void initialize() {
-        checkState(!initialized, "Already initialized");
-        initialized = true;
+        checkState(state == State.LOADED, "Already initialized");
 
         logger.info("Initializing {}", getDisplayVersion());
 
-        // Load configuration
-        configurationManager.reload();
+        for (Component component : components) {
+            component.initialize();
+        }
+
+        this.state = State.INITIALIZED;
+    }
+
+    public void enable() {
+        checkState(state == State.INITIALIZED, "Not initialized");
+
+        for (Component component : components) {
+            component.enable();
+        }
+
+        this.state = State.ENABLED;
+    }
+
+    public void disable() {
+        for (Component component : components) {
+            component.disable();
+        }
+
+        this.state = State.DISABLED;
     }
 
 }

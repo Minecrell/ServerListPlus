@@ -16,5 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@net.minecrell.serverlistplus.util.NonnullByDefault
-package net.minecrell.serverlistplus.platform;
+package net.minecrell.serverlistplus;
+
+public final class Platform {
+
+    public static final Platform BUNGEE = new Platform("Bungee", true);
+
+    private final String name;
+    private final boolean official;
+
+    public Platform(String name) {
+        this(name, false);
+    }
+
+    private Platform(String name, boolean official) {
+        this.name = name;
+        this.official = official;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isOfficial() {
+        return official;
+    }
+
+    @Override
+    public String toString() {
+        if (official) {
+            return name;
+        } else {
+            return name + " [Unofficial]";
+        }
+    }
+
+}

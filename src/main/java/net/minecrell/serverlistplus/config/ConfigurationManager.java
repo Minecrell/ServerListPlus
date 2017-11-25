@@ -20,6 +20,7 @@ package net.minecrell.serverlistplus.config;
 
 import net.minecrell.serverlistplus.config.loader.ConfigurationLoader;
 import net.minecrell.serverlistplus.config.processor.ConfigurationProcessor;
+import net.minecrell.serverlistplus.module.Component;
 import org.slf4j.Logger;
 
 import java.util.Collection;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-public final class ConfigurationManager {
+public final class ConfigurationManager implements Component {
 
     private final Logger logger;
 
@@ -88,6 +89,11 @@ public final class ConfigurationManager {
         this.logger.debug("Loading configuration '{}'...", processor.getId());
         processor.reload(this.loader);
         this.logger.info("Successfully loaded '{}' configuration", processor.getId());
+    }
+
+    @Override
+    public void initialize() {
+        reload(); // Reload configuration
     }
 
 }

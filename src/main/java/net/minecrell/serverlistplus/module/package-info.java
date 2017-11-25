@@ -16,14 +16,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.platform;
-
-import net.minecrell.serverlistplus.ServerListPlus;
-
-public interface Platform {
-
-    PlatformType getType();
-
-    ServerListPlus getCore();
-
-}
+@net.minecrell.serverlistplus.util.NonnullByDefault
+package net.minecrell.serverlistplus.module;
