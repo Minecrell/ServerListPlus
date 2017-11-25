@@ -25,6 +25,7 @@ import net.minecrell.serverlistplus.config.ConfigurationManager;
 import net.minecrell.serverlistplus.config.loader.ConfigurationLoader;
 import net.minecrell.serverlistplus.config.processor.status.StatusProfileConfigurationProcessor;
 import net.minecrell.serverlistplus.module.Component;
+import net.minecrell.serverlistplus.status.handler.StatusHandlerManager;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public final class ServerListPlus {
 
         ConfigurationManager configurationManager = new ConfigurationManager(logger, configurationLoader);
         registerComponent(configurationManager);
+        registerComponent(new StatusHandlerManager(logger));
 
         configurationManager.registerProcessor(new StatusProfileConfigurationProcessor());
 

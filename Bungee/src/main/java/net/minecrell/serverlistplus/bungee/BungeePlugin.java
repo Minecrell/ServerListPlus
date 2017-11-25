@@ -20,8 +20,10 @@ package net.minecrell.serverlistplus.bungee;
 
 import net.md_5.bungee.api.plugin.Plugin;
 import net.minecrell.serverlistplus.ServerListPlus;
+import net.minecrell.serverlistplus.bungee.status.BungeeStatusListener;
 import net.minecrell.serverlistplus.config.loader.yaml.YamlConfigurationLoader;
 import net.minecrell.serverlistplus.Platform;
+import net.minecrell.serverlistplus.status.handler.StatusHandlerManager;
 import org.slf4j.LoggerFactory;
 
 public final class BungeePlugin extends Plugin {
@@ -38,6 +40,9 @@ public final class BungeePlugin extends Plugin {
     public void onEnable() {
         core.initialize();
         core.enable();
+
+        getProxy().getPluginManager().registerListener(this,
+                new BungeeStatusListener(core.getComponent(StatusHandlerManager.class)));
     }
 
     @Override
