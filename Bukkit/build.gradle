@@ -26,6 +26,11 @@ repositories {
         name = 'spigot'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
     }
+    mavenLocal()
+    maven {
+        name = 'paper'
+        url = 'https://repo.destroystokyo.com/repository/maven-snapshots'
+    }
     maven {
         name = 'dmulloy2'
         url = 'http://repo.dmulloy2.net/nexus/repository/releases'
@@ -50,7 +55,7 @@ ext {
 }
 
 dependencies {
-    compile 'org.bukkit:bukkit:1.10.2-R0.1-SNAPSHOT'
+    compile 'com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT'
     compile 'com.comphenix.protocol:ProtocolLib-API:4.2.1'
     compile('org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT') {
         transitive = false
