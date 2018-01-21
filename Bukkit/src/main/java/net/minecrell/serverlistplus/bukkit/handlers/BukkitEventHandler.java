@@ -32,75 +32,75 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.CachedServerIcon;
 
-public class BukkitEventHandler extends StatusHandler {
-    private PingListener listener;
+public class BukkitEventHandler extends StatusHandler implements Listener {
+    private boolean registered;
 
     public BukkitEventHandler(BukkitPlugin plugin) {
         super(plugin);
     }
 
-    public final class PingListener implements Listener {
-        private PingListener() {}
+    @EventHandler
+    public void onServerListPing(final ServerListPingEvent event) {
+        if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
+        StatusResponse response = bukkit.getCore().createRequest(event.getAddress()).createResponse(
+                bukkit.getCore().getStatus(), new ResponseFetcher() {
+                    @Override
+                    public Integer getOnlinePlayers() {
+                        return event.getNumPlayers();
+                    }
 
-        @EventHandler
-        public void onServerListPing(final ServerListPingEvent event) {
-            if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
-            StatusResponse response = bukkit.getCore().createRequest(event.getAddress()).createResponse(
-                    bukkit.getCore().getStatus(), new ResponseFetcher() {
-                        @Override
-                        public Integer getOnlinePlayers() {
-                            return event.getNumPlayers();
-                        }
+                    @Override
+                    public Integer getMaxPlayers() {
+                        return event.getMaxPlayers();
+                    }
 
-                        @Override
-                        public Integer getMaxPlayers() {
-                            return event.getMaxPlayers();
-                        }
+                    @Override
+                    public int getProtocolVersion() {
+                        return -1;
+                    }
+                });
 
-                        @Override
-                        public int getProtocolVersion() {
-                            return -1;
-                        }
-                    });
+        // Description
+        String message = response.getDescription();
+        if (message != null)
+            event.setMotd(message);
 
-            // Description
-            String message = response.getDescription();
-            if (message != null)
-                event.setMotd(message);
+        // Max players
+        Integer max = response.getMaxPlayers();
+        if (max != null)
+            event.setMaxPlayers(max);
 
-            // Max players
-            Integer max = response.getMaxPlayers();
-            if (max != null)
-                event.setMaxPlayers(max);
-
-            // Favicon
-            FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
-                CachedServerIcon icon = bukkit.getFavicon(favicon);
-                if (icon != null)
-                    try {
-                        event.setServerIcon(icon);
-                    } catch (UnsupportedOperationException ignored) {}
-            }
+        // Favicon
+        FaviconSource favicon = response.getFavicon();
+        if (favicon != null) {
+            CachedServerIcon icon = bukkit.getFavicon(favicon);
+            if (icon != null)
+                try {
+                    event.setServerIcon(icon);
+                } catch (UnsupportedOperationException ignored) {}
         }
     }
 
     @Override
     public boolean register() {
-        if (listener == null) {
-            bukkit.registerListener(this.listener = new PingListener());
-            return true;
-        } else
+        if (this.registered) {
             return false;
+        }
+
+        this.registered = true;
+        bukkit.registerListener(this);
+        return true;
     }
 
     @Override
     public boolean unregister() {
-        if (listener != null) {
-            bukkit.unregisterListener(listener);
-            this.listener = null;
-            return true;
-        } else
+        if (!this.registered) {
             return false;
+        }
+
+        this.registered = false;
+        bukkit.unregisterListener(this);
+        return true;
     }
+
 }

@@ -9,18 +9,25 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.CachedServerIcon;
 
 import java.net.InetSocketAddress;
 import java.util.List;
 
-public class PaperEventHandler extends StatusHandler implements Listener {
-
-    private boolean registered;
+public class PaperEventHandler extends BukkitEventHandler {
 
     public PaperEventHandler(BukkitPlugin plugin) {
         super(plugin);
+    }
+
+    @Override
+    @EventHandler
+    public void onServerListPing(ServerListPingEvent event) {
+        // Still handle events that don't implement PaperServerListPingEvent
+        if (!(event instanceof PaperServerListPingEvent)) {
+            super.onServerListPing(event);
+        }
     }
 
     @EventHandler
@@ -104,28 +111,6 @@ public class PaperEventHandler extends StatusHandler implements Listener {
                     event.setServerIcon(icon);
                 } catch (UnsupportedOperationException ignored) {}
         }
-    }
-
-    @Override
-    public boolean register() {
-        if (this.registered) {
-            return false;
-        }
-
-        this.registered = true;
-        bukkit.registerListener(this);
-        return true;
-    }
-
-    @Override
-    public boolean unregister() {
-        if (!this.registered) {
-            return false;
-        }
-
-        this.registered = false;
-        bukkit.unregisterListener(this);
-        return true;
     }
 
 }
