@@ -23,6 +23,9 @@
 
 package net.minecrell.serverlistplus.sponge;
 
+import static org.spongepowered.api.Platform.Component.API;
+import static org.spongepowered.api.Platform.Component.IMPLEMENTATION;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
@@ -54,7 +57,6 @@ import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.command.CommandCallable;
-import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.config.ConfigDir;
@@ -73,6 +75,7 @@ import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.awt.image.BufferedImage;
@@ -85,6 +88,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 @Plugin(id = "serverlistplus", name = "ServerListPlus",
         dependencies = @Dependency(id = "statusprotocol", optional = true))
@@ -158,14 +163,14 @@ public class SpongePlugin implements ServerListPlusPlugin {
     public final class ServerListPlusCommand implements CommandCallable {
 
         @Override
-        public CommandResult process(CommandSource source, String arguments) throws CommandException {
+        public CommandResult process(CommandSource source, String arguments) {
             String[] args = arguments.isEmpty() ? new String[0] : ARGUMENT_PATTERN.split(arguments);
             core.executeCommand(new SpongeCommandSender(source), "serverlistplus", args);
             return CommandResult.success();
         }
 
         @Override
-        public List<String> getSuggestions(CommandSource source, String arguments) throws CommandException {
+        public List<String> getSuggestions(CommandSource source, String arguments, @Nullable Location<World> targetPosition) {
             return core.tabComplete(new SpongeCommandSender(source), "serverlistplus",
                     ARGUMENT_PATTERN.split(arguments));
         }
@@ -176,12 +181,12 @@ public class SpongePlugin implements ServerListPlusPlugin {
         }
 
         @Override
-        public Optional<? extends Text> getShortDescription(CommandSource source) {
+        public Optional<Text> getShortDescription(CommandSource source) {
             return Optional.empty();
         }
 
         @Override
-        public Optional<? extends Text> getHelp(CommandSource source) {
+        public Optional<Text> getHelp(CommandSource source) {
             return Optional.empty();
         }
 
@@ -298,8 +303,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
     @Override
     public String getServerImplementation() {
         Platform platform = game.getPlatform();
-        return platform.getImplementation().getName() + " v" + platform.getImplementation().getVersion()
-                + " (" + platform.getApi().getName() + " v" + platform.getApi().getVersion() + ')';
+        return platform.getContainer(IMPLEMENTATION).getName() + " v" + platform.getContainer(IMPLEMENTATION).getVersion()
+                + " (" + platform.getContainer(API).getName() + " v" + platform.getContainer(API).getVersion() + ')';
     }
 
     @Override
