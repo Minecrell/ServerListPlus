@@ -303,8 +303,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
     @Override
     public String getServerImplementation() {
         Platform platform = game.getPlatform();
-        return platform.getContainer(IMPLEMENTATION).getName() + " v" + platform.getContainer(IMPLEMENTATION).getVersion()
-                + " (" + platform.getContainer(API).getName() + " v" + platform.getContainer(API).getVersion() + ')';
+        return platform.getContainer(IMPLEMENTATION).getName() + " v" + platform.getContainer(IMPLEMENTATION).getVersion().orElse("UNKNOWN")
+                + " (" + platform.getContainer(API).getName() + " v" + platform.getContainer(API).getVersion().orElse("UNKNOWN") + ')';
     }
 
     @Override
