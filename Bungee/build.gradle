@@ -41,6 +41,7 @@ dependencies {
     compile 'net.minecrell.mcstats:statslite-bungee:0.2.2'
     
     provided name: 'AdvancedBan-2.1.4-RELEASE'
+    provided name: 'LiteBansAPI-0.3'
 }
 
 processResources {

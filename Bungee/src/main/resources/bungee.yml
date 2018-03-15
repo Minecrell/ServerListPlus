@@ -5,4 +5,4 @@ version: '@Version@'
 
 author: '@Author@'
 
-softDepends: [AdvancedBan]
+softDepends: [AdvancedBan, LiteBans]

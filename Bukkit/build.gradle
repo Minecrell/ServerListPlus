@@ -57,6 +57,7 @@ dependencies {
     }
     
     provided name: 'AdvancedBan-2.1.4-RELEASE'
+    provided name: 'LiteBansAPI-0.3'
 }
 
 processResources {
