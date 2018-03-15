@@ -19,7 +19,8 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.NoBanDetector;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -403,8 +404,8 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     }
 
     @Override
-    public boolean isBanned(PlayerIdentity playerIdentity) {
-        return false;
+    public BanDetector getBanDetector() {
+        return NoBanDetector.instance;
     }
 
 }
