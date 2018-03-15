@@ -8,7 +8,9 @@ public class AdvancedBanBanDetector implements BanDetector {
 
     @Override
     public boolean isBanned(PlayerIdentity playerIdentity) {
-        return PunishmentManager.get().isBanned(playerIdentity.getUuid().toString());
+        final String uuid = playerIdentity.getUuid().toString().replace("-", "");
+        
+        return PunishmentManager.get().isBanned(uuid);
     }
 
 }
