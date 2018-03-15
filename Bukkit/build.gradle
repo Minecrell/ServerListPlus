@@ -55,6 +55,8 @@ dependencies {
     compile('org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT') {
         transitive = false
     }
+    
+    provided name: 'AdvancedBan-2.1.4-RELEASE'
 }
 
 processResources {

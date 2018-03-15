@@ -48,6 +48,9 @@ allprojects {
             name = 'minecrell'
             url = 'http://repo.minecrell.net/releases'
         }
+        flatDir {
+            dirs rootProject.file('libs')
+        }
     }
 
     dependencies {

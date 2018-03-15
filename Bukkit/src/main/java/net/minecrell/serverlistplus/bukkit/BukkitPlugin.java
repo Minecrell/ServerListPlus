@@ -38,6 +38,7 @@ import lombok.Getter;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
+import net.minecrell.serverlistplus.bukkit.integration.AdvancedBanBanDetector;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
@@ -47,9 +48,7 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.player.ban.BanDetector;
-import net.minecrell.serverlistplus.core.player.ban.NoBanDetector;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -57,7 +56,7 @@ import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
-import org.bukkit.BanList;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -122,6 +121,10 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
+    
+    private static boolean isPluginLoaded(String pluginName) {
+        return Bukkit.getPluginManager().getPlugin(pluginName) != null;
+    }
 
     @Override
     public void onEnable() {
@@ -154,7 +157,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
         
-        banDetector = new BukkitBanDetector();
+        if (isPluginLoaded("AdvancedBan")) {
+            banDetector = new AdvancedBanBanDetector();
+        } else {
+            banDetector = new BukkitBanDetector();
+        }
         
         getLogger().info(getDisplayName() + " enabled.");
     }
