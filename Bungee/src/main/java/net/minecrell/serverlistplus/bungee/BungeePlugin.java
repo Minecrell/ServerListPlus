@@ -39,6 +39,7 @@ import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.Favicon;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
@@ -62,6 +63,7 @@ import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.ban.BanDetector;
 import net.minecrell.serverlistplus.core.player.ban.NoBanDetector;
+import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanDetector;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -100,6 +102,10 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         }
     };
     private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
+    
+    private static boolean isPluginLoaded(String pluginName) {
+        return ProxyServer.getInstance().getPluginManager().getPlugin(pluginName) != null;
+    }
 
     @Override
     public void onEnable() {
@@ -116,7 +122,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         // Register commands
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
 
-        banDetector = new NoBanDetector();
+        if (isPluginLoaded("AdvancedBan")) {
+            banDetector = new AdvancedBanBanDetector();
+        } else {
+            banDetector = new NoBanDetector();
+        }
     }
 
     @Override

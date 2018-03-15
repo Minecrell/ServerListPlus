@@ -76,11 +76,20 @@ ext {
     ]
 }
 
+repositories {
+    maven {
+        name = 'JitPack.io'
+        url = 'https://jitpack.io'
+    }
+}
+
 dependencies {
     compile 'com.google.guava:guava:21.0'
     compile 'org.yaml:snakeyaml:1.19'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
+
+    compileOnly 'com.github.DevLeoko:AdvancedBan:a619728bd6'
 }
 
 processResources {
