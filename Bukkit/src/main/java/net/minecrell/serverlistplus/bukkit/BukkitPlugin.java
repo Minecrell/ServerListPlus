@@ -34,6 +34,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import lombok.Getter;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.PaperEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
@@ -48,6 +49,8 @@ import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.NoBanDetector;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -94,6 +97,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private MetricsLite metrics;
 
     private Method legacy_getOnlinePlayers;
+    
+    @Getter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
@@ -159,6 +164,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
+        
+        banDetector = new BukkitBanDetector();
+        
         getLogger().info(getDisplayName() + " enabled.");
     }
 
@@ -463,10 +471,5 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (protocol != null && protocol.unregister())
                 getLogger().log(DEBUG, "Unregistered status protocol handler.");
         }
-    }
-
-    @Override
-    public boolean isBanned(PlayerIdentity playerIdentity) {
-        return getServer().getBanList(BanList.Type.NAME).isBanned(playerIdentity.getName());
     }
 }

@@ -32,6 +32,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
+import lombok.Getter;
 import net.minecrell.mcstats.SpongeStatsLite;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
@@ -41,6 +42,7 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.BanDetector;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -109,6 +111,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
     private ServerListPlusCore core;
 
     private Object loginListener, pingListener;
+    
+    @Getter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -148,6 +152,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "serverlist+",
                 "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
+        
+        banDetector = new SpongeBanDetector(game);
     }
 
     @Listener
@@ -445,14 +451,5 @@ public class SpongePlugin implements ServerListPlusPlugin {
             this.pingListener = null;
             logger.debug("Unregistered ping listener.");
         }
-    }
-
-    @Override
-    public boolean isBanned(PlayerIdentity playerIdentity) {
-        if (game.getServiceManager().provide(BanService.class).isPresent()) {
-            final GameProfile profile = GameProfile.of(playerIdentity.getUuid(), playerIdentity.getName());
-            return game.getServiceManager().provide(BanService.class).get().isBanned(profile);
-        }
-        return false;
     }
 }

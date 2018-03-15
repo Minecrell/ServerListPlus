@@ -33,6 +33,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import lombok.Getter;
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -58,7 +59,8 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.NoBanDetector;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -82,6 +84,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     private Listener connectionListener, pingListener;
 
     private BungeeStatsLite stats = new BungeeStatsLite(this);
+
+    @Getter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -110,6 +114,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         // Register commands
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
+
+        banDetector = new NoBanDetector();
     }
 
     @Override
@@ -418,10 +424,5 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.pingListener = null;
             getLogger().log(DEBUG, "Unregistered proxy ping listener.");
         }
-    }
-
-    @Override
-    public boolean isBanned(PlayerIdentity playerIdentity) {
-        return false;
     }
 }
