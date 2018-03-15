@@ -68,4 +68,5 @@ public interface ServerListPlusPlugin {
     void statusChanged(StatusManager status, boolean hasChanges);
 
     BanDetector getBanDetector();
+    void setBanDetector(BanDetector banDetector);
 }

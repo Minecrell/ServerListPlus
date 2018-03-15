@@ -35,6 +35,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.PaperEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
@@ -98,7 +99,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private Method legacy_getOnlinePlayers;
     
-    @Getter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
