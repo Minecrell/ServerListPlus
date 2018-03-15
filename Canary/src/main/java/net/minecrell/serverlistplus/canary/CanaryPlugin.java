@@ -52,7 +52,7 @@ import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.BanDetector;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -68,7 +68,6 @@ import org.mcstats.MetricsLite;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -391,7 +390,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public boolean isBanned(PlayerIdentity playerIdentity) {
-        return Canary.bans().isBanned(playerIdentity.getUuid().toString());
+    public BanDetector getBanDetector() {
+        return CanaryBanDetector.instance;
     }
 }
