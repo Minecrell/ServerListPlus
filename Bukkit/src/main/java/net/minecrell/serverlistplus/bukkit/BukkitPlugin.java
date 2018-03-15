@@ -34,6 +34,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import lombok.Getter;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
@@ -94,6 +95,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private MetricsLite metrics;
 
     private Method legacy_getOnlinePlayers;
+    
+    @Getter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
@@ -150,6 +153,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
+        
+        banDetector = new BukkitBanDetector();
+        
         getLogger().info(getDisplayName() + " enabled.");
     }
 
@@ -453,10 +459,5 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (protocol != null && protocol.unregister())
                 getLogger().log(DEBUG, "Unregistered status protocol handler.");
         }
-    }
-    
-    @Override
-    public BanDetector getBanDetector() {
-        return BukkitBanDetector.instance;
     }
 }

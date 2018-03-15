@@ -33,6 +33,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import lombok.Getter;
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -84,6 +85,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     private BungeeStatsLite stats = new BungeeStatsLite(this);
 
+    @Getter private BanDetector banDetector;
+
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
             new CacheLoader<FaviconSource, Optional<Favicon>>() {
@@ -111,6 +114,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         // Register commands
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
+
+        banDetector = new NoBanDetector();
     }
 
     @Override
@@ -419,10 +424,5 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.pingListener = null;
             getLogger().log(DEBUG, "Unregistered proxy ping listener.");
         }
-    }
-
-    @Override
-    public BanDetector getBanDetector() {
-        return NoBanDetector.instance;
     }
 }

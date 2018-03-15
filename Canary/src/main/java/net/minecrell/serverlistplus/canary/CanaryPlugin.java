@@ -30,6 +30,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.authlib.GameProfile;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
@@ -87,6 +88,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     private MetricsLite metrics;
 
     private final Field PROFILES_FIELD;
+    
+    @Getter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =
@@ -130,6 +133,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             getLogman().error("Failed to register command", e);
             return false;
         }
+        
+        banDetector = new CanaryBanDetector();
 
         return true;
     }
@@ -387,10 +392,5 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             this.pingListener = null;
             getLogman().debug("Unregistered proxy ping listener.");
         }
-    }
-
-    @Override
-    public BanDetector getBanDetector() {
-        return CanaryBanDetector.instance;
     }
 }
