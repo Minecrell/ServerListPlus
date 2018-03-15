@@ -34,6 +34,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -88,7 +89,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     private BungeeStatsLite stats = new BungeeStatsLite(this);
 
-    @Getter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =

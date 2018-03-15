@@ -13,6 +13,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
@@ -74,7 +75,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     private boolean playerTracking;
     private ImmutableList<String> loginMessages;
     
-    @Getter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =

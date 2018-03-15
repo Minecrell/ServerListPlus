@@ -31,6 +31,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.authlib.GameProfile;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
@@ -89,7 +90,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     private final Field PROFILES_FIELD;
     
-    @Getter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =
