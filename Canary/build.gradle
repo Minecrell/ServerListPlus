@@ -30,10 +30,9 @@ repositories {
         name = 'minecraft'
         url = 'https://libraries.minecraft.net'
     }
-    mavenLocal()
     maven {
-        name = 'mcstats-snapshots'
-        url = 'http://repo.mcstats.org/content/repositories/snapshots'
+        name = 'minecrell-snapshots'
+        url = 'http://repo.minecrell.net/snapshots'
     }
 }
 
