@@ -39,7 +39,7 @@ sponge {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:7.0.0'
-    compile 'net.minecrell.mcstats:statslite-sponge:0.2.2'
+    compile 'net.minecrell.mcstats:statslite-sponge:0.2.3'
 
     compile 'net.minecrell:statusprotocol:0.3'
 }
