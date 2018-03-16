@@ -43,7 +43,7 @@ public class ConfigurationPropertyUtils extends AbstractPropertyUtils {
     }
 
     @Override // Print warning for unknown properties
-    public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
+    public Property getProperty(Class<?> type, String name, BeanAccess bAccess) {
         if (bAccess != BeanAccess.FIELD) return super.getProperty(type, name, bAccess);
         Property p = super.getProperty(type, Helper.toLowerCase(name), bAccess);
         // Check if property was missing and notify user if necessary

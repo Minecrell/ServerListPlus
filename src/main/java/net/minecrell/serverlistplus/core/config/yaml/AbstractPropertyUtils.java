@@ -44,14 +44,14 @@ public abstract class AbstractPropertyUtils extends PropertyUtils {
     }
 
     @Override // Order properties in the configuration as defined in the source code
-    protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
+    protected Set<Property> createPropertySet(Class<?> type, BeanAccess bAccess) {
         return new LinkedHashSet<>(getPropertiesMap(type, bAccess).values());
     }
 
     private final Map<Class<?>, Map<String, Property>> propertiesCache = new HashMap<>();
 
     @Override
-    protected Map<String, Property> getPropertiesMap(Class<?> type, BeanAccess bAccess) throws IntrospectionException {
+    protected Map<String, Property> getPropertiesMap(Class<?> type, BeanAccess bAccess) {
         if (bAccess == BeanAccess.FIELD) {
             Map<String, Property> properties = new LinkedHashMap<>();
             findProperties(type, properties);
