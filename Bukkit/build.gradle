@@ -55,7 +55,9 @@ dependencies {
         transitive = false
     }
     
-    compileOnly 'com.github.netherfoam:MaxBans:156239e1f1'
+    compileOnly('com.github.netherfoam:MaxBans:156239e1f1') {
+        transitive = false
+    }
 }
 
 processResources {
