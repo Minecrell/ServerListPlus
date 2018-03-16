@@ -54,6 +54,8 @@ dependencies {
     compile('org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT') {
         transitive = false
     }
+    
+    compileOnly 'com.github.netherfoam:MaxBans:156239e1f1'
 }
 
 processResources {

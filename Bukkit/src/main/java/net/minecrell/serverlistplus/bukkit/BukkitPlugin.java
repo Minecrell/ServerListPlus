@@ -28,7 +28,6 @@ import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
 import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
@@ -39,6 +38,7 @@ import lombok.Setter;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
+import net.minecrell.serverlistplus.bukkit.integration.MaxBansBanProvider;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
@@ -160,6 +160,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         
         if (isPluginLoaded("AdvancedBan")) {
             setBanProvider(new AdvancedBanBanProvider());
+        } else if (isPluginLoaded("MaxBans")) {
+            setBanProvider(new MaxBansBanProvider());
         }
         
         getLogger().info(getDisplayName() + " enabled.");
