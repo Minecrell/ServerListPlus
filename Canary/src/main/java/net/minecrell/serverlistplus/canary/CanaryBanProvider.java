@@ -5,7 +5,7 @@ import net.canarymod.bansystem.Ban;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class CanaryBanProvider implements BanProvider {
 
@@ -43,7 +43,7 @@ public class CanaryBanProvider implements BanProvider {
     }
 
     @Override
-    public Timestamp getBanExpiration(PlayerIdentity playerIdentity) {
+    public Date getBanExpiration(PlayerIdentity playerIdentity) {
         final Ban ban = getBan(playerIdentity);
 
         if (ban == null)
@@ -51,7 +51,7 @@ public class CanaryBanProvider implements BanProvider {
 
         final long expiration = ban.getExpiration();
 
-        return (expiration < 0L) ? null : new Timestamp(expiration);
+        return (expiration < 0L) ? null : new Date(expiration);
     }
 
 }

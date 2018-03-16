@@ -2,7 +2,7 @@ package net.minecrell.serverlistplus.core.player.ban;
 
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class NoBanProvider implements BanProvider {
 
@@ -22,7 +22,7 @@ public class NoBanProvider implements BanProvider {
     }
 
     @Override
-    public Timestamp getBanExpiration(PlayerIdentity playerIdentity) {
+    public Date getBanExpiration(PlayerIdentity playerIdentity) {
         return null;
     }
 }
