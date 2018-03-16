@@ -51,7 +51,10 @@ import java.util.Map;
         " - Available placeholders:",
         "   - Player name: %player%",
         "   - Player count: %online%, %max%, %online@server% %online@world%",
-        "   - Random online player name: %random_player%"
+        "   - Random online player name: %random_player%",
+        "   - Ban reason: %ban_reason%",
+        "   - Ban operator: %ban_operator%",
+        "   - Ban experiation date: %ban_expiration_date%, %ban_expiration_datetime%"
 })
 public class ServerStatusConf extends PersonalizedStatusConf {
     public Map<String, PersonalizedStatusConf> Hosts;

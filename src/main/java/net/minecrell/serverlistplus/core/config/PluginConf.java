@@ -78,6 +78,9 @@ public class PluginConf {
         public String PlayerName = "player";
         public String PlayerCount = "???";
         public String Date = "???";
+        public String BanReason = "some reason";
+        public String BanOperator = "somebody";
+        public String BanExpirationDate = "never";
     }
 
     public static class FaviconConf {
