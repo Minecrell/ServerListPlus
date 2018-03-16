@@ -8,7 +8,7 @@ description: "@Description@"
 author: '@Author@'
 website: '@Website@'
 
-softdepend: [AdvancedBan, ProtocolLib]
+softdepend: [AdvancedBan, MaxBans, ProtocolLib]
 
 permissions:
   serverlistplus.admin:

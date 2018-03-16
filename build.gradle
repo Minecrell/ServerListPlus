@@ -43,6 +43,10 @@ allprojects {
             name = 'minecrell'
             url = 'http://repo.minecrell.net/releases'
         }
+        maven {
+            name = 'JitPack.io'
+            url = 'https://jitpack.io'
+        }
     }
 
     dependencies {
@@ -74,13 +78,6 @@ ext {
     universalProjects = [
             ':Bukkit', ':Bungee', ':Canary', ':Sponge'
     ]
-}
-
-repositories {
-    maven {
-        name = 'JitPack.io'
-        url = 'https://jitpack.io'
-    }
 }
 
 dependencies {
