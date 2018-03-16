@@ -34,6 +34,9 @@ import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.Property;
 
 import java.beans.IntrospectionException;
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -41,7 +44,7 @@ public class OutdatedConfigurationPropertyUtils extends AbstractPropertyUtils {
     private final ServerListPlusCore core;
 
     @Override
-    public Property getProperty(Class<?> type, String name, BeanAccess bAccess) throws IntrospectionException {
+    public Property getProperty(Class<?> type, String name, BeanAccess bAccess) {
         if (bAccess != BeanAccess.FIELD) return super.getProperty(type, name, bAccess);
         Map<String, Property> properties = getPropertiesMap(type, bAccess);
         Property property = properties.get(Helper.toLowerCase(name));
@@ -75,6 +78,16 @@ public class OutdatedConfigurationPropertyUtils extends AbstractPropertyUtils {
         @Override
         public Object get(Object object) {
             return object;
+        }
+
+        @Override
+        public List<Annotation> getAnnotations() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+            return null;
         }
     }
 }

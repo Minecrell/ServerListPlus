@@ -34,10 +34,9 @@ repositories {
         name = 'dmulloy2-snapshots'
         url = 'http://repo.dmulloy2.net/nexus/repository/snapshots'
     }
-    mavenLocal()
     maven {
-        name = 'mcstats-snapshots'
-        url = 'http://repo.mcstats.org/content/repositories/snapshots'
+        name = 'minecrell-snapshots'
+        url = 'https://repo.minecrell.net/snapshots'
     }
 }
 
@@ -50,7 +49,7 @@ ext {
 }
 
 dependencies {
-    compile 'org.bukkit:bukkit:1.10.2-R0.1-SNAPSHOT'
+    compile 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
     compile 'com.comphenix.protocol:ProtocolLib-API:4.2.1'
     compile('org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT') {
         transitive = false

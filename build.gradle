@@ -22,7 +22,7 @@
  */
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
 }
 
 allprojects {
@@ -34,13 +34,8 @@ allprojects {
     apply plugin: 'eclipse'
     apply plugin: 'idea'
 
-    // TODO: Update to Java 8
     sourceCompatibility = '1.7'
     targetCompatibility = '1.7'
-
-    configurations {
-        provided
-    }
 
     repositories {
         mavenCentral()
@@ -54,30 +49,12 @@ allprojects {
     }
 
     dependencies {
-        provided 'org.projectlombok:lombok:1.16.10'
+        compileOnly 'org.projectlombok:lombok:1.16.20'
     }
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
         options.deprecation = true
-    }
-
-    sourceSets {
-        main {
-            compileClasspath += configurations.provided
-        }
-    }
-
-    eclipse {
-        classpath {
-            plusConfigurations += [configurations.provided]
-        }
-    }
-
-    idea {
-        module {
-            scopes.PROVIDED.plus += [configurations.provided]
-        }
     }
 }
 
@@ -102,9 +79,9 @@ ext {
 }
 
 dependencies {
-    compile 'com.google.guava:guava:17.0'
-    compile 'org.yaml:snakeyaml:1.15'
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.guava:guava:21.0'
+    compile 'org.yaml:snakeyaml:1.19'
+    compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     
     provided name: 'AdvancedBan-2.1.4-RELEASE'
@@ -204,8 +181,4 @@ publishing {
             }
         }
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
 }

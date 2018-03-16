@@ -270,9 +270,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             try {
                 players = Arrays.asList((Player[]) legacy_getOnlinePlayers.invoke(getServer()));
             } catch (InvocationTargetException ex) {
-                throw Throwables.propagate(ex.getCause());
+                throw new RuntimeException(ex.getCause());
             } catch (IllegalAccessException ex) {
-                throw Throwables.propagate(ex);
+                throw new RuntimeException(ex);
             }
         }
 
