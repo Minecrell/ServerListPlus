@@ -21,8 +21,8 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
-import net.minecrell.serverlistplus.core.player.ban.NoBanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
+import net.minecrell.serverlistplus.core.player.ban.NoBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -75,7 +75,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     private boolean playerTracking;
     private ImmutableList<String> loginMessages;
     
-    @Getter @Setter private BanDetector banDetector = new NoBanDetector();
+    @Getter @Setter private BanProvider banProvider = new NoBanProvider();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =

@@ -3,11 +3,11 @@ package net.minecrell.serverlistplus.canary;
 import net.canarymod.Canary;
 import net.canarymod.bansystem.Ban;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 
 import java.sql.Timestamp;
 
-public class CanaryBanDetector implements BanDetector {
+public class CanaryBanProvider implements BanProvider {
 
     private String getUUID(PlayerIdentity playerIdentity) {
         return playerIdentity.getUuid().toString();

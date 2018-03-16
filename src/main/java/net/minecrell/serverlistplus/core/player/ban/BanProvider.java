@@ -4,7 +4,7 @@ import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 
 import java.sql.Timestamp;
 
-public interface BanDetector {
+public interface BanProvider {
 
     /**
      * Checks if a player is banned.

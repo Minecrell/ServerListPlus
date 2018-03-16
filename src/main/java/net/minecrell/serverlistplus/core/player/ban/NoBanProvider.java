@@ -4,7 +4,7 @@ import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 
 import java.sql.Timestamp;
 
-public class NoBanDetector implements BanDetector {
+public class NoBanProvider implements BanProvider {
 
     @Override
     public boolean isBanned(PlayerIdentity playerIdentity) {

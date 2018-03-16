@@ -3,11 +3,11 @@ package net.minecrell.serverlistplus.core.player.ban.integration;
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.utils.Punishment;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 
 import java.sql.Timestamp;
 
-public class AdvancedBanBanDetector implements BanDetector {
+public class AdvancedBanBanProvider implements BanProvider {
 
     private String getUUID(PlayerIdentity playerIdentity) {
         return playerIdentity.getUuid().toString().replace("-", "");

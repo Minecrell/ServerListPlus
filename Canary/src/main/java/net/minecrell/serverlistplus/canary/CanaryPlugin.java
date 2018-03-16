@@ -54,7 +54,7 @@ import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -90,7 +90,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     private final Field PROFILES_FIELD;
     
-    @Getter @Setter private BanDetector banDetector = new CanaryBanDetector();
+    @Getter @Setter private BanProvider banProvider = new CanaryBanProvider();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =

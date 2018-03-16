@@ -49,8 +49,8 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
-import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
+import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -98,7 +98,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private Method legacy_getOnlinePlayers;
     
-    @Getter @Setter private BanDetector banDetector = new BukkitBanDetector();
+    @Getter @Setter private BanProvider banProvider = new BukkitBanProvider();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
@@ -170,7 +170,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
         
         if (isPluginLoaded("AdvancedBan")) {
-            setBanDetector(new AdvancedBanBanDetector());
+            setBanProvider(new AdvancedBanBanProvider());
         }
         
         getLogger().info(getDisplayName() + " enabled.");

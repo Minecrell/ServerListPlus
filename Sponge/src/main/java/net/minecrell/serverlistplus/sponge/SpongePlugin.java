@@ -42,7 +42,7 @@ import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -111,7 +111,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     private Object loginListener, pingListener;
     
-    @Getter @Setter private BanDetector banDetector = new SpongeBanDetector();
+    @Getter @Setter private BanProvider banProvider = new SpongeBanDetector();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
