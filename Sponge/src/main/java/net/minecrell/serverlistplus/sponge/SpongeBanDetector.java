@@ -1,9 +1,8 @@
 package net.minecrell.serverlistplus.sponge;
 
-import lombok.RequiredArgsConstructor;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.player.ban.BanDetector;
-import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -11,13 +10,10 @@ import org.spongepowered.api.util.ban.Ban;
 
 import java.sql.Timestamp;
 
-@RequiredArgsConstructor
 public class SpongeBanDetector implements BanDetector {
 
-    private final Game game;
-
     private BanService getBanService() {
-        return game.getServiceManager().provide(BanService.class).orElse(null);
+        return Sponge.getGame().getServiceManager().provide(BanService.class).orElse(null);
     }
 
     private GameProfile getGameProfile(PlayerIdentity playerIdentity) {

@@ -75,7 +75,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     private boolean playerTracking;
     private ImmutableList<String> loginMessages;
     
-    @Getter @Setter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector = new NoBanDetector();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =
@@ -116,8 +116,6 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
             this.stop();
             return false;
         }
-        
-        banDetector = new NoBanDetector();
 
         return true;
     }

@@ -88,7 +88,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     private BungeeStatsLite stats = new BungeeStatsLite(this);
 
-    @Getter @Setter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector = new NoBanDetector();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -123,9 +123,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
 
         if (isPluginLoaded("AdvancedBan")) {
-            banDetector = new AdvancedBanBanDetector();
-        } else {
-            banDetector = new NoBanDetector();
+            setBanDetector(new AdvancedBanBanDetector());
         }
     }
 
