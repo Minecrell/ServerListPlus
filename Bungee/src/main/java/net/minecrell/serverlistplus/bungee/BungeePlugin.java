@@ -54,7 +54,6 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
 import net.minecrell.mcstats.BungeeStatsLite;
 import net.minecrell.serverlistplus.bungee.integration.AdvancedBanBanDetector;
-import net.minecrell.serverlistplus.bungee.integration.LiteBansBanDetector;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -125,8 +124,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         if (isPluginLoaded("AdvancedBan")) {
             banDetector = new AdvancedBanBanDetector();
-        } else if(isPluginLoaded("LiteBans")) {
-            banDetector = new LiteBansBanDetector();
         } else {
             banDetector = new NoBanDetector();
         }

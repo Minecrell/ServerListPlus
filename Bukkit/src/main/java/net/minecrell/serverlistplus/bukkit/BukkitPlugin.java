@@ -40,7 +40,6 @@ import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
 import net.minecrell.serverlistplus.bukkit.integration.AdvancedBanBanDetector;
-import net.minecrell.serverlistplus.bukkit.integration.LiteBansBanDetector;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
@@ -161,8 +160,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         
         if (isPluginLoaded("AdvancedBan")) {
             banDetector = new AdvancedBanBanDetector();
-        } else if(isPluginLoaded("LiteBans")) {
-            banDetector = new LiteBansBanDetector();
         } else {
             banDetector = new BukkitBanDetector();
         }
