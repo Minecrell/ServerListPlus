@@ -106,6 +106,8 @@ dependencies {
     compile 'org.yaml:snakeyaml:1.15'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
+    
+    provided name: 'AdvancedBan-2.1.4-RELEASE'
 }
 
 processResources {

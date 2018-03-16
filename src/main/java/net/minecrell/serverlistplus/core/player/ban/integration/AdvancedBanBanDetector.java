@@ -1,4 +1,4 @@
-package net.minecrell.serverlistplus.bukkit.integration;
+package net.minecrell.serverlistplus.core.player.ban.integration;
 
 import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.utils.Punishment;
