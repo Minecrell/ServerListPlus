@@ -90,7 +90,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     private final Field PROFILES_FIELD;
     
-    @Getter @Setter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector = new CanaryBanDetector();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =
@@ -134,8 +134,6 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             getLogman().error("Failed to register command", e);
             return false;
         }
-        
-        banDetector = new CanaryBanDetector();
 
         return true;
     }

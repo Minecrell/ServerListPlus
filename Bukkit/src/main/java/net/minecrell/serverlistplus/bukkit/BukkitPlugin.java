@@ -96,7 +96,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private Method legacy_getOnlinePlayers;
     
-    @Getter @Setter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector = new BukkitBanDetector();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
@@ -159,9 +159,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
         
         if (isPluginLoaded("AdvancedBan")) {
-            banDetector = new AdvancedBanBanDetector();
-        } else {
-            banDetector = new BukkitBanDetector();
+            setBanDetector(new AdvancedBanBanDetector());
         }
         
         getLogger().info(getDisplayName() + " enabled.");

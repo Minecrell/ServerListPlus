@@ -111,7 +111,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     private Object loginListener, pingListener;
     
-    @Getter @Setter private BanDetector banDetector;
+    @Getter @Setter private BanDetector banDetector = new SpongeBanDetector();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -151,8 +151,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "serverlist+",
                 "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
-        
-        banDetector = new SpongeBanDetector(game);
     }
 
     @Listener
