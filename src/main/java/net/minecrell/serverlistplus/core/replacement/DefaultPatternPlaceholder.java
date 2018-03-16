@@ -27,17 +27,15 @@ import lombok.Getter;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.replacement.util.Patterns;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.ContinousIterator;
 import net.minecrell.serverlistplus.core.util.TimeFormatter;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -188,7 +186,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
                 return super.replace(response, s);
             }
             
-            BanDetector banDetector = response.getCore().getPlugin().getBanDetector();
+            BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
             final Timestamp timestamp = banDetector.getBanExpiration(identity);
             if (timestamp == null) {
                 return super.replace(response, s);

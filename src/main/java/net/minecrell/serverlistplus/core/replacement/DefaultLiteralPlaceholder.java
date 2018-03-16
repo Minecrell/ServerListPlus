@@ -27,7 +27,7 @@ import lombok.Getter;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
@@ -119,7 +119,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(StatusResponse response, String s) {
             PlayerIdentity identity = response.getRequest().getIdentity();
-            BanDetector banDetector = response.getCore().getPlugin().getBanDetector();
+            BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
             
             return identity != null ? replace(s, banDetector.getBanReason(identity)) : super.replace(response, s);
         }
@@ -134,7 +134,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(StatusResponse response, String s) {
             PlayerIdentity identity = response.getRequest().getIdentity();
-            BanDetector banDetector = response.getCore().getPlugin().getBanDetector();
+            BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
             
             return identity != null ? replace(s, banDetector.getBanOperator(identity)) : super.replace(response, s);
         }
@@ -149,7 +149,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(StatusResponse response, String s) {
             PlayerIdentity identity = response.getRequest().getIdentity();
-            BanDetector banDetector = response.getCore().getPlugin().getBanDetector();
+            BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
             
             return identity != null ? replace(s, banDetector.getBanOperator(identity)) : super.replace(response, s);
         }

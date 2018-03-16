@@ -38,7 +38,7 @@ public class PlayerIdentity {
     private final Date time;
 
     public boolean isBanned(ServerListPlusCore core) {
-        return core.getPlugin().getBanDetector().isBanned(this);
+        return core.getPlugin().getBanProvider().isBanned(this);
     }
 
     public static PlayerIdentity create(UUID uuid, String name) {

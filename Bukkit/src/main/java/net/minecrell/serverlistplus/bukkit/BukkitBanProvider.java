@@ -1,7 +1,7 @@
 package net.minecrell.serverlistplus.bukkit;
 
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
-import net.minecrell.serverlistplus.core.player.ban.BanDetector;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import java.util.Date;
 import java.sql.Timestamp;
 
-public class BukkitBanDetector implements BanDetector {
+public class BukkitBanProvider implements BanProvider {
 
     private BanEntry getBanEntry(PlayerIdentity playerIdentity) {
         return Bukkit.getServer().getBanList(BanList.Type.NAME).getBanEntry(playerIdentity.getName());
