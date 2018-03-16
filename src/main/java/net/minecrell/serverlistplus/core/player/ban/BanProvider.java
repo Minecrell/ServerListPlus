@@ -2,7 +2,7 @@ package net.minecrell.serverlistplus.core.player.ban;
 
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public interface BanProvider {
 
@@ -33,12 +33,13 @@ public interface BanProvider {
     String getBanOperator(PlayerIdentity playerIdentity);
 
     /**
-     * Gets the expiration time of the banned player.
+     * Gets the expiration date of the banned player.<br>
+     * <i>Note: {@link Date} contains time!</i>
      * 
      * @param playerIdentity Player to get the ban expiration date for
      * @return The ban expiration date, or <tt>null</tt> if the ban is permanent
      *         or the player is not banned.
      */
-    Timestamp getBanExpiration(PlayerIdentity playerIdentity);
+    Date getBanExpiration(PlayerIdentity playerIdentity);
 
 }

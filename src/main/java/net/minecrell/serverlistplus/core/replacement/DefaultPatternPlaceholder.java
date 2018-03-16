@@ -33,7 +33,6 @@ import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.ContinousIterator;
 import net.minecrell.serverlistplus.core.util.TimeFormatter;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -178,7 +177,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
             return replace(s, core.getConf(PluginConf.class).Unknown.Date);
         }
     },
-    BAN_EXPIRATION(Pattern.compile("%ban_expiration_date(?:time)?(?:\\|(.*?))?(?:@([\\w-]+))?%")) {
+    BAN_EXPIRATION_DATE(Pattern.compile("%ban_expiration_date(?:time)?(?:\\|(.*?))?(?:@([\\w-]+))?%")) {
         @Override
         public String replace(StatusResponse response, String s) {
             PlayerIdentity identity = response.getRequest().getIdentity();
@@ -187,8 +186,8 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
             }
             
             BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
-            final Timestamp timestamp = banDetector.getBanExpiration(identity);
-            if (timestamp == null) {
+            final Date date = banDetector.getBanExpiration(identity);
+            if (date == null) {
                 return super.replace(response, s);
             }
 
@@ -205,7 +204,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
                         format = "DEFAULT";
                     }
 
-                    return dateTime ? formatter.formatDateTime(timestamp, format) : formatter.formatDate(timestamp, format);
+                    return dateTime ? formatter.formatDateTime(date, format) : formatter.formatDate(date, format);
                 }
             });
         }

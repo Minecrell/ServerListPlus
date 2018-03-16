@@ -5,7 +5,7 @@ import me.leoko.advancedban.utils.Punishment;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class AdvancedBanBanProvider implements BanProvider {
 
@@ -43,7 +43,7 @@ public class AdvancedBanBanProvider implements BanProvider {
     }
 
     @Override
-    public Timestamp getBanExpiration(PlayerIdentity playerIdentity) {
+    public Date getBanExpiration(PlayerIdentity playerIdentity) {
         final Punishment punishment = getBan(playerIdentity);
 
         if (punishment == null)
@@ -51,7 +51,7 @@ public class AdvancedBanBanProvider implements BanProvider {
 
         final long expiration = punishment.getEnd();
 
-        return (expiration < 0L) ? null : new Timestamp(expiration);
+        return (expiration < 0L) ? null : new Date(expiration);
     }
 
 }

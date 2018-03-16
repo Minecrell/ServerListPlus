@@ -7,7 +7,6 @@ import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 
 import java.util.Date;
-import java.sql.Timestamp;
 
 public class BukkitBanProvider implements BanProvider {
 
@@ -41,15 +40,13 @@ public class BukkitBanProvider implements BanProvider {
     }
 
     @Override
-    public Timestamp getBanExpiration(PlayerIdentity playerIdentity) {
+    public Date getBanExpiration(PlayerIdentity playerIdentity) {
         final BanEntry banEntry = getBanEntry(playerIdentity);
 
         if (banEntry == null)
             return null;
 
-        final Date expiration = banEntry.getExpiration();
-
-        return (expiration == null) ? null : new Timestamp(expiration.getTime());
+        return banEntry.getExpiration();
     }
 
 }

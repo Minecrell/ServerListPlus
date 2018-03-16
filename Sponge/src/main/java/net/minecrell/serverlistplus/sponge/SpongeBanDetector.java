@@ -8,7 +8,7 @@ import org.spongepowered.api.service.ban.BanService;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.ban.Ban;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class SpongeBanDetector implements BanProvider {
 
@@ -64,13 +64,13 @@ public class SpongeBanDetector implements BanProvider {
     }
 
     @Override
-    public Timestamp getBanExpiration(PlayerIdentity playerIdentity) {
+    public Date getBanExpiration(PlayerIdentity playerIdentity) {
         final Ban.Profile ban = getBan(playerIdentity);
 
         if (ban == null)
             return null;
 
-        return ban.getExpirationDate().map(Timestamp::from).orElse(null);
+        return ban.getExpirationDate().map(Date::from).orElse(null);
     }
 
 }
