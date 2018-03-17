@@ -52,6 +52,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
 import net.minecrell.mcstats.BungeeStatsLite;
+import net.minecrell.serverlistplus.bungee.integration.BungeeBanBanProvider;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -123,6 +124,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         if (isPluginLoaded("AdvancedBan")) {
             setBanProvider(new AdvancedBanBanProvider());
+        } else if (isPluginLoaded("BungeeBan")) {
+            setBanProvider(new BungeeBanBanProvider());
         }
     }
 
