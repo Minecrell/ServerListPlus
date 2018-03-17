@@ -111,7 +111,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     private Object loginListener, pingListener;
     
-    @Getter @Setter private BanProvider banProvider = new SpongeBanDetector();
+    @Getter @Setter private BanProvider banProvider = new SpongeBanProvider();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
