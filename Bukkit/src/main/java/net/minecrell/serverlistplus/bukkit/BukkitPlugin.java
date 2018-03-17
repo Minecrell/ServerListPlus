@@ -38,6 +38,7 @@ import lombok.Setter;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
+import net.minecrell.serverlistplus.bukkit.integration.BanManagerBanProvider;
 import net.minecrell.serverlistplus.bukkit.integration.MaxBansBanProvider;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
@@ -159,6 +160,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         
         if (isPluginLoaded("AdvancedBan")) {
             setBanProvider(new AdvancedBanBanProvider());
+        } else if (isPluginLoaded("BanManager")) {
+            setBanProvider(new BanManagerBanProvider());
         } else if (isPluginLoaded("MaxBans")) {
             setBanProvider(new MaxBansBanProvider());
         }
