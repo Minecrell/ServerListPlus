@@ -10,17 +10,17 @@ import org.spongepowered.api.util.ban.Ban;
 
 import java.util.Date;
 
-public class SpongeBanDetector implements BanProvider {
+public class SpongeBanProvider implements BanProvider {
 
-    private BanService getBanService() {
+    private static BanService getBanService() {
         return Sponge.getGame().getServiceManager().provide(BanService.class).orElse(null);
     }
 
-    private GameProfile getGameProfile(PlayerIdentity playerIdentity) {
+    private static GameProfile getGameProfile(PlayerIdentity playerIdentity) {
         return GameProfile.of(playerIdentity.getUuid(), playerIdentity.getName());
     }
 
-    private Ban.Profile getBan(PlayerIdentity playerIdentity) {
+    private static Ban.Profile getBan(PlayerIdentity playerIdentity) {
         final BanService banService = getBanService();
 
         if (banService == null)

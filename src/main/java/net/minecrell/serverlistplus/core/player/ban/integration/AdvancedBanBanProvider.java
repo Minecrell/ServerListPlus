@@ -4,16 +4,17 @@ import me.leoko.advancedban.manager.PunishmentManager;
 import me.leoko.advancedban.utils.Punishment;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.player.ban.BanProvider;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 
 import java.util.Date;
 
 public class AdvancedBanBanProvider implements BanProvider {
 
-    private String getUUID(PlayerIdentity playerIdentity) {
-        return playerIdentity.getUuid().toString().replace("-", "");
+    private static String getUUID(PlayerIdentity playerIdentity) {
+        return UUIDs.NO_DASHES.toString(playerIdentity.getUuid());
     }
 
-    private Punishment getBan(PlayerIdentity playerIdentity) {
+    private static Punishment getBan(PlayerIdentity playerIdentity) {
         return PunishmentManager.get().getBan(getUUID(playerIdentity));
     }
 

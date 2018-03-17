@@ -58,7 +58,6 @@ import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -125,8 +124,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
     
-    private static boolean isPluginLoaded(String pluginName) {
-        return Bukkit.getPluginManager().getPlugin(pluginName) != null;
+    private boolean isPluginLoaded(String pluginName) {
+        return getServer().getPluginManager().getPlugin(pluginName) != null;
     }
 
     @Override

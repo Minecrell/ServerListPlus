@@ -9,14 +9,18 @@ import org.bukkit.Bukkit;
 import java.util.Date;
 
 public class BukkitBanProvider implements BanProvider {
+    
+    private static BanList getBanList() {
+        return Bukkit.getServer().getBanList(BanList.Type.NAME);
+    }
 
-    private BanEntry getBanEntry(PlayerIdentity playerIdentity) {
-        return Bukkit.getServer().getBanList(BanList.Type.NAME).getBanEntry(playerIdentity.getName());
+    private static BanEntry getBanEntry(PlayerIdentity playerIdentity) {
+        return getBanList().getBanEntry(playerIdentity.getName());
     }
 
     @Override
     public boolean isBanned(PlayerIdentity playerIdentity) {
-        return Bukkit.getServer().getBanList(BanList.Type.NAME).isBanned(playerIdentity.getName());
+        return getBanList().isBanned(playerIdentity.getName());
     }
 
     @Override

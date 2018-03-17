@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class MaxBansBanProvider implements BanProvider {
 
-    private Ban getBan(PlayerIdentity playerIdentity) {
+    private static Ban getBan(PlayerIdentity playerIdentity) {
         return MaxBans.instance.getBanManager().getBan(playerIdentity.getName());
     }
 
