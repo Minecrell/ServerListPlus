@@ -9,68 +9,44 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.util.ban.Ban;
 
 import java.util.Date;
+import java.util.Optional;
 
 public class SpongeBanProvider implements BanProvider {
 
-    private static BanService getBanService() {
-        return Sponge.getGame().getServiceManager().provide(BanService.class).orElse(null);
+    private static Optional<BanService> getBanService() {
+        return Sponge.getGame().getServiceManager().provide(BanService.class);
     }
 
     private static GameProfile getGameProfile(PlayerIdentity playerIdentity) {
         return GameProfile.of(playerIdentity.getUuid(), playerIdentity.getName());
     }
 
-    private static Ban.Profile getBan(PlayerIdentity playerIdentity) {
-        final BanService banService = getBanService();
-
-        if (banService == null)
-            return null;
-
+    private static Optional<Ban.Profile> getBan(PlayerIdentity playerIdentity) {
         final GameProfile profile = getGameProfile(playerIdentity);
 
-        return banService.getBanFor(profile).orElse(null);
+        return getBanService().flatMap(banService -> banService.getBanFor(profile));
     }
 
     @Override
     public boolean isBanned(PlayerIdentity playerIdentity) {
-        final BanService banService = getBanService();
-
-        if (banService == null)
-            return false;
-
         final GameProfile profile = getGameProfile(playerIdentity);
 
-        return banService.isBanned(profile);
+        return getBanService().map(banService -> banService.isBanned(profile)).orElse(false);
     }
 
     @Override
     public String getBanReason(PlayerIdentity playerIdentity) {
-        final Ban.Profile ban = getBan(playerIdentity);
-
-        if (ban == null)
-            return null;
-
-        return ban.getReason().map(TextSerializers.FORMATTING_CODE::serialize).orElse(null);
+        return getBan(playerIdentity).flatMap(Ban.Profile::getReason).map(TextSerializers.FORMATTING_CODE::serialize).orElse(null);
     }
 
     @Override
     public String getBanOperator(PlayerIdentity playerIdentity) {
-        final Ban.Profile ban = getBan(playerIdentity);
-
-        if (ban == null)
-            return null;
-
-        return ban.getBanSource().map(TextSerializers.FORMATTING_CODE::serialize).orElse(null);
+        return getBan(playerIdentity).flatMap(Ban.Profile::getBanSource).map(TextSerializers.FORMATTING_CODE::serialize).orElse(null);
     }
 
     @Override
     public Date getBanExpiration(PlayerIdentity playerIdentity) {
-        final Ban.Profile ban = getBan(playerIdentity);
-
-        if (ban == null)
-            return null;
-
-        return ban.getExpirationDate().map(Date::from).orElse(null);
+        return getBan(playerIdentity).flatMap(Ban.Profile::getExpirationDate).map(Date::from).orElse(null);
     }
 
 }
