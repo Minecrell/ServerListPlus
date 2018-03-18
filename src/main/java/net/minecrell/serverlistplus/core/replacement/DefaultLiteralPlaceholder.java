@@ -144,21 +144,6 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
             // Use unknown ban operator
             return replace(s, core.getConf(PluginConf.class).Unknown.BanOperator);
         }
-    },
-    BAN_EXPIRATION ("%ban_expiration%") {
-        @Override
-        public String replace(StatusResponse response, String s) {
-            PlayerIdentity identity = response.getRequest().getIdentity();
-            BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
-            
-            return identity != null ? replace(s, banDetector.getBanOperator(identity)) : super.replace(response, s);
-        }
-
-        @Override
-        public String replace(ServerListPlusCore core, String s) {
-            // Use unknown ban operator
-            return replace(s, core.getConf(PluginConf.class).Unknown.BanOperator);
-        }
     };
 
     protected final @Getter String literal;
