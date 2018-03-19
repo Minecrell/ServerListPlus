@@ -33,8 +33,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
@@ -49,7 +47,6 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
@@ -95,8 +92,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private MetricsLite metrics;
 
     private Method legacy_getOnlinePlayers;
-    
-    @Getter @Setter private BanProvider banProvider = new BukkitBanProvider();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
@@ -159,11 +154,13 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
         
         if (isPluginLoaded("AdvancedBan")) {
-            setBanProvider(new AdvancedBanBanProvider());
+            core.setBanProvider(new AdvancedBanBanProvider());
         } else if (isPluginLoaded("BanManager")) {
-            setBanProvider(new BanManagerBanProvider());
+            core.setBanProvider(new BanManagerBanProvider());
         } else if (isPluginLoaded("MaxBans")) {
-            setBanProvider(new MaxBansBanProvider());
+            core.setBanProvider(new MaxBansBanProvider());
+        } else {
+            core.setBanProvider(new BukkitBanProvider());
         }
         
         getLogger().info(getDisplayName() + " enabled.");

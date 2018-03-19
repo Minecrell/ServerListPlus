@@ -119,7 +119,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(StatusResponse response, String s) {
             PlayerIdentity identity = response.getRequest().getIdentity();
-            BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
+            BanProvider banDetector = response.getCore().getBanProvider();
             
             return identity != null ? replace(s, banDetector.getBanReason(identity)) : super.replace(response, s);
         }
@@ -134,7 +134,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(StatusResponse response, String s) {
             PlayerIdentity identity = response.getRequest().getIdentity();
-            BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
+            BanProvider banDetector = response.getCore().getBanProvider();
             
             return identity != null ? replace(s, banDetector.getBanOperator(identity)) : super.replace(response, s);
         }
