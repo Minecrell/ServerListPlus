@@ -32,8 +32,6 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecrell.mcstats.SpongeStatsLite;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
@@ -42,7 +40,6 @@ import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -110,8 +107,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
     private ServerListPlusCore core;
 
     private Object loginListener, pingListener;
-    
-    @Getter @Setter private BanProvider banProvider = new SpongeBanProvider();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -151,6 +146,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "serverlist+",
                 "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
+        
+        core.setBanProvider(new SpongeBanProvider());
     }
 
     @Listener

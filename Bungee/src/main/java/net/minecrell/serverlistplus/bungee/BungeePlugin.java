@@ -33,8 +33,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import lombok.Getter;
-import lombok.Setter;
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -61,7 +59,6 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.player.ban.NoBanProvider;
 import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
@@ -87,8 +84,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     private Listener connectionListener, pingListener;
 
     private BungeeStatsLite stats = new BungeeStatsLite(this);
-
-    @Getter @Setter private BanProvider banProvider = new NoBanProvider();
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -123,9 +118,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
 
         if (isPluginLoaded("AdvancedBan")) {
-            setBanProvider(new AdvancedBanBanProvider());
+            core.setBanProvider(new AdvancedBanBanProvider());
         } else if (isPluginLoaded("BungeeBan")) {
-            setBanProvider(new BungeeBanBanProvider());
+            core.setBanProvider(new BungeeBanBanProvider());
+        } else {
+            core.setBanProvider(new NoBanProvider());
         }
     }
 

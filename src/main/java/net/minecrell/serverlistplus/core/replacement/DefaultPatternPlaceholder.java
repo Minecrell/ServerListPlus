@@ -185,7 +185,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
                 return super.replace(response, s);
             }
             
-            BanProvider banDetector = response.getCore().getPlugin().getBanProvider();
+            BanProvider banDetector = response.getCore().getBanProvider();
             final Date date = banDetector.getBanExpiration(identity);
             if (date == null) {
                 return super.replace(response, s);

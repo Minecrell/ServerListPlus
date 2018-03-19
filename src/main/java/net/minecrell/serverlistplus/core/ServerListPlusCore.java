@@ -41,6 +41,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
@@ -49,6 +50,8 @@ import net.minecrell.serverlistplus.core.logging.Logger;
 import net.minecrell.serverlistplus.core.player.IdentificationStorage;
 import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
+import net.minecrell.serverlistplus.core.player.ban.NoBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.profile.JSONProfileManager;
@@ -70,6 +73,8 @@ import java.util.UUID;
  * Represents the core part of the ServerListPlus plugin.
  */
 public class ServerListPlusCore {
+    private static @Getter ServerListPlusCore instance;
+    
     private final @Getter ServerListPlusPlugin plugin;
     private final @Getter Logger<ServerListPlusException> logger;
 
@@ -82,15 +87,20 @@ public class ServerListPlusCore {
     private IdentificationStorage storage;
 
     private String faviconCacheConf;
+    
+    private @Getter @Setter BanProvider banProvider;
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
         this(plugin, null);
     }
 
     public ServerListPlusCore(ServerListPlusPlugin plugin, ProfileManager profileManager) throws ServerListPlusException {
+        instance = this;
+        
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = plugin.createLogger(this);
         this.info = CoreDescription.load(this);
+        this.banProvider = new NoBanProvider();
 
         try {
             if (Float.parseFloat(JAVA_CLASS_VERSION.value()) < 52.0) {
