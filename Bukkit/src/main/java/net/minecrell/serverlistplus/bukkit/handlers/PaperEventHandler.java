@@ -24,14 +24,15 @@ public class PaperEventHandler extends BukkitEventHandler {
     @Override
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
-        // Still handle events that don't implement PaperServerListPingEvent
-        if (!(event instanceof PaperServerListPingEvent)) {
+        if (event instanceof PaperServerListPingEvent) {
+            handlePaperServerListPing((PaperServerListPingEvent) event);
+        } else {
+            // Still handle events that don't implement PaperServerListPingEvent
             super.onServerListPing(event);
         }
     }
 
-    @EventHandler
-    public void onPaperServerListPing(final PaperServerListPingEvent event) {
+    private void handlePaperServerListPing(final PaperServerListPingEvent event) {
         if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
 
         StatusRequest request = bukkit.getCore().createRequest(event.getAddress());
