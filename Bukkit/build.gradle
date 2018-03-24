@@ -23,8 +23,12 @@
 
 repositories {
     maven {
-        name = 'spigot'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
+        name = 'sonatype-snapshots'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+    maven {
+        name = 'paper'
+        url = 'https://repo.destroystokyo.com/repository/maven-snapshots'
     }
     maven {
         name = 'dmulloy2'
@@ -49,7 +53,9 @@ ext {
 }
 
 dependencies {
-    compile 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
+    compile('com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT') {
+        exclude(group: 'com.mojang', module: 'authlib') // TODO: Remove in 1.13
+    }
     compile 'com.comphenix.protocol:ProtocolLib-API:4.2.1'
     compile('org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT') {
         transitive = false

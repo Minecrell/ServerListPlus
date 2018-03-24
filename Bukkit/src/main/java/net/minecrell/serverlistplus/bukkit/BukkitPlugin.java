@@ -35,6 +35,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
+import net.minecrell.serverlistplus.bukkit.handlers.PaperEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
@@ -87,6 +88,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private ServerListPlusCore core;
 
     private StatusHandler bukkit, protocol;
+    private boolean paper;
     private Listener loginListener, disconnectListener;
 
     private MetricsLite metrics;
@@ -126,14 +128,23 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                 legacy_getOnlinePlayers = method;
         } catch (Throwable ignored) {}
 
-        this.bukkit = new BukkitEventHandler(this);
+        try {
+            Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
+            this.paper = true;
+            this.bukkit = new PaperEventHandler(this);
+        } catch (ClassNotFoundException e) {
+            this.paper = false;
+            this.bukkit = new BukkitEventHandler(this);
+        }
+
         if (Environment.checkProtocolLib(getServer())) {
             try {
                 this.protocol = new ProtocolLibHandler(this);
             } catch (Throwable e) {
                 getLogger().log(ERROR, "Failed to construct ProtocolLib handler. Is your ProtocolLib version up-to-date?", e);
             }
-        } else getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+        } else if (!paper)
+            getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
 
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
@@ -441,9 +452,10 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         if (hasChanges) {
             if (bukkit.register())
                 getLogger().log(DEBUG, "Registered ping event handler.");
-            if (protocol == null)
-                getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
-            else if (protocol.register())
+            if (protocol == null) {
+                if (!paper)
+                    getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+            } else if (protocol.register())
                 getLogger().log(DEBUG, "Registered status protocol handler.");
         } else {
             if (bukkit.unregister())
