@@ -46,12 +46,12 @@ public class PaperEventHandler extends BukkitEventHandler {
                 new ResponseFetcher() {
                     @Override
                     public Integer getOnlinePlayers() {
-                        return event.isHidePlayers() ? null : event.getNumPlayers();
+                        return event.shouldHidePlayers() ? null : event.getNumPlayers();
                     }
 
                     @Override
                     public Integer getMaxPlayers() {
-                        return event.isHidePlayers() ? null : event.getMaxPlayers();
+                        return event.shouldHidePlayers() ? null : event.getMaxPlayers();
                     }
 
                     @Override
