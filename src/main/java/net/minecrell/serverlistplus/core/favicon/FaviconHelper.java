@@ -81,7 +81,6 @@ public final class FaviconHelper {
         }
     }
 
-    private static final String SKIN_URL = "http://skins.minecraft.net/MinecraftSkins/%s.png";
     private static final String SKIN_UUID_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
     private static final String STEVE_URL = "http://assets.mojang.com/SkinTemplates/steve.png";
     private static final String ALEX_URL = "http://assets.mojang.com/SkinTemplates/alex.png";
@@ -114,7 +113,9 @@ public final class FaviconHelper {
         URL url;
         if (name.equalsIgnoreCase("char") || name.equalsIgnoreCase("steve")) url = new URL(STEVE_URL);
         else if (name.equalsIgnoreCase("alex")) url = new URL(ALEX_URL);
-        else url = new URL(String.format(SKIN_URL, name));
+        else {
+            throw new UnsupportedOperationException("Getting a skin using the player name is no longer supported. Use %uuid% instead.");
+        }
         return fromSkin(core, url, helm);
     }
 
