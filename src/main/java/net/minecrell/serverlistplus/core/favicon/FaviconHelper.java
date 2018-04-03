@@ -101,21 +101,24 @@ public final class FaviconHelper {
     }
 
     public static BufferedImage fromSkin(ServerListPlusCore core, String name, boolean helm) throws IOException {
-        try { // First try if it is already a valid URL
-            return fromSkin(core, new URL(name), helm);
-        } catch(MalformedURLException ignored) {}
-
-        // Now try if it's an UUID (dashes required)
-        try {
-            return fromSkin(core, UUID.fromString(name), helm);
-        } catch (IllegalArgumentException ignored) {}
-
         URL url;
-        if (name.equalsIgnoreCase("char") || name.equalsIgnoreCase("steve")) url = new URL(STEVE_URL);
-        else if (name.equalsIgnoreCase("alex")) url = new URL(ALEX_URL);
-        else {
-            throw new UnsupportedOperationException("Getting a skin using the player name is no longer supported. Use %uuid% instead.");
+
+        try { // First try if it is already a valid URL
+            url = new URL(name);
+        } catch(MalformedURLException ignored) {
+            // Try if it's an UUID (dashes required)
+            BufferedImage result = fromUniqueId(core, name, helm);
+            if (result != null) {
+                return result;
+            }
+
+            if (name.equalsIgnoreCase("char") || name.equalsIgnoreCase("steve")) url = new URL(STEVE_URL);
+            else if (name.equalsIgnoreCase("alex")) url = new URL(ALEX_URL);
+            else {
+                throw new UnsupportedOperationException("Getting a skin using the player name is no longer supported. Use %uuid% instead.");
+            }
         }
+
         return fromSkin(core, url, helm);
     }
 
@@ -127,12 +130,27 @@ public final class FaviconHelper {
         return toHex(uuid.getMostSignificantBits()) + toHex(uuid.getLeastSignificantBits());
     }
 
-    public static BufferedImage fromSkin(ServerListPlusCore core, UUID uuid, boolean helm) throws IOException {
+    private static BufferedImage fromUniqueId(ServerListPlusCore core, String uuid, boolean helm) throws IOException {
+        UUID uniqueId;
+        try {
+            uniqueId = UUID.fromString(uuid);
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
+
+        return fromUniqueId(core, uniqueId, helm);
+    }
+
+    public static BufferedImage fromUniqueId(ServerListPlusCore core, UUID uuid, boolean helm) throws IOException {
         JsonObject obj;
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(openConnection(core,
                 new URL(SKIN_UUID_URL + toHexString(uuid)), "application/json")))) {
             obj = Helper.JSON.fromJson(reader, JsonObject.class);
+        }
+
+        if (obj == null) {
+            throw new IllegalArgumentException("UUID does not exist");
         }
 
         JsonArray arr = obj.getAsJsonArray("properties");
