@@ -58,7 +58,11 @@ public final class FaviconHelper {
     private static final int FAVICON_SIZE = 64;
 
     public static BufferedImage fromStream(InputStream in) throws IOException {
-        return ImageIO.read(in);
+        BufferedImage image = ImageIO.read(in);
+        if (image == null) {
+            throw new IOException("Server did not respond with a valid image");
+        }
+        return image;
     }
 
     private static InputStream openConnection(ServerListPlusCore core, URL url, String type) throws IOException {
