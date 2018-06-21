@@ -23,8 +23,8 @@
 
 repositories {
     maven {
-        name = 'canary'
-        url = 'http://repo.visualillusionsent.net/repository/internal'
+        name = 'neptune'
+        url = 'https://repo.neptunepowered.org/maven'
     }
     maven {
         name = 'minecraft'
