@@ -24,3 +24,5 @@
 rootProject.name = 'ServerListPlus'
 include 'Bungee', 'Bukkit', 'Canary', 'Sponge'
 include 'Server'
+
+enableFeaturePreview('STABLE_PUBLISHING')

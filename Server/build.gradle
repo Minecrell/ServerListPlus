@@ -25,11 +25,11 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 dependencies {
-    compile 'io.netty:netty-all:4.1.22.Final'
+    compile 'io.netty:netty-all:4.1.27.Final'
 
-    compile 'com.google.guava:guava:24.1-jre'
-    compile 'org.yaml:snakeyaml:1.20'
-    compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.google.guava:guava:25.1-jre'
+    compile 'org.yaml:snakeyaml:1.21'
+    compile 'com.google.code.gson:gson:2.8.5'
 }
 
 jar {

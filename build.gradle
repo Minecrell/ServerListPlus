@@ -22,7 +22,7 @@
  */
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '2.0.2'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
 allprojects {
@@ -47,6 +47,7 @@ allprojects {
 
     dependencies {
         compileOnly 'org.projectlombok:lombok:1.16.20'
+        annotationProcessor 'org.projectlombok:lombok:1.16.20'
     }
 
     tasks.withType(JavaCompile) {
@@ -88,7 +89,7 @@ processResources {
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
 }
 
-processResources << {
+processResources.doLast {
     // Create an ABOUT file with information about the core
     def prop = new Properties();
     prop.putAll resourceTokens

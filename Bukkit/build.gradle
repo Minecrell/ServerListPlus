@@ -28,7 +28,7 @@ repositories {
     }
     maven {
         name = 'paper'
-        url = 'https://repo.destroystokyo.com/repository/maven-snapshots'
+        url = 'https://destroystokyo.com/repo/repository/maven-snapshots'
     }
     maven {
         name = 'dmulloy2'
@@ -53,7 +53,7 @@ ext {
 }
 
 dependencies {
-    compile('com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT') {
+    compile('com.destroystokyo.paper:paper-api:1.13-R0.1-SNAPSHOT') {
         exclude(group: 'com.mojang', module: 'authlib') // TODO: Remove in 1.13
     }
     compile 'com.comphenix.protocol:ProtocolLib-API:4.2.1'

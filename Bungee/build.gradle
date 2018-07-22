@@ -37,7 +37,7 @@ ext {
 }
 
 dependencies {
-    compile 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
+    compile 'net.md-5:bungeecord-api:1.13-SNAPSHOT'
     compile 'net.minecrell.mcstats:statslite-bungee:0.2.3'
 }
 
@@ -46,7 +46,7 @@ processResources {
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
 }
 
-processResources << {
+processResources.doLast {
     // Create a copy of plugin.yml to bungee.yml for the universal package
     copy {
         from destinationDir
