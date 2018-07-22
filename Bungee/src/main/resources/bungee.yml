@@ -4,3 +4,5 @@ name: @Name@
 version: '@Version@'
 
 author: '@Author@'
+
+softDepends: [AdvancedBan, BungeeBan]

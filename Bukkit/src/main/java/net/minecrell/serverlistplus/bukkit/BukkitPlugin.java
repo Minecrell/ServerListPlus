@@ -28,7 +28,6 @@ import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
 import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
@@ -38,6 +37,8 @@ import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.PaperEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
+import net.minecrell.serverlistplus.bukkit.integration.BanManagerBanProvider;
+import net.minecrell.serverlistplus.bukkit.integration.MaxBansBanProvider;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
@@ -47,7 +48,7 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -55,7 +56,6 @@ import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
-import org.bukkit.BanList;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -119,6 +119,10 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
+    
+    private boolean isPluginLoaded(String pluginName) {
+        return getServer().getPluginManager().getPlugin(pluginName) != null;
+    }
 
     @Override
     public void onEnable() {
@@ -159,6 +163,17 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
+        
+        if (isPluginLoaded("AdvancedBan")) {
+            core.setBanProvider(new AdvancedBanBanProvider());
+        } else if (isPluginLoaded("BanManager")) {
+            core.setBanProvider(new BanManagerBanProvider());
+        } else if (isPluginLoaded("MaxBans")) {
+            core.setBanProvider(new MaxBansBanProvider());
+        } else {
+            core.setBanProvider(new BukkitBanProvider());
+        }
+        
         getLogger().info(getDisplayName() + " enabled.");
     }
 
@@ -463,10 +478,5 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (protocol != null && protocol.unregister())
                 getLogger().log(DEBUG, "Unregistered status protocol handler.");
         }
-    }
-
-    @Override
-    public boolean isBanned(PlayerIdentity playerIdentity) {
-        return getServer().getBanList(BanList.Type.NAME).isBanned(playerIdentity.getName());
     }
 }

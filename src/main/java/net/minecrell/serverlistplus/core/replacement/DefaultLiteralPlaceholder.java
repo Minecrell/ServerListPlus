@@ -27,6 +27,7 @@ import lombok.Getter;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
@@ -112,6 +113,36 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(ServerListPlusCore core, String s) {
             return replace(s, core.getConf(PluginConf.class).Unknown.PlayerName);
+        }
+    },
+    BAN_REASON ("%ban_reason%") {
+        @Override
+        public String replace(StatusResponse response, String s) {
+            PlayerIdentity identity = response.getRequest().getIdentity();
+            BanProvider banDetector = response.getCore().getBanProvider();
+            
+            return identity != null ? replace(s, banDetector.getBanReason(identity)) : super.replace(response, s);
+        }
+
+        @Override
+        public String replace(ServerListPlusCore core, String s) {
+            // Use unknown ban reason
+            return replace(s, core.getConf(PluginConf.class).Unknown.BanReason);
+        }
+    },
+    BAN_OPERATOR ("%ban_operator%") {
+        @Override
+        public String replace(StatusResponse response, String s) {
+            PlayerIdentity identity = response.getRequest().getIdentity();
+            BanProvider banDetector = response.getCore().getBanProvider();
+            
+            return identity != null ? replace(s, banDetector.getBanOperator(identity)) : super.replace(response, s);
+        }
+
+        @Override
+        public String replace(ServerListPlusCore core, String s) {
+            // Use unknown ban operator
+            return replace(s, core.getConf(PluginConf.class).Unknown.BanOperator);
         }
     };
 

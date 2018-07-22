@@ -42,6 +42,10 @@ repositories {
         name = 'minecrell-snapshots'
         url = 'https://repo.minecrell.net/snapshots'
     }
+    maven {
+        name = 'confuser-repo'
+        url = 'http://ci.frostcast.net/plugin/repository/everything'
+    }
 }
 
 ext {
@@ -60,6 +64,11 @@ dependencies {
     compile('org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT') {
         transitive = false
     }
+    
+    compileOnly('com.github.netherfoam:MaxBans:156239e1f1') {
+        transitive = false
+    }
+    compileOnly 'me.confuser:BanManager:5.10.0'
 }
 
 processResources {

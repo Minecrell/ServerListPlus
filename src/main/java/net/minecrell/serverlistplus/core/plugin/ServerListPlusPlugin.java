@@ -30,7 +30,6 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 
 import java.nio.file.Path;
@@ -66,6 +65,4 @@ public interface ServerListPlusPlugin {
     void reloadFaviconCache(CacheBuilderSpec spec);
     void configChanged(ServerListPlusCore core, InstanceStorage<Object> confs);
     void statusChanged(StatusManager status, boolean hasChanges);
-
-    boolean isBanned(PlayerIdentity playerIdentity);
 }

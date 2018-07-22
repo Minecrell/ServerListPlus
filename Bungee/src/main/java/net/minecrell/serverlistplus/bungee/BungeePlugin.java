@@ -50,6 +50,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
 import net.minecrell.mcstats.BungeeStatsLite;
+import net.minecrell.serverlistplus.bungee.integration.BungeeBanBanProvider;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -58,7 +59,8 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.PlayerIdentity;
+import net.minecrell.serverlistplus.core.player.ban.NoBanProvider;
+import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -95,6 +97,10 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         }
     };
     private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
+    
+    private boolean isPluginLoaded(String pluginName) {
+        return getProxy().getPluginManager().getPlugin(pluginName) != null;
+    }
 
     @Override
     public void onEnable() {
@@ -110,6 +116,14 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         // Register commands
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
+
+        if (isPluginLoaded("AdvancedBan")) {
+            core.setBanProvider(new AdvancedBanBanProvider());
+        } else if (isPluginLoaded("BungeeBan")) {
+            core.setBanProvider(new BungeeBanBanProvider());
+        } else {
+            core.setBanProvider(new NoBanProvider());
+        }
     }
 
     @Override
@@ -418,10 +432,5 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             this.pingListener = null;
             getLogger().log(DEBUG, "Unregistered proxy ping listener.");
         }
-    }
-
-    @Override
-    public boolean isBanned(PlayerIdentity playerIdentity) {
-        return false;
     }
 }
