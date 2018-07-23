@@ -91,14 +91,14 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
                     group = matcher.group(2);
                     int max = group == null ? DEFAULT_LIMIT : Integer.parseInt(group);
                     group = matcher.group(3);
-                    String delimiter = group == null ? DEFAULT_DELIMITER : group;
+                    String[] delimiters = ((group == null) ? DEFAULT_DELIMITER : group).split("(?<!\\\\)\\|");
 
                     StringBuilder result = new StringBuilder();
                     int i = 1;
                     while (true) {
                         result.append(players.next());
                         if (i >= max || !players.hasNext()) break;
-                        result.append(delimiter); i++;
+                        result.append(delimiters[(i++ - 1) % delimiters.length]);
                     }
 
                     return result.toString();
