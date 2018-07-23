@@ -68,7 +68,7 @@ dependencies {
     compileOnly('com.github.netherfoam:MaxBans:156239e1f1') {
         transitive = false
     }
-    compileOnly 'me.confuser:BanManager:5.10.0'
+    compileOnly 'me.confuser:BanManager:5.15.0'
 }
 
 processResources {

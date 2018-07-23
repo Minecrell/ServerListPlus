@@ -86,7 +86,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
 
-    compileOnly 'com.github.DevLeoko:AdvancedBan:a619728bd6'
+    compileOnly 'com.github.DevLeoko:AdvancedBan:4171f1a'
 }
 
 processResources {
