@@ -27,8 +27,8 @@ plugins {
 
 allprojects {
     group = 'net.minecrell'
-    description = 'An extremely customizable server status ping plugin for Minecraft'
-    version = '3.4.9-SNAPSHOT'
+    description = 'A flexible Minecraft plugin to customize the appearance of your server in the server list'
+    version = '3.5.0-SNAPSHOT'
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
