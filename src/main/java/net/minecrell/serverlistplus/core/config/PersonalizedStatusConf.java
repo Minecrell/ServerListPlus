@@ -18,6 +18,7 @@
 
 package net.minecrell.serverlistplus.core.config;
 
+import net.minecrell.serverlistplus.core.util.BooleanOrList;
 import net.minecrell.serverlistplus.core.util.IntegerRange;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class PersonalizedStatusConf {
         public static class PlayersConf {
             public List<IntegerRange> Online, Max;
             public Boolean Hidden;
-            public List<String> Hover;
+            public BooleanOrList<String> Hover;
             public List<String> Slots;
         }
 

@@ -256,7 +256,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
 
             // Player hover
             message = response.getPlayerHover();
-            if (message != null) {
+            if (message != null && !message.isEmpty()) {
                 if (response.useMultipleSamples()) {
                     count = response.getDynamicSamples();
                     List<String> lines = count != null ? Helper.splitLinesCached(message, count) :

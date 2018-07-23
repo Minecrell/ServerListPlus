@@ -269,16 +269,18 @@ public class SpongePlugin implements ServerListPlusPlugin {
                         List<GameProfile> profiles = players.getProfiles();
                         profiles.clear();
 
-                        if (response.useMultipleSamples()) {
-                            count = response.getDynamicSamples();
-                            List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                                    Helper.splitLinesCached(message);
+                        if (!message.isEmpty()) {
+                            if (response.useMultipleSamples()) {
+                                count = response.getDynamicSamples();
+                                List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
+                                        Helper.splitLinesCached(message);
 
-                            for (String line : lines) {
-                                profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, line));
-                            }
-                        } else
-                            profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, message));
+                                for (String line : lines) {
+                                    profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, line));
+                                }
+                            } else
+                                profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, message));
+                        }
                     }
                 }
             }

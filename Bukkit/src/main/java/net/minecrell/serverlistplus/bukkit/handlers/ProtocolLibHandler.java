@@ -123,7 +123,9 @@ public class ProtocolLibHandler extends StatusHandler {
                     // Player hover
                     message = response.getPlayerHover();
                     if (message != null) {
-                        if (response.useMultipleSamples()) {
+                        if (message.isEmpty()) {
+                            ping.setPlayers(Collections.<WrappedGameProfile>emptyList());
+                        } else if (response.useMultipleSamples()) {
                             count = response.getDynamicSamples();
 
                             ping.setPlayers(Iterables.transform(

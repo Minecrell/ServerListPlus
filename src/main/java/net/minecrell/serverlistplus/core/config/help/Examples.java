@@ -20,8 +20,10 @@ package net.minecrell.serverlistplus.core.config.help;
 
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
+import net.minecrell.serverlistplus.core.util.BooleanOrList;
 import net.minecrell.serverlistplus.core.util.Helper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -46,7 +48,7 @@ public final class Examples {
 
         // Player hover
         conf.Default.Players = new ServerStatusConf.StatusConf.PlayersConf();
-        conf.Default.Players.Hover = Collections.singletonList(
+        conf.Default.Players.Hover = BooleanOrList.of(
                 Helper.joinLines(
                         "&aWelcome to &lA Minecraft Server&a!",
                         "&aCurrently &e&l%online% &aplayers are playing on our server!"
@@ -68,7 +70,7 @@ public final class Examples {
 
         // Player hover
         conf.Personalized.Players = new ServerStatusConf.StatusConf.PlayersConf();
-        conf.Personalized.Players.Hover = Collections.singletonList(
+        conf.Personalized.Players.Hover = BooleanOrList.of(
                 Helper.joinLines(
                         "&aWelcome back, &l%player%&a!",
                         "&aCurrently &e&l%online% &aplayers are playing on our server!"

@@ -107,16 +107,18 @@ public class PaperEventHandler extends BukkitEventHandler {
                 List<PlayerProfile> profiles = event.getPlayerSample();
                 profiles.clear();
 
-                if (response.useMultipleSamples()) {
-                    count = response.getDynamicSamples();
-                    List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                            Helper.splitLinesCached(message);
+                if (!message.isEmpty()) {
+                    if (response.useMultipleSamples()) {
+                        count = response.getDynamicSamples();
+                        List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
+                                Helper.splitLinesCached(message);
 
-                    for (String line : lines) {
-                        profiles.add(bukkit.getServer().createProfile(line));
+                        for (String line : lines) {
+                            profiles.add(bukkit.getServer().createProfile(line));
+                        }
+                    } else {
+                        profiles.add(bukkit.getServer().createProfile(message));
                     }
-                } else {
-                    profiles.add(bukkit.getServer().createProfile(message));
                 }
             }
         }

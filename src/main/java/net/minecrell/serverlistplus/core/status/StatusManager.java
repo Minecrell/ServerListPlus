@@ -40,6 +40,7 @@ import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.status.hosts.VirtualHost;
 import net.minecrell.serverlistplus.core.status.hosts.VirtualHosts;
+import net.minecrell.serverlistplus.core.util.BooleanOrList;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.IntegerRange;
 
@@ -56,7 +57,7 @@ public class StatusManager extends AbstractManager {
     private @Getter Map<VirtualHost, PersonalizedStatusPatch> hosts;
     private Multimap<String, DynamicReplacer> replacers; // For the used placeholders of the messages.
 
-    private boolean favicons, slots;
+    private boolean favicons;
 
     public StatusManager(ServerListPlusCore core) {
         super(core);
@@ -205,6 +206,12 @@ public class StatusManager extends AbstractManager {
 
         protected Collection<String> prepareStrings(List<String> strings) {
             return !Helper.isNullOrEmpty(strings) ? Collections2.transform(strings, this) : null;
+        }
+
+        protected List<String> prepareMessages(BooleanOrList<String> messages) {
+            if (messages == null) return null;
+            if (messages.getBoolean() == Boolean.FALSE) return ImmutableList.of("");
+            return prepareMessages(messages.getList());
         }
 
         protected List<String> prepareMessages(List<String> messages) {

@@ -26,10 +26,21 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Represent;
 import org.yaml.snakeyaml.representer.Representer;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class ConfigurationRepresenter extends Representer {
 
     public ConfigurationRepresenter() {
+        // Remove existing representers so we can add something in the beginning
+        Map<Class<?>, Represent> backup = new LinkedHashMap<>(multiRepresenters);
+        multiRepresenters.clear();
+
+        // Insert ConfigurationSerializable first
         multiRepresenters.put(ConfigurationSerializable.class, new RepresentConfigurationSerializable());
+
+        // Add back all other representers
+        multiRepresenters.putAll(backup);
     }
 
     @Override // Skip null values for configuration generating

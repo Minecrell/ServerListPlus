@@ -235,7 +235,9 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     // Player hover
                     message = response.getPlayerHover();
                     if (message != null) {
-                        if (response.useMultipleSamples()) {
+                        if (message.isEmpty()) {
+                            players.setSample(null);
+                        } else if (response.useMultipleSamples()) {
                             count = response.getDynamicSamples();
                             List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
                                     Helper.splitLinesCached(message);
