@@ -22,12 +22,20 @@ import net.minecrell.serverlistplus.config.ConfigurationException;
 import net.minecrell.serverlistplus.config.loader.ConfigurationLoader;
 import net.minecrell.serverlistplus.config.processor.ConfigurationProcessor;
 import net.minecrell.serverlistplus.config.status.StatusProfileConfiguration;
+import net.minecrell.serverlistplus.status.profile.StatusProfileManager;
+import net.minecrell.serverlistplus.util.PlusCollections;
 
 import java.util.Map;
 
 public class StatusProfileConfigurationProcessor implements ConfigurationProcessor {
 
     private static final String ID = "profiles";
+
+    private final StatusProfileManager manager;
+
+    public StatusProfileConfigurationProcessor(StatusProfileManager manager) {
+        this.manager = manager;
+    }
 
     @Override
     public String getId() {
@@ -37,7 +45,32 @@ public class StatusProfileConfigurationProcessor implements ConfigurationProcess
     @Override
     public void reload(ConfigurationLoader loader) throws ConfigurationException {
         Map<String, StatusProfileConfiguration> profiles = loader.loadMapConfig(ID, String.class, StatusProfileConfiguration.class);
-        // TODO
+
+        int priority = 0;
+        for (Map.Entry<String, StatusProfileConfiguration> entry : profiles.entrySet()) {
+            String id = entry.getKey();
+            StatusProfileConfiguration config = entry.getValue();
+
+            ConfigurationStatusProfile.Builder builder = ConfigurationStatusProfile.builder(id, priority);
+            builder.setDescriptions(PlusCollections.toStringArray(config.description));
+
+            if (config.players != null) {
+                builder.setOnlinePlayers(PlusCollections.toIntegerArray(config.players.online));
+                builder.setMaxPlayers(PlusCollections.toIntegerArray(config.players.max));
+                builder.setHidePlayers(config.players.hidden);
+                builder.setHover(PlusCollections.toStringArray(config.players.hover));
+            }
+
+            if (config.version != null) {
+                builder.setVersions(PlusCollections.toStringArray(config.version.name));
+                builder.setProtocolVersions(PlusCollections.toIntegerArray(config.version.protocol));
+            }
+
+            // TODO: Favicons
+            manager.registerProfile(builder.build());
+
+            priority += 10;
+        }
     }
 
 }

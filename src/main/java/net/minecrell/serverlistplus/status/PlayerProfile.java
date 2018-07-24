@@ -27,8 +27,14 @@ import javax.annotation.Nullable;
 
 public final class PlayerProfile {
 
+    public static final UUID FAKE_UUID = new UUID(0, 0);
+
     private final UUID uniqueId;
     private final String name;
+
+    public PlayerProfile(String name) {
+        this(FAKE_UUID, name);
+    }
 
     public PlayerProfile(UUID uniqueId, String name) {
         this.uniqueId = uniqueId;

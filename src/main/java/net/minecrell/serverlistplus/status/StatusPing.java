@@ -22,9 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public interface StatusPing {
-
-    StatusClient getClient();
+public interface StatusPing extends StatusRequest {
 
     String getDescription();
     void setDescription(String description);
