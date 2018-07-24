@@ -39,6 +39,14 @@ public class PersonalizedStatusConf {
             public Boolean Hidden;
             public BooleanOrList<String> Hover;
             public List<String> Slots;
+
+            public PlayersConf() {
+            }
+
+            // Make it possible to use "Players: false" to hide the player count
+            public PlayersConf(boolean b) {
+                this.Hidden = !b;
+            }
         }
 
         public static class VersionConf {
