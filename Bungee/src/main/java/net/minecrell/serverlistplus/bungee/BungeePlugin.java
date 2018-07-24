@@ -97,7 +97,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         }
     };
     private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
-    
+
     private boolean isPluginLoaded(String pluginName) {
         return getProxy().getPluginManager().getPlugin(pluginName) != null;
     }

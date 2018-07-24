@@ -111,7 +111,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
             this.stop();
             return false;
         }
-        
+
         core.setBanProvider(new NoBanProvider());
 
         return true;

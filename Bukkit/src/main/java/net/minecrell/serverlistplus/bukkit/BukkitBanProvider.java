@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import java.util.Date;
 
 public class BukkitBanProvider implements BanProvider {
-    
+
     private static BanList getBanList() {
         return Bukkit.getServer().getBanList(BanList.Type.NAME);
     }
