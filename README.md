@@ -28,7 +28,7 @@ You can download the plugin from these official download sites:
 ## Compilation
 To compile the plugin, simply clone the repository and build the plugin using Gradle:
 ```
-gradlew clean universal
+./gradlew
 ```
 
 ## Source

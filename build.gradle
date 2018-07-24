@@ -21,6 +21,8 @@ plugins {
     id 'net.minecrell.licenser' version '0.4' apply false
 }
 
+defaultTasks 'clean', 'build'
+
 allprojects {
     group = 'net.minecrell'
     description = 'A flexible Minecraft plugin to customize the appearance of your server in the server list'
