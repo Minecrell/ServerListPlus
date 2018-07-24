@@ -124,7 +124,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             getLogman().error("Failed to register command", e);
             return false;
         }
-        
+
         core.setBanProvider(new CanaryBanProvider());
 
         return true;

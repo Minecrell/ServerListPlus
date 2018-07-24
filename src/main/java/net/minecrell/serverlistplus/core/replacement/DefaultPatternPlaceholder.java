@@ -73,6 +73,8 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
         private static final int DEFAULT_LIMIT = 5;
         private static final String DEFAULT_DELIMITER = "\n";
 
+        private final Pattern PIPE_SPLITTER = Pattern.compile("(?<!\\\\)\\|");
+
         @Override
         public String replace(final StatusResponse response, String s) {
             final Matcher matcher = matcher(s);
@@ -86,14 +88,12 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
                     group = matcher.group(2);
                     int max = group == null ? DEFAULT_LIMIT : Integer.parseInt(group);
                     group = matcher.group(3);
-                    String delimiter = group == null ? DEFAULT_DELIMITER : group;
+                    String[] delimiters = PIPE_SPLITTER.split(group == null ? DEFAULT_DELIMITER : group);
 
                     StringBuilder result = new StringBuilder();
-                    int i = 1;
-                    while (true) {
+                    for (int i = 0; i < max && players.hasNext(); i++) {
+                        if (i >= 1) result.append(delimiters[(i - 1) % delimiters.length]);
                         result.append(players.next());
-                        if (i >= max || !players.hasNext()) break;
-                        result.append(delimiter); i++;
                     }
 
                     return result.toString();
@@ -179,7 +179,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
             if (identity == null) {
                 return super.replace(response, s);
             }
-            
+
             BanProvider banDetector = response.getCore().getBanProvider();
             final Date date = banDetector.getBanExpiration(identity);
             if (date == null) {

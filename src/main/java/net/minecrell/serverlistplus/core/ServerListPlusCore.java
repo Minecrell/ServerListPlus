@@ -69,7 +69,7 @@ import java.util.UUID;
  */
 public class ServerListPlusCore {
     private static @Getter ServerListPlusCore instance;
-    
+
     private final @Getter ServerListPlusPlugin plugin;
     private final @Getter Logger<ServerListPlusException> logger;
 
@@ -82,7 +82,7 @@ public class ServerListPlusCore {
     private IdentificationStorage storage;
 
     private String faviconCacheConf;
-    
+
     private @Getter @Setter BanProvider banProvider;
 
     public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
@@ -91,7 +91,7 @@ public class ServerListPlusCore {
 
     public ServerListPlusCore(ServerListPlusPlugin plugin, ProfileManager profileManager) throws ServerListPlusException {
         instance = this;
-        
+
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = plugin.createLogger(this);
         this.info = CoreDescription.load(this);

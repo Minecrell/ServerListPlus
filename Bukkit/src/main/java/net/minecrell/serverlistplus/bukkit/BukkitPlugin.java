@@ -114,7 +114,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
-    
+
     private boolean isPluginLoaded(String pluginName) {
         return getServer().getPluginManager().getPlugin(pluginName) != null;
     }
@@ -158,7 +158,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
-        
+
         if (isPluginLoaded("AdvancedBan")) {
             core.setBanProvider(new AdvancedBanBanProvider());
         } else if (isPluginLoaded("BanManager")) {
@@ -168,7 +168,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         } else {
             core.setBanProvider(new BukkitBanProvider());
         }
-        
+
         getLogger().info(getDisplayName() + " enabled.");
     }
 

@@ -32,7 +32,7 @@ public class CanaryBanProvider implements BanProvider {
     private static String getUUID(PlayerIdentity playerIdentity) {
         return UUIDs.STANDARD.toString(playerIdentity.getUuid());
     }
-    
+
     private static BanManager getBans() {
         return Canary.bans();
     }
