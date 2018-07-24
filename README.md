@@ -23,7 +23,7 @@ You can download the plugin from these official download sites:
 - [BukkitDev](http://dev.bukkit.org/bukkit-plugins/serverlistplus/) (possibly outdated)
 - [Sponge](https://forums.spongepowered.org/t/7520?u=minecrell)
 - [Aquifer](https://aquifermc.org/resources/serverlistplus.10/)
-- [Development Builds](https://ci.minecrell.net/job/ServerListPlus/) (unstable, not recommended)
+- [Development Builds](https://ci.codemc.org/job/Minecrell/job/ServerListPlus/) (unstable, not recommended)
 
 ## Compilation
 To compile the plugin, simply clone the repository and build the plugin using Gradle:
