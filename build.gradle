@@ -102,17 +102,13 @@ dependencies {
     compileOnly 'com.github.DevLeoko:AdvancedBan:4171f1a'
 }
 
-processResources {
-    include 'HEADER'
-    include 'LICENSE'
-    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
+task about(type: WriteProperties) {
+    outputFile = { new File(temporaryDir, 'ABOUT') }
+    properties = resourceTokens
 }
-
-processResources.doLast {
-    // Create an ABOUT file with information about the core
-    def prop = new Properties();
-    prop.putAll resourceTokens
-    prop.store new File(destinationDir, 'ABOUT').newOutputStream(), null
+processResources {
+    from tasks.about
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: resourceTokens
 }
 
 subprojects {
