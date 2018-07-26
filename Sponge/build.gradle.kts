@@ -16,27 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+plugins {
+    id("org.spongepowered.plugin") version "0.8.1"
+}
+
+repositories {
+    maven("https://repo.minecrell.net/releases/")
+}
 
 dependencies {
-    compile 'io.netty:netty-all:4.1.27.Final'
+    compileOnly("org.spongepowered:spongeapi:7.0.0")
+    compileOnly("net.minecrell:statusprotocol:0.3")
 
-    compile 'com.google.guava:guava:25.1-jre'
-    compile 'org.yaml:snakeyaml:1.21'
-    compile 'com.google.code.gson:gson:2.8.5'
+    compile("net.minecrell.mcstats:statslite-sponge:0.2.3")
 }
 
-jar {
-    manifest.attributes('Main-Class': 'net.minecrell.serverlistplus.server.Main')
+sponge {
+    plugin.id = "serverlistplus"
 }
 
-shadowJar {
-    dependencies {
-        include dependency('io.netty:netty-all')
+tasks {
+    getByName<ShadowJar>("shadowJar") {
+        dependencies {
+            include(dependency("net.minecrell.mcstats:statslite-sponge"))
+        }
 
-        include dependency('com.google.guava:guava')
-        include dependency('org.yaml:snakeyaml')
-        include dependency('com.google.code.gson:gson')
+        relocate("net.minecrell.mcstats", "net.minecrell.serverlistplus.mcstats")
     }
 }

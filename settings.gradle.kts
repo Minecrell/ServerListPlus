@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'ServerListPlus'
-include 'Bungee', 'Bukkit', 'Canary', 'Sponge'
-include 'Server'
+val name: String by settings
+rootProject.name = name
 
-enableFeaturePreview('STABLE_PUBLISHING')
+include("Bukkit", "Bungee", "Canary", "Sponge", "Server")
+
+enableFeaturePreview("STABLE_PUBLISHING")

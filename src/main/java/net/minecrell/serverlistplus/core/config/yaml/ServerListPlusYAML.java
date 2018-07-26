@@ -31,7 +31,7 @@ import java.io.IOException;
 public final class ServerListPlusYAML {
     private ServerListPlusYAML() {}
 
-    private static final String HEADER_FILENAME = "HEADER";
+    private static final String HEADER_FILENAME = "header.txt";
 
     public static YAMLWriter createWriter(ServerListPlusCore core) {
         DumperOptions dumperOptions = new DumperOptions();
@@ -57,7 +57,7 @@ public final class ServerListPlusYAML {
 
         String[] header = null;
         try { // Try loading the configuration header from the JAR file
-            header = IOHelper.readLineArray(core.getClass().getClassLoader().getResourceAsStream(HEADER_FILENAME));
+            header = IOHelper.readLineArray(core.getClass().getResourceAsStream(HEADER_FILENAME));
         } catch (IOException e) {
             core.getLogger().log(WARN, e, "Unable to read configuration header!");
         }
