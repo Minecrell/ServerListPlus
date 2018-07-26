@@ -27,6 +27,7 @@ repositories {
     maven("https://repo.minecrell.net/snapshots/")
     maven("https://destroystokyo.com/repo/repository/maven-snapshots/")
     maven("http://repo.dmulloy2.net/nexus/repository/releases/")
+    maven("http://repo.dmulloy2.net/nexus/repository/snapshots/")
     maven("https://ci.frostcast.net/plugin/repository/everything/")
     maven("https://jitpack.io/")
 }
