@@ -56,12 +56,16 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.serverlistplus.core.util.SnakeYAML;
 import net.visualillusionsent.utils.TaskManager;
 import org.mcstats.MetricsLite;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -95,9 +99,14 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             };
     private LoadingCache<FaviconSource, Optional<String>> faviconCache;
 
+    private static void loadJAR(Path path) throws Exception {
+        Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+        method.setAccessible(true);
+        method.invoke(CanaryPlugin.class.getClassLoader(), path.toUri().toURL());
+    }
+
     @SneakyThrows
     public CanaryPlugin() {
-        SnakeYAML.load();
         this.PROFILES_FIELD = ServerListPingHook.class.getDeclaredField("profiles");
         PROFILES_FIELD.setAccessible(true);
     }
@@ -105,6 +114,13 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     @Override
     public boolean enable() {
         this.pluginFolder = Paths.get(Canary.getWorkingPath(), "config", getName());
+
+        try {
+            loadJAR(SnakeYAML.load(this.pluginFolder));
+        } catch (Exception e) {
+            getLogman().error("Failed to load snakeyaml dependency", e);
+            return false;
+        }
 
         try {
             this.core = new ServerListPlusCore(this);

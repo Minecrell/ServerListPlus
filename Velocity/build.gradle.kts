@@ -16,9 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-val name: String by settings
-rootProject.name = name
+repositories {
+    mavenLocal()
+}
 
-include("Bukkit", "Bungee", "Canary", "Sponge", "Velocity", "Server")
+dependencies {
+    compileOnly("com.velocitypowered:velocity-api:1.0-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:1.0-SNAPSHOT")
+}
 
-enableFeaturePreview("STABLE_PUBLISHING")
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}

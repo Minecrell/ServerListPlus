@@ -101,6 +101,7 @@ dependencies {
     compile("com.google.code.gson:gson:2.8.0")
     compile("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
 
+    compileOnly("org.slf4j:slf4j-api:1.7.25")
     compileOnly("com.github.DevLeoko:AdvancedBan:4171f1a") { isTransitive = false }
 
     testCompile("junit:junit:4.12")
