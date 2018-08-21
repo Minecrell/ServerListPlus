@@ -10,6 +10,8 @@ import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.EventHandler;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.DisconnectEvent;
+import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
@@ -19,11 +21,13 @@ import com.velocitypowered.api.proxy.InboundConnection;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.server.Favicon;
+import com.velocitypowered.api.server.ServerInfo;
 import com.velocitypowered.api.server.ServerPing;
 import com.velocitypowered.api.util.LegacyChatColorUtils;
 import net.kyori.text.serializer.ComponentSerializers;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
+import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
@@ -49,8 +53,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "serverlistplus")
@@ -60,10 +62,9 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     private final ProxyServer proxy;
     private final Path pluginFolder;
 
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
     private ServerListPlusCore core;
     private EventHandler<ProxyPingEvent> pingListener;
+    private Object connectionListener;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -105,7 +106,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
             return;
         }
 
-        // Register commands // TODO: Aliases
+        // Register commands
         this.proxy.getCommandManager().register(new ServerListPlusCommand(), "serverlistplus",
                 "serverlist+", "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
     }
@@ -134,24 +135,24 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     }
 
     // Player tracking
-    /*public final class ConnectionListener {
+    public final class ConnectionListener {
         private ConnectionListener() {}
 
         @Subscribe
-        public void onPlayerLogin(PlayerLoginEvent event) {
-            handleConnection(event.getConnection());
+        public void onPlayerLogin(LoginEvent event) {
+            handleConnection(event.getPlayer());
         }
 
-        @EventHandler
-        public void onPlayerLogout(PlayerDisconnectEvent event) {
-            handleConnection(event.getPlayer().getPendingConnection());
+        @Subscribe
+        public void onPlayerLogout(DisconnectEvent event) {
+            handleConnection(event.getPlayer());
         }
 
-        private void handleConnection(PendingConnection con) {
+        private void handleConnection(Player player) {
             if (core == null) return; // Too early, we haven't finished initializing yet
-            core.updateClient(con.getAddress().getAddress(), con.getUniqueId(), con.getName());
+            core.updateClient(player.getRemoteAddress().getAddress(), player.getUniqueId(), player.getUsername());
         }
-    }*/
+    }
 
     // Status listener
     public final class PingListener implements EventHandler<ProxyPingEvent> {
@@ -222,20 +223,22 @@ public class VelocityPlugin implements ServerListPlusPlugin {
                     // Player hover
                     message = response.getPlayerHover();
                     if (message != null) {
-                        if (message.isEmpty()) {
-                            builder.samplePlayers();
-                        } else if (response.useMultipleSamples()) {
-                            count = response.getDynamicSamples();
-                            List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                                    Helper.splitLinesCached(message);
+                        builder.clearSamplePlayers();
 
-                            ServerPing.SamplePlayer[] sample = new ServerPing.SamplePlayer[lines.size()];
-                            for (int i = 0; i < sample.length; i++)
-                                sample[i] = new ServerPing.SamplePlayer(lines.get(i), StatusManager.EMPTY_UUID);
+                        if (!message.isEmpty()) {
+                            if (response.useMultipleSamples()) {
+                                count = response.getDynamicSamples();
+                                List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
+                                        Helper.splitLinesCached(message);
 
-                            builder.samplePlayers(sample);
-                        } else
-                            builder.samplePlayers(new ServerPing.SamplePlayer(message, StatusManager.EMPTY_UUID));
+                                ServerPing.SamplePlayer[] sample = new ServerPing.SamplePlayer[lines.size()];
+                                for (int i = 0; i < sample.length; i++)
+                                    sample[i] = new ServerPing.SamplePlayer(lines.get(i), StatusManager.EMPTY_UUID);
+
+                                builder.samplePlayers(sample);
+                            } else
+                                builder.samplePlayers(new ServerPing.SamplePlayer(message, StatusManager.EMPTY_UUID));
+                        }
                     }
                 }
             }
@@ -274,30 +277,46 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Override
     public Integer getOnlinePlayers(String location) {
-        /*ServerInfo server = getProxy().getServerInfo(location);
-        return server != null ? server.getPlayers().size() : null;*/
-        return null; // TODO
+        Optional<ServerInfo> server = proxy.getServerInfo(location);
+        if (!server.isPresent()) {
+            return null;
+        }
+
+        int count = 0;
+        for (Player player : proxy.getAllPlayers()) {
+            if (player.getCurrentServer().equals(server)) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     @Override
     public Iterator<String> getRandomPlayers() {
-        return getRandomPlayers(this.proxy.getAllPlayers());
+        Collection<Player> players = this.proxy.getAllPlayers();
+        if (Helper.isNullOrEmpty(players)) return null;
+
+        List<String> result = new ArrayList<>(players.size());
+        for (Player player : players) {
+            result.add(player.getUsername());
+        }
+
+        return Randoms.shuffle(result).iterator();
     }
 
     @Override
     public Iterator<String> getRandomPlayers(String location) {
-        /*ServerInfo server = getProxy().getServerInfo(location);
-        return server != null ? getRandomPlayers(server.getPlayers()) : null;*/
-        return null; // TODO
-    }
+        Optional<ServerInfo> server = proxy.getServerInfo(location);
+        if (!server.isPresent()) {
+            return null;
+        }
 
-    private static Iterator<String> getRandomPlayers(Collection<Player> players) {
-        if (Helper.isNullOrEmpty(players)) return null;
-
-        List<String> result = new ArrayList<>(players.size());
-
-        for (Player player : players) {
-            result.add(player.getUsername());
+        ArrayList<String> result = new ArrayList<>();
+        for (Player player : proxy.getAllPlayers()) {
+            if (player.getCurrentServer().equals(server)) {
+                result.add(player.getUsername());
+            }
         }
 
         return Randoms.shuffle(result).iterator();
@@ -315,12 +334,16 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Override
     public void runAsync(Runnable task) {
-        this.scheduler.execute(task);
+        proxy.getScheduler().buildTask(this, task).schedule();
     }
 
     @Override
     public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
-        return new ScheduledVelocityTask(this.scheduler.scheduleAtFixedRate(task, repeat, repeat, unit));
+        return new ScheduledVelocityTask(proxy.getScheduler()
+                .buildTask(this, task)
+                .delay((int) repeat, unit)
+                .repeat((int) repeat, unit)
+                .schedule());
     }
 
     @Override
@@ -357,17 +380,17 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Override
     public void configChanged(ServerListPlusCore core, InstanceStorage<Object> confs) {
-        // Player tracking // TODO
-        /*if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
+        // Player tracking
+        if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
             if (connectionListener == null) {
-                registerListener(this.connectionListener = new ConnectionListener());
+                this.proxy.getEventManager().register(this, this.connectionListener = new ConnectionListener());
                 logger.debug("Registered player tracking listener.");
             }
         } else if (connectionListener != null) {
-            unregisterListener(connectionListener);
+            this.proxy.getEventManager().unregisterListener(this, connectionListener);
             this.connectionListener = null;
             logger.debug("Unregistered player tracking listener.");
-        }*/
+        }
     }
 
     @Override

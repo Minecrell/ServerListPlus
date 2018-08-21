@@ -1,20 +1,18 @@
 package net.minecrell.serverlistplus.velocity;
 
-import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 
-import java.util.concurrent.ScheduledFuture;
+class ScheduledVelocityTask implements net.minecrell.serverlistplus.core.plugin.ScheduledTask {
 
-class ScheduledVelocityTask implements ScheduledTask {
+    private final ScheduledTask task;
 
-    private final ScheduledFuture<?> future;
-
-    ScheduledVelocityTask(ScheduledFuture<?> future) {
-        this.future = future;
+    ScheduledVelocityTask(ScheduledTask task) {
+        this.task = task;
     }
 
     @Override
     public void cancel() {
-        this.future.cancel(false);
+        this.task.cancel();
     }
 
 }
