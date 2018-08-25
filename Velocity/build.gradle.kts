@@ -17,12 +17,12 @@
  */
 
 repositories {
-    mavenLocal()
+    maven("https://repo.velocitypowered.com/snapshots/")
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:1.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:1.0-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:1.0-20180825.051559-19")
+    annotationProcessor("com.velocitypowered:velocity-api:1.0-20180825.051559-19")
 }
 
 java {
