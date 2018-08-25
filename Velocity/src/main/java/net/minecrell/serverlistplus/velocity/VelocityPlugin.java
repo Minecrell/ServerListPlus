@@ -187,7 +187,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
             con.getVirtualHost().ifPresent(request::setTarget);
 
             final ServerPing ping = event.getPing();
-            final ServerPing.Players players = ping.getPlayers();
+            final ServerPing.Players players = ping.getPlayers().orElse(null);
             final ServerPing.Version version = ping.getVersion();
 
             StatusResponse response = request.createResponse(core.getStatus(),
@@ -229,7 +229,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
             if (players != null) {
                 if (response.hidePlayers()) {
-                    // TODO
+                    builder.nullPlayers();
                 } else {
                     // Online players
                     Integer count = response.getOnlinePlayers();
