@@ -48,6 +48,7 @@ bukkit {
     apiVersion = "1.13"
     main = "net.minecrell.serverlistplus.bukkit.BukkitPlugin"
 
+    name = rootProject.name
     softDepend = listOf("ProtocolLib", "AdvancedBan", "BanManager", "MaxBans")
 
     commands {

@@ -19,7 +19,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    id("org.spongepowered.plugin") version "0.8.1"
+    id("org.spongepowered.plugin") version "0.9.0"
 }
 
 repositories {
@@ -28,8 +28,9 @@ repositories {
 
 dependencies {
     compileOnly("org.spongepowered:spongeapi:7.0.0")
-    compileOnly("net.minecrell:statusprotocol:0.3")
+    annotationProcessor("org.spongepowered:spongeapi:7.0.0")
 
+    compileOnly("net.minecrell:statusprotocol:0.3")
     compile("net.minecrell.mcstats:statslite-sponge:0.2.3")
 }
 
