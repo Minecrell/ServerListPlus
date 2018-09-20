@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.server.util;
+package net.minecrell.serverlistplus.core.util;
 
 import java.util.regex.Pattern;
 

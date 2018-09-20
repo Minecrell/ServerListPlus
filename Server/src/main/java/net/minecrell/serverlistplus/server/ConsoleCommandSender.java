@@ -19,7 +19,7 @@
 package net.minecrell.serverlistplus.server;
 
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
-import net.minecrell.serverlistplus.server.util.FormattingCodes;
+import net.minecrell.serverlistplus.core.util.FormattingCodes;
 
 public final class ConsoleCommandSender implements ServerCommandSender {
 
