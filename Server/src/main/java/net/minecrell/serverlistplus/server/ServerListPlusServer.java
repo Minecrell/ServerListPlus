@@ -56,7 +56,7 @@ import net.minecrell.serverlistplus.server.status.Favicon;
 import net.minecrell.serverlistplus.server.status.StatusClient;
 import net.minecrell.serverlistplus.server.status.StatusPingResponse;
 import net.minecrell.serverlistplus.server.status.UserProfile;
-import net.minecrell.serverlistplus.server.util.FormattingCodes;
+import net.minecrell.serverlistplus.core.util.FormattingCodes;
 
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;

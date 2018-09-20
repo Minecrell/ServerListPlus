@@ -38,10 +38,9 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.InboundConnection;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import com.velocitypowered.api.proxy.server.ServerInfo;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.util.Favicon;
-import com.velocitypowered.api.util.LegacyChatColorUtils;
 import net.kyori.text.serializer.ComponentSerializers;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
@@ -58,6 +57,7 @@ import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
+import net.minecrell.serverlistplus.core.util.FormattingCodes;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import net.minecrell.serverlistplus.core.util.SnakeYAML;
@@ -295,19 +295,12 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Override
     public Integer getOnlinePlayers(String location) {
-        Optional<ServerInfo> server = proxy.getServerInfo(location);
+        Optional<RegisteredServer> server = proxy.getServer(location);
         if (!server.isPresent()) {
             return null;
         }
 
-        int count = 0;
-        for (Player player : proxy.getAllPlayers()) {
-            if (player.getCurrentServer().equals(server)) {
-                count++;
-            }
-        }
-
-        return count;
+        return server.get().getPlayersConnected().size();
     }
 
     @Override
@@ -325,16 +318,14 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Override
     public Iterator<String> getRandomPlayers(String location) {
-        Optional<ServerInfo> server = proxy.getServerInfo(location);
+        Optional<RegisteredServer> server = proxy.getServer(location);
         if (!server.isPresent()) {
             return null;
         }
 
         ArrayList<String> result = new ArrayList<>();
-        for (Player player : proxy.getAllPlayers()) {
-            if (player.getCurrentServer().equals(server)) {
-                result.add(player.getUsername());
-            }
+        for (Player player : server.get().getPlayersConnected()) {
+            result.add(player.getUsername());
         }
 
         return Randoms.shuffle(result).iterator();
@@ -366,7 +357,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Override
     public String colorize(String s) {
-        return LegacyChatColorUtils.translate('&', s);
+        return FormattingCodes.colorize(s);
     }
 
     @Override
