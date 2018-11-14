@@ -45,7 +45,7 @@ public final class Favicon {
         ByteBuf buf = Unpooled.buffer();
         try {
             ImageIO.write(image, "PNG", new ByteBufOutputStream(buf));
-            ByteBuf base64 = Base64.encode(buf);
+            ByteBuf base64 = Base64.encode(buf, false);
             try {
                 return FAVICON_PREFIX + base64.toString(Charsets.UTF_8);
             } finally {
