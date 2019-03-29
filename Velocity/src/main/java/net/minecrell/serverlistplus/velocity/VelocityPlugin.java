@@ -183,7 +183,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
             InboundConnection con = event.getConnection();
             StatusRequest request = core.createRequest(con.getRemoteAddress().getAddress());
 
-            request.setProtocolVersion(con.getProtocolVersion());
+            request.setProtocolVersion(con.getProtocolVersion().getProtocol());
             con.getVirtualHost().ifPresent(request::setTarget);
 
             final ServerPing ping = event.getPing();
