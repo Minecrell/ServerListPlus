@@ -21,7 +21,7 @@ package net.minecrell.serverlistplus.velocity;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import net.kyori.text.serializer.ComponentSerializers;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 
 class VelocityCommandSender implements ServerCommandSender {
@@ -47,7 +47,7 @@ class VelocityCommandSender implements ServerCommandSender {
     @Override
     @SuppressWarnings("deprecation")
     public void sendMessage(String message) {
-        source.sendMessage(ComponentSerializers.LEGACY.deserialize(message));
+        source.sendMessage(LegacyComponentSerializer.INSTANCE.deserialize(message));
     }
 
     @Override

@@ -41,7 +41,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.util.Favicon;
-import net.kyori.text.serializer.ComponentSerializers;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -213,7 +213,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
             // Description
             String message = response.getDescription();
-            if (message != null) builder.description(ComponentSerializers.LEGACY.deserialize(message));
+            if (message != null) builder.description(LegacyComponentSerializer.INSTANCE.deserialize(message));
 
             if (version != null) {
                 // Version name
