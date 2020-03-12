@@ -54,7 +54,6 @@ bukkit {
     commands {
         "serverlistplus" {
             description = "Configure ServerListPlus"
-            permission = "serverlistplus.admin"
             // I have no idea why I added so many weird aliases back then... "slp" is the only relevant one
             aliases = listOf("slp", "serverlist+", "serverlist", "sl+", "s++", "serverping+", "serverping", "spp", "slus")
         }
