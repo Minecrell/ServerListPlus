@@ -28,6 +28,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.PaperEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
@@ -88,6 +89,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     private MetricsLite metrics;
 
+    private BukkitAudiences audiences;
+
     private Method legacy_getOnlinePlayers;
 
     // Favicon cache
@@ -121,6 +124,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
+        this.audiences = BukkitAudiences.create(this);
         try {
             Method method = Server.class.getMethod("getOnlinePlayers");
             if (method.getReturnType() == Player[].class)

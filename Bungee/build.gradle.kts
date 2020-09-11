@@ -29,11 +29,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.13-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
+    compileOnly("com.github.lucavinci:bungeeban:v2.7.0")
 
-    compileOnly("com.github.lucavinci:bungeeban:v2.7.0") { isTransitive = false }
-
-    compile("net.minecrell.mcstats:statslite-bungee:0.2.3")
+    implementation("net.minecrell.mcstats:statslite-bungee:0.2.3")
+    implementation("net.kyori:adventure-text-minimessage:4.0.0-SNAPSHOT")
+    implementation("net.kyori:adventure-platform-bungeecord:4.0.0-SNAPSHOT")
 }
 
 bungee {
@@ -45,9 +46,6 @@ bungee {
 
 tasks {
     getByName<ShadowJar>("shadowJar") {
-        dependencies {
-            include(dependency("net.minecrell.mcstats:statslite-bungee"))
-        }
 
         relocate("net.minecrell.mcstats", "net.minecrell.serverlistplus.mcstats")
     }

@@ -18,21 +18,21 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
-
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.bungeecord.BungeeCordComponentSerializer;
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -69,14 +69,20 @@ import net.minecrell.serverlistplus.core.util.Randoms;
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
+import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
     private Listener connectionListener, pingListener;
+    private BungeeAudiences audiences;
 
     private BungeeStatsLite stats = new BungeeStatsLite(this);
 
@@ -100,6 +106,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void onEnable() {
         try { // Load the core first
+            this.audiences = BungeeAudiences.create(this);
             this.core = new ServerListPlusCore(this);
             getLogger().log(INFO, "Successfully loaded!");
         } catch (ServerListPlusException e) {
@@ -119,6 +126,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         } else {
             core.setBanProvider(new NoBanProvider());
         }
+
     }
 
     @Override
@@ -210,7 +218,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
             // Description
             String message = response.getDescription();
-            if (message != null) ping.setDescription(message);
+            if (message != null) {
+                final TextComponent textComponent = new TextComponent();
+                textComponent.setExtra(Arrays.asList(BungeeCordComponentSerializer.get().serialize(MiniMessage.get().parse(message))));
+                ping.setDescriptionComponent(textComponent);
+            }
 
             if (version != null) {
                 // Version name

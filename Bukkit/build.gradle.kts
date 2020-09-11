@@ -42,6 +42,9 @@ dependencies {
     compileOnly("com.github.netherfoam:MaxBans:156239e1f1") { isTransitive = false }
 
     compile("org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT") { isTransitive = false }
+
+    compile("net.kyori:adventure-text-minimessage:4.0.0-SNAPSHOT")
+    compile("net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT")
 }
 
 bukkit {
@@ -69,7 +72,6 @@ bukkit {
 tasks {
     withType<ShadowJar> {
         dependencies {
-            include(dependency("org.mcstats.bukkit:metrics-lite"))
         }
 
         relocate("org.mcstats", "net.minecrell.serverlistplus.bukkit.mcstats")

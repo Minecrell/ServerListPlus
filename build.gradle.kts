@@ -31,7 +31,7 @@ allprojects {
     plugins.apply("java")
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_1_7
+        sourceCompatibility = JavaVersion.VERSION_1_8
     }
 
     repositories {
@@ -82,11 +82,6 @@ subprojects {
 
         exclude("META-INF/")
 
-        dependencies {
-            include(project(rootProject.path))
-            include(dependency("org.ocpsoft.prettytime:prettytime"))
-        }
-
         relocate("org.ocpsoft.prettytime", "net.minecrell.serverlistplus.core.lib.prettytime")
     }
 }
@@ -102,7 +97,7 @@ dependencies {
     compile("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
 
     compileOnly("org.slf4j:slf4j-api:1.7.25")
-    compileOnly("com.github.DevLeoko:AdvancedBan:4171f1a") { isTransitive = false }
+    compileOnly("com.github.DevLeoko:AdvancedBan:v2.1.9") { isTransitive = false }
 
     testCompile("junit:junit:4.12")
     testCompile("org.mockito:mockito-core:2.20.0")
