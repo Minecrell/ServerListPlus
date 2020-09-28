@@ -18,11 +18,7 @@
 
 package net.minecrell.serverlistplus.velocity;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.google.common.cache.*;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
@@ -41,7 +37,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.util.Favicon;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -66,11 +62,7 @@ import org.slf4j.Logger;
 import javax.annotation.Nonnull;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "serverlistplus")
@@ -213,7 +205,8 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
             // Description
             String message = response.getDescription();
-            if (message != null) builder.description(LegacyComponentSerializer.INSTANCE.deserialize(message));
+            if (message != null)
+                builder.description(MiniMessage.get().parse(message));
 
             if (version != null) {
                 // Version name

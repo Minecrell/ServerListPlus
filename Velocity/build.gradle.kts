@@ -18,11 +18,14 @@
 
 repositories {
     maven("https://repo.velocitypowered.com/snapshots/")
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:1.0.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:1.0.0-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:1.1.0-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:1.1.0-SNAPSHOT")
+
+    implementation("net.kyori:adventure-text-minimessage:4.0.0-SNAPSHOT")
 }
 
 java {
