@@ -26,6 +26,7 @@ import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.CachedServerIcon;
@@ -114,7 +115,7 @@ public class PaperEventHandler extends BukkitEventHandler {
                                 Helper.splitLinesCached(message);
 
                         for (String line : lines) {
-                            profiles.add(bukkit.getServer().createProfile(line));
+                            profiles.add(bukkit.getServer().createProfile(UUIDs.EMPTY, line));
                         }
                     } else {
                         profiles.add(bukkit.getServer().createProfile(message));
