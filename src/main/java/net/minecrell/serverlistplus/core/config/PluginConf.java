@@ -65,7 +65,7 @@ public class PluginConf {
     }
 
     public static class SamplesConf {
-        public boolean Multiple = false;
+        public boolean Multiple = true;
         public boolean DynamicPlayers = false;
     }
 
