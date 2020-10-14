@@ -27,7 +27,7 @@ public final class PlaceholderAPIHookProvider {
     }
 
     private static PlaceholderAPIHook provideHook() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
+        if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             return new SimplePlaceholderAPIHook();
         } else {
             return new DummyPlaceholderAPIHook();
