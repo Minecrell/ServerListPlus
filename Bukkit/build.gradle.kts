@@ -30,6 +30,7 @@ repositories {
     maven("http://repo.dmulloy2.net/nexus/repository/snapshots/")
     maven("https://ci.frostcast.net/plugin/repository/everything/")
     maven("https://jitpack.io/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/");
 }
 
 dependencies {
@@ -40,6 +41,8 @@ dependencies {
     compileOnly("com.github.seancfoley:ipaddress:5.2.1") /* For BanManager */
     compileOnly("com.github.netherfoam:MaxBans:156239e1f1") { isTransitive = false }
 
+    compileOnly("me.clip:placeholderapi:2.10.6") { isTransitive = false }
+
     compile("org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT") { isTransitive = false }
 }
 
@@ -48,7 +51,7 @@ bukkit {
     main = "net.minecrell.serverlistplus.bukkit.BukkitPlugin"
 
     name = rootProject.name
-    softDepend = listOf("ProtocolLib", "AdvancedBan", "BanManager", "MaxBans")
+    softDepend = listOf("ProtocolLib", "AdvancedBan", "BanManager", "MaxBans", "PlaceholderAPI")
 
     commands {
         "serverlistplus" {

@@ -27,6 +27,9 @@ import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+
+import main.java.net.minecrell.serverlistplus.bukkit.hooks.PlaceholderAPIHook;
+import main.java.net.minecrell.serverlistplus.bukkit.hooks.PlaceholderAPIHookProvider;
 import net.minecrell.serverlistplus.bukkit.BukkitPlugin;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
@@ -36,12 +39,15 @@ import net.minecrell.serverlistplus.core.util.UUIDs;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
+import java.util.logging.Level;
 
 public class ProtocolLibHandler extends StatusHandler {
     private StatusPacketListener listener;
+    private final PlaceholderAPIHook papiHook;
 
     public ProtocolLibHandler(BukkitPlugin plugin) {
         super(plugin);
+        papiHook = PlaceholderAPIHookProvider.getHook();
     }
 
     public final class StatusPacketListener extends PacketAdapter {
@@ -99,7 +105,16 @@ public class ProtocolLibHandler extends StatusHandler {
             // Description is modified in BukkitEventHandler, but we modify it here again,
             // because the BukkitEventHandler has no access to information like virtual hosts.
             String message = response.getDescription();
-            if (message != null) ping.setMotD(message);
+            if (message != null) {
+                try {
+                    message = papiHook.fillPlaceholders(event.getPlayer().getPlayer(), message);
+                } catch (UnsupportedOperationException e) {
+                    bukkit.getLogger().log(Level.SEVERE,
+                            "Unsuitable placeholder when attempting to set placeholder to serverlist descripton :"
+                                    + e.getMessage());
+                }
+                ping.setMotD(message);
+            }
 
             // Version name
             message = response.getVersion();
@@ -123,6 +138,13 @@ public class ProtocolLibHandler extends StatusHandler {
                     // Player hover
                     message = response.getPlayerHover();
                     if (message != null) {
+                        try {
+                            message = papiHook.fillPlaceholders(event.getPlayer().getPlayer(), message);
+                        } catch (UnsupportedOperationException e) {
+                            bukkit.getLogger().log(Level.SEVERE,
+                                    "Unsuitable placeholder when attempting to set placeholder to serverlist player hover: "
+                                            + e.getMessage());
+                        }
                         if (message.isEmpty()) {
                             ping.setPlayers(Collections.<WrappedGameProfile>emptyList());
                         } else if (response.useMultipleSamples()) {
