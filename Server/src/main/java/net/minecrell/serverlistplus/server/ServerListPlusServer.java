@@ -49,6 +49,7 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 import net.minecrell.serverlistplus.server.config.ServerConf;
 import net.minecrell.serverlistplus.server.network.Netty;
 import net.minecrell.serverlistplus.server.network.NetworkManager;
@@ -264,12 +265,12 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
 
                     UserProfile[] sample = new UserProfile[lines.size()];
                     for (int i = 0; i < sample.length; i++)
-                        sample[i] = new UserProfile(lines.get(i), StatusManager.EMPTY_UUID);
+                        sample[i] = new UserProfile(lines.get(i), UUIDs.EMPTY);
 
                     newPlayers.setSample(sample);
                 } else
                     newPlayers.setSample(new UserProfile[]{
-                            new UserProfile(message, StatusManager.EMPTY_UUID) });
+                            new UserProfile(message, UUIDs.EMPTY) });
             }
         }
 

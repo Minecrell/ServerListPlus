@@ -29,10 +29,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import net.minecrell.serverlistplus.bukkit.BukkitPlugin;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
-import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
@@ -133,12 +133,12 @@ public class ProtocolLibHandler extends StatusHandler {
                                     new Function<String, WrappedGameProfile>() {
                                 @Override
                                 public WrappedGameProfile apply(String input) {
-                                    return new WrappedGameProfile(StatusManager.EMPTY_UUID, input);
+                                    return new WrappedGameProfile(UUIDs.EMPTY, input);
                                 }
                             }));
                         } else
                             ping.setPlayers(Collections.singleton(
-                                    new WrappedGameProfile(StatusManager.EMPTY_UUID, message)));
+                                    new WrappedGameProfile(UUIDs.EMPTY, message)));
                     }
                 }
             }

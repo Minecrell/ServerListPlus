@@ -50,9 +50,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class StatusManager extends AbstractManager {
-    public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format
-    public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
-
     private @Getter PersonalizedStatusPatch patch;
     private @Getter Map<VirtualHost, PersonalizedStatusPatch> hosts;
     private Multimap<String, DynamicReplacer> replacers; // For the used placeholders of the messages.

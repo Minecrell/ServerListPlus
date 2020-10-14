@@ -61,6 +61,7 @@ import net.minecrell.serverlistplus.core.util.FormattingCodes;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import net.minecrell.serverlistplus.core.util.SnakeYAML;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
@@ -251,11 +252,11 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
                                 ServerPing.SamplePlayer[] sample = new ServerPing.SamplePlayer[lines.size()];
                                 for (int i = 0; i < sample.length; i++)
-                                    sample[i] = new ServerPing.SamplePlayer(lines.get(i), StatusManager.EMPTY_UUID);
+                                    sample[i] = new ServerPing.SamplePlayer(lines.get(i), UUIDs.EMPTY);
 
                                 builder.samplePlayers(sample);
                             } else
-                                builder.samplePlayers(new ServerPing.SamplePlayer(message, StatusManager.EMPTY_UUID));
+                                builder.samplePlayers(new ServerPing.SamplePlayer(message, UUIDs.EMPTY));
                         }
                     }
                 }

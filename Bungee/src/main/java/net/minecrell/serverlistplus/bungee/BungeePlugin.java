@@ -65,6 +65,7 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
@@ -244,12 +245,12 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
                             ServerPing.PlayerInfo[] sample = new ServerPing.PlayerInfo[lines.size()];
                             for (int i = 0; i < sample.length; i++)
-                                sample[i] = new ServerPing.PlayerInfo(lines.get(i), StatusManager.EMPTY_UUID);
+                                sample[i] = new ServerPing.PlayerInfo(lines.get(i), UUIDs.EMPTY);
 
                             players.setSample(sample);
                         } else
                             players.setSample(new ServerPing.PlayerInfo[]{
-                                    new ServerPing.PlayerInfo(message, StatusManager.EMPTY_UUID) });
+                                    new ServerPing.PlayerInfo(message, UUIDs.EMPTY) });
                     }
                 }
             }

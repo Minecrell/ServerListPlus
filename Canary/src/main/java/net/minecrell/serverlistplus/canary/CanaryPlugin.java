@@ -57,6 +57,7 @@ import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import net.minecrell.serverlistplus.core.util.SnakeYAML;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 import net.visualillusionsent.utils.TaskManager;
 import org.mcstats.MetricsLite;
 
@@ -240,10 +241,10 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
                                 Helper.splitLinesCached(message);
 
                         for (String line : lines) {
-                            profiles.add(new GameProfile(StatusManager.EMPTY_UUID, line));
+                            profiles.add(new GameProfile(UUIDs.EMPTY, line));
                         }
                     } else
-                        profiles.add(new GameProfile(StatusManager.EMPTY_UUID, message));
+                        profiles.add(new GameProfile(UUIDs.EMPTY, message));
                 }
             }
         }

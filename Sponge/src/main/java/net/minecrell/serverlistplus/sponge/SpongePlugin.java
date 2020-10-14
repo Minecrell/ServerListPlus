@@ -45,6 +45,7 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 import net.minecrell.serverlistplus.sponge.protocol.DummyStatusProtocolHandler;
 import net.minecrell.serverlistplus.sponge.protocol.StatusProtocolHandler;
 import net.minecrell.serverlistplus.sponge.protocol.StatusProtocolHandlerImpl;
@@ -277,10 +278,10 @@ public class SpongePlugin implements ServerListPlusPlugin {
                                         Helper.splitLinesCached(message);
 
                                 for (String line : lines) {
-                                    profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, line));
+                                    profiles.add(GameProfile.of(UUIDs.EMPTY, line));
                                 }
                             } else
-                                profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, message));
+                                profiles.add(GameProfile.of(UUIDs.EMPTY, message));
                         }
                     }
                 }
