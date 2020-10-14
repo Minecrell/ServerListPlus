@@ -33,12 +33,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.destroystokyo.paper:paper-api:1.13-R0.1-SNAPSHOT") {
-        exclude("com.mojang", "authlib") // TODO: Remove in 1.13
-    }
-    compileOnly("com.comphenix.protocol:ProtocolLib-API:4.2.1") { isTransitive = false }
+    compileOnly("com.destroystokyo.paper:paper-api:1.16.3-R0.1-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib-API:4.4.0") { isTransitive = false }
 
-    compileOnly("me.confuser:BanManager:5.15.0") { isTransitive = false }
+    compileOnly("me.confuser.banmanager:BanManagerCommon:7.2.2") { isTransitive = false }
+    compileOnly("com.github.seancfoley:ipaddress:5.2.1") /* For BanManager */
     compileOnly("com.github.netherfoam:MaxBans:156239e1f1") { isTransitive = false }
 
     compile("org.mcstats.bukkit:metrics-lite:R8-SNAPSHOT") { isTransitive = false }

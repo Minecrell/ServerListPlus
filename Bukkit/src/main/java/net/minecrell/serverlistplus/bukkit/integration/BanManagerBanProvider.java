@@ -18,8 +18,8 @@
 
 package net.minecrell.serverlistplus.bukkit.integration;
 
-import me.confuser.banmanager.BmAPI;
-import me.confuser.banmanager.data.PlayerBanData;
+import me.confuser.banmanager.common.api.BmAPI;
+import me.confuser.banmanager.common.data.PlayerBanData;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 

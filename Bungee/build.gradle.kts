@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.13-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
 
     compileOnly("com.github.lucavinci:bungeeban:v2.7.0") { isTransitive = false }
 
