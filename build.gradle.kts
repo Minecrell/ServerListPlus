@@ -102,7 +102,7 @@ dependencies {
     compile("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
 
     compileOnly("org.slf4j:slf4j-api:1.7.25")
-    compileOnly("com.github.DevLeoko:AdvancedBan:4171f1a") { isTransitive = false }
+    compileOnly("com.github.DevLeoko:AdvancedBan:v2.2.1") { isTransitive = false }
 
     testCompile("junit:junit:4.12")
     testCompile("org.mockito:mockito-core:2.20.0")
