@@ -153,6 +153,10 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         @EventHandler
         public void onPlayerLogin(LoginEvent event) {
+            if (event.isCancelled()) {
+                return;
+            }
+            
             handleConnection(event.getConnection());
         }
 
