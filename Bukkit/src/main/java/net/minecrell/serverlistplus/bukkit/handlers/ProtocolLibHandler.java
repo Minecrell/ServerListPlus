@@ -52,6 +52,10 @@ public class ProtocolLibHandler extends StatusHandler {
 
         @Override // Handshake
         public void onPacketReceiving(PacketEvent event) {
+            if (event.isCancelled()) {
+                return;
+            }
+            
             if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
 
             PacketContainer packet = event.getPacket();
@@ -67,6 +71,10 @@ public class ProtocolLibHandler extends StatusHandler {
 
         @Override // Status ping
         public void onPacketSending(PacketEvent event) {
+            if (event.isCancelled()) {
+                return;
+            }
+            
             if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
 
             final WrappedServerPing ping = event.getPacket().getServerPings().read(0);
