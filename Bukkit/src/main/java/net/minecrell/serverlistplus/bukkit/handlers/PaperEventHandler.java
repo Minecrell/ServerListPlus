@@ -44,6 +44,10 @@ public class PaperEventHandler extends BukkitEventHandler {
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
         if (event instanceof PaperServerListPingEvent) {
+            if (event.isCancelled()) {
+                return;
+            }
+            
             handlePaperServerListPing((PaperServerListPingEvent) event);
         } else {
             // Still handle events that don't implement PaperServerListPingEvent
@@ -52,6 +56,10 @@ public class PaperEventHandler extends BukkitEventHandler {
     }
 
     private void handlePaperServerListPing(final PaperServerListPingEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        
         if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
 
         StatusRequest request = bukkit.getCore().createRequest(event.getAddress());
