@@ -31,19 +31,8 @@ dependencies {
     annotationProcessor("org.spongepowered:spongeapi:7.0.0")
 
     compileOnly("net.minecrell:statusprotocol:0.3")
-    compile("net.minecrell.mcstats:statslite-sponge:0.2.3")
 }
 
 sponge {
     plugin.id = "serverlistplus"
-}
-
-tasks {
-    getByName<ShadowJar>("shadowJar") {
-        dependencies {
-            include(dependency("net.minecrell.mcstats:statslite-sponge"))
-        }
-
-        relocate("net.minecrell.mcstats", "net.minecrell.serverlistplus.mcstats")
-    }
 }

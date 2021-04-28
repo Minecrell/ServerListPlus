@@ -44,7 +44,6 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
-import net.minecrell.mcstats.BungeeStatsLite;
 import net.minecrell.serverlistplus.bungee.integration.BungeeBanBanProvider;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
@@ -78,8 +77,6 @@ import java.util.concurrent.TimeUnit;
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
     private Listener connectionListener, pingListener;
-
-    private BungeeStatsLite stats = new BungeeStatsLite(this);
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -407,13 +404,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             unregisterListener(connectionListener);
             this.connectionListener = null;
             getLogger().log(DEBUG, "Unregistered proxy player tracking listener.");
-        }
-
-        // Plugin statistics
-        if (confs.get(PluginConf.class).Stats) {
-            this.stats.start();
-        } else {
-            this.stats.stop();
         }
     }
 

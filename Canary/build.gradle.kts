@@ -29,8 +29,6 @@ dependencies {
     compileOnly("net.canarymod:CanaryLib:1.2.0") {
         exclude("org.mcstats.standalone", "metrics")
     }
-
-    compile("org.mcstats.canary:metrics-lite:R8-SNAPSHOT") { isTransitive = false }
 }
 
 tasks {
@@ -44,12 +42,4 @@ tasks {
                 "author" to rootProject.property("author")
         ))
     })
-
-    getByName<ShadowJar>("shadowJar") {
-        dependencies {
-            include(dependency("org.mcstats.canary:metrics-lite"))
-        }
-
-        relocate("org.mcstats", "net.minecrell.serverlistplus.canary.mcstats")
-    }
 }

@@ -27,7 +27,6 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import net.minecrell.mcstats.SpongeStatsLite;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -95,9 +94,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @ConfigDir(sharedRoot = false) @Inject
     protected File configDir;
-
-    @Inject
-    protected SpongeStatsLite stats;
 
     private final StatusProtocolHandler handler;
 
@@ -421,13 +417,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
             game.getEventManager().unregisterListeners(loginListener);
             this.loginListener = null;
             logger.debug("Unregistered player tracking listener.");
-        }
-
-        // Plugin statistics
-        if (confs.get(PluginConf.class).Stats) {
-            this.stats.start();
-        } else {
-            this.stats.stop();
         }
     }
 
