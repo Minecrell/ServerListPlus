@@ -34,6 +34,7 @@ import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
 import net.minecrell.serverlistplus.bukkit.integration.BanManagerBanProvider;
 import net.minecrell.serverlistplus.bukkit.integration.MaxBansBanProvider;
+import net.minecrell.serverlistplus.bukkit.integration.PlaceholderAPIDynamicReplacer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
@@ -47,6 +48,7 @@ import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanPr
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Helper;
@@ -144,6 +146,14 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             }
         } else if (!paper)
             getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+
+        if (isPluginLoaded("PlaceholderAPI")) {
+            try {
+                ReplacementManager.getDynamic().add(new PlaceholderAPIDynamicReplacer());
+            } catch (Throwable e) {
+                getLogger().log(ERROR, "Failed to register PlaceholderAPI replacer", e);
+            }
+        }
 
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
