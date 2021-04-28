@@ -1,5 +1,9 @@
 # ServerListPlus
 
+> ## Important Notice
+> ServerListPlus is no longer receiving new features and only gets updates to fix bugs or compatability issues at most.  
+> A list of maintained open-source alternatives for SLP can be found in [issue #338](https://github.com/Minecrell/ServerListPlus/issues/338).
+
 [ServerListPlus](http://git.io/slp) is an extremely customizable server status ping plugin for Minecraft. It provides an easy-to-use configuration for almost everything possible using the server status ping. The plugin aims to become the universal solution for server status ping customization, available for Bukkit/Spigot, Canary, Sponge and for BungeeCord servers.
 
 ## Features
