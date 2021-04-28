@@ -59,7 +59,6 @@ import net.minecrell.serverlistplus.core.util.Randoms;
 import net.minecrell.serverlistplus.core.util.SnakeYAML;
 import net.minecrell.serverlistplus.core.util.UUIDs;
 import net.visualillusionsent.utils.TaskManager;
-import org.mcstats.MetricsLite;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
@@ -82,8 +81,6 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     private Path pluginFolder;
     private PluginListener loginListener, pingListener;
-
-    private MetricsLite metrics;
 
     private final Field PROFILES_FIELD;
 
@@ -370,23 +367,6 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             this.loginListener = null;
             getLogman().debug("Unregistered proxy player tracking listener.");
         }
-
-        // Plugin statistics
-        if (confs.get(PluginConf.class).Stats) {
-            if (metrics == null)
-                try {
-                    this.metrics = new MetricsLite(this);
-                    metrics.start();
-                } catch (Throwable e) {
-                    getLogman().debug("Failed to enable plugin statistics: {}", Helper.causedException(e));
-                }
-        } else if (metrics != null)
-            try {
-                metrics.disable();
-                this.metrics = null;
-            } catch (Throwable e) {
-                getLogman().debug("Failed to disable plugin statistics: ", Helper.causedException(e));
-            }
     }
 
     @Override
