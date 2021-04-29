@@ -28,7 +28,6 @@ import net.minecrell.serverlistplus.core.util.TimeUnitValue;
 import java.util.concurrent.TimeUnit;
 
 @Description({
-        "Stats: Enable/disable sending plugin statistics.",
         "PlayerTracking: Enable/disable tracking of player names to their IP-Addresses.",
         "  - Persistence can be disabled with the toggle in the Storage section.",
         "Samples: Toggle using multiple player infos for the player hover message.",
@@ -43,7 +42,6 @@ import java.util.concurrent.TimeUnit;
         "     NONE (keep them as is, will probably fail), SCALE (scale them to the correct size)"
 })
 public class PluginConf {
-    public boolean Stats = true;
     public PlayerTrackingConf PlayerTracking = new PlayerTrackingConf();
     public SamplesConf Samples = new SamplesConf();
     public UnknownConf Unknown = new UnknownConf();
