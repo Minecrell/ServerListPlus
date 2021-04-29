@@ -162,6 +162,10 @@ public class StatusManager extends AbstractManager {
                 // Improve this somehow
                 ImmutableList.Builder<FaviconSource> builder = ImmutableList.builder();
 
+                if (Boolean.TRUE.equals(conf.Favicon.Disabled)) {
+                    builder.add(FaviconSource.NONE);
+                }
+
                 builder.addAll(prepareFavicons(conf.Favicon.Files, DefaultFaviconLoader.FILE));
                 builder.addAll(prepareFaviconSources(FaviconSearch.findInFolder(core, conf.Favicon.Folders),
                         DefaultFaviconLoader.FILE));
@@ -207,7 +211,7 @@ public class StatusManager extends AbstractManager {
 
         protected List<String> prepareMessages(BooleanOrList<String> messages) {
             if (messages == null) return null;
-            if (messages.getBoolean() == Boolean.FALSE) return ImmutableList.of("");
+            if (Boolean.FALSE.equals(messages.getBoolean())) return ImmutableList.of("");
             return prepareMessages(messages.getList());
         }
 
@@ -242,6 +246,9 @@ public class StatusManager extends AbstractManager {
     FaviconSource prepare(StatusResponse response, FaviconSource favicon) {
         if (favicon == null) {
             return null;
+        }
+        if (favicon == FaviconSource.NONE) {
+            return favicon;
         }
 
         Collection<DynamicReplacer> replacer = replacers.get(favicon.getSource());

@@ -118,12 +118,12 @@ public class PaperEventHandler extends BukkitEventHandler {
 
         // Favicon
         FaviconSource favicon = response.getFavicon();
-        if (favicon != null) {
+        if (favicon == FaviconSource.NONE) {
+            event.setServerIcon(null);
+        } else if (favicon != null) {
             CachedServerIcon icon = bukkit.getFavicon(favicon);
             if (icon != null)
-                try {
-                    event.setServerIcon(icon);
-                } catch (UnsupportedOperationException ignored) {}
+                event.setServerIcon(icon);
         }
     }
 

@@ -244,9 +244,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
+            if (favicon == FaviconSource.NONE) {
+                ping.setFavicon(null);
+            } else if (favicon != null) {
                 Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
-                if (icon.isPresent()) ping.setFavicon(icon.get());
+                icon.ifPresent(ping::setFavicon);
             }
 
             if (players != null) {

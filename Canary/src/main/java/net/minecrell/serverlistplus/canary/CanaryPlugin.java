@@ -207,7 +207,9 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
+            if (favicon == FaviconSource.NONE) {
+                //hook.setFavicon(null); // FIXME (in Canary): Would cause a NPE
+            } else if (favicon != null) {
                 Optional<String> icon = faviconCache.getUnchecked(favicon);
                 if (icon.isPresent()) hook.setFavicon(icon.get());
             }

@@ -249,7 +249,9 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
+            if (favicon == FaviconSource.NONE) {
+                ping.setFavicon((Favicon) null);
+            } else if (favicon != null) {
                 Optional<Favicon> icon;
                 // Check if instanceof AsyncEvent for compatibility with 1.7.10
                 if (event instanceof AsyncEvent) {
