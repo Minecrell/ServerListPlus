@@ -4,7 +4,7 @@ dist: bionic
 language: java
 jdk:
   - openjdk8
-  - openjdk11
+  #- openjdk11 - some dependencies randomly fail with "peer not authenticated"
 
 install: true
 script: ./gradlew build
