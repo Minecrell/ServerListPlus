@@ -39,8 +39,8 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.projectlombok:lombok:1.16.20")
-        annotationProcessor("org.projectlombok:lombok:1.16.20")
+        compileOnly("org.projectlombok:lombok:1.18.20")
+        annotationProcessor("org.projectlombok:lombok:1.18.20")
     }
 
     tasks.withType<JavaCompile> {
