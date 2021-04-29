@@ -149,7 +149,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         if (isPluginLoaded("PlaceholderAPI")) {
             try {
-                ReplacementManager.getDynamic().add(new PlaceholderAPIDynamicReplacer());
+                ReplacementManager.getDynamic().add(new PlaceholderAPIDynamicReplacer(getServer()));
             } catch (Throwable e) {
                 getLogger().log(ERROR, "Failed to register PlaceholderAPI replacer", e);
             }
@@ -176,7 +176,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         } else if (isPluginLoaded("MaxBans")) {
             core.setBanProvider(new MaxBansBanProvider());
         } else {
-            core.setBanProvider(new BukkitBanProvider());
+            core.setBanProvider(new BukkitBanProvider(getServer()));
         }
 
         getLogger().info(getDisplayName() + " enabled.");

@@ -23,10 +23,16 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.replacement.DynamicReplacer;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 
 public class PlaceholderAPIDynamicReplacer implements DynamicReplacer {
+
+    private final Server server;
+
+    public PlaceholderAPIDynamicReplacer(Server server) {
+        this.server = server;
+    }
 
     @Override
     public boolean find(String s) {
@@ -39,7 +45,7 @@ public class PlaceholderAPIDynamicReplacer implements DynamicReplacer {
         if (identity != null) {
             // Note: I'm not sure if getOfflinePlayer is really safe here.
             // Server status pings are handled asynchronously (not on main thread)
-            return PlaceholderAPI.setBracketPlaceholders(Bukkit.getOfflinePlayer(identity.getUuid()), s);
+            return PlaceholderAPI.setBracketPlaceholders(this.server.getOfflinePlayer(identity.getUuid()), s);
         } else {
             return replace(response.getCore(), s);
         }

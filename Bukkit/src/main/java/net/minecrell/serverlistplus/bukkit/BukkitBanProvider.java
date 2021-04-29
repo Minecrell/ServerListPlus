@@ -22,17 +22,23 @@ import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import org.bukkit.BanEntry;
 import org.bukkit.BanList;
-import org.bukkit.Bukkit;
+import org.bukkit.Server;
 
 import java.util.Date;
 
 public class BukkitBanProvider implements BanProvider {
 
-    private static BanList getBanList() {
-        return Bukkit.getServer().getBanList(BanList.Type.NAME);
+    private final Server server;
+
+    public BukkitBanProvider(Server server) {
+        this.server = server;
     }
 
-    private static BanEntry getBanEntry(PlayerIdentity playerIdentity) {
+    private BanList getBanList() {
+        return this.server.getBanList(BanList.Type.NAME);
+    }
+
+    private BanEntry getBanEntry(PlayerIdentity playerIdentity) {
         return getBanList().getBanEntry(playerIdentity.getName());
     }
 
