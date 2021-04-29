@@ -56,14 +56,14 @@ bukkit {
     softDepend = listOf("ProtocolLib", "AdvancedBan", "BanManager", "MaxBans", "PlaceholderAPI")
 
     commands {
-        create("serverlistplus") {
+        register("serverlistplus") {
             description = "Configure ServerListPlus"
             aliases = listOf("slp")
         }
     }
 
     permissions {
-        create("serverlistplus.admin") {
+        register("serverlistplus.admin") {
             description = "Allows you to access the ServerListPlus administration commands"
         }
     }

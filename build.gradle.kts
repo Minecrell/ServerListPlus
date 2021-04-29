@@ -56,7 +56,7 @@ allprojects {
         include("**/*.kts")
 
         tasks {
-            create("gradle") {
+            register("gradle") {
                 files(project.files("build.gradle.kts", "settings.gradle.kts"))
             }
         }
