@@ -68,23 +68,3 @@ bukkit {
         }
     }
 }
-
-tasks {
-
-    // Remapped artifacts for compatibility with 1.7.x and 1.8
-    fun createShadowTask(name: String, configure: ShadowJar.() -> Unit) {
-        create<ShadowJar>("shadow$name") {
-            classifier = "${project.name}-$name"
-            configurations = listOf(project.configurations["runtimeClasspath"])
-            from(project.sourceSets["main"].output)
-            configure()
-        }
-    }
-    createShadowTask("1.7.X") {
-        relocate("com.google.common", "net.minecraft.util.com.google.common")
-        relocate("com.google.gson", "net.minecraft.util.com.google.gson")
-    }
-    createShadowTask("1.8") {
-        relocate("com.google.gson", "org.bukkit.craftbukkit.libs.com.google.gson")
-    }
-}
