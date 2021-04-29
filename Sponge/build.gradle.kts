@@ -27,8 +27,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spongepowered:spongeapi:7.0.0")
-    annotationProcessor("org.spongepowered:spongeapi:7.0.0")
+    compileOnly("org.spongepowered:spongeapi:7.3.0")
+    annotationProcessor("org.spongepowered:spongeapi:7.3.0")
 
     compileOnly("net.minecrell:statusprotocol:0.3")
     compile("net.minecrell.mcstats:statslite-sponge:0.2.3")

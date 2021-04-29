@@ -37,7 +37,7 @@ dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib-API:4.4.0") { isTransitive = false }
 
-    compileOnly("me.confuser.banmanager:BanManagerCommon:7.2.2") { isTransitive = false }
+    compileOnly("me.confuser.banmanager:BanManagerCommon:7.3.1") { isTransitive = false }
     compileOnly("com.github.seancfoley:ipaddress:5.2.1") /* For BanManager */
     compileOnly("com.github.netherfoam:MaxBans:156239e1f1") { isTransitive = false }
 

@@ -99,13 +99,13 @@ dependencies {
     compile("com.google.guava:guava:21.0")
     compile("org.yaml:snakeyaml:1.19")
     compile("com.google.code.gson:gson:2.8.0")
-    compile("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
+    compile("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 
-    compileOnly("org.slf4j:slf4j-api:1.7.25")
-    compileOnly("com.github.DevLeoko:AdvancedBan:v2.2.1") { isTransitive = false }
+    compileOnly("org.slf4j:slf4j-api:1.7.30")
+    compileOnly("com.github.DevLeoko.AdvancedBan:AdvancedBan-Core:v2.3.0") { isTransitive = false }
 
-    testCompile("junit:junit:4.12")
-    testCompile("org.mockito:mockito-core:2.20.0")
+    testCompile("junit:junit:4.13.2")
+    testCompile("org.mockito:mockito-core:3.9.0")
 }
 
 tasks {
