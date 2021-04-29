@@ -75,7 +75,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(id = "serverlistplus")
 public class VelocityPlugin implements ServerListPlusPlugin {
 
-    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().hexColors().build();
 
     private final Logger logger;
 
@@ -353,7 +353,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Override
     public String colorize(String s) {
-        return FormattingCodes.colorize(s);
+        return FormattingCodes.colorizeHex(s);
     }
 
     @Override

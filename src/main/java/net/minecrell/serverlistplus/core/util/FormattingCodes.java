@@ -27,6 +27,7 @@ public final class FormattingCodes {
 
     private static final Pattern FORMATTING_CODES = Pattern.compile("§[0-9A-FK-OR]", Pattern.CASE_INSENSITIVE);
     private static final Pattern CONFIG_CODES = Pattern.compile("&([0-9A-FK-OR])", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CONFIG_CODES_HEX = Pattern.compile("&([0-9A-FK-OR]|#[0-9A-F]{6})", Pattern.CASE_INSENSITIVE);
 
     public static String strip(String s) {
         return FORMATTING_CODES.matcher(s).replaceAll("");
@@ -34,6 +35,10 @@ public final class FormattingCodes {
 
     public static String colorize(String s) {
         return CONFIG_CODES.matcher(s).replaceAll("§$1");
+    }
+
+    public static String colorizeHex(String s) {
+        return CONFIG_CODES_HEX.matcher(s).replaceAll("§$1");
     }
 
 }
