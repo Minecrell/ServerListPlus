@@ -261,19 +261,13 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
             // Player hover
             message = response.getPlayerHover();
             if (message != null && !message.isEmpty()) {
-                if (response.useMultipleSamples()) {
-                    count = response.getDynamicSamples();
-                    List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                            Helper.splitLinesCached(message);
+                List<String> lines = Helper.splitLinesToList(message);
 
-                    UserProfile[] sample = new UserProfile[lines.size()];
-                    for (int i = 0; i < sample.length; i++)
-                        sample[i] = new UserProfile(lines.get(i), UUIDs.EMPTY);
+                UserProfile[] sample = new UserProfile[lines.size()];
+                for (int i = 0; i < sample.length; i++)
+                    sample[i] = new UserProfile(lines.get(i), UUIDs.EMPTY);
 
-                    newPlayers.setSample(sample);
-                } else
-                    newPlayers.setSample(new UserProfile[]{
-                            new UserProfile(message, UUIDs.EMPTY) });
+                newPlayers.setSample(sample);
             }
         }
 

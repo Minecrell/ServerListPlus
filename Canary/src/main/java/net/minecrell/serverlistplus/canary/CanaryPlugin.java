@@ -231,16 +231,9 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
                 }
 
                 if (!message.isEmpty()) {
-                    if (response.useMultipleSamples()) {
-                        count = response.getDynamicSamples();
-                        List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                                Helper.splitLinesCached(message);
-
-                        for (String line : lines) {
-                            profiles.add(new GameProfile(UUIDs.EMPTY, line));
-                        }
-                    } else
-                        profiles.add(new GameProfile(UUIDs.EMPTY, message));
+                    for (String line : Helper.splitLines(message)) {
+                        profiles.add(new GameProfile(UUIDs.EMPTY, line));
+                    }
                 }
             }
         }

@@ -239,18 +239,13 @@ public class VelocityPlugin implements ServerListPlusPlugin {
                         builder.clearSamplePlayers();
 
                         if (!message.isEmpty()) {
-                            if (response.useMultipleSamples()) {
-                                count = response.getDynamicSamples();
-                                List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                                        Helper.splitLinesCached(message);
+                            List<String> lines = Helper.splitLinesToList(message);
 
-                                ServerPing.SamplePlayer[] sample = new ServerPing.SamplePlayer[lines.size()];
-                                for (int i = 0; i < sample.length; i++)
-                                    sample[i] = new ServerPing.SamplePlayer(lines.get(i), UUIDs.EMPTY);
+                            ServerPing.SamplePlayer[] sample = new ServerPing.SamplePlayer[lines.size()];
+                            for (int i = 0; i < sample.length; i++)
+                                sample[i] = new ServerPing.SamplePlayer(lines.get(i), UUIDs.EMPTY);
 
-                                builder.samplePlayers(sample);
-                            } else
-                                builder.samplePlayers(new ServerPing.SamplePlayer(message, UUIDs.EMPTY));
+                            builder.samplePlayers(sample);
                         }
                     }
                 }

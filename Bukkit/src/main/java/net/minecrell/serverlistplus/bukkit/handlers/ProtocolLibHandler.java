@@ -125,20 +125,15 @@ public class ProtocolLibHandler extends StatusHandler {
                     if (message != null) {
                         if (message.isEmpty()) {
                             ping.setPlayers(Collections.<WrappedGameProfile>emptyList());
-                        } else if (response.useMultipleSamples()) {
-                            count = response.getDynamicSamples();
-
-                            ping.setPlayers(Iterables.transform(
-                                    count != null ? Helper.splitLines(message, count) : Helper.splitLines(message),
+                        } else {
+                            ping.setPlayers(Iterables.transform(Helper.splitLines(message),
                                     new Function<String, WrappedGameProfile>() {
-                                @Override
-                                public WrappedGameProfile apply(String input) {
-                                    return new WrappedGameProfile(UUIDs.EMPTY, input);
-                                }
-                            }));
-                        } else
-                            ping.setPlayers(Collections.singleton(
-                                    new WrappedGameProfile(UUIDs.EMPTY, message)));
+                                        @Override
+                                        public WrappedGameProfile apply(String input) {
+                                            return new WrappedGameProfile(UUIDs.EMPTY, input);
+                                        }
+                                    }));
+                        }
                     }
                 }
             }
