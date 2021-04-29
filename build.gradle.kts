@@ -125,7 +125,7 @@ tasks {
         classifier = "Universal"
         setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
-        for (p in arrayOf("Bukkit", "Bungee", "Canary", "Sponge")) {
+        for (p in arrayOf("Bukkit", "Bungee", "Canary", "Sponge", "Velocity")) {
             val task = project(p).tasks["shadowJar"]
             dependsOn(task)
             from(zipTree(task.outputs.files.singleFile))
