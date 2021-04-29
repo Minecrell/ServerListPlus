@@ -24,6 +24,7 @@ package net.minecrell.serverlistplus.core.plugin;
 public enum ServerType {
     BUKKIT ("Bukkit"), SPIGOT ("Spigot"),
     BUNGEE ("BungeeCord"),
+    VELOCITY("Velocity"),
     CANARY ("Canary"),
     SPONGE ("Sponge"),
     SERVER ("Server"),

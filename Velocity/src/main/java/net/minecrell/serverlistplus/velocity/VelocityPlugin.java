@@ -24,8 +24,7 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import com.velocitypowered.api.command.Command;
-import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.EventHandler;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
@@ -41,7 +40,8 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.util.Favicon;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import com.velocitypowered.api.util.ProxyVersion;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -64,7 +64,6 @@ import net.minecrell.serverlistplus.core.util.SnakeYAML;
 import net.minecrell.serverlistplus.core.util.UUIDs;
 import org.slf4j.Logger;
 
-import javax.annotation.Nonnull;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -76,6 +75,9 @@ import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "serverlistplus")
 public class VelocityPlugin implements ServerListPlusPlugin {
+
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
+
     private final Logger logger;
 
     private final ProxyServer proxy;
@@ -126,7 +128,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
         }
 
         // Register commands
-        this.proxy.getCommandManager().register(new ServerListPlusCommand(), "serverlistplus",
+        this.proxy.getCommandManager().register("serverlistplus", new ServerListPlusCommand(),
                 "serverlist+", "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
     }
 
@@ -138,19 +140,20 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     }
 
     // Commands
-    public final class ServerListPlusCommand implements Command {
+    public final class ServerListPlusCommand implements SimpleCommand {
         private ServerListPlusCommand() {}
 
         @Override
-        public void execute(@Nonnull CommandSource source, @Nonnull String[] args) {
-            core.executeCommand(new VelocityCommandSender(proxy, source), "serverlistplus", args);
+        public void execute(Invocation invocation) {
+            core.executeCommand(new VelocityCommandSender(proxy, invocation.source()),
+                    invocation.alias(), invocation.arguments());
         }
 
         @Override
-        public List<String> suggest(@Nonnull CommandSource source, @Nonnull String[] currentArgs) {
-            return core.tabComplete(new VelocityCommandSender(proxy, source), "serverlistplus", currentArgs);
+        public List<String> suggest(Invocation invocation) {
+            return core.tabComplete(new VelocityCommandSender(proxy, invocation.source()),
+                    invocation.alias(), invocation.arguments());
         }
-
     }
 
     // Player tracking
@@ -214,7 +217,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
             // Description
             String message = response.getDescription();
-            if (message != null) builder.description(LegacyComponentSerializer.INSTANCE.deserialize(message));
+            if (message != null) builder.description(LEGACY_SERIALIZER.deserialize(message));
 
             if (version != null) {
                 // Version name
@@ -280,13 +283,13 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Override
     public ServerType getServerType() {
-        return ServerType.BUNGEE;
+        return ServerType.VELOCITY;
     }
 
     @Override
     public String getServerImplementation() {
-        return "Velocity"; // TODO
-        //return getProxy().getVersion() + " (MC: " + getProxy().getGameVersion() + ')';
+        ProxyVersion version = this.proxy.getVersion();
+        return version.getName() + " " + version.getVersion();
     }
 
     @Override
