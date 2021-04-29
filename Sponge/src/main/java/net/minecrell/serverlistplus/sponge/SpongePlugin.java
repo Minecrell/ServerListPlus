@@ -137,8 +137,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
             return;
         }
 
-        game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "serverlist+",
-                "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
+        game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "slp");
 
         core.setBanProvider(new SpongeBanProvider());
     }

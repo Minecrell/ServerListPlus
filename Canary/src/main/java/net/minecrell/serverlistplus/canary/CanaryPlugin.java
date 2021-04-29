@@ -154,8 +154,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     public final class ServerListPlusCommand implements CommandListener {
         private ServerListPlusCommand() {}
 
-        @Command(aliases = {"serverlistplus", "serverlist+", "serverlist", "slp", "sl+", "s++", "serverping+",
-                "serverping", "spp", "slus"}, permissions = "", description = "ServerListPlus", toolTip = "")
+        @Command(aliases = {"serverlistplus", "slp"}, permissions = "", description = "ServerListPlus", toolTip = "")
         public void onCommand(MessageReceiver sender, String[] args) {
             core.executeCommand(new CanaryCommandSender(sender), args[0], Arrays.copyOfRange(args, 1, args.length));
         }

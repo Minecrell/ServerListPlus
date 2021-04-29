@@ -120,8 +120,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
         }
 
         // Register commands
-        this.proxy.getCommandManager().register("serverlistplus", new ServerListPlusCommand(),
-                "serverlist+", "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
+        this.proxy.getCommandManager().register("serverlistplus", new ServerListPlusCommand(), "slp");
     }
 
     @Subscribe

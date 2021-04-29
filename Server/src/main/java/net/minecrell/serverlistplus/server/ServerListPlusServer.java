@@ -280,8 +280,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         return ping;
     }
 
-    private static final ImmutableSet<String> COMMAND_ALIASES = ImmutableSet.of("serverlistplus", "serverlist+",
-            "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
+    private static final ImmutableSet<String> COMMAND_ALIASES = ImmutableSet.of("serverlistplus", "slp");
     private static final Splitter COMMAND_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
 
     public boolean processCommand(String command) {
