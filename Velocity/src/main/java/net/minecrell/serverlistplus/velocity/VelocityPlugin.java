@@ -60,7 +60,6 @@ import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.FormattingCodes;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
-import net.minecrell.serverlistplus.core.util.SnakeYAML;
 import net.minecrell.serverlistplus.core.util.UUIDs;
 import org.slf4j.Logger;
 
@@ -109,13 +108,6 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Subscribe
     public void initialize(ProxyInitializeEvent event) {
-        try {
-            this.proxy.getPluginManager().addToClasspath(this, SnakeYAML.load(this.pluginFolder));
-        } catch (Exception e) {
-            logger.error("Failed to load snakeyaml dependency", e);
-            return;
-        }
-
         try { // Load the core first
             this.core = new ServerListPlusCore(this);
             logger.info("Successfully loaded!");
