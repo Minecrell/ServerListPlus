@@ -20,6 +20,7 @@ package net.minecrell.serverlistplus.server.status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import net.kyori.adventure.text.Component;
 
 @Data
 public final class StatusPingResponse {
@@ -44,7 +45,7 @@ public final class StatusPingResponse {
 
     }
 
-    private String description = "";
+    private Component description = Component.empty();
     private final Version version = new Version("ServerListPlus", -1);
     private Players players = null;
     private String favicon;

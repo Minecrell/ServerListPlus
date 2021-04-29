@@ -82,12 +82,14 @@ subprojects {
 
         exclude("META-INF/")
 
-        dependencies {
-            include(project(rootProject.path))
-            include(dependency("org.ocpsoft.prettytime:prettytime"))
-        }
+        if (project.name != "Server") {
+            dependencies {
+                include(project(rootProject.path))
+                include(dependency("org.ocpsoft.prettytime:prettytime"))
+            }
 
-        relocate("org.ocpsoft.prettytime", "net.minecrell.serverlistplus.core.lib.prettytime")
+            relocate("org.ocpsoft.prettytime", "net.minecrell.serverlistplus.core.lib.prettytime")
+        }
     }
 }
 
@@ -96,7 +98,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.google.guava:guava:21.0")
+    implementation("com.google.guava:guava:21.0") { isTransitive = false }
     implementation("org.yaml:snakeyaml:1.19")
     implementation("com.google.code.gson:gson:2.8.0")
     implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")

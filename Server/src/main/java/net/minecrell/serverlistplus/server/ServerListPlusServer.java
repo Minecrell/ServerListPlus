@@ -30,6 +30,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
@@ -75,6 +76,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public final class ServerListPlusServer implements ServerListPlusPlugin {
+
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().hexColors().build();
 
     private static ServerListPlusServer instance;
 
@@ -221,7 +224,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
 
         // Description
         String message = response.getDescription();
-        if (message != null) ping.setDescription(message);
+        if (message != null) ping.setDescription(LEGACY_SERIALIZER.deserialize(message));
 
         if (version != null) {
             // Version name
@@ -374,7 +377,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
 
     @Override
     public String colorize(String s) {
-        return FormattingCodes.colorize(s);
+        return FormattingCodes.colorizeHex(s);
     }
 
     @Override

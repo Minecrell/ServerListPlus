@@ -25,23 +25,18 @@ java {
 dependencies {
     implementation("io.netty:netty-all:4.1.63.Final")
 
-    implementation("com.google.guava:guava:25.1-jre")
+    implementation("com.google.guava:guava:25.1-jre") { isTransitive = false }
     implementation("org.yaml:snakeyaml:1.27")
     implementation("com.google.code.gson:gson:2.8.6")
+
+    implementation(platform("net.kyori:adventure-bom:4.7.0"))
+    implementation("net.kyori:adventure-text-serializer-plain")
+    implementation("net.kyori:adventure-text-serializer-legacy")
+    implementation("net.kyori:adventure-text-serializer-gson")
 }
 
 tasks {
     getByName<Jar>("jar") {
         manifest.attributes(mapOf("Main-Class" to "net.minecrell.serverlistplus.server.Main"))
-    }
-
-    getByName<ShadowJar>("shadowJar") {
-        dependencies {
-            include(dependency("io.netty:netty-all"))
-
-            include(dependency("com.google.guava:guava"))
-            include(dependency("org.yaml:snakeyaml"))
-            include(dependency("com.google.code.gson:gson"))
-        }
     }
 }

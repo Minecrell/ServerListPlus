@@ -24,11 +24,12 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import net.minecrell.serverlistplus.server.ServerListPlusServer;
 import net.minecrell.serverlistplus.server.status.StatusPingResponse;
 
 import java.net.InetSocketAddress;
-import java.util.regex.Pattern;
 
 public class LegacyClientHandler extends ChannelInboundHandlerAdapter {
 
@@ -84,7 +85,7 @@ public class LegacyClientHandler extends ChannelInboundHandlerAdapter {
             case 0:
                 response = ServerListPlusServer.postLegacy(client, null);
                 sendResponse(ctx, String.format("%s§%d§%d",
-                        getUnformattedMotd(response),
+                        getFirstLine(PlainComponentSerializer.plain().serialize(response.getDescription())),
                         response.getPlayers().getOnline(),
                         response.getPlayers().getMax()));
                 break;
@@ -97,7 +98,7 @@ public class LegacyClientHandler extends ChannelInboundHandlerAdapter {
                 sendResponse(ctx, String.format("§1\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d",
                         response.getVersion().getProtocol(),
                         response.getVersion().getName(),
-                        getFirstLine(response.getDescription()),
+                        getFirstLine(LegacyComponentSerializer.legacySection().serialize(response.getDescription())),
                         response.getPlayers().getOnline(),
                         response.getPlayers().getMax()));
 
@@ -133,7 +134,7 @@ public class LegacyClientHandler extends ChannelInboundHandlerAdapter {
                 sendResponse(ctx, String.format("§1\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d",
                         response.getVersion().getProtocol(),
                         response.getVersion().getName(),
-                        getFirstLine(response.getDescription()),
+                        getFirstLine(LegacyComponentSerializer.legacySection().serialize(response.getDescription())),
                         response.getPlayers().getOnline(),
                         response.getPlayers().getMax()));
                 break;
@@ -142,15 +143,9 @@ public class LegacyClientHandler extends ChannelInboundHandlerAdapter {
         return true;
     }
 
-    private static final Pattern FORMATTING_CODES = Pattern.compile("§[0-9A-FK-OR]?", Pattern.CASE_INSENSITIVE);
-
     private static String getFirstLine(String s) {
         int i = s.indexOf('\n');
         return i == -1 ? s : s.substring(0, i);
-    }
-
-    public static String getUnformattedMotd(StatusPingResponse response) {
-        return FORMATTING_CODES.matcher(getFirstLine(response.getDescription())).replaceAll("");
     }
 
     private static void sendResponse(ChannelHandlerContext ctx, String response) {
