@@ -21,8 +21,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "2.0.4" apply false
-    id("net.minecrell.licenser") version "0.4"
+    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
+    id("org.cadixdev.licenser") version "0.6.0"
 }
 
 defaultTasks("clean", "build")
@@ -48,16 +48,16 @@ allprojects {
         options.isDeprecation = true
     }
 
-    plugins.apply("net.minecrell.licenser")
+    plugins.apply("org.cadixdev.licenser")
 
     license {
-        header = rootProject.file("src/main/resources/LICENSE")
+        header(rootProject.file("src/main/resources/LICENSE"))
         include("**/*.java")
         include("**/*.kts")
 
         tasks {
-            "gradle" {
-                files = project.files("build.gradle.kts", "settings.gradle.kts")
+            create("gradle") {
+                files(project.files("build.gradle.kts", "settings.gradle.kts"))
             }
         }
     }
@@ -69,7 +69,7 @@ subprojects {
     }
 
     dependencies {
-        compile(rootProject)
+        implementation(rootProject)
     }
 
     plugins.apply("com.github.johnrengelman.shadow")
@@ -96,22 +96,22 @@ repositories {
 }
 
 dependencies {
-    compile("com.google.guava:guava:21.0")
-    compile("org.yaml:snakeyaml:1.19")
-    compile("com.google.code.gson:gson:2.8.0")
-    compile("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
+    implementation("com.google.guava:guava:21.0")
+    implementation("org.yaml:snakeyaml:1.19")
+    implementation("com.google.code.gson:gson:2.8.0")
+    implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 
     compileOnly("org.slf4j:slf4j-api:1.7.30")
     compileOnly("com.github.DevLeoko.AdvancedBan:AdvancedBan-Core:v2.3.0") { isTransitive = false }
 
-    testCompile("junit:junit:4.13.2")
-    testCompile("org.mockito:mockito-core:3.9.0")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:3.9.0")
 }
 
 tasks {
     // Copy project properties, loaded at runtime for version information
     getByName<AbstractCopyTask>("processResources") {
-        expand(properties) // Replace variables in HEADER file
+        expand(project.properties) // Replace variables in HEADER file
 
         from("gradle.properties") {
             into("net/minecrell/serverlistplus/core")
@@ -138,7 +138,7 @@ tasks {
 
         classifier = "sources"
         allprojects {
-            from(java.sourceSets["main"].allSource)
+            from(project.sourceSets["main"].allSource)
         }
     }
 }

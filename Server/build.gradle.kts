@@ -23,11 +23,11 @@ java {
 }
 
 dependencies {
-    compile("io.netty:netty-all:4.1.63.Final")
+    implementation("io.netty:netty-all:4.1.63.Final")
 
-    compile("com.google.guava:guava:25.1-jre")
-    compile("org.yaml:snakeyaml:1.27")
-    compile("com.google.code.gson:gson:2.8.6")
+    implementation("com.google.guava:guava:25.1-jre")
+    implementation("org.yaml:snakeyaml:1.27")
+    implementation("com.google.code.gson:gson:2.8.6")
 }
 
 tasks {

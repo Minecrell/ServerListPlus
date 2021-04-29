@@ -26,8 +26,8 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.minecrell.net/snapshots/")
     maven("https://destroystokyo.com/repo/repository/maven-snapshots/")
-    maven("http://repo.dmulloy2.net/nexus/repository/releases/")
-    maven("http://repo.dmulloy2.net/nexus/repository/snapshots/")
+    maven("https://repo.dmulloy2.net/nexus/repository/releases/")
+    maven("https://repo.dmulloy2.net/nexus/repository/snapshots/")
     maven("https://ci.frostcast.net/plugin/repository/everything/")
     maven("https://jitpack.io/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/");
@@ -44,6 +44,10 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.10.9") { isTransitive = false }
 }
 
+java {
+    disableAutoTargetJvm()
+}
+
 bukkit {
     apiVersion = "1.13"
     main = "net.minecrell.serverlistplus.bukkit.BukkitPlugin"
@@ -52,7 +56,7 @@ bukkit {
     softDepend = listOf("ProtocolLib", "AdvancedBan", "BanManager", "MaxBans", "PlaceholderAPI")
 
     commands {
-        "serverlistplus" {
+        create("serverlistplus") {
             description = "Configure ServerListPlus"
             // I have no idea why I added so many weird aliases back then... "slp" is the only relevant one
             aliases = listOf("slp", "serverlist+", "serverlist", "sl+", "s++", "serverping+", "serverping", "spp", "slus")
@@ -60,7 +64,7 @@ bukkit {
     }
 
     permissions {
-        "serverlistplus.admin" {
+        create("serverlistplus.admin") {
             description = "Allows you to access the ServerListPlus administration commands"
         }
     }
@@ -73,7 +77,7 @@ tasks {
         create<ShadowJar>("shadow$name") {
             classifier = "${project.name}-$name"
             configurations = listOf(project.configurations["runtimeClasspath"])
-            from(java.sourceSets["main"].output)
+            from(project.sourceSets["main"].output)
             configure()
         }
     }
