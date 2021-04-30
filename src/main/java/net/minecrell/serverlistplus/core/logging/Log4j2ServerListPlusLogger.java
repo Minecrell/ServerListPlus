@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.canary;
+package net.minecrell.serverlistplus.core.logging;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
-import net.minecrell.serverlistplus.core.logging.Logger;
-import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 
 public class Log4j2ServerListPlusLogger extends ServerListPlusLogger {
     private static final org.apache.logging.log4j.Level[] LEVELS = {

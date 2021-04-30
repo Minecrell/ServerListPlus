@@ -104,6 +104,7 @@ dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 
     compileOnly("org.slf4j:slf4j-api:1.7.30")
+    compileOnly("org.apache.logging.log4j:log4j-api:2.8.1")
     compileOnly("com.github.DevLeoko.AdvancedBan:AdvancedBan-Core:v2.3.0") { isTransitive = false }
 
     testImplementation("junit:junit:4.13.2")
