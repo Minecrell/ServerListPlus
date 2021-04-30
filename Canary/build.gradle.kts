@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.util.concurrent.Callable
 
 repositories {
@@ -32,14 +31,18 @@ dependencies {
 }
 
 tasks {
-    // Generate Canary.inf description file
-    getByName<AbstractCopyTask>("processResources").from(create<WriteProperties>("generateCanaryInf") {
+    val generate = register<WriteProperties>("generateCanaryInf") {
         setOutputFile(Callable { File(temporaryDir, "Canary.inf") })
         properties(mapOf(
-                "main-class" to "net.minecrell.serverlistplus.canary.CanaryPlugin",
-                "name" to rootProject.name,
-                "version" to version,
-                "author" to rootProject.property("author")
+            "main-class" to "net.minecrell.serverlistplus.canary.CanaryPlugin",
+            "name" to rootProject.name,
+            "version" to version,
+            "author" to rootProject.property("author")
         ))
-    })
+    }
+
+    // Generate Canary.inf description file
+    named<AbstractCopyTask>("processResources") {
+        from(generate)
+    }
 }

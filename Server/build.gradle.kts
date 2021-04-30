@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
@@ -36,7 +34,7 @@ dependencies {
 }
 
 tasks {
-    getByName<Jar>("jar") {
+    named<Jar>("jar") {
         manifest.attributes(mapOf("Main-Class" to "net.minecrell.serverlistplus.server.Main"))
     }
 }

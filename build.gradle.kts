@@ -110,9 +110,14 @@ dependencies {
     testImplementation("org.mockito:mockito-core:3.9.0")
 }
 
+java {
+    withSourcesJar()
+}
+
+
 tasks {
     // Copy project properties, loaded at runtime for version information
-    getByName<AbstractCopyTask>("processResources") {
+    named<AbstractCopyTask>("processResources") {
         expand(project.properties) // Replace variables in HEADER file
 
         from("gradle.properties") {
@@ -121,26 +126,24 @@ tasks {
     }
 
     // Universal JAR that works on multiple platforms
-    create<Jar>("universal") {
+    val universal = register<Jar>("universal") {
         artifacts.add("archives", this)
 
         classifier = "Universal"
-        setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         for (p in arrayOf("Bukkit", "Bungee", "Canary", "Sponge", "Velocity")) {
-            val task = project(p).tasks["shadowJar"]
+            val task = project(p).tasks.named("shadowJar")
             dependsOn(task)
-            from(zipTree(task.outputs.files.singleFile))
+            from(zipTree(task.map { it.outputs.files.singleFile }))
         }
     }
+    artifacts.add("archives", universal)
 
     // Bundle all sources together into one source JAR
-    create<Jar>("sourceJar") {
-        artifacts.add("archives", this)
-
-        classifier = "sources"
-        allprojects {
-            from(project.sourceSets["main"].allSource)
+    named<AbstractCopyTask>("sourcesJar") {
+        subprojects {
+            from(sourceSets["main"].allSource)
         }
     }
 }
@@ -149,8 +152,7 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-            artifact(tasks["universal"])
-            artifact(tasks["sourceJar"])
+            artifact(tasks.named("universal"))
 
             subprojects {
                 tasks.withType<ShadowJar> {
