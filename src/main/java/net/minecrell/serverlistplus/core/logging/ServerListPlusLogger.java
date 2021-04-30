@@ -50,9 +50,9 @@ public abstract class ServerListPlusLogger extends AbstractLogger<ServerListPlus
             for (Path path : files) {
                 try {
                     Files.delete(path);
-                    log(DEBUG, "Deleted old log file: " + path.getFileName());
+                    log(Level.DEBUG, "Deleted old log file: " + path.getFileName());
                 } catch (IOException e) {
-                    log(DEBUG, "Unable to delete old log file: " + path.getFileName() + " -> " +
+                    log(Level.DEBUG, "Unable to delete old log file: " + path.getFileName() + " -> " +
                             Helper.causedException(e));
                     failed = true;
                 }

@@ -18,15 +18,14 @@
 
 package net.minecrell.serverlistplus.core.logging;
 
-import java.util.logging.Level;
-
 public interface Logger<E extends Throwable> {
-    Level
-            DEBUG = Level.FINE,
-            REPORT = Level.CONFIG,
-            INFO = Level.INFO,
-            WARN = Level.WARNING,
-            ERROR = Level.SEVERE;
+    enum Level {
+        ERROR,
+        WARN,
+        INFO,
+        REPORT,
+        DEBUG;
+    };
 
     Logger<E> log(Level level, String message);
     Logger<E> log(Level level, String message, Object arg);

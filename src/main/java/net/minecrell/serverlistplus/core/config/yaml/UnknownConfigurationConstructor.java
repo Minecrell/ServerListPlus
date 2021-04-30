@@ -18,7 +18,7 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import com.google.common.base.Throwables;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;

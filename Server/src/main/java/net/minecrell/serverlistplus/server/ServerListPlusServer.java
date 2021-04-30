@@ -19,8 +19,8 @@
 package net.minecrell.serverlistplus.server;
 
 import static com.google.common.base.Preconditions.checkState;
-import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.ERROR;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.INFO;
 
 import com.google.common.base.Splitter;
 import com.google.common.cache.Cache;

@@ -19,11 +19,19 @@
 package net.minecrell.serverlistplus.canary;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.ServerListPlusException;
+import net.minecrell.serverlistplus.core.logging.Logger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 
-import java.util.logging.Level;
-
 public class Log4j2ServerListPlusLogger extends ServerListPlusLogger {
+    private static final org.apache.logging.log4j.Level[] LEVELS = {
+            org.apache.logging.log4j.Level.ERROR,
+            org.apache.logging.log4j.Level.WARN,
+            org.apache.logging.log4j.Level.INFO,
+            org.apache.logging.log4j.Level.DEBUG,
+            org.apache.logging.log4j.Level.TRACE,
+    };
+
     private final org.apache.logging.log4j.Logger logger;
 
     public Log4j2ServerListPlusLogger(ServerListPlusCore core, org.apache.logging.log4j.Logger logger) {
@@ -31,29 +39,15 @@ public class Log4j2ServerListPlusLogger extends ServerListPlusLogger {
         this.logger = logger;
     }
 
-    private static org.apache.logging.log4j.Level convertLevel(Level level) {
-        if (level == ERROR) {
-            return org.apache.logging.log4j.Level.ERROR;
-        } else if (level == WARN) {
-            return org.apache.logging.log4j.Level.WARN;
-        } else if (level == INFO) {
-            return org.apache.logging.log4j.Level.INFO;
-        } else if (level == REPORT) {
-            return org.apache.logging.log4j.Level.DEBUG;
-        } else {
-            return org.apache.logging.log4j.Level.TRACE;
-        }
-    }
-
     @Override
-    public Log4j2ServerListPlusLogger log(Level level, String message) {
-        logger.log(convertLevel(level), LOG_PREFIX + message);
+    public Logger<ServerListPlusException> log(Level level, String message) {
+        logger.log(LEVELS[level.ordinal()], LOG_PREFIX + message);
         return this;
     }
 
     @Override
-    public Log4j2ServerListPlusLogger log(Level level, Throwable thrown, String message) {
-        logger.log(convertLevel(level), LOG_PREFIX + message, thrown);
+    public Logger<ServerListPlusException> log(Level level, Throwable thrown, String message) {
+        logger.log(LEVELS[level.ordinal()], LOG_PREFIX + message, thrown);
         return this;
     }
 }

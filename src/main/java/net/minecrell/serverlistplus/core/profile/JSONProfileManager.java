@@ -18,8 +18,8 @@
 
 package net.minecrell.serverlistplus.core.profile;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.REPORT;
 import static net.minecrell.serverlistplus.core.util.Helper.JSON;
 
 import com.google.gson.JsonIOException;

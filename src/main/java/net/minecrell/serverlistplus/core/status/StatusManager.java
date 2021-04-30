@@ -18,7 +18,7 @@
 
 package net.minecrell.serverlistplus.core.status;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;

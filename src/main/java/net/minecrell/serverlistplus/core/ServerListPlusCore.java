@@ -24,10 +24,10 @@ import static com.google.common.base.StandardSystemProperty.JAVA_VM_NAME;
 import static com.google.common.base.StandardSystemProperty.OS_ARCH;
 import static com.google.common.base.StandardSystemProperty.OS_NAME;
 import static com.google.common.base.StandardSystemProperty.OS_VERSION;
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
-import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.INFO;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.REPORT;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;

@@ -18,7 +18,7 @@
 
 package net.minecrell.serverlistplus.core.favicon;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;

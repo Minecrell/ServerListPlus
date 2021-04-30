@@ -18,10 +18,10 @@
 
 package net.minecrell.serverlistplus.core;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
-import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.INFO;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.REPORT;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import lombok.Getter;
 import net.minecrell.serverlistplus.core.config.UnknownConf;
