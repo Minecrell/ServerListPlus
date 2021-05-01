@@ -27,8 +27,6 @@ import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.MissingProperty;
 import org.yaml.snakeyaml.introspector.Property;
 
-import java.beans.IntrospectionException;
-
 public class ConfigurationPropertyUtils extends AbstractPropertyUtils {
     private final ServerListPlusCore core;
 

@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.concurrent.Callable
-
 repositories {
     maven("https://repo.neptunepowered.org/maven/")
     maven("https://repo.minecrell.net/snapshots/")

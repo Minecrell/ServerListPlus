@@ -47,6 +47,7 @@ import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
+import net.minecrell.serverlistplus.core.util.FormattingCodes;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import net.minecrell.serverlistplus.core.util.UUIDs;
@@ -57,7 +58,6 @@ import net.minecrell.serverlistplus.server.status.Favicon;
 import net.minecrell.serverlistplus.server.status.StatusClient;
 import net.minecrell.serverlistplus.server.status.StatusPingResponse;
 import net.minecrell.serverlistplus.server.status.UserProfile;
-import net.minecrell.serverlistplus.core.util.FormattingCodes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

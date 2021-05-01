@@ -20,7 +20,6 @@ package net.minecrell.serverlistplus.bukkit;
 
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.ERROR;
-import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.INFO;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
@@ -51,7 +50,6 @@ import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
-import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;

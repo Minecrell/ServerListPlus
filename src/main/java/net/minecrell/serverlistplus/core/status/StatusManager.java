@@ -47,7 +47,6 @@ import net.minecrell.serverlistplus.core.util.IntegerRange;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class StatusManager extends AbstractManager {
     private @Getter PersonalizedStatusPatch patch;

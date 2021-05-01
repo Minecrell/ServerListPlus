@@ -28,7 +28,6 @@ import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.Property;
 
-import java.beans.IntrospectionException;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.List;
