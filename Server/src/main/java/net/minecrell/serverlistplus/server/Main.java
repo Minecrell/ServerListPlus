@@ -35,7 +35,7 @@ public final class Main {
                 return -1;
             }
 
-            new ServerConsole(server).start();
+            new ServerListPlusConsole(server).start();
             server.join();
             return 0;
         } catch (Exception e) {

@@ -20,7 +20,6 @@ package net.minecrell.serverlistplus.server;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.base.Splitter;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
@@ -147,7 +146,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         this.network.join();
     }
 
-    public boolean stop() {
+    public void stop() {
         if (this.started) {
             logger.info("Stopping...");
 
@@ -155,16 +154,13 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
                 this.network.stop();
             } catch (Exception e) {
                 logger.error("Failed to stop network manager", e);
-                return false;
+                return;
             }
 
             this.core.stop();
 
             this.started = false;
-            return true;
         }
-
-        return false;
     }
 
     public static StatusPingResponse postLegacy(InetSocketAddress address, InetSocketAddress virtualHost) {
@@ -279,42 +275,44 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     }
 
     private static final ImmutableSet<String> COMMAND_ALIASES = ImmutableSet.of("serverlistplus", "slp");
-    private static final Splitter COMMAND_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
+    private static final String DEFAULT_ALIAS = "serverlistplus";
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    public void processCommand(String command) {
-        if (command.charAt(0) == '/') {
-            command = command.substring(1);
+    public void processCommand(List<String> args) {
+        String cmd = DEFAULT_ALIAS;
+        if (!args.isEmpty() && COMMAND_ALIASES.contains(args.get(0).toLowerCase(Locale.ENGLISH))) {
+            cmd = args.remove(0);
         }
 
-        String root = command;
-        int pos = command.indexOf(' ');
-        if (pos >= 0) {
-            root = command.substring(0, pos).toLowerCase(Locale.ENGLISH);
-        }
-
-        if (COMMAND_ALIASES.contains(root)) {
-            if (pos >= 0) {
-                command = command.substring(pos + 1);
-            } else {
-                command = "";
-            }
-        } else {
-            root = "serverlistplus";
-        }
-
-        command = command.trim();
-        List<String> args = COMMAND_SPLITTER.splitToList(command);
         String subcommand = args.isEmpty() ? "" : args.get(0);
         if (subcommand.equalsIgnoreCase("stop")) {
             this.stop();
             return;
         }
 
-        this.core.executeCommand(ConsoleCommandSender.INSTANCE, root, args.toArray(new String[args.size()]));
+        this.core.executeCommand(ConsoleCommandSender.INSTANCE, cmd, args.toArray(EMPTY_STRING_ARRAY));
         if (subcommand.equalsIgnoreCase("help")) {
             ConsoleCommandSender.INSTANCE.sendMessage(ServerListPlusCore.buildCommandHelp(
                     "stop", null, "Stop the server."));
         }
+    }
+
+    public List<String> tabComplete(List<String> args) {
+        String cmd = null;
+        if (!args.isEmpty() && COMMAND_ALIASES.contains(args.get(0).toLowerCase(Locale.ENGLISH))) {
+            cmd = args.remove(0);
+        }
+
+        List<String> result = this.core.tabComplete(ConsoleCommandSender.INSTANCE,
+                cmd != null ? cmd : DEFAULT_ALIAS, args.toArray(EMPTY_STRING_ARRAY));
+        if (args.size() > 1)
+            return result;
+
+        if (cmd == null) {
+            result.addAll(COMMAND_ALIASES);
+        }
+        result.add("stop");
+        return result;
     }
 
     @Override

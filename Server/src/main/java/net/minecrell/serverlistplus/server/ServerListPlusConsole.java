@@ -18,14 +18,27 @@
 
 package net.minecrell.serverlistplus.server;
 
+import com.google.common.base.Splitter;
 import net.minecrell.terminalconsole.SimpleTerminalConsole;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
 
-public final class ServerConsole extends SimpleTerminalConsole {
+import java.util.ArrayList;
 
+public final class ServerListPlusConsole extends SimpleTerminalConsole {
+
+    private static final Splitter COMMAND_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
     private final ServerListPlusServer server;
 
-    public ServerConsole(ServerListPlusServer server) {
+    public ServerListPlusConsole(ServerListPlusServer server) {
         this.server = server;
+    }
+
+    @Override
+    protected LineReader buildReader(LineReaderBuilder builder) {
+        return super.buildReader(builder
+            .appName("ServerListPlusServer")
+            .completer(new ServerListPlusCompleter(this.server)));
     }
 
     @Override
@@ -35,7 +48,11 @@ public final class ServerConsole extends SimpleTerminalConsole {
 
     @Override
     protected void runCommand(String command) {
-        this.server.processCommand(command);
+        if (command.charAt(0) == '/') {
+            command = command.substring(1);
+        }
+
+        this.server.processCommand(new ArrayList<String>(COMMAND_SPLITTER.splitToList(command)));
     }
 
     @Override
