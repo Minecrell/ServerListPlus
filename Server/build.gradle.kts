@@ -28,6 +28,7 @@ dependencies {
 
     implementation("net.minecrell:terminalconsoleappender:1.2.0")
     runtimeOnly("org.jline:jline-terminal-jansi:3.12.1")
+    runtimeOnly("com.lmax:disruptor:3.4.4") // async loggers
 
     implementation("com.google.guava:guava:25.1-jre") { isTransitive = false }
     implementation("org.yaml:snakeyaml:1.27")
