@@ -18,18 +18,16 @@
 
 package net.minecrell.serverlistplus.server.network.protocol.packet;
 
-import com.google.gson.stream.JsonWriter;
 import io.netty.buffer.ByteBuf;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecrell.serverlistplus.server.network.protocol.MinecraftProtocol;
-
-import java.io.IOException;
-import java.io.StringWriter;
 
 public class PacketKick implements ServerPacket {
 
-    private final String reason;
+    private final Component reason;
 
-    public PacketKick(String reason) {
+    public PacketKick(Component reason) {
         this.reason = reason;
     }
 
@@ -39,15 +37,8 @@ public class PacketKick implements ServerPacket {
     }
 
     @Override
-    public void write(ByteBuf buf) throws IOException {
-        StringWriter writer = new StringWriter();
-        try (JsonWriter json = new JsonWriter(writer)) {
-            json.beginObject();
-            json.name("text").value(this.reason);
-            json.endObject();
-        }
-
-        MinecraftProtocol.writeString(buf, writer.toString());
+    public void write(ByteBuf buf) {
+        MinecraftProtocol.writeString(buf, GsonComponentSerializer.gson().serialize(this.reason));
     }
 
 }

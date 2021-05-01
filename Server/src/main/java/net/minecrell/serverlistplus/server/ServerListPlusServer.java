@@ -28,6 +28,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -178,17 +179,17 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         return instance.handle(client);
     }
 
-    public static String postLogin(StatusClient client, String name) {
+    public static Component postLogin(StatusClient client, String name) {
         return instance.handleLogin(client, name);
     }
 
-    public String handleLogin(StatusClient client, String name) {
+    public Component handleLogin(StatusClient client, String name) {
         if (this.playerTracking) {
             core.updateClient(client.getAddress().getAddress(), null, name);
         }
 
         String message = Randoms.nextEntry(this.loginMessages);
-        return Literals.replace(message, "%player%", name);
+        return LEGACY_SERIALIZER.deserialize(Literals.replace(message, "%player%", name));
     }
 
     public StatusPingResponse handle(StatusClient client) {
