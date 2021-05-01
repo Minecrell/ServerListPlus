@@ -18,7 +18,6 @@
 
 package net.minecrell.serverlistplus.core.logging;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 
 public class Log4j2ServerListPlusLogger extends ServerListPlusLogger {
@@ -32,20 +31,20 @@ public class Log4j2ServerListPlusLogger extends ServerListPlusLogger {
 
     private final org.apache.logging.log4j.Logger logger;
 
-    public Log4j2ServerListPlusLogger(ServerListPlusCore core, org.apache.logging.log4j.Logger logger) {
-        super(core);
+    public Log4j2ServerListPlusLogger(org.apache.logging.log4j.Logger logger, String prefix) {
+        super(prefix);
         this.logger = logger;
     }
 
     @Override
     public Logger<ServerListPlusException> log(Level level, String message) {
-        logger.log(LEVELS[level.ordinal()], LOG_PREFIX + message);
+        logger.log(LEVELS[level.ordinal()], prefixMessage(message));
         return this;
     }
 
     @Override
     public Logger<ServerListPlusException> log(Level level, Throwable thrown, String message) {
-        logger.log(LEVELS[level.ordinal()], LOG_PREFIX + message, thrown);
+        logger.log(LEVELS[level.ordinal()], prefixMessage(message), thrown);
         return this;
     }
 }

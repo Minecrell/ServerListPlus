@@ -127,7 +127,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
         }
 
         try {
-            this.core = new ServerListPlusCore(this);
+            ServerListPlusLogger clogger = new Slf4jServerListPlusLogger(this.logger, ServerListPlusLogger.CORE_PREFIX);
+            this.core = new ServerListPlusCore(this, clogger);
             logger.info("Successfully loaded!");
         } catch (ServerListPlusException e) {
             logger.info("Please fix the error before restarting the server!");
@@ -370,11 +371,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
     @Override
     public String colorize(String s) {
         return TextSerializers.FORMATTING_CODE.replaceCodes(s, TextSerializers.LEGACY_FORMATTING_CODE);
-    }
-
-    @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new Slf4jServerListPlusLogger(core, logger);
     }
 
     @Override

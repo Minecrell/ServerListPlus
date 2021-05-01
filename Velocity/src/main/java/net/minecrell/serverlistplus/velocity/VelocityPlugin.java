@@ -109,7 +109,8 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     @Subscribe
     public void initialize(ProxyInitializeEvent event) {
         try { // Load the core first
-            this.core = new ServerListPlusCore(this);
+            ServerListPlusLogger clogger = new Slf4jServerListPlusLogger(this.logger, ServerListPlusLogger.CORE_PREFIX);
+            this.core = new ServerListPlusCore(this, clogger);
             logger.info("Successfully loaded!");
         } catch (ServerListPlusException e) {
             logger.info("Please fix the error before restarting the server!");
@@ -350,11 +351,6 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     @Override
     public String colorize(String s) {
         return FormattingCodes.colorizeHex(s);
-    }
-
-    @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new Slf4jServerListPlusLogger(core, this.logger);
     }
 
     @Override

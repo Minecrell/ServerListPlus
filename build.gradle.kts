@@ -116,7 +116,6 @@ java {
     withSourcesJar()
 }
 
-
 tasks {
     // Copy project properties, loaded at runtime for version information
     named<AbstractCopyTask>("processResources") {

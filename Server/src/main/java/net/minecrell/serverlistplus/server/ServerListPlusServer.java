@@ -114,7 +114,8 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         this.workingDir = Paths.get("");
 
         logger.info("Loading...");
-        this.core = new ServerListPlusCore(this, new ServerProfileManager());
+        ServerListPlusLogger clogger = new Log4j2ServerListPlusLogger(LogManager.getLogger(ServerListPlusCore.class), null);
+        this.core = new ServerListPlusCore(this, clogger, new ServerProfileManager());
 
         ServerConf conf = this.core.getConf(ServerConf.class);
         this.network = new NetworkManager(this, Netty.parseAddress(conf.Address));
@@ -374,11 +375,6 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     @Override
     public String colorize(String s) {
         return FormattingCodes.colorizeHex(s);
-    }
-
-    @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new Log4j2ServerListPlusLogger(this.core, LogManager.getLogger(ServerListPlusCore.class));
     }
 
     @Override

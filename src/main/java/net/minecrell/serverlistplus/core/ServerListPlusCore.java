@@ -42,6 +42,7 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.Examples;
 import net.minecrell.serverlistplus.core.logging.Logger;
+import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.IdentificationStorage;
 import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
@@ -85,15 +86,16 @@ public class ServerListPlusCore {
 
     private @Getter @Setter BanProvider banProvider;
 
-    public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
-        this(plugin, null);
+    public ServerListPlusCore(ServerListPlusPlugin plugin, ServerListPlusLogger logger) throws ServerListPlusException {
+        this(plugin, logger, null);
     }
 
-    public ServerListPlusCore(ServerListPlusPlugin plugin, ProfileManager profileManager) throws ServerListPlusException {
+    public ServerListPlusCore(ServerListPlusPlugin plugin, ServerListPlusLogger logger, ProfileManager profileManager)
+            throws ServerListPlusException {
         instance = this;
 
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
-        this.logger = plugin.createLogger(this);
+        this.logger = Preconditions.checkNotNull(logger, "logger");
         this.info = CoreDescription.load(this);
         this.banProvider = new NoBanProvider();
 

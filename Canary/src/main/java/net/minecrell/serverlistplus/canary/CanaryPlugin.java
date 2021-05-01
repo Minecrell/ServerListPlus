@@ -122,7 +122,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
         }
 
         try {
-            this.core = new ServerListPlusCore(this);
+            ServerListPlusLogger clogger = new Log4j2ServerListPlusLogger(getLogman(), ServerListPlusLogger.CORE_PREFIX);
+            this.core = new ServerListPlusCore(this, clogger);
             getLogman().info("Successfully loaded!");
         } catch (ServerListPlusException e) {
             getLogman().info("Please fix the error before restarting the server!");
@@ -320,11 +321,6 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     @Override
     public String colorize(String s) {
         return COLOR_CODE.matcher(s).replaceAll(ChatFormat.MARKER + "$1");
-    }
-
-    @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new Log4j2ServerListPlusLogger(core, getLogman());
     }
 
     @Override

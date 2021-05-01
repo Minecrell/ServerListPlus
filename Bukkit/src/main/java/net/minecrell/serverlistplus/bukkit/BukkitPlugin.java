@@ -152,7 +152,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         }
 
         try { // Load the core first
-            this.core = new ServerListPlusCore(this);
+            ServerListPlusLogger clogger = new JavaServerListPlusLogger(getLogger(), ServerListPlusLogger.CORE_PREFIX);
+            this.core = new ServerListPlusCore(this, clogger);
             getLogger().info("Successfully loaded!");
         } catch (ServerListPlusException e) {
             getLogger().info("Please fix the error before restarting the server!");
@@ -364,11 +365,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public String colorize(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
-    }
-
-    @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new JavaServerListPlusLogger(core, getLogger());
     }
 
     @Override

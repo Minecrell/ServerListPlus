@@ -18,7 +18,6 @@
 
 package net.minecrell.serverlistplus.core.logging;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 
 public class JavaServerListPlusLogger extends ServerListPlusLogger {
@@ -39,20 +38,20 @@ public class JavaServerListPlusLogger extends ServerListPlusLogger {
 
     private final java.util.logging.Logger logger;
 
-    public JavaServerListPlusLogger(ServerListPlusCore core, java.util.logging.Logger logger) {
-        super(core);
+    public JavaServerListPlusLogger(java.util.logging.Logger logger, String prefix) {
+        super(prefix);
         this.logger = logger;
     }
 
     @Override
     public Logger<ServerListPlusException> log(Level level, String message) {
-        logger.log(LEVELS[level.ordinal()], LOG_PREFIX + message);
+        logger.log(LEVELS[level.ordinal()], prefixMessage(message));
         return this;
     }
 
     @Override
     public Logger<ServerListPlusException> log(Level level, Throwable thrown, String message) {
-        logger.log(LEVELS[level.ordinal()], LOG_PREFIX + message, thrown);
+        logger.log(LEVELS[level.ordinal()], prefixMessage(message), thrown);
         return this;
     }
 }

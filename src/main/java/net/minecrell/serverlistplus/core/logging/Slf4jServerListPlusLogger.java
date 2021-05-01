@@ -18,14 +18,13 @@
 
 package net.minecrell.serverlistplus.core.logging;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 
 public class Slf4jServerListPlusLogger extends ServerListPlusLogger {
     private final org.slf4j.Logger logger;
 
-    public Slf4jServerListPlusLogger(ServerListPlusCore core, org.slf4j.Logger logger) {
-        super(core);
+    public Slf4jServerListPlusLogger(org.slf4j.Logger logger, String prefix) {
+        super(prefix);
         this.logger = logger;
     }
 
@@ -33,19 +32,19 @@ public class Slf4jServerListPlusLogger extends ServerListPlusLogger {
     public Logger<ServerListPlusException> log(Level level, String message) {
         switch (level) {
             case ERROR:
-                logger.error(LOG_PREFIX + message);
+                logger.error(prefixMessage(message));
                 break;
             case WARN:
-                logger.warn(LOG_PREFIX + message);
+                logger.warn(prefixMessage(message));
                 break;
             case INFO:
-                logger.info(LOG_PREFIX + message);
+                logger.info(prefixMessage(message));
                 break;
             case REPORT:
-                logger.debug(LOG_PREFIX + message);
+                logger.debug(prefixMessage(message));
                 break;
             case DEBUG:
-                logger.trace(LOG_PREFIX + message);
+                logger.trace(prefixMessage(message));
                 break;
         }
 
@@ -56,19 +55,19 @@ public class Slf4jServerListPlusLogger extends ServerListPlusLogger {
     public Logger<ServerListPlusException> log(Level level, Throwable thrown, String message) {
         switch (level) {
             case ERROR:
-                logger.error(LOG_PREFIX + message, thrown);
+                logger.error(prefixMessage(message), thrown);
                 break;
             case WARN:
-                logger.warn(LOG_PREFIX + message, thrown);
+                logger.warn(prefixMessage(message), thrown);
                 break;
             case INFO:
-                logger.info(LOG_PREFIX + message, thrown);
+                logger.info(prefixMessage(message), thrown);
                 break;
             case REPORT:
-                logger.debug(LOG_PREFIX + message, thrown);
+                logger.debug(prefixMessage(message), thrown);
                 break;
             case DEBUG:
-                logger.trace(LOG_PREFIX + message, thrown);
+                logger.trace(prefixMessage(message), thrown);
                 break;
         }
 
