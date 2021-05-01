@@ -185,6 +185,8 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
             core.updateClient(client.getAddress().getAddress(), null, name);
         }
 
+        logger.info("Player '{}' tried to log in from {}", name, client);
+
         String message = Randoms.nextEntry(this.loginMessages);
         return LEGACY_SERIALIZER.deserialize(Literals.replace(message, "%player%", name));
     }
