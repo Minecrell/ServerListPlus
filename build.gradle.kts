@@ -79,10 +79,11 @@ subprojects {
 
         baseName = rootProject.name
         classifier = project.name
-
-        exclude("META-INF/")
+        duplicatesStrategy = DuplicatesStrategy.FAIL
 
         if (project.name != "Server") {
+            exclude("META-INF/")
+
             dependencies {
                 include(project(rootProject.path))
                 include(dependency("org.ocpsoft.prettytime:prettytime"))

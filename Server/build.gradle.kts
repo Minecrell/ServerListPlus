@@ -16,12 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
 dependencies {
     implementation("io.netty:netty-all:4.1.63.Final")
+
+    implementation("net.minecrell:terminalconsoleappender:1.2.0")
+    runtimeOnly("org.jline:jline-terminal-jansi:3.12.1")
 
     implementation("com.google.guava:guava:25.1-jre") { isTransitive = false }
     implementation("org.yaml:snakeyaml:1.27")
@@ -36,5 +42,8 @@ dependencies {
 tasks {
     named<Jar>("jar") {
         manifest.attributes(mapOf("Main-Class" to "net.minecrell.serverlistplus.server.Main"))
+    }
+    named<ShadowJar>("shadowJar") {
+        transform(Log4j2PluginsCacheFileTransformer())
     }
 }

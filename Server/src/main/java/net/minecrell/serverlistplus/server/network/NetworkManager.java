@@ -32,14 +32,14 @@ import net.minecrell.serverlistplus.server.network.protocol.MinecraftDecoder;
 import net.minecrell.serverlistplus.server.network.protocol.MinecraftProtocol;
 import net.minecrell.serverlistplus.server.network.protocol.ProtocolState;
 import net.minecrell.serverlistplus.server.network.protocol.Varint21FrameDecoder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.InetSocketAddress;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final  class NetworkManager extends ChannelInitializer<Channel> {
 
-    private static final Logger logger = Logger.getLogger(NetworkManager.class.getName());
+    private static final Logger logger = LogManager.getLogger();
 
     private final ServerListPlusServer server;
     private final InetSocketAddress address;
@@ -73,7 +73,7 @@ public final  class NetworkManager extends ChannelInitializer<Channel> {
                 .bind(this.address)
                 .sync().channel();
 
-        logger.log(Level.INFO, "Listening on {0}", this.channel);
+        logger.info("Listening on {}", this.channel);
     }
 
     @Override

@@ -18,38 +18,29 @@
 
 package net.minecrell.serverlistplus.server;
 
-import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecrell.terminalconsole.SimpleTerminalConsole;
 
-public final class ConsoleCommandSender implements ServerCommandSender {
+public final class ServerConsole extends SimpleTerminalConsole {
 
-    public static final ConsoleCommandSender INSTANCE = new ConsoleCommandSender();
-    private static final Logger logger = LogManager.getLogger();
+    private final ServerListPlusServer server;
 
-    private ConsoleCommandSender() {
+    public ServerConsole(ServerListPlusServer server) {
+        this.server = server;
     }
 
     @Override
-    public String getName() {
-        return "Console";
+    protected boolean isRunning() {
+        return this.server.isRunning();
     }
 
     @Override
-    public void sendMessage(String message) {
-        logger.info(message);
+    protected void runCommand(String command) {
+        this.server.processCommand(command);
     }
 
     @Override
-    public void sendMessages(String... messages) {
-        for (String message : messages) {
-            sendMessage(message);
-        }
-    }
-
-    @Override
-    public boolean hasPermission(String permission) {
-        return true;
+    protected void shutdown() {
+        this.server.stop();
     }
 
 }

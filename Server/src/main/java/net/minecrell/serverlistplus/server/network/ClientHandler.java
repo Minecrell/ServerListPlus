@@ -41,7 +41,7 @@ import java.net.InetSocketAddress;
 
 public class ClientHandler extends ChannelInboundHandlerAdapter implements PacketHandler {
 
-    private StatusClient client = new StatusClient();
+    private final StatusClient client = new StatusClient();
 
     public static ProtocolState getState(ChannelHandlerContext ctx) {
         return ctx.channel().attr(PROTOCOL_STATE).get();

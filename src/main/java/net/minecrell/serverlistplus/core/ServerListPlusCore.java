@@ -357,15 +357,15 @@ public class ServerListPlusCore {
         return result;
     }
 
-    private static String buildCommandHelp(String description) {
+    public static String buildCommandHelp(String description) {
         return buildCommandHelp(null, description);
     }
 
-    private static String buildCommandHelp(String cmd, String description) {
+    public static String buildCommandHelp(String cmd, String description) {
         return buildCommandHelp(cmd, null, description);
     }
 
-    private static String buildCommandHelp(String cmd, String usage, String description) {
+    public static String buildCommandHelp(String cmd, String usage, String description) {
         StringBuilder help = new StringBuilder();
         help.append(ChatFormat.RED).append("/slp");
         if (cmd != null) help.append(' ').append(cmd);

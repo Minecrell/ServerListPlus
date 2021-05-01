@@ -19,8 +19,6 @@
 package net.minecrell.serverlistplus.server;
 
 import static com.google.common.base.Preconditions.checkState;
-import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.ERROR;
-import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.INFO;
 
 import com.google.common.base.Splitter;
 import com.google.common.cache.Cache;
@@ -36,7 +34,7 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
+import net.minecrell.serverlistplus.core.logging.Log4j2ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.ban.NoBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
@@ -59,6 +57,8 @@ import net.minecrell.serverlistplus.server.status.StatusClient;
 import net.minecrell.serverlistplus.server.status.StatusPingResponse;
 import net.minecrell.serverlistplus.server.status.UserProfile;
 import net.minecrell.serverlistplus.core.util.FormattingCodes;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
@@ -73,16 +73,15 @@ import java.util.OptionalInt;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public final class ServerListPlusServer implements ServerListPlusPlugin {
 
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().hexColors().build();
 
+    private static final Logger logger = LogManager.getLogger();
     private static ServerListPlusServer instance;
 
     private final ServerListPlusCore core;
-    private final Logger logger;
     private final Path workingDir;
 
     private final NetworkManager network;
@@ -107,19 +106,18 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
             };
     private LoadingCache<FaviconSource, Optional<String>> faviconCache;
 
-    public ServerListPlusServer(Logger logger) throws UnknownHostException {
+    public ServerListPlusServer() throws UnknownHostException {
         checkState(instance == null, "Server was already initialized");
         instance = this;
 
-        this.logger = logger;
         this.workingDir = Paths.get("");
 
-        logger.log(INFO, "Loading...");
+        logger.info("Loading...");
         this.core = new ServerListPlusCore(this, new ServerProfileManager());
 
         ServerConf conf = this.core.getConf(ServerConf.class);
         this.network = new NetworkManager(this, Netty.parseAddress(conf.Address));
-        logger.log(INFO, "Successfully loaded!");
+        logger.info("Successfully loaded!");
     }
 
     public boolean start() {
@@ -129,7 +127,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         try {
             this.network.start();
         } catch (Exception e) {
-            this.logger.log(ERROR, "Failed to start network manager", e);
+            logger.error("Failed to start network manager", e);
             this.stop();
             return false;
         }
@@ -139,18 +137,22 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         return true;
     }
 
+    public boolean isRunning() {
+        return this.started;
+    }
+
     public void join() throws InterruptedException {
         this.network.join();
     }
 
     public boolean stop() {
         if (this.started) {
-            this.logger.info("Stopping...");
+            logger.info("Stopping...");
 
             try {
                 this.network.stop();
             } catch (Exception e) {
-                this.logger.log(ERROR, "Failed to stop network manager", e);
+                logger.error("Failed to stop network manager", e);
                 return false;
             }
 
@@ -277,7 +279,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     private static final ImmutableSet<String> COMMAND_ALIASES = ImmutableSet.of("serverlistplus", "slp");
     private static final Splitter COMMAND_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
 
-    public boolean processCommand(String command) {
+    public void processCommand(String command) {
         if (command.charAt(0) == '/') {
             command = command.substring(1);
         }
@@ -302,15 +304,15 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         List<String> args = COMMAND_SPLITTER.splitToList(command);
         String subcommand = args.isEmpty() ? "" : args.get(0);
         if (subcommand.equalsIgnoreCase("stop")) {
-            return this.stop();
+            this.stop();
+            return;
         }
 
         this.core.executeCommand(ConsoleCommandSender.INSTANCE, root, args.toArray(new String[args.size()]));
         if (subcommand.equalsIgnoreCase("help")) {
-            ConsoleCommandSender.INSTANCE.sendMessage("/slp stop - Stop the server.");
+            ConsoleCommandSender.INSTANCE.sendMessage(ServerListPlusCore.buildCommandHelp(
+                    "stop", null, "Stop the server."));
         }
-
-        return false;
     }
 
     @Override
@@ -375,7 +377,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
 
     @Override
     public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new JavaServerListPlusLogger(this.core, this.logger);
+        return new Log4j2ServerListPlusLogger(this.core, LogManager.getLogger(ServerListPlusCore.class));
     }
 
     @Override
