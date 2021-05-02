@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class StatusResponse {
+    // Used for custom player slots features to make client believe the server is outdated and show custom version text
+    public static final int MAGIC_FUTURE_VERSION = 9999;
+
     private final @Getter StatusRequest request;
     private final @Getter StatusManager status;
     private final ResponseFetcher fetcher;
@@ -179,12 +182,16 @@ public class StatusResponse {
 
     public String getVersion() {
         String result;
-
-        if (request.getProtocolVersion() != null && fetcher.getProtocolVersion() == request.getProtocolVersion()) {
-            result = getPlayerSlots();
-            if (result != null) {
-                playerSlots = true;
-                return result;
+        if (request.getProtocolVersion() != null) {
+            // We might have already patched the response, so responseVersion might be == MAGIC_FUTURE_VERSION
+            // In that case, assume that displaying player slots is fine, since the client is probably not outdated
+            int responseVersion = fetcher.getProtocolVersion();
+            if (responseVersion == request.getProtocolVersion() || responseVersion == MAGIC_FUTURE_VERSION) {
+                result = getPlayerSlots();
+                if (result != null) {
+                    playerSlots = true;
+                    return result;
+                }
             }
         }
 
@@ -199,7 +206,7 @@ public class StatusResponse {
     }
 
     public Integer getProtocolVersion() {
-        if (playerSlots) return 9999;
+        if (playerSlots) return MAGIC_FUTURE_VERSION;
 
         if (matchingHosts != null) {
             Integer result;
