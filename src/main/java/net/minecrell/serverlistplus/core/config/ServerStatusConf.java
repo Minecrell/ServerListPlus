@@ -42,6 +42,7 @@ import java.util.Map;
         "",
         "Usage:",
         " - Add multiple entries for random messages.",
+        " - You can use formatting codes (&c, &l etc) and hex RGB color codes (&#rrggbb).",
         " - Save the file with valid UTF-8 encoding for special characters.",
         " - Available placeholders:",
         "   - Player name: %player%",
