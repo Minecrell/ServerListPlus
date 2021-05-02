@@ -80,7 +80,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private ServerListPlusCore core;
 
     private StatusHandler bukkit, protocol;
-    private boolean paper;
+    private ServerType serverType;
     private Listener loginListener, disconnectListener;
 
     // Favicon cache
@@ -108,33 +108,39 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
 
-    private boolean isPluginLoaded(String pluginName) {
-        return getServer().getPluginManager().getPlugin(pluginName) != null;
+    private boolean isPluginEnabled(String pluginName) {
+        return getServer().getPluginManager().isPluginEnabled(pluginName);
     }
 
     @Override
     public void onEnable() {
+        this.serverType = ServerType.BUKKIT;
+
+        try {
+            Class.forName("org.spigotmc.SpigotConfig");
+            this.serverType = ServerType.SPIGOT;
+        } catch (ClassNotFoundException ignored) {}
+
         try {
             Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
-            this.paper = true;
+            this.serverType = ServerType.PAPER;
             this.bukkit = new PaperEventHandler(this);
         } catch (ClassNotFoundException e) {
-            this.paper = false;
             this.bukkit = new BukkitEventHandler(this);
         }
 
-        if (Environment.checkProtocolLib(getServer())) {
+        if (isPluginEnabled("ProtocolLib")) {
             try {
                 this.protocol = new ProtocolLibHandler(this);
             } catch (Throwable e) {
                 getLogger().log(Level.SEVERE, "Failed to construct ProtocolLib handler. Is your ProtocolLib version up-to-date?", e);
             }
-        } else if (!paper)
+        } else if (serverType != ServerType.PAPER)
             getLogger().log(Level.SEVERE, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
 
         ReplacementManager.getEarlyStaticReplacers().add(0, BungeeRGBColorReplacer.INSTANCE);
 
-        if (isPluginLoaded("PlaceholderAPI")) {
+        if (isPluginEnabled("PlaceholderAPI")) {
             try {
                 ReplacementManager.getDynamic().add(new PlaceholderAPIDynamicReplacer(getServer()));
             } catch (Throwable e) {
@@ -157,11 +163,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
 
-        if (isPluginLoaded("AdvancedBan")) {
+        if (isPluginEnabled("AdvancedBan")) {
             core.setBanProvider(new AdvancedBanBanProvider());
-        } else if (isPluginLoaded("BanManager")) {
+        } else if (isPluginEnabled("BanManager")) {
             core.setBanProvider(new BanManagerBanProvider());
-        } else if (isPluginLoaded("MaxBans")) {
+        } else if (isPluginEnabled("MaxBans")) {
             core.setBanProvider(new MaxBansBanProvider());
         } else {
             core.setBanProvider(new BukkitBanProvider(getServer()));
@@ -245,7 +251,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public ServerType getServerType() {
-        return Environment.getType();
+        return serverType;
     }
 
     @Override
@@ -390,7 +396,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
             if (loginListener == null) {
-                registerListener(this.loginListener = Environment.isSpigot() || getServer().getOnlineMode()
+                registerListener(this.loginListener = serverType != ServerType.BUKKIT || getServer().getOnlineMode()
                         ? new LoginListener() : new OfflineModeLoginListener());
                 getLogger().log(DEBUG, "Registered player login listener.");
             }
@@ -421,7 +427,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (bukkit.register())
                 getLogger().log(DEBUG, "Registered ping event handler.");
             if (protocol == null) {
-                if (!paper)
+                if (serverType != ServerType.PAPER)
                     getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
             } else if (protocol.register())
                 getLogger().log(DEBUG, "Registered status protocol handler.");
