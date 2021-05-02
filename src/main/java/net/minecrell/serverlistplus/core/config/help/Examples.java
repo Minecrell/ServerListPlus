@@ -40,7 +40,7 @@ public final class Examples {
                         "&7Now with [&a&lPvP&7], [&a&lMinigames&7], and much more!"
                 ), Helper.joinLines(
                         "&aA Minecraft Server.",
-                        "&eWe have updated our server to &lMinecraft 1.8&e!"
+                        "&eNow running the latest &lMinecraft &eversion!"
                 )
         );
 
@@ -49,7 +49,7 @@ public final class Examples {
         conf.Default.Players.Hover = BooleanOrList.of(
                 Helper.joinLines(
                         "&aWelcome to &lA Minecraft Server&a!",
-                        "&aCurrently &e&l%online% &aplayers are playing on our server!"
+                        "&aCurrently &e&l%online%/%max% &aplayers are playing on our server!"
                 )
         );
 
@@ -58,11 +58,11 @@ public final class Examples {
         conf.Personalized = new ServerStatusConf.StatusConf();
         conf.Personalized.Description = Arrays.asList(
                 Helper.joinLines(
-                        "&aA Minecraft Network. &7|  &eHello, &l%player%!",
+                        "&aA Minecraft Server. &7|  &eHello, &l%player%!",
                         "&7Now with [&a&lPvP&7], [&a&lMinigames&7], and much more!"
                 ), Helper.joinLines(
-                        "&aA Minecraft Network. &7|  &eHello, &l%player%!",
-                        "&eWe have updated our server to &lMinecraft 1.8&e!"
+                        "&aA Minecraft Server. &7|  &eHello, &l%player%!",
+                        "&eNow running the latest &lMinecraft &eversion!"
                 )
         );
 
@@ -71,7 +71,7 @@ public final class Examples {
         conf.Personalized.Players.Hover = BooleanOrList.of(
                 Helper.joinLines(
                         "&aWelcome back, &l%player%&a!",
-                        "&aCurrently &e&l%online% &aplayers are playing on our server!"
+                        "&aCurrently &e&l%online%/%max% &aplayers are playing on our server!"
                 )
         );
 
