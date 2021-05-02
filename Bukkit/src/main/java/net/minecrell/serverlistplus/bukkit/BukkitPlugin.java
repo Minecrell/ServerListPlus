@@ -137,7 +137,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         } else if (serverType != ServerType.PAPER)
             getLogger().log(Level.SEVERE, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
 
-        ReplacementManager.getEarlyStaticReplacers().add(0, BungeeRGBColorReplacer.INSTANCE);
+        BungeeRGBColorReplacer.register(this);
 
         if (isPluginEnabled("PlaceholderAPI")) {
             try {

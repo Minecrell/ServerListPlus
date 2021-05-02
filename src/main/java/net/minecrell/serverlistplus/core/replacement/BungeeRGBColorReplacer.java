@@ -19,6 +19,7 @@
 package net.minecrell.serverlistplus.core.replacement;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 
 import java.util.regex.Pattern;
 
@@ -41,6 +42,12 @@ public class BungeeRGBColorReplacer implements StaticReplacer {
     public String replace(ServerListPlusCore core, String s) {
         // Translate to insane Spigot/Bungee equivalent, e.g. &#abcdef -> &x&a&b&c&d&e&f
         return SANE_HEX_PATTERN.matcher(s).replaceAll("&x&$1&$2&$3&$4&$5&$6");
+    }
+
+    public static void register(ServerListPlusPlugin plugin) {
+        if (plugin.supportsRGB()) {
+            ReplacementManager.getEarlyStaticReplacers().add(0, BungeeRGBColorReplacer.INSTANCE);
+        }
     }
 
 }
