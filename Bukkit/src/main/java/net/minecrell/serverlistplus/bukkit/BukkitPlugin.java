@@ -73,7 +73,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
@@ -182,9 +181,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             core.stop();
         } catch (ServerListPlusException ignored) {}
         getLogger().info(getDisplayName() + " disabled.");
-        // BungeeCord closes the log handlers automatically, but Bukkit does not
-        for (Handler handler : getLogger().getHandlers())
-            handler.close();
     }
 
     // Commands
