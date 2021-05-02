@@ -57,12 +57,17 @@ bukkit {
         register("serverlistplus") {
             description = "Configure ServerListPlus"
             aliases = listOf("slp")
+            permission = "serverlistplus.command"
         }
     }
 
     permissions {
+        register("serverlistplus.command") {
+            description = "Allows read-only access to ServerListPlus commands"
+        }
         register("serverlistplus.admin") {
-            description = "Allows you to access the ServerListPlus administration commands"
+            description = "Allows to access the ServerListPlus administration commands"
+            children = listOf("serverlistplus.command")
         }
     }
 }

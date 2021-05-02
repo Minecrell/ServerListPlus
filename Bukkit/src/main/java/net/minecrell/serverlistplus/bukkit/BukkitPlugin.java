@@ -161,7 +161,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
-        getCommand("serverlistplus").setPermission("serverlistplus.command");
 
         if (isPluginEnabled("AdvancedBan")) {
             core.setBanProvider(new AdvancedBanBanProvider());
