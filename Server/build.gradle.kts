@@ -30,8 +30,9 @@ dependencies {
     runtimeOnly("org.jline:jline-terminal-jansi:3.12.1")
     runtimeOnly("com.lmax:disruptor:3.4.4") // async loggers
 
-    implementation("com.google.guava:guava:25.1-jre") { isTransitive = false }
-    implementation("org.yaml:snakeyaml:1.27")
+    // Note: Before upgrading these dependencies, make sure the core would also compile against them!
+    implementation("com.google.guava:guava:30.1.1-jre") { isTransitive = false }
+    implementation("org.yaml:snakeyaml:1.28")
     implementation("com.google.code.gson:gson:2.8.6")
 
     implementation(platform("net.kyori:adventure-bom:4.7.0"))
