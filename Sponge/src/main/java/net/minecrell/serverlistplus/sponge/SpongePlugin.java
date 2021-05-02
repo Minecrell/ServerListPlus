@@ -27,7 +27,6 @@ import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
-import net.minecrell.mcstats.SpongeStatsLite;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
@@ -45,6 +44,7 @@ import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 import net.minecrell.serverlistplus.sponge.protocol.DummyStatusProtocolHandler;
 import net.minecrell.serverlistplus.sponge.protocol.StatusProtocolHandler;
 import net.minecrell.serverlistplus.sponge.protocol.StatusProtocolHandlerImpl;
@@ -95,9 +95,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
     @ConfigDir(sharedRoot = false) @Inject
     protected File configDir;
 
-    @Inject
-    protected SpongeStatsLite stats;
-
     private final StatusProtocolHandler handler;
 
     private ServerListPlusCore core;
@@ -130,7 +127,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
         }
 
         try {
-            this.core = new ServerListPlusCore(this);
+            ServerListPlusLogger clogger = new Slf4jServerListPlusLogger(this.logger, ServerListPlusLogger.CORE_PREFIX);
+            this.core = new ServerListPlusCore(this, clogger);
             logger.info("Successfully loaded!");
         } catch (ServerListPlusException e) {
             logger.info("Please fix the error before restarting the server!");
@@ -140,8 +138,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
             return;
         }
 
-        game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "serverlist+",
-                "serverlist", "slp", "sl+", "s++", "serverping+", "serverping", "spp", "slus");
+        game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "slp");
 
         core.setBanProvider(new SpongeBanProvider());
     }
@@ -248,9 +245,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
+            if (favicon == FaviconSource.NONE) {
+                ping.setFavicon(null);
+            } else if (favicon != null) {
                 Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
-                if (icon.isPresent()) ping.setFavicon(icon.get());
+                icon.ifPresent(ping::setFavicon);
             }
 
             if (players != null) {
@@ -271,16 +270,9 @@ public class SpongePlugin implements ServerListPlusPlugin {
                         profiles.clear();
 
                         if (!message.isEmpty()) {
-                            if (response.useMultipleSamples()) {
-                                count = response.getDynamicSamples();
-                                List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                                        Helper.splitLinesCached(message);
-
-                                for (String line : lines) {
-                                    profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, line));
-                                }
-                            } else
-                                profiles.add(GameProfile.of(StatusManager.EMPTY_UUID, message));
+                            for (String line : Helper.splitLines(message)) {
+                                profiles.add(GameProfile.of(UUIDs.EMPTY, line));
+                            }
                         }
                     }
                 }
@@ -382,11 +374,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new Slf4jServerListPlusLogger(core, logger);
-    }
-
-    @Override
     public void initialize(ServerListPlusCore core) {
 
     }
@@ -420,13 +407,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
             game.getEventManager().unregisterListeners(loginListener);
             this.loginListener = null;
             logger.debug("Unregistered player tracking listener.");
-        }
-
-        // Plugin statistics
-        if (confs.get(PluginConf.class).Stats) {
-            this.stats.start();
-        } else {
-            this.stats.stop();
         }
     }
 

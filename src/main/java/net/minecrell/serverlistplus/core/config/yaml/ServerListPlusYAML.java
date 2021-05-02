@@ -18,7 +18,7 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.io.IOHelper;
@@ -41,19 +41,7 @@ public final class ServerListPlusYAML {
         // Plugin classes are loaded from a different class loader, that's why we need this
         Constructor constructor = new UnknownConfigurationConstructor(core);
         Representer representer = new ConfigurationRepresenter(); // Skip null properties
-
-        boolean outdatedYaml = false;
-
-        try { // Try setting the newer property utils, but will fail on CraftBukkit
-            representer.setPropertyUtils(new ConfigurationPropertyUtils(core));
-        } catch (Throwable e) {
-            outdatedYaml = true; // Meh, CraftBukkit is using an outdated SnakeYAML version
-            core.getLogger().log(WARN, "Your server is using an outdated YAML version. The configuration might " +
-                    "not work correctly.");
-            // Use old fallback versions and apply fixes!
-            representer = new OutdatedConfigurationRepresenter();
-            representer.setPropertyUtils(new OutdatedConfigurationPropertyUtils(core));
-        }
+        representer.setPropertyUtils(new ConfigurationPropertyUtils(core));
 
         String[] header = null;
         try { // Try loading the configuration header from the JAR file
@@ -62,6 +50,6 @@ public final class ServerListPlusYAML {
             core.getLogger().log(WARN, e, "Unable to read configuration header!");
         }
 
-        return new YAMLWriter(new SnakeYAML(dumperOptions, constructor, representer, outdatedYaml), header);
+        return new YAMLWriter(new SnakeYAML(dumperOptions, constructor, representer), header);
     }
 }

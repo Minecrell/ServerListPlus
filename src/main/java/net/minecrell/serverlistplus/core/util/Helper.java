@@ -26,7 +26,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -53,19 +52,8 @@ public final class Helper {
         return NEW_LINE_SPLITTER.split(s);
     }
 
-    public static List<String> splitLinesCached(String s) {
+    public static List<String> splitLinesToList(String s) {
         return NEW_LINE_SPLITTER.splitToList(s);
-    }
-
-    public static Iterable<String> splitLines(String s, int limit) {
-        return NEW_LINE_SPLITTER.limit(limit).split(s);
-    }
-
-    public static List<String> splitLinesCached(String s, int limit) {
-        if (limit <= 0) {
-            return Collections.singletonList(s);
-        }
-        return NEW_LINE_SPLITTER.limit(limit).splitToList(s);
     }
 
     public static boolean isNullOrEmpty(Object[] array) {

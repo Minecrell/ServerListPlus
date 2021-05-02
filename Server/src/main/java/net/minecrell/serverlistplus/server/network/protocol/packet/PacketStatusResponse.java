@@ -20,12 +20,13 @@ package net.minecrell.serverlistplus.server.network.protocol.packet;
 
 import com.google.gson.Gson;
 import io.netty.buffer.ByteBuf;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecrell.serverlistplus.server.network.protocol.MinecraftProtocol;
 import net.minecrell.serverlistplus.server.status.StatusPingResponse;
 
 public class PacketStatusResponse implements ServerPacket {
 
-    private static final Gson gson = new Gson();
+    private static final Gson gson = GsonComponentSerializer.gson().serializer();
 
     private final StatusPingResponse response;
 

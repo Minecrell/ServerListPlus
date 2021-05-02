@@ -24,7 +24,6 @@ import com.google.common.cache.LoadingCache;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
-import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 
 import java.nio.file.Path;
@@ -54,7 +53,6 @@ public interface ServerListPlusPlugin {
 
     String colorize(String s);
 
-    ServerListPlusLogger createLogger(ServerListPlusCore core);
     void initialize(ServerListPlusCore core);
     void reloadCaches(ServerListPlusCore core);
     void reloadFaviconCache(CacheBuilderSpec spec);

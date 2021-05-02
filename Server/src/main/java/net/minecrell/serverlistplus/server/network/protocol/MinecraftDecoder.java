@@ -23,14 +23,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import net.minecrell.serverlistplus.server.network.ClientHandler;
 import net.minecrell.serverlistplus.server.network.protocol.packet.ClientPacket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class MinecraftDecoder extends ByteToMessageDecoder {
 
-    private static final Logger logger = Logger.getLogger(MinecraftDecoder.class.getName());
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
@@ -41,13 +41,13 @@ public final class MinecraftDecoder extends ByteToMessageDecoder {
         int id = MinecraftProtocol.readVarInt(in);
         ClientPacket packet = ClientHandler.getState(ctx).getPacket(id);
         if (packet == null) {
-            logger.log(Level.WARNING, "Unknown packet: " + Integer.toHexString(id));
+            logger.warn("Unknown packet: {}", Integer.toHexString(id));
             return;
         }
 
         packet.read(in);
         if (in.isReadable()) {
-            logger.log(Level.WARNING, "Packet " + id + " was not fully read: " + in.readableBytes() + " bytes left");
+            logger.warn("Packet {} was not fully read: {} bytes left", id, in.readableBytes());
         }
 
         out.add(packet);

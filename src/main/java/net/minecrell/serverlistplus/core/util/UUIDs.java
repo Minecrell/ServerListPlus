@@ -29,6 +29,8 @@ public final class UUIDs {
 
     private UUIDs() {}
 
+    public static final UUID EMPTY = new UUID(0, 0);
+
     public interface Variant {
 
         UUID parse(String uuid);

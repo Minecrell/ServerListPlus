@@ -19,13 +19,23 @@
 package net.minecrell.serverlistplus.core.favicon;
 
 import com.google.common.base.Preconditions;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class FaviconSource {
+
+    public static final FaviconSource NONE = new FaviconSource();
+
     private final String source;
     private final FaviconLoader loader;
 
+    private FaviconSource() {
+        this.source = null;
+        this.loader = null;
+    }
+
     public FaviconSource(String source, FaviconLoader loader) {
-        this.source = source;
+        this.source = Preconditions.checkNotNull(source);
         this.loader = Preconditions.checkNotNull(loader);
     }
 
@@ -41,17 +51,4 @@ public class FaviconSource {
         return new FaviconSource(source, loader);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FaviconSource)) return false;
-        FaviconSource that = (FaviconSource) o;
-        return loader.equals(that.loader) && !(source != null ? !source.equals(that.source) : that.source != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return 31 * (source != null ? source.hashCode() : 0) + loader.hashCode();
-    }
 }

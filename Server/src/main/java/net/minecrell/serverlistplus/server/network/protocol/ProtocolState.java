@@ -33,7 +33,7 @@ public enum ProtocolState {
 
     private final Supplier<? extends ClientPacket>[] client;
 
-    @SuppressWarnings("unchecked")
+    @SafeVarargs
     ProtocolState(Supplier<? extends ClientPacket>... packets) {
         this.client = packets;
     }

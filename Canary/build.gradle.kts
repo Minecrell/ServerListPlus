@@ -16,9 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import java.util.concurrent.Callable
-
 repositories {
     maven("https://repo.neptunepowered.org/maven/")
     maven("https://repo.minecrell.net/snapshots/")
@@ -29,27 +26,21 @@ dependencies {
     compileOnly("net.canarymod:CanaryLib:1.2.0") {
         exclude("org.mcstats.standalone", "metrics")
     }
-
-    compile("org.mcstats.canary:metrics-lite:R8-SNAPSHOT") { isTransitive = false }
 }
 
 tasks {
-    // Generate Canary.inf description file
-    getByName<AbstractCopyTask>("processResources").from(create<WriteProperties>("generateCanaryInf") {
+    val generate = register<WriteProperties>("generateCanaryInf") {
         setOutputFile(Callable { File(temporaryDir, "Canary.inf") })
         properties(mapOf(
-                "main-class" to "net.minecrell.serverlistplus.canary.CanaryPlugin",
-                "name" to rootProject.name,
-                "version" to version,
-                "author" to rootProject.property("author")
+            "main-class" to "net.minecrell.serverlistplus.canary.CanaryPlugin",
+            "name" to rootProject.name,
+            "version" to version,
+            "author" to rootProject.property("author")
         ))
-    })
+    }
 
-    getByName<ShadowJar>("shadowJar") {
-        dependencies {
-            include(dependency("org.mcstats.canary:metrics-lite"))
-        }
-
-        relocate("org.mcstats", "net.minecrell.serverlistplus.canary.mcstats")
+    // Generate Canary.inf description file
+    named<AbstractCopyTask>("processResources") {
+        from(generate)
     }
 }

@@ -34,12 +34,12 @@ public final class SnakeYAML {
 
     private static final String MAVEN_CENTRAL = "https://repo.maven.apache.org/maven2/";
 
-    private static final String YAML_VERSION = "1.19";
+    private static final String YAML_VERSION = "1.27";
     private static final String SNAKE_YAML_JAR = "snakeyaml-" + YAML_VERSION + ".jar";
     private static final String SNAKE_YAML =
             MAVEN_CENTRAL + "org/yaml/snakeyaml/" + YAML_VERSION + '/' + SNAKE_YAML_JAR;
 
-    private static final String EXPECTED_HASH = "2d998d3d674b172a588e54ab619854d073f555b5"; // SHA-1
+    private static final String EXPECTED_HASH = "359d62567480b07a679dc643f82fc926b100eed5"; // SHA-1
 
     public static Path load(Path pluginFolder) throws IOException {
         Path libFolder = pluginFolder.resolve("lib");

@@ -18,8 +18,8 @@
 
 package net.minecrell.serverlistplus.core.player;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.INFO;
 import static net.minecrell.serverlistplus.core.util.Helper.JSON;
 
 import com.google.common.collect.MapMaker;

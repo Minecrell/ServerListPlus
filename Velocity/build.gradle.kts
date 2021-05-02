@@ -17,12 +17,12 @@
  */
 
 repositories {
-    maven("https://repo.velocitypowered.com/snapshots/")
+    maven("https://nexus.velocitypowered.com/repository/maven-public/")
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:1.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:1.0-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:1.1.5")
+    annotationProcessor("com.velocitypowered:velocity-api:1.1.5")
 }
 
 java {

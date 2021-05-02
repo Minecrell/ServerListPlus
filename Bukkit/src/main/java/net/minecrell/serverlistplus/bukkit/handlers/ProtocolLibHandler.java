@@ -29,10 +29,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import net.minecrell.serverlistplus.bukkit.BukkitPlugin;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
-import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 
 import java.net.InetSocketAddress;
 import java.util.Collections;
@@ -46,7 +46,7 @@ public class ProtocolLibHandler extends StatusHandler {
 
     public final class StatusPacketListener extends PacketAdapter {
         public StatusPacketListener() {
-            super(PacketAdapter.params(bukkit, PacketType.Status.Server.OUT_SERVER_INFO,
+            super(PacketAdapter.params(bukkit, PacketType.Status.Server.SERVER_INFO,
                     PacketType.Handshake.Client.SET_PROTOCOL).optionAsync());
         }
 
@@ -125,20 +125,15 @@ public class ProtocolLibHandler extends StatusHandler {
                     if (message != null) {
                         if (message.isEmpty()) {
                             ping.setPlayers(Collections.<WrappedGameProfile>emptyList());
-                        } else if (response.useMultipleSamples()) {
-                            count = response.getDynamicSamples();
-
-                            ping.setPlayers(Iterables.transform(
-                                    count != null ? Helper.splitLines(message, count) : Helper.splitLines(message),
+                        } else {
+                            ping.setPlayers(Iterables.transform(Helper.splitLines(message),
                                     new Function<String, WrappedGameProfile>() {
-                                @Override
-                                public WrappedGameProfile apply(String input) {
-                                    return new WrappedGameProfile(StatusManager.EMPTY_UUID, input);
-                                }
-                            }));
-                        } else
-                            ping.setPlayers(Collections.singleton(
-                                    new WrappedGameProfile(StatusManager.EMPTY_UUID, message)));
+                                        @Override
+                                        public WrappedGameProfile apply(String input) {
+                                            return new WrappedGameProfile(UUIDs.EMPTY, input);
+                                        }
+                                    }));
+                        }
                     }
                 }
             }

@@ -24,10 +24,10 @@ import static com.google.common.base.StandardSystemProperty.JAVA_VM_NAME;
 import static com.google.common.base.StandardSystemProperty.OS_ARCH;
 import static com.google.common.base.StandardSystemProperty.OS_NAME;
 import static com.google.common.base.StandardSystemProperty.OS_VERSION;
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
-import static net.minecrell.serverlistplus.core.logging.Logger.REPORT;
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.INFO;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.REPORT;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -42,6 +42,7 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.Examples;
 import net.minecrell.serverlistplus.core.logging.Logger;
+import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.IdentificationStorage;
 import net.minecrell.serverlistplus.core.player.JSONIdentificationStorage;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
@@ -85,15 +86,16 @@ public class ServerListPlusCore {
 
     private @Getter @Setter BanProvider banProvider;
 
-    public ServerListPlusCore(ServerListPlusPlugin plugin) throws ServerListPlusException {
-        this(plugin, null);
+    public ServerListPlusCore(ServerListPlusPlugin plugin, ServerListPlusLogger logger) throws ServerListPlusException {
+        this(plugin, logger, null);
     }
 
-    public ServerListPlusCore(ServerListPlusPlugin plugin, ProfileManager profileManager) throws ServerListPlusException {
+    public ServerListPlusCore(ServerListPlusPlugin plugin, ServerListPlusLogger logger, ProfileManager profileManager)
+            throws ServerListPlusException {
         instance = this;
 
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
-        this.logger = plugin.createLogger(this);
+        this.logger = Preconditions.checkNotNull(logger, "logger");
         this.info = CoreDescription.load(this);
         this.banProvider = new NoBanProvider();
 
@@ -357,15 +359,15 @@ public class ServerListPlusCore {
         return result;
     }
 
-    private static String buildCommandHelp(String description) {
+    public static String buildCommandHelp(String description) {
         return buildCommandHelp(null, description);
     }
 
-    private static String buildCommandHelp(String cmd, String description) {
+    public static String buildCommandHelp(String cmd, String description) {
         return buildCommandHelp(cmd, null, description);
     }
 
-    private static String buildCommandHelp(String cmd, String usage, String description) {
+    public static String buildCommandHelp(String cmd, String usage, String description) {
         StringBuilder help = new StringBuilder();
         help.append(ChatFormat.RED).append("/slp");
         if (cmd != null) help.append(' ').append(cmd);

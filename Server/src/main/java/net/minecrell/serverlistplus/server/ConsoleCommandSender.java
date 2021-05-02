@@ -19,11 +19,13 @@
 package net.minecrell.serverlistplus.server;
 
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
-import net.minecrell.serverlistplus.core.util.FormattingCodes;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public final class ConsoleCommandSender implements ServerCommandSender {
 
     public static final ConsoleCommandSender INSTANCE = new ConsoleCommandSender();
+    private static final Logger logger = LogManager.getLogger();
 
     private ConsoleCommandSender() {
     }
@@ -35,7 +37,7 @@ public final class ConsoleCommandSender implements ServerCommandSender {
 
     @Override
     public void sendMessage(String message) {
-        System.out.println(FormattingCodes.strip(message));
+        logger.info(message);
     }
 
     @Override

@@ -21,8 +21,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "2.0.4" apply false
-    id("net.minecrell.licenser") version "0.4"
+    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
+    id("org.cadixdev.licenser") version "0.6.0"
 }
 
 defaultTasks("clean", "build")
@@ -39,8 +39,8 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.projectlombok:lombok:1.16.20")
-        annotationProcessor("org.projectlombok:lombok:1.16.20")
+        compileOnly("org.projectlombok:lombok:1.18.20")
+        annotationProcessor("org.projectlombok:lombok:1.18.20")
     }
 
     tasks.withType<JavaCompile> {
@@ -48,16 +48,16 @@ allprojects {
         options.isDeprecation = true
     }
 
-    plugins.apply("net.minecrell.licenser")
+    plugins.apply("org.cadixdev.licenser")
 
     license {
-        header = rootProject.file("src/main/resources/LICENSE")
+        header(rootProject.file("src/main/resources/LICENSE"))
         include("**/*.java")
         include("**/*.kts")
 
         tasks {
-            "gradle" {
-                files = project.files("build.gradle.kts", "settings.gradle.kts")
+            register("gradle") {
+                files(project.files("build.gradle.kts", "settings.gradle.kts"))
             }
         }
     }
@@ -69,7 +69,7 @@ subprojects {
     }
 
     dependencies {
-        compile(rootProject)
+        implementation(rootProject)
     }
 
     plugins.apply("com.github.johnrengelman.shadow")
@@ -79,15 +79,18 @@ subprojects {
 
         baseName = rootProject.name
         classifier = project.name
+        duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        exclude("META-INF/")
+        if (project.name != "Server") {
+            exclude("META-INF/")
 
-        dependencies {
-            include(project(rootProject.path))
-            include(dependency("org.ocpsoft.prettytime:prettytime"))
+            dependencies {
+                include(project(rootProject.path))
+                include(dependency("org.ocpsoft.prettytime:prettytime"))
+            }
+
+            relocate("org.ocpsoft.prettytime", "net.minecrell.serverlistplus.core.lib.prettytime")
         }
-
-        relocate("org.ocpsoft.prettytime", "net.minecrell.serverlistplus.core.lib.prettytime")
     }
 }
 
@@ -96,22 +99,27 @@ repositories {
 }
 
 dependencies {
-    compile("com.google.guava:guava:21.0")
-    compile("org.yaml:snakeyaml:1.19")
-    compile("com.google.code.gson:gson:2.8.0")
-    compile("org.ocpsoft.prettytime:prettytime:4.0.1.Final")
+    implementation("com.google.guava:guava:21.0") { isTransitive = false }
+    implementation("org.yaml:snakeyaml:1.27")
+    implementation("com.google.code.gson:gson:2.8.0")
+    implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 
-    compileOnly("org.slf4j:slf4j-api:1.7.25")
-    compileOnly("com.github.DevLeoko:AdvancedBan:4171f1a") { isTransitive = false }
+    compileOnly("org.slf4j:slf4j-api:1.7.30")
+    compileOnly("org.apache.logging.log4j:log4j-api:2.8.1")
+    compileOnly("com.github.DevLeoko.AdvancedBan:AdvancedBan-Core:v2.3.0") { isTransitive = false }
 
-    testCompile("junit:junit:4.12")
-    testCompile("org.mockito:mockito-core:2.20.0")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:3.9.0")
+}
+
+java {
+    withSourcesJar()
 }
 
 tasks {
     // Copy project properties, loaded at runtime for version information
-    getByName<AbstractCopyTask>("processResources") {
-        expand(properties) // Replace variables in HEADER file
+    named<AbstractCopyTask>("processResources") {
+        expand(project.properties) // Replace variables in HEADER file
 
         from("gradle.properties") {
             into("net/minecrell/serverlistplus/core")
@@ -119,26 +127,24 @@ tasks {
     }
 
     // Universal JAR that works on multiple platforms
-    create<Jar>("universal") {
+    val universal = register<Jar>("universal") {
         artifacts.add("archives", this)
 
         classifier = "Universal"
-        setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-        for (p in arrayOf("Bukkit", "Bungee", "Canary", "Sponge")) {
-            val task = project(p).tasks["shadowJar"]
+        for (p in arrayOf("Bukkit", "Bungee", "Canary", "Sponge", "Velocity")) {
+            val task = project(p).tasks.named("shadowJar")
             dependsOn(task)
-            from(zipTree(task.outputs.files.singleFile))
+            from(zipTree(task.map { it.outputs.files.singleFile }))
         }
     }
+    artifacts.add("archives", universal)
 
     // Bundle all sources together into one source JAR
-    create<Jar>("sourceJar") {
-        artifacts.add("archives", this)
-
-        classifier = "sources"
-        allprojects {
-            from(java.sourceSets["main"].allSource)
+    named<AbstractCopyTask>("sourcesJar") {
+        subprojects {
+            from(sourceSets["main"].allSource)
         }
     }
 }
@@ -147,8 +153,7 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-            artifact(tasks["universal"])
-            artifact(tasks["sourceJar"])
+            artifact(tasks.named("universal"))
 
             subprojects {
                 tasks.withType<ShadowJar> {

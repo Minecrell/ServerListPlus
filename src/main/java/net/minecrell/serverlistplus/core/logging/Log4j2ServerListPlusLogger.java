@@ -20,25 +20,18 @@ package net.minecrell.serverlistplus.core.logging;
 
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 
-public class JavaServerListPlusLogger extends ServerListPlusLogger {
-    public static final java.util.logging.Level
-            DEBUG = java.util.logging.Level.FINE,
-            REPORT = java.util.logging.Level.CONFIG,
-            INFO = java.util.logging.Level.INFO,
-            WARN = java.util.logging.Level.WARNING,
-            ERROR = java.util.logging.Level.SEVERE;
-
-    private static final java.util.logging.Level[] LEVELS = {
-            ERROR,
-            WARN,
-            INFO,
-            REPORT,
-            DEBUG,
+public class Log4j2ServerListPlusLogger extends ServerListPlusLogger {
+    private static final org.apache.logging.log4j.Level[] LEVELS = {
+            org.apache.logging.log4j.Level.ERROR,
+            org.apache.logging.log4j.Level.WARN,
+            org.apache.logging.log4j.Level.INFO,
+            org.apache.logging.log4j.Level.DEBUG,
+            org.apache.logging.log4j.Level.TRACE,
     };
 
-    private final java.util.logging.Logger logger;
+    private final org.apache.logging.log4j.Logger logger;
 
-    public JavaServerListPlusLogger(java.util.logging.Logger logger, String prefix) {
+    public Log4j2ServerListPlusLogger(org.apache.logging.log4j.Logger logger, String prefix) {
         super(prefix);
         this.logger = logger;
     }

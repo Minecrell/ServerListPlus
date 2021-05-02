@@ -17,31 +17,35 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
 dependencies {
-    compile("io.netty:netty-all:4.1.27.Final")
+    implementation("io.netty:netty-all:4.1.63.Final")
 
-    compile("com.google.guava:guava:25.1-jre")
-    compile("org.yaml:snakeyaml:1.21")
-    compile("com.google.code.gson:gson:2.8.5")
+    implementation("net.minecrell:terminalconsoleappender:1.2.0")
+    runtimeOnly("org.jline:jline-terminal-jansi:3.12.1")
+    runtimeOnly("com.lmax:disruptor:3.4.4") // async loggers
+
+    // Note: Before upgrading these dependencies, make sure the core would also compile against them!
+    implementation("com.google.guava:guava:30.1.1-jre") { isTransitive = false }
+    implementation("org.yaml:snakeyaml:1.28")
+    implementation("com.google.code.gson:gson:2.8.6")
+
+    implementation(platform("net.kyori:adventure-bom:4.7.0"))
+    implementation("net.kyori:adventure-text-serializer-plain")
+    implementation("net.kyori:adventure-text-serializer-legacy")
+    implementation("net.kyori:adventure-text-serializer-gson")
 }
 
 tasks {
-    getByName<Jar>("jar") {
+    named<Jar>("jar") {
         manifest.attributes(mapOf("Main-Class" to "net.minecrell.serverlistplus.server.Main"))
     }
-
-    getByName<ShadowJar>("shadowJar") {
-        dependencies {
-            include(dependency("io.netty:netty-all"))
-
-            include(dependency("com.google.guava:guava"))
-            include(dependency("org.yaml:snakeyaml"))
-            include(dependency("com.google.code.gson:gson"))
-        }
+    named<ShadowJar>("shadowJar") {
+        transform(Log4j2PluginsCacheFileTransformer())
     }
 }

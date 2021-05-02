@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     id("org.spongepowered.plugin") version "0.9.0"
 }
@@ -27,23 +25,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spongepowered:spongeapi:7.0.0")
-    annotationProcessor("org.spongepowered:spongeapi:7.0.0")
+    compileOnly("org.spongepowered:spongeapi:7.3.0")
+    annotationProcessor("org.spongepowered:spongeapi:7.3.0")
 
     compileOnly("net.minecrell:statusprotocol:0.3")
-    compile("net.minecrell.mcstats:statslite-sponge:0.2.3")
 }
 
 sponge {
     plugin.id = "serverlistplus"
-}
-
-tasks {
-    getByName<ShadowJar>("shadowJar") {
-        dependencies {
-            include(dependency("net.minecrell.mcstats:statslite-sponge"))
-        }
-
-        relocate("net.minecrell.mcstats", "net.minecrell.serverlistplus.mcstats")
-    }
 }

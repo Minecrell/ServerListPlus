@@ -21,28 +21,27 @@ package net.minecrell.serverlistplus.server.network.protocol;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @ChannelHandler.Sharable
 public class LoggerHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger logger = Logger.getLogger(LoggerHandler.class.getName());
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        logger.log(Level.INFO, "Client connected {0}", ctx.channel());
+        logger.info("Client connected {}", ctx.channel());
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        logger.log(Level.INFO, "Client disconnected {0}", ctx.channel());
+        logger.info("Client disconnected {}", ctx.channel());
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.log(Level.SEVERE, "FAIL", cause);
+        logger.error("Exception caught for client {}", ctx.channel(), cause);
     }
 
 }

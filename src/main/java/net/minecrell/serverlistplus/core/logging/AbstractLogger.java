@@ -22,8 +22,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterators;
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
 
-import java.util.logging.Level;
-
 public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
     public static final String ARG_PATTERN = "{}";
 
@@ -64,22 +62,22 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
 
     @Override
     public final Logger<E> log(Throwable thrown, String message) {
-        return log(ERROR, thrown, message);
+        return log(Level.ERROR, thrown, message);
     }
 
     @Override
     public final Logger<E> log(Throwable thrown, String message, Object arg) {
-        return log(ERROR, thrown, message, arg);
+        return log(Level.ERROR, thrown, message, arg);
     }
 
     @Override
     public final Logger<E> log(Throwable thrown, String message, Object... args) {
-        return log(ERROR, thrown, message, args);
+        return log(Level.ERROR, thrown, message, args);
     }
 
     /*@Override
     public final Logger<E> logf(Throwable thrown, String message, Object... args) {
-        return logf(ERROR, thrown, message, args);
+        return logf(Level.ERROR, thrown, message, args);
     }*/
 
     @Override
@@ -99,7 +97,7 @@ public abstract class AbstractLogger<E extends Throwable> implements Logger<E> {
 
     @Override
     public final E process(Throwable thrown, String message) {
-        return process(ERROR, thrown, message);
+        return process(Level.ERROR, thrown, message);
     }
 
     @Override

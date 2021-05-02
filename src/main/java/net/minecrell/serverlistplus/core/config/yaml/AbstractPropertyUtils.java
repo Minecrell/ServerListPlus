@@ -24,7 +24,6 @@ import org.yaml.snakeyaml.introspector.FieldProperty;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
 
-import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;

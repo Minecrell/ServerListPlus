@@ -18,7 +18,7 @@
 
 package net.minecrell.serverlistplus.core.status;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.WARN;
+import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -47,12 +47,8 @@ import net.minecrell.serverlistplus.core.util.IntegerRange;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class StatusManager extends AbstractManager {
-    public static final String EMPTY_ID = "0-0-0-0-0"; // Easiest format
-    public static final UUID EMPTY_UUID = UUID.fromString(EMPTY_ID);
-
     private @Getter PersonalizedStatusPatch patch;
     private @Getter Map<VirtualHost, PersonalizedStatusPatch> hosts;
     private Multimap<String, DynamicReplacer> replacers; // For the used placeholders of the messages.
@@ -165,6 +161,10 @@ public class StatusManager extends AbstractManager {
                 // Improve this somehow
                 ImmutableList.Builder<FaviconSource> builder = ImmutableList.builder();
 
+                if (Boolean.TRUE.equals(conf.Favicon.Disabled)) {
+                    builder.add(FaviconSource.NONE);
+                }
+
                 builder.addAll(prepareFavicons(conf.Favicon.Files, DefaultFaviconLoader.FILE));
                 builder.addAll(prepareFaviconSources(FaviconSearch.findInFolder(core, conf.Favicon.Folders),
                         DefaultFaviconLoader.FILE));
@@ -210,7 +210,7 @@ public class StatusManager extends AbstractManager {
 
         protected List<String> prepareMessages(BooleanOrList<String> messages) {
             if (messages == null) return null;
-            if (messages.getBoolean() == Boolean.FALSE) return ImmutableList.of("");
+            if (Boolean.FALSE.equals(messages.getBoolean())) return ImmutableList.of("");
             return prepareMessages(messages.getList());
         }
 
@@ -245,6 +245,9 @@ public class StatusManager extends AbstractManager {
     FaviconSource prepare(StatusResponse response, FaviconSource favicon) {
         if (favicon == null) {
             return null;
+        }
+        if (favicon == FaviconSource.NONE) {
+            return favicon;
         }
 
         Collection<DynamicReplacer> replacer = replacers.get(favicon.getSource());

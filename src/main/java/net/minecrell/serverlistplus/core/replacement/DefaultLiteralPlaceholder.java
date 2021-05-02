@@ -24,7 +24,6 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 import net.minecrell.serverlistplus.core.player.ban.BanProvider;
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
-import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.UUIDs;
 
@@ -55,7 +54,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(ServerListPlusCore core, String s) {
             // Use unknown UUID
-            return replace(s, UUIDs.STANDARD.toString(StatusManager.EMPTY_UUID));
+            return replace(s, UUIDs.STANDARD.toString(UUIDs.EMPTY));
         }
     },
     DASHLESS_UUID ("%_uuid_%") {
@@ -69,7 +68,7 @@ public enum DefaultLiteralPlaceholder implements DynamicPlaceholder {
         @Override
         public String replace(ServerListPlusCore core, String s) {
             // Use unknown UUID
-            return replace(s, UUIDs.NO_DASHES.toString(StatusManager.EMPTY_UUID));
+            return replace(s, UUIDs.NO_DASHES.toString(UUIDs.EMPTY));
         }
     },
     ONLINE_PLAYERS ("%online%") {

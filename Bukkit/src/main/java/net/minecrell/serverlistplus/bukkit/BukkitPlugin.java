@@ -18,9 +18,8 @@
 
 package net.minecrell.serverlistplus.bukkit;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.ERROR;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
@@ -34,6 +33,7 @@ import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
 import net.minecrell.serverlistplus.bukkit.integration.BanManagerBanProvider;
 import net.minecrell.serverlistplus.bukkit.integration.MaxBansBanProvider;
+import net.minecrell.serverlistplus.bukkit.integration.PlaceholderAPIDynamicReplacer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
@@ -47,12 +47,12 @@ import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanPr
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.replacement.BungeeRGBColorReplacer;
+import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
-import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -64,31 +64,23 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.CachedServerIcon;
-import org.mcstats.MetricsLite;
 
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Handler;
+import java.util.logging.Level;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
 
     private StatusHandler bukkit, protocol;
-    private boolean paper;
+    private ServerType serverType;
     private Listener loginListener, disconnectListener;
-
-    private MetricsLite metrics;
-
-    private Method legacy_getOnlinePlayers;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
@@ -115,58 +107,70 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private LoadingCache<InetSocketAddress, StatusRequest> requestCache;
     private String requestCacheConf;
 
-    private boolean isPluginLoaded(String pluginName) {
-        return getServer().getPluginManager().getPlugin(pluginName) != null;
+    private boolean isPluginEnabled(String pluginName) {
+        return getServer().getPluginManager().isPluginEnabled(pluginName);
     }
 
     @Override
     public void onEnable() {
+        this.serverType = ServerType.BUKKIT;
+
         try {
-            Method method = Server.class.getMethod("getOnlinePlayers");
-            if (method.getReturnType() == Player[].class)
-                legacy_getOnlinePlayers = method;
-        } catch (Throwable ignored) {}
+            Class.forName("org.spigotmc.SpigotConfig");
+            this.serverType = ServerType.SPIGOT;
+        } catch (ClassNotFoundException ignored) {}
 
         try {
             Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
-            this.paper = true;
+            this.serverType = ServerType.PAPER;
             this.bukkit = new PaperEventHandler(this);
         } catch (ClassNotFoundException e) {
-            this.paper = false;
             this.bukkit = new BukkitEventHandler(this);
         }
 
-        if (Environment.checkProtocolLib(getServer())) {
+        if (isPluginEnabled("ProtocolLib")) {
             try {
                 this.protocol = new ProtocolLibHandler(this);
             } catch (Throwable e) {
-                getLogger().log(ERROR, "Failed to construct ProtocolLib handler. Is your ProtocolLib version up-to-date?", e);
+                getLogger().log(Level.SEVERE, "Failed to construct ProtocolLib handler. Is your ProtocolLib version up-to-date?", e);
             }
-        } else if (!paper)
-            getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+        } else if (serverType != ServerType.PAPER)
+            getLogger().log(Level.SEVERE, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+
+        ReplacementManager.getEarlyStaticReplacers().add(0, BungeeRGBColorReplacer.INSTANCE);
+
+        if (isPluginEnabled("PlaceholderAPI")) {
+            try {
+                ReplacementManager.getDynamic().add(new PlaceholderAPIDynamicReplacer(getServer()));
+            } catch (Throwable e) {
+                getLogger().log(Level.SEVERE, "Failed to register PlaceholderAPI replacer", e);
+            }
+        }
 
         try { // Load the core first
-            this.core = new ServerListPlusCore(this);
-            getLogger().log(INFO, "Successfully loaded!");
+            ServerListPlusLogger clogger = new JavaServerListPlusLogger(getLogger(), ServerListPlusLogger.CORE_PREFIX);
+            this.core = new ServerListPlusCore(this, clogger);
+            getLogger().info("Successfully loaded!");
         } catch (ServerListPlusException e) {
-            getLogger().log(INFO, "Please fix the error before restarting the server!");
+            getLogger().info("Please fix the error before restarting the server!");
             disablePlugin(); return; // Disable bukkit to show error in /plugins
         } catch (Exception e) {
-            getLogger().log(ERROR, "An internal error occurred while loading the core!", e);
+            getLogger().log(Level.SEVERE, "An internal error occurred while loading the core!", e);
             disablePlugin(); return; // Disable bukkit to show error in /plugins
         }
 
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
-        getCommand("serverlistplus").setPermission("serverlistplus.commands");
-        if (isPluginLoaded("AdvancedBan")) {
+        getCommand("serverlistplus").setPermission("serverlistplus.command");
+
+        if (isPluginEnabled("AdvancedBan")) {
             core.setBanProvider(new AdvancedBanBanProvider());
-        } else if (isPluginLoaded("BanManager")) {
+        } else if (isPluginEnabled("BanManager")) {
             core.setBanProvider(new BanManagerBanProvider());
-        } else if (isPluginLoaded("MaxBans")) {
+        } else if (isPluginEnabled("MaxBans")) {
             core.setBanProvider(new MaxBansBanProvider());
         } else {
-            core.setBanProvider(new BukkitBanProvider());
+            core.setBanProvider(new BukkitBanProvider(getServer()));
         }
 
         getLogger().info(getDisplayName() + " enabled.");
@@ -178,9 +182,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             core.stop();
         } catch (ServerListPlusException ignored) {}
         getLogger().info(getDisplayName() + " disabled.");
-        // BungeeCord closes the log handlers automatically, but Bukkit does not
-        for (Handler handler : getLogger().getHandlers())
-            handler.close();
     }
 
     // Commands
@@ -247,7 +248,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public ServerType getServerType() {
-        return Environment.getType();
+        return serverType;
     }
 
     @Override
@@ -268,31 +269,13 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         return result.isPresent() ? result.get() : null;
     }
 
-    private Collection<? extends Player> getPlayers() {
-        Collection<? extends Player> players;
-
-        try { // Meh, compatibility
-            players = getServer().getOnlinePlayers();
-        } catch (NoSuchMethodError e) {
-            try {
-                players = Arrays.asList((Player[]) legacy_getOnlinePlayers.invoke(getServer()));
-            } catch (InvocationTargetException ex) {
-                throw new RuntimeException(ex.getCause());
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        return players;
-    }
-
     @Override
     public Integer getOnlinePlayers(String location) {
         World world = getServer().getWorld(location);
         if (world == null) return null;
 
         int count = 0;
-        for (Player player : getPlayers()) {
+        for (Player player : getServer().getOnlinePlayers()) {
             if (player.getWorld().equals(world)) count++;
         }
 
@@ -301,7 +284,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public Iterator<String> getRandomPlayers() {
-        Collection<? extends Player> players = getPlayers();
+        Collection<? extends Player> players = getServer().getOnlinePlayers();
         List<String> result = new ArrayList<>(players.size());
 
         for (Player player : players) {
@@ -318,7 +301,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             return null;
         }
 
-        Collection<? extends Player> players = getPlayers();
+        Collection<? extends Player> players = getServer().getOnlinePlayers();
         List<String> result = new ArrayList<>();
 
         for (Player player : players) {
@@ -361,11 +344,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new JavaServerListPlusLogger(core, getLogger());
-    }
-
-    @Override
     public void initialize(ServerListPlusCore core) {
 
     }
@@ -377,7 +355,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         if (requestCacheConf == null || requestCache == null || !requestCacheConf.equals(conf.Caches.Request)) {
             if (requestCache != null) {
                 // Delete the request cache
-                getLogger().log(DEBUG, "Deleting old request cache due to configuration changes.");
+                getLogger().fine("Deleting old request cache due to configuration changes.");
                 requestCache.invalidateAll();
                 requestCache.cleanUp();
                 this.requestCache = null;
@@ -415,7 +393,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
             if (loginListener == null) {
-                registerListener(this.loginListener = Environment.isSpigot() || getServer().getOnlineMode()
+                registerListener(this.loginListener = serverType != ServerType.BUKKIT || getServer().getOnlineMode()
                         ? new LoginListener() : new OfflineModeLoginListener());
                 getLogger().log(DEBUG, "Registered player login listener.");
             }
@@ -437,23 +415,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                 getLogger().log(DEBUG, "Unregistered player disconnect listener.");
             }
         }
-
-        // Plugin statistics
-        if (confs.get(PluginConf.class).Stats) {
-            if (metrics == null)
-                try {
-                    this.metrics = new MetricsLite(this);
-                    metrics.start();
-                } catch (Throwable e) {
-                    getLogger().log(DEBUG, "Failed to enable plugin statistics: " + Helper.causedException(e));
-                }
-        } else if (metrics != null)
-            try {
-                metrics.disable();
-                this.metrics = null;
-            } catch (Throwable e) {
-                getLogger().log(DEBUG, "Failed to disable plugin statistics: " + Helper.causedException(e));
-            }
     }
 
     @Override
@@ -463,7 +424,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (bukkit.register())
                 getLogger().log(DEBUG, "Registered ping event handler.");
             if (protocol == null) {
-                if (!paper)
+                if (serverType != ServerType.PAPER)
                     getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
             } else if (protocol.register())
                 getLogger().log(DEBUG, "Registered status protocol handler.");

@@ -46,6 +46,7 @@ import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.logging.Log4j2ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
@@ -57,8 +58,8 @@ import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import net.minecrell.serverlistplus.core.util.SnakeYAML;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 import net.visualillusionsent.utils.TaskManager;
-import org.mcstats.MetricsLite;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
@@ -81,8 +82,6 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     private Path pluginFolder;
     private PluginListener loginListener, pingListener;
-
-    private MetricsLite metrics;
 
     private final Field PROFILES_FIELD;
 
@@ -123,7 +122,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
         }
 
         try {
-            this.core = new ServerListPlusCore(this);
+            ServerListPlusLogger clogger = new Log4j2ServerListPlusLogger(getLogman(), ServerListPlusLogger.CORE_PREFIX);
+            this.core = new ServerListPlusCore(this, clogger);
             getLogman().info("Successfully loaded!");
         } catch (ServerListPlusException e) {
             getLogman().info("Please fix the error before restarting the server!");
@@ -156,8 +156,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     public final class ServerListPlusCommand implements CommandListener {
         private ServerListPlusCommand() {}
 
-        @Command(aliases = {"serverlistplus", "serverlist+", "serverlist", "slp", "sl+", "s++", "serverping+",
-                "serverping", "spp", "slus"}, permissions = "", description = "ServerListPlus", toolTip = "")
+        @Command(aliases = {"serverlistplus", "slp"}, permissions = "", description = "ServerListPlus", toolTip = "")
         public void onCommand(MessageReceiver sender, String[] args) {
             core.executeCommand(new CanaryCommandSender(sender), args[0], Arrays.copyOfRange(args, 1, args.length));
         }
@@ -210,7 +209,9 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
+            if (favicon == FaviconSource.NONE) {
+                //hook.setFavicon(null); // FIXME (in Canary): Would cause a NPE
+            } else if (favicon != null) {
                 Optional<String> icon = faviconCache.getUnchecked(favicon);
                 if (icon.isPresent()) hook.setFavicon(icon.get());
             }
@@ -234,16 +235,9 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
                 }
 
                 if (!message.isEmpty()) {
-                    if (response.useMultipleSamples()) {
-                        count = response.getDynamicSamples();
-                        List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                                Helper.splitLinesCached(message);
-
-                        for (String line : lines) {
-                            profiles.add(new GameProfile(StatusManager.EMPTY_UUID, line));
-                        }
-                    } else
-                        profiles.add(new GameProfile(StatusManager.EMPTY_UUID, message));
+                    for (String line : Helper.splitLines(message)) {
+                        profiles.add(new GameProfile(UUIDs.EMPTY, line));
+                    }
                 }
             }
         }
@@ -330,11 +324,6 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new Log4j2ServerListPlusLogger(core, getLogman());
-    }
-
-    @Override
     public void initialize(ServerListPlusCore core) {
 
     }
@@ -369,23 +358,6 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             this.loginListener = null;
             getLogman().debug("Unregistered proxy player tracking listener.");
         }
-
-        // Plugin statistics
-        if (confs.get(PluginConf.class).Stats) {
-            if (metrics == null)
-                try {
-                    this.metrics = new MetricsLite(this);
-                    metrics.start();
-                } catch (Throwable e) {
-                    getLogman().debug("Failed to enable plugin statistics: {}", Helper.causedException(e));
-                }
-        } else if (metrics != null)
-            try {
-                metrics.disable();
-                this.metrics = null;
-            } catch (Throwable e) {
-                getLogman().debug("Failed to disable plugin statistics: ", Helper.causedException(e));
-            }
     }
 
     @Override

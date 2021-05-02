@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     id("net.minecrell.plugin-yml.bungee") version "0.3.0"
 }
@@ -29,11 +27,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.13-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT")
 
     compileOnly("com.github.lucavinci:bungeeban:v2.7.0") { isTransitive = false }
-
-    compile("net.minecrell.mcstats:statslite-bungee:0.2.3")
 }
 
 bungee {
@@ -41,14 +37,4 @@ bungee {
 
     name = rootProject.name
     softDepends = setOf("AdvancedBan", "BungeeBan")
-}
-
-tasks {
-    getByName<ShadowJar>("shadowJar") {
-        dependencies {
-            include(dependency("net.minecrell.mcstats:statslite-bungee"))
-        }
-
-        relocate("net.minecrell.mcstats", "net.minecrell.serverlistplus.mcstats")
-    }
 }

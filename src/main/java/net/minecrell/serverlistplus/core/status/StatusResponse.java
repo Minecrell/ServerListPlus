@@ -22,10 +22,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.status.hosts.VirtualHost;
-import net.minecrell.serverlistplus.core.util.CountingIterator;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,7 +40,6 @@ public class StatusResponse {
     private Integer online, max; // The cached player count values
     private boolean playerSlots;
 
-    private boolean dynamicHoverCount = false;
     private Iterator<String> randomPlayers;
     private Map<String, Iterator<String>> randomPlayersMap;
 
@@ -69,12 +66,7 @@ public class StatusResponse {
 
     public Iterator<String> getRandomPlayers() {
         if (randomPlayers != null) return randomPlayers;
-        this.randomPlayers = getCore().getPlugin().getRandomPlayers();
-        if (randomPlayers != null && getCore().getConf(PluginConf.class).Samples.DynamicPlayers) {
-            this.randomPlayers = new CountingIterator<>(randomPlayers);
-            this.dynamicHoverCount = true;
-        }
-        return randomPlayers;
+        return this.randomPlayers = getCore().getPlugin().getRandomPlayers();
     }
 
     public Iterator<String> getRandomPlayers(String location) {
@@ -171,15 +163,6 @@ public class StatusResponse {
         }
 
         return status.getPatch().getPlayerHover(this);
-    }
-
-    public Integer getDynamicSamples() {
-        if (!dynamicHoverCount) return null;
-        return ((CountingIterator) randomPlayers).getCount();
-    }
-
-    public boolean useMultipleSamples() {
-        return getCore().getConf(PluginConf.class).Samples.Multiple;
     }
 
     public String getPlayerSlots() {

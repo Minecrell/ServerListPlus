@@ -55,10 +55,19 @@ public class PersonalizedStatusConf {
         }
 
         public static class FaviconConf {
+            public Boolean Disabled;
             public List<String> Files, Folders;
             public List<String> URLs;
             public List<String> Heads, Helms;
             public List<String> Encoded;
+
+            public FaviconConf() {
+            }
+
+            // Make it possible to use "Favicon: false" to disable the favicon
+            public FaviconConf(boolean b) {
+                this.Disabled = !b;
+            }
         }
     }
 }

@@ -18,48 +18,24 @@
 
 package net.minecrell.serverlistplus.core.logging;
 
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
-import net.minecrell.serverlistplus.core.util.Helper;
-
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public abstract class ServerListPlusLogger extends AbstractLogger<ServerListPlusException> {
-    protected static final String LOG_PREFIX = "[Core] "; // Prefix used by core log messages
+    public static final String CORE_PREFIX = "[Core] "; // Prefix used by core log messages
 
-    private final ServerListPlusCore core;
+    private final String prefix;
 
-    protected ServerListPlusLogger(ServerListPlusCore core) {
+    protected ServerListPlusLogger(String prefix) {
         super(ServerListPlusCoreException.class);
-        this.core = core;
-
-        try {
-            deleteOldFiles(core.getPlugin().getPluginFolder());
-        } catch (Exception ignored) {
-        }
+        this.prefix = prefix;
     }
 
-    private boolean deleteOldFiles(Path folder) throws IOException {
-        if (Files.notExists(folder)) return false;
-        boolean failed = false;
-
-        try (DirectoryStream<Path> files = Files.newDirectoryStream(folder, "ServerListPlus*.log*")) {
-            for (Path path : files) {
-                try {
-                    Files.delete(path);
-                    log(DEBUG, "Deleted old log file: " + path.getFileName());
-                } catch (IOException e) {
-                    log(DEBUG, "Unable to delete old log file: " + path.getFileName() + " -> " +
-                            Helper.causedException(e));
-                    failed = true;
-                }
-            }
+    protected final String prefixMessage(String message) {
+        if (this.prefix == null) {
+            return message;
         }
 
-        return failed;
+        return this.prefix + message;
     }
 
     @Override

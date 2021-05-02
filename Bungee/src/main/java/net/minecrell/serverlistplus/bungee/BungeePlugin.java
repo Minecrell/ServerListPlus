@@ -18,9 +18,9 @@
 
 package net.minecrell.serverlistplus.bungee;
 
-import static net.minecrell.serverlistplus.core.logging.Logger.DEBUG;
-import static net.minecrell.serverlistplus.core.logging.Logger.ERROR;
-import static net.minecrell.serverlistplus.core.logging.Logger.INFO;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.DEBUG;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.ERROR;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.INFO;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
@@ -44,7 +44,6 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.event.EventHandler;
-import net.minecrell.mcstats.BungeeStatsLite;
 import net.minecrell.serverlistplus.bungee.integration.BungeeBanBanProvider;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
@@ -59,12 +58,15 @@ import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanPr
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.replacement.BungeeRGBColorReplacer;
+import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 
 import java.awt.image.BufferedImage;
 import java.net.InetSocketAddress;
@@ -77,8 +79,6 @@ import java.util.concurrent.TimeUnit;
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
     private Listener connectionListener, pingListener;
-
-    private BungeeStatsLite stats = new BungeeStatsLite(this);
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
@@ -99,8 +99,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
+        ReplacementManager.getEarlyStaticReplacers().add(0, BungeeRGBColorReplacer.INSTANCE);
+
         try { // Load the core first
-            this.core = new ServerListPlusCore(this);
+            ServerListPlusLogger clogger = new JavaServerListPlusLogger(getLogger(), ServerListPlusLogger.CORE_PREFIX);
+            this.core = new ServerListPlusCore(this, clogger);
             getLogger().log(INFO, "Successfully loaded!");
         } catch (ServerListPlusException e) {
             getLogger().log(INFO, "Please fix the error before restarting the server!"); return;
@@ -131,8 +134,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     // Commands
     public final class ServerListPlusCommand extends Command implements TabExecutor {
         private ServerListPlusCommand() {
-            super("serverlistplus", "serverlistplus.command", "serverlist+", "serverlist", "slp", "sl+", "s++",
-                    "serverping+", "serverping", "spp", "slus");
+            super("serverlistplus", "serverlistplus.command", "slp");
         }
 
         @Override
@@ -237,26 +239,24 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     if (message != null) {
                         if (message.isEmpty()) {
                             players.setSample(null);
-                        } else if (response.useMultipleSamples()) {
-                            count = response.getDynamicSamples();
-                            List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                                    Helper.splitLinesCached(message);
+                        } else {
+                            List<String> lines = Helper.splitLinesToList(message);
 
                             ServerPing.PlayerInfo[] sample = new ServerPing.PlayerInfo[lines.size()];
                             for (int i = 0; i < sample.length; i++)
-                                sample[i] = new ServerPing.PlayerInfo(lines.get(i), StatusManager.EMPTY_UUID);
+                                sample[i] = new ServerPing.PlayerInfo(lines.get(i), UUIDs.EMPTY);
 
                             players.setSample(sample);
-                        } else
-                            players.setSample(new ServerPing.PlayerInfo[]{
-                                    new ServerPing.PlayerInfo(message, StatusManager.EMPTY_UUID) });
+                        }
                     }
                 }
             }
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
-            if (favicon != null) {
+            if (favicon == FaviconSource.NONE) {
+                ping.setFavicon((Favicon) null);
+            } else if (favicon != null) {
                 Optional<Favicon> icon;
                 // Check if instanceof AsyncEvent for compatibility with 1.7.10
                 if (event instanceof AsyncEvent) {
@@ -368,11 +368,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public ServerListPlusLogger createLogger(ServerListPlusCore core) {
-        return new JavaServerListPlusLogger(core, getLogger());
-    }
-
-    @Override
     public void initialize(ServerListPlusCore core) {
 
     }
@@ -406,13 +401,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             unregisterListener(connectionListener);
             this.connectionListener = null;
             getLogger().log(DEBUG, "Unregistered proxy player tracking listener.");
-        }
-
-        // Plugin statistics
-        if (confs.get(PluginConf.class).Stats) {
-            this.stats.start();
-        } else {
-            this.stats.stop();
         }
     }
 

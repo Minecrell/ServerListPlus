@@ -23,9 +23,7 @@ import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.util.BooleanOrList;
 import net.minecrell.serverlistplus.core.util.Helper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public final class Examples {
     private Examples() {}

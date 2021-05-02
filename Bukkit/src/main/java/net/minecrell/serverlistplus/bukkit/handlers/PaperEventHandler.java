@@ -26,6 +26,7 @@ import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.Helper;
+import net.minecrell.serverlistplus.core.util.UUIDs;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.CachedServerIcon;
@@ -108,16 +109,8 @@ public class PaperEventHandler extends BukkitEventHandler {
                 profiles.clear();
 
                 if (!message.isEmpty()) {
-                    if (response.useMultipleSamples()) {
-                        count = response.getDynamicSamples();
-                        List<String> lines = count != null ? Helper.splitLinesCached(message, count) :
-                                Helper.splitLinesCached(message);
-
-                        for (String line : lines) {
-                            profiles.add(bukkit.getServer().createProfile(line));
-                        }
-                    } else {
-                        profiles.add(bukkit.getServer().createProfile(message));
+                    for (String line : Helper.splitLines(message)) {
+                        profiles.add(bukkit.getServer().createProfile(UUIDs.EMPTY, line));
                     }
                 }
             }
@@ -125,12 +118,12 @@ public class PaperEventHandler extends BukkitEventHandler {
 
         // Favicon
         FaviconSource favicon = response.getFavicon();
-        if (favicon != null) {
+        if (favicon == FaviconSource.NONE) {
+            event.setServerIcon(null);
+        } else if (favicon != null) {
             CachedServerIcon icon = bukkit.getFavicon(favicon);
             if (icon != null)
-                try {
-                    event.setServerIcon(icon);
-                } catch (UnsupportedOperationException ignored) {}
+                event.setServerIcon(icon);
         }
     }
 

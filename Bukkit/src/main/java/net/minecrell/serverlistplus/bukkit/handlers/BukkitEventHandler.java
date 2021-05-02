@@ -67,12 +67,16 @@ public class BukkitEventHandler extends StatusHandler implements Listener {
 
         // Favicon
         FaviconSource favicon = response.getFavicon();
-        if (favicon != null) {
+        if (favicon == FaviconSource.NONE) {
+            try {
+                event.setServerIcon(null);
+            } catch (UnsupportedOperationException | IllegalArgumentException ignored) {}
+        } else if (favicon != null) {
             CachedServerIcon icon = bukkit.getFavicon(favicon);
             if (icon != null)
                 try {
                     event.setServerIcon(icon);
-                } catch (UnsupportedOperationException ignored) {}
+                } catch (UnsupportedOperationException | IllegalArgumentException ignored) {}
         }
     }
 
