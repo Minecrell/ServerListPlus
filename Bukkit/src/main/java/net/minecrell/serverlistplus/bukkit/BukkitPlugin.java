@@ -52,7 +52,6 @@ import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -66,11 +65,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.CachedServerIcon;
 
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -85,8 +81,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private StatusHandler bukkit, protocol;
     private boolean paper;
     private Listener loginListener, disconnectListener;
-
-    private Method legacy_getOnlinePlayers;
 
     // Favicon cache
     private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
@@ -119,12 +113,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
-        try {
-            Method method = Server.class.getMethod("getOnlinePlayers");
-            if (method.getReturnType() == Player[].class)
-                legacy_getOnlinePlayers = method;
-        } catch (Throwable ignored) {}
-
         try {
             Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
             this.paper = true;
@@ -275,31 +263,13 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         return result.isPresent() ? result.get() : null;
     }
 
-    private Collection<? extends Player> getPlayers() {
-        Collection<? extends Player> players;
-
-        try { // Meh, compatibility
-            players = getServer().getOnlinePlayers();
-        } catch (NoSuchMethodError e) {
-            try {
-                players = Arrays.asList((Player[]) legacy_getOnlinePlayers.invoke(getServer()));
-            } catch (InvocationTargetException ex) {
-                throw new RuntimeException(ex.getCause());
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        return players;
-    }
-
     @Override
     public Integer getOnlinePlayers(String location) {
         World world = getServer().getWorld(location);
         if (world == null) return null;
 
         int count = 0;
-        for (Player player : getPlayers()) {
+        for (Player player : getServer().getOnlinePlayers()) {
             if (player.getWorld().equals(world)) count++;
         }
 
@@ -308,7 +278,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public Iterator<String> getRandomPlayers() {
-        Collection<? extends Player> players = getPlayers();
+        Collection<? extends Player> players = getServer().getOnlinePlayers();
         List<String> result = new ArrayList<>(players.size());
 
         for (Player player : players) {
@@ -325,7 +295,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             return null;
         }
 
-        Collection<? extends Player> players = getPlayers();
+        Collection<? extends Player> players = getServer().getOnlinePlayers();
         List<String> result = new ArrayList<>();
 
         for (Player player : players) {
