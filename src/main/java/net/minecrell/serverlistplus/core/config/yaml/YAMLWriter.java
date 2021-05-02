@@ -81,7 +81,7 @@ public class YAMLWriter {
     public void writeComments(Appendable appendable, String... comments) throws IOException {
         if (!Helper.isNullOrEmpty(comments))
             for (String line : comments) { // Write all comment lines
-                if (!line.equals("\\")) appendable.append(COMMENT_PREFIX).append(line);
+                appendable.append(COMMENT_PREFIX).append(line);
                 newLine(appendable);
             }
     }

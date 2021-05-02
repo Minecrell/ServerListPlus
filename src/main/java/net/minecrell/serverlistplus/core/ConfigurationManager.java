@@ -164,7 +164,6 @@ public class ConfigurationManager extends AbstractManager {
             try (BufferedWriter writer = IOHelper.newBufferedWriter(configPath)) {
                 yaml.writeHeader(writer);
                 yaml.newLine(writer);
-                yaml.newLine(writer);
 
                 for (Object config : storage)
                     // Write the configuration to the file
