@@ -170,7 +170,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         @Override
         public boolean testPermission(CommandSource source) {
-            return true;
+            return source.hasPermission("serverlistplus.command");
         }
 
         @Override

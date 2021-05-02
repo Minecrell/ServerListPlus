@@ -146,6 +146,11 @@ public class VelocityPlugin implements ServerListPlusPlugin {
             return core.tabComplete(new VelocityCommandSender(proxy, invocation.source()),
                     invocation.alias(), invocation.arguments());
         }
+
+        @Override
+        public boolean hasPermission(Invocation invocation) {
+            return invocation.source().hasPermission("serverlistplus.command");
+        }
     }
 
     // Player tracking
