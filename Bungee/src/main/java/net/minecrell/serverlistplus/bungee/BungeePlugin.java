@@ -310,7 +310,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public String getServerImplementation() {
-        return getProxy().getVersion() + " (MC: " + getProxy().getGameVersion() + ')';
+        return getProxy().getName() + " " + getProxy().getVersion();
     }
 
     @Override

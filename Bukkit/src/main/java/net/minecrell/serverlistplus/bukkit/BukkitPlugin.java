@@ -252,7 +252,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public String getServerImplementation() {
-        return getServer().getVersion();
+        return getServer().getName() + " " + getServer().getVersion();
     }
 
     public StatusRequest getRequest(InetSocketAddress client) {
