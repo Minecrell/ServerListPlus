@@ -46,7 +46,7 @@ public class ProtocolLibHandler extends StatusHandler {
 
     public final class StatusPacketListener extends PacketAdapter {
         public StatusPacketListener() {
-            super(PacketAdapter.params(bukkit, PacketType.Status.Server.OUT_SERVER_INFO,
+            super(PacketAdapter.params(bukkit, PacketType.Status.Server.SERVER_INFO,
                     PacketType.Handshake.Client.SET_PROTOCOL).optionAsync());
         }
 
