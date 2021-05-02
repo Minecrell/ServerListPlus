@@ -28,22 +28,15 @@ import org.yaml.snakeyaml.representer.Representer;
 @Getter
 public class SnakeYAML {
     private final Yaml yaml;
-    private final boolean outdated;
 
     private final DumperOptions dumperOptions;
     private final Constructor constructor;
     private final Representer representer;
 
     public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer) {
-        this(dumperOptions, constructor, representer, false);
-    }
-
-    public SnakeYAML(DumperOptions dumperOptions, Constructor constructor, Representer representer,
-                     boolean outdated) {
         this.dumperOptions = Preconditions.checkNotNull(dumperOptions, "dumperOptions");
         this.constructor = Preconditions.checkNotNull(constructor, "constructor");
         this.representer = Preconditions.checkNotNull(representer, "representer");
-        this.outdated = outdated;
         this.yaml = new Yaml(constructor, representer, dumperOptions);
     }
 }
