@@ -359,6 +359,11 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     }
 
     @Override
+    public boolean supportsRGB() {
+        return true;
+    }
+
+    @Override
     public void initialize(ServerListPlusCore core) {
 
     }

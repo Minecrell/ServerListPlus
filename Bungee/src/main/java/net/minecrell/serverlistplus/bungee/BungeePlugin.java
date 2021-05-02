@@ -368,6 +368,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
+    public boolean supportsRGB() {
+        return colorize("&x&a&b&c&d&e&f").charAt(0) != '&';
+    }
+
+    @Override
     public void initialize(ServerListPlusCore core) {
 
     }

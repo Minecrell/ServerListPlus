@@ -52,6 +52,7 @@ public interface ServerListPlusPlugin {
     ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit);
 
     String colorize(String s);
+    boolean supportsRGB();
 
     void initialize(ServerListPlusCore core);
     void reloadCaches(ServerListPlusCore core);

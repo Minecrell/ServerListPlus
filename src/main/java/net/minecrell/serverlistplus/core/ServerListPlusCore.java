@@ -126,7 +126,7 @@ public class ServerListPlusCore {
         this.configManager = new ConfigurationManager(this);
 
         // Register the configurations
-        registerConf(ServerStatusConf.class, new ServerStatusConf(), Examples.forServerStatus(), "Status");
+        registerConf(ServerStatusConf.class, new ServerStatusConf(), Examples.forServerStatus(this), "Status");
         registerConf(PluginConf.class, new PluginConf(), Examples.forPlugin(), "Plugin");
         registerConf(CoreConf.class, new CoreConf(), null, "Core");
 

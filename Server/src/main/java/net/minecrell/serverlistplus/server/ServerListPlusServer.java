@@ -378,6 +378,11 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     }
 
     @Override
+    public boolean supportsRGB() {
+        return true;
+    }
+
+    @Override
     public void initialize(ServerListPlusCore core) {
         core.registerConf(ServerConf.class, new ServerConf(), ServerConf.getExample(), "Server");
     }

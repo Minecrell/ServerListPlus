@@ -18,23 +18,25 @@
 
 package net.minecrell.serverlistplus.core.config.help;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.util.BooleanOrList;
 import net.minecrell.serverlistplus.core.util.Helper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public final class Examples {
     private Examples() {}
 
-    public static ServerStatusConf forServerStatus() {
+    public static ServerStatusConf forServerStatus(ServerListPlusCore core) {
         // Feel free to improve the examples
         ServerStatusConf conf = new ServerStatusConf();
 
         // Description
         conf.Default = new ServerStatusConf.StatusConf();
-        conf.Default.Description = Arrays.asList(
+        conf.Default.Description = new ArrayList<>(Arrays.asList(
                 Helper.joinLines(
                         "&aA Minecraft Server.",
                         "&7Now with [&a&lPvP&7], [&a&lMinigames&7], and much more!"
@@ -42,7 +44,14 @@ public final class Examples {
                         "&aA Minecraft Server.",
                         "&eNow running the latest &lMinecraft &eversion!"
                 )
-        );
+        ));
+
+        if (core.getPlugin().supportsRGB()) {
+            conf.Default.Description.add(Helper.joinLines(
+                    "&#45bf55A Minecraft Server.",
+                    "&#0288d1Now with RGB colors. &#ffbe00N&#ffa500i&#fe8a00c&#fa6f10e&#f4511e!"
+            ));
+        }
 
         // Player hover
         conf.Default.Players = new ServerStatusConf.StatusConf.PlayersConf();

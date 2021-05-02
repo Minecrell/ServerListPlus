@@ -325,6 +325,11 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     }
 
     @Override
+    public boolean supportsRGB() {
+        return false;
+    }
+
+    @Override
     public void initialize(ServerListPlusCore core) {
 
     }
