@@ -21,19 +21,22 @@ package net.minecrell.serverlistplus.core.replacement;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public final class ReplacementManager {
     private ReplacementManager() {}
 
     private static final Set<StaticReplacer> staticReplacers = new HashSet<>();
+    private static final List<StaticReplacer> earlyStaticReplacers = new ArrayList<>();
     private static final Set<DynamicReplacer> dynamicReplacers = new HashSet<>();
 
     static {
         // Register default replacements
-        staticReplacers.add(ColorReplacer.INSTANCE);
+        earlyStaticReplacers.add(ColorReplacer.INSTANCE);
         Collections.addAll(dynamicReplacers, DefaultLiteralPlaceholder.values());
         Collections.addAll(dynamicReplacers, DefaultPatternPlaceholder.values());
     }
@@ -42,11 +45,17 @@ public final class ReplacementManager {
         return staticReplacers;
     }
 
+    public static List<StaticReplacer> getEarlyStaticReplacers() {
+        return earlyStaticReplacers;
+    }
+
     public static Set<DynamicReplacer> getDynamic() {
         return dynamicReplacers;
     }
 
     public static String replaceStatic(ServerListPlusCore core, String s) {
+        for (StaticReplacer replacer : earlyStaticReplacers)
+            s = replacer.replace(core, s);
         for (StaticReplacer replacer : staticReplacers)
             s = replacer.replace(core, s);
         return s;
