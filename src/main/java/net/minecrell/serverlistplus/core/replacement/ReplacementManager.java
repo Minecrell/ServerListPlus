@@ -51,6 +51,7 @@ public final class ReplacementManager {
     public static void registerDefault(ServerListPlusCore core) {
         ImmutableList.Builder<StaticReplacer> builder = ImmutableList.builder();
         if (core.getPlugin().supportsRGB()) {
+            builder.add(RGBGradientReplacer.INSTANCE);
             if (core.getPlugin().getServerType().hasWeirdRGB()) {
                 builder.add(BungeeRGBColorReplacer.INSTANCE);
             }

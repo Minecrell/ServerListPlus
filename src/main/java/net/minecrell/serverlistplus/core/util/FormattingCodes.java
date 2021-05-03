@@ -31,4 +31,8 @@ public final class FormattingCodes {
         return CONFIG_CODES_HEX.matcher(s).replaceAll("§$1");
     }
 
+    public static String stripHex(String s) {
+        return CONFIG_CODES_HEX.matcher(s).replaceAll("");
+    }
+
 }
