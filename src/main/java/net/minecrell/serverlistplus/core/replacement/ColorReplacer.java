@@ -20,8 +20,8 @@ package net.minecrell.serverlistplus.core.replacement;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 
-public class ColorReplacer implements StaticReplacer {
-    public static final ColorReplacer INSTANCE = new ColorReplacer();
+final class ColorReplacer implements StaticReplacer {
+    static final ColorReplacer INSTANCE = new ColorReplacer();
 
     private ColorReplacer() {}
 

@@ -52,6 +52,7 @@ import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.profile.JSONProfileManager;
 import net.minecrell.serverlistplus.core.profile.ProfileManager;
+import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.ChatFormat;
@@ -120,6 +121,9 @@ public class ServerListPlusCore {
                 "OS: " + OS_NAME.value() + ", " + OS_VERSION.value() + " (" + OS_ARCH.value() + ')',
                 "---"
         ));
+
+        // Register default static replacers
+        ReplacementManager.registerDefault(this);
 
         // Initialize configuration and status manager, but not yet load it
         this.statusManager = new StatusManager(this);

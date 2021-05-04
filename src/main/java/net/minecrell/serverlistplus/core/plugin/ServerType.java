@@ -38,6 +38,18 @@ public enum ServerType {
         this.displayName = displayName;
     }
 
+    public boolean hasWeirdRGB() {
+        switch (this) {
+            case BUKKIT:
+            case SPIGOT:
+            case PAPER:
+            case BUNGEE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     @Override
     public String toString() {
         return (displayName != null) ? displayName : super.toString();
