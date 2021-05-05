@@ -40,6 +40,7 @@ import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
 import net.minecrell.serverlistplus.core.replacement.util.Literals;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
@@ -375,8 +376,8 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     }
 
     @Override
-    public boolean supportsRGB() {
-        return true;
+    public RGBFormat getRGBFormat() {
+        return RGBFormat.ADVENTURE;
     }
 
     @Override

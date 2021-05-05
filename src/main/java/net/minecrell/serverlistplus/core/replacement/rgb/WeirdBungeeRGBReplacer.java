@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacement;
+package net.minecrell.serverlistplus.core.replacement.rgb;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.replacement.StaticReplacer;
 
 import java.util.regex.Pattern;
 
@@ -29,13 +30,13 @@ import java.util.regex.Pattern;
  * other projects (&#abcdef) to Spigot/Bungee's format to allow using the nicer
  * format on all platforms where ServerListPlus runs.
  */
-final class BungeeRGBColorReplacer implements StaticReplacer {
+final class WeirdBungeeRGBReplacer implements StaticReplacer {
 
-    static final BungeeRGBColorReplacer INSTANCE = new BungeeRGBColorReplacer();
+    static final WeirdBungeeRGBReplacer INSTANCE = new WeirdBungeeRGBReplacer();
     private static final Pattern SANE_HEX_PATTERN = Pattern.compile(
             "&#([0-9A-F])([0-9A-F])([0-9A-F])([0-9A-F])([0-9A-F])([0-9A-F])", Pattern.CASE_INSENSITIVE);
 
-    private BungeeRGBColorReplacer() {}
+    private WeirdBungeeRGBReplacer() {}
 
     @Override
     public String replace(ServerListPlusCore core, String s) {

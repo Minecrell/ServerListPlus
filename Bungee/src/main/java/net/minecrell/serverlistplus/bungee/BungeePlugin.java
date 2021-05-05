@@ -57,6 +57,7 @@ import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanPr
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
@@ -75,6 +76,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
+    private RGBFormat rgbFormat = RGBFormat.UNSUPPORTED;
     private Listener connectionListener, pingListener;
 
     // Favicon cache
@@ -96,6 +98,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
     @Override
     public void onEnable() {
+        // Check if RGB color codes are supproted
+        if (colorize("&x&a&b&c&d&e&f").charAt(0) != '&') {
+            this.rgbFormat = RGBFormat.WEIRD_BUNGEE;
+        }
+
         try { // Load the core first
             ServerListPlusLogger clogger = new JavaServerListPlusLogger(getLogger(), ServerListPlusLogger.CORE_PREFIX);
             this.core = new ServerListPlusCore(this, clogger);
@@ -365,8 +372,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public boolean supportsRGB() {
-        return colorize("&x&a&b&c&d&e&f").charAt(0) != '&';
+    public RGBFormat getRGBFormat() {
+        return rgbFormat;
     }
 
     @Override

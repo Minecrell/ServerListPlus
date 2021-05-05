@@ -49,6 +49,7 @@ import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Randoms;
@@ -76,9 +77,10 @@ import java.util.concurrent.TimeUnit;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
+    private ServerType serverType;
+    private RGBFormat rgbFormat = RGBFormat.UNSUPPORTED;
 
     private StatusHandler bukkit, protocol;
-    private ServerType serverType;
     private Listener loginListener, disconnectListener;
 
     // Favicon cache
@@ -125,6 +127,11 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.bukkit = new PaperEventHandler(this);
         } catch (ClassNotFoundException e) {
             this.bukkit = new BukkitEventHandler(this);
+        }
+
+        // Check if RGB color codes are supproted
+        if (colorize("&x&a&b&c&d&e&f").charAt(0) != '&') {
+            this.rgbFormat = RGBFormat.WEIRD_BUNGEE;
         }
 
         if (isPluginEnabled("ProtocolLib")) {
@@ -344,8 +351,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public boolean supportsRGB() {
-        return colorize("&x&a&b&c&d&e&f").charAt(0) != '&';
+    public RGBFormat getRGBFormat() {
+        return rgbFormat;
     }
 
     @Override

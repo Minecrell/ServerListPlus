@@ -24,6 +24,7 @@ import com.google.common.cache.LoadingCache;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 
 import java.nio.file.Path;
@@ -52,7 +53,7 @@ public interface ServerListPlusPlugin {
     ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit);
 
     String colorize(String s);
-    boolean supportsRGB();
+    RGBFormat getRGBFormat();
 
     void initialize(ServerListPlusCore core);
     void reloadCaches(ServerListPlusCore core);

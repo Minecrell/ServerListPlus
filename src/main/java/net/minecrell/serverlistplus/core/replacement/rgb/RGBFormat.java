@@ -16,30 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.plugin;
+package net.minecrell.serverlistplus.core.replacement.rgb;
 
-/**
- * Represents the server implementation running the ServerListPlus plugin container.
- */
-public enum ServerType {
-    BUKKIT ("Bukkit"), SPIGOT ("Spigot"), PAPER("Paper"),
-    BUNGEE ("BungeeCord"),
-    VELOCITY("Velocity"),
-    CANARY ("Canary"),
-    SPONGE ("Sponge"),
-    SERVER ("Server"),
-    CUSTOM;
+import net.minecrell.serverlistplus.core.replacement.StaticReplacer;
 
-    private final String displayName;
+public enum RGBFormat {
+    UNSUPPORTED,
+    ADVENTURE,
+    WEIRD_BUNGEE {
+        @Override
+        public StaticReplacer getReplacer() {
+            return WeirdBungeeRGBReplacer.INSTANCE;
+        }
+    };
 
-    ServerType() { this(null); }
-
-    ServerType(String displayName) {
-        this.displayName = displayName;
+    public StaticReplacer getReplacer() {
+        return null;
     }
 
-    @Override
-    public String toString() {
-        return (displayName != null) ? displayName : super.toString();
-    }
 }

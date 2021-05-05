@@ -38,6 +38,7 @@ import net.minecrell.serverlistplus.core.logging.Slf4jServerListPlusLogger;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
 import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
@@ -374,8 +375,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public boolean supportsRGB() {
-        return false;
+    public RGBFormat getRGBFormat() {
+        return RGBFormat.UNSUPPORTED;
     }
 
     @Override

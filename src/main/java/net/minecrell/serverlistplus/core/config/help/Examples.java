@@ -21,6 +21,7 @@ package net.minecrell.serverlistplus.core.config.help;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
 import net.minecrell.serverlistplus.core.util.BooleanOrList;
 import net.minecrell.serverlistplus.core.util.Helper;
 
@@ -46,7 +47,7 @@ public final class Examples {
                 )
         ));
 
-        if (core.getPlugin().supportsRGB()) {
+        if (core.getPlugin().getRGBFormat() != RGBFormat.UNSUPPORTED) {
             conf.Default.Description.add(Helper.joinLines(
                     "&#45bf55A Minecraft Server.",
                     "&#0288d1Now with RGB colors. &#ffbe00N&#ffa500i&#fe8a00c&#fa6f10e&#f4511e!"

@@ -20,6 +20,7 @@ package net.minecrell.serverlistplus.core.replacement;
 
 import com.google.common.collect.ImmutableList;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
 
 import java.util.Collections;
@@ -50,10 +51,11 @@ public final class ReplacementManager {
 
     public static void registerDefault(ServerListPlusCore core) {
         ImmutableList.Builder<StaticReplacer> builder = ImmutableList.builder();
-        if (core.getPlugin().supportsRGB()) {
+        if (core.getPlugin().getRGBFormat() != RGBFormat.UNSUPPORTED) {
             builder.add(RGBGradientReplacer.INSTANCE);
-            if (core.getPlugin().getServerType().hasWeirdRGB()) {
-                builder.add(BungeeRGBColorReplacer.INSTANCE);
+            StaticReplacer replacer = core.getPlugin().getRGBFormat().getReplacer();
+            if (replacer != null) {
+                builder.add(replacer);
             }
         }
 
