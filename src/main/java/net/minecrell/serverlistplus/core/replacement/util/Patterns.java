@@ -34,7 +34,7 @@ public final class Patterns {
 
     public static String replace(String s, Pattern pattern, Object replacement) {
         if (replacement == null) return s;
-        return pattern.matcher(s).replaceAll(replacement.toString());
+        return new LiteralMatcherReplacer(s, pattern.matcher(s)).replaceAll(replacement);
     }
 
     public static String replace(String s, Pattern pattern, Object... replacements) {
@@ -59,16 +59,18 @@ public final class Patterns {
         if (Helper.isNullOrEmpty(replacements)) return replace(s, matcher.pattern(), others);
         if (!matcher.find()) return s;
 
-        StringBuffer result = new StringBuffer();
-        String fallback = null;
+        LiteralMatcherReplacer replacer = new LiteralMatcherReplacer(s, matcher);
         do {
-            matcher.appendReplacement(result, fallback != null ? fallback : replacements.next().toString());
-            if (!replacements.hasNext())
-                if (others != null) fallback = others.toString();
-                else break;
+            replacer.append(replacements.next());
+            if (!replacements.hasNext()) {
+                do {
+                    replacer.append(others);
+                } while (matcher.find());
+                break;
+            }
         } while (matcher.find());
-
-        matcher.appendTail(result);
-        return result.toString();
+        replacer.appendTail();
+        return replacer.toString();
     }
+
 }
