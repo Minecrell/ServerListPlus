@@ -36,6 +36,7 @@ public final class ReplacementManager {
     private static final List<StaticReplacer> earlyStaticReplacers = new ArrayList<>();
     private static final List<StaticReplacer> lateStaticReplacers = new ArrayList<>();
     private static final Set<DynamicReplacer> dynamicReplacers = new HashSet<>();
+    private static final List<DynamicReplacer> lateDynamicReplacers = new ArrayList<>();
 
     static {
         // Register default replacements
@@ -54,6 +55,7 @@ public final class ReplacementManager {
     public static void registerDefault(ServerListPlusCore core) {
         earlyStaticReplacers.clear();
         lateStaticReplacers.clear();
+        lateDynamicReplacers.clear();
 
         RGBFormat rgbFormat = core.getPlugin().getRGBFormat();
         if (rgbFormat != RGBFormat.UNSUPPORTED) {
@@ -80,11 +82,30 @@ public final class ReplacementManager {
         return s;
     }
 
+    /**
+     * @deprecated Use {@link #findDynamicList(String)}
+     */
+    @Deprecated
     public static Set<DynamicReplacer> findDynamic(String s) {
         Set<DynamicReplacer> result = new HashSet<>();
         for (DynamicReplacer replacer : dynamicReplacers)
             if (replacer.find(s)) result.add(replacer);
         return result;
+    }
+
+    public static List<DynamicReplacer> findDynamicList(String s) {
+        List<DynamicReplacer> result = new ArrayList<>();
+        for (DynamicReplacer replacer : dynamicReplacers)
+            if (replacer.find(s)) result.add(replacer);
+        for (DynamicReplacer replacer : lateDynamicReplacers)
+            if (replacer.find(s)) result.add(replacer);
+        return result;
+    }
+
+    public static boolean hasDynamic(String s) {
+        for (DynamicReplacer replacer : dynamicReplacers)
+            if (replacer.find(s)) return true;
+        return false;
     }
 
     public static String replaceDynamic(StatusResponse response, String s, Iterable<DynamicReplacer> replacers) {

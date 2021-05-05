@@ -21,11 +21,11 @@ package net.minecrell.serverlistplus.core.status;
 import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Getter;
 import net.minecrell.serverlistplus.core.AbstractManager;
@@ -91,7 +91,7 @@ public class StatusManager extends AbstractManager {
         } else { // Configuration is empty
             this.patch = new PersonalizedStatusPatch();
             this.hosts = ImmutableMap.of();
-            this.replacers = ImmutableSetMultimap.of();
+            this.replacers = ImmutableListMultimap.of();
             this.favicons = false;
         }
 
@@ -108,11 +108,11 @@ public class StatusManager extends AbstractManager {
         private final Multimap<String, DynamicReplacer> replacers;
 
         private Preparation() {
-            this.replacers = HashMultimap.create();
+            this.replacers = ArrayListMultimap.create();
         }
 
         public Multimap<String, DynamicReplacer> createReplacers() {
-            return ImmutableSetMultimap.copyOf(replacers);
+            return ImmutableListMultimap.copyOf(replacers);
         }
 
         public PersonalizedStatusPatch preparePersonalizedPatch(PersonalizedStatusConf conf) {
@@ -200,7 +200,7 @@ public class StatusManager extends AbstractManager {
         @Override
         public String apply(String result) {
             result = ReplacementManager.replaceStatic(core, result);
-            replacers.putAll(result, ReplacementManager.findDynamic(result));
+            replacers.putAll(result, ReplacementManager.findDynamicList(result));
             return result;
         }
 
