@@ -50,7 +50,7 @@ public final class Examples {
         if (core.getPlugin().getRGBFormat() != RGBFormat.UNSUPPORTED) {
             conf.Default.Description.add(Helper.joinLines(
                     "&#45bf55A Minecraft Server.",
-                    "&#0288d1Now with RGB colors. &#ffbe00N&#ffa500i&#fe8a00c&#fa6f10e&#f4511e!"
+                    "%gradient#ffbe00#f4511e%Now with RGB colors. Nice!%gradient%"
             ));
         }
 
@@ -66,7 +66,7 @@ public final class Examples {
         // Personalized
         // Description
         conf.Personalized = new ServerStatusConf.StatusConf();
-        conf.Personalized.Description = Arrays.asList(
+        conf.Personalized.Description = new ArrayList<>(Arrays.asList(
                 Helper.joinLines(
                         "&aA Minecraft Server. &7|  &eHello, &l%player%!",
                         "&7Now with [&a&lPvP&7], [&a&lMinigames&7], and much more!"
@@ -74,7 +74,14 @@ public final class Examples {
                         "&aA Minecraft Server. &7|  &eHello, &l%player%!",
                         "&eNow running the latest &lMinecraft &eversion!"
                 )
-        );
+        ));
+
+        if (core.getPlugin().getRGBFormat() != RGBFormat.UNSUPPORTED) {
+            conf.Personalized.Description.add(Helper.joinLines(
+                    "&#45bf55A Minecraft Server.",
+                    "%gradient#ffbe00#f4511e%Now with RGB colors. Hello %player%!%gradient%"
+            ));
+        }
 
         // Player hover
         conf.Personalized.Players = new ServerStatusConf.StatusConf.PlayersConf();
