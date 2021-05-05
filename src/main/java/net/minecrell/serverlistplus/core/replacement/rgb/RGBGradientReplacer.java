@@ -23,8 +23,10 @@ import com.google.common.base.Strings;
 import com.google.common.math.IntMath;
 import lombok.Data;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
-import net.minecrell.serverlistplus.core.replacement.StaticReplacer;
+import net.minecrell.serverlistplus.core.replacement.PatternPlaceholder;
+import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.replacement.util.Patterns;
+import net.minecrell.serverlistplus.core.status.StatusResponse;
 import net.minecrell.serverlistplus.core.util.ContinousIterator;
 
 import java.math.RoundingMode;
@@ -33,7 +35,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RGBGradientReplacer implements StaticReplacer {
+public class RGBGradientReplacer extends PatternPlaceholder {
 
     private static final Pattern PATTERN = Pattern.compile("%gradient((?:#[0-9A-F]{6}){2,})%(.*)%gradient%",
             Pattern.CASE_INSENSITIVE);
@@ -70,10 +72,10 @@ public class RGBGradientReplacer implements StaticReplacer {
     }
 
     private RGBGradientReplacer() {
+        super(PATTERN);
     }
 
-    @Override
-    public String replace(ServerListPlusCore core, String s) {
+    private static String replace(ServerListPlusCore core, String s, final boolean onlyStatic) {
         final RGBFormat rgbFormat = core.getPlugin().getRGBFormat();
         final Matcher matcher = PATTERN.matcher(s);
         return Patterns.replace(matcher, s, new ContinousIterator<String>() {
@@ -82,6 +84,10 @@ public class RGBGradientReplacer implements StaticReplacer {
                 String text = matcher.group(2);
                 if (Strings.isNullOrEmpty(text))
                     return "";
+
+                if (onlyStatic && ReplacementManager.hasDynamic(text)) {
+                    return matcher.group();
+                }
 
                 List<Gradient> gradients = parseGradients(matcher.group(1));
                 if (gradients.isEmpty())
@@ -129,6 +135,16 @@ public class RGBGradientReplacer implements StaticReplacer {
                 return builder.toString();
             }
         });
+    }
+
+    @Override
+    public String replace(ServerListPlusCore core, String s) {
+        return replace(core, s, true);
+    }
+
+    @Override
+    public String replace(StatusResponse response, String s) {
+        return replace(response.getCore(), s, false);
     }
 
 }

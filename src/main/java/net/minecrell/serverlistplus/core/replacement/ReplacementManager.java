@@ -69,6 +69,7 @@ public final class ReplacementManager {
 
         if (rgbFormat != RGBFormat.UNSUPPORTED) {
             lateStaticReplacers.add(RGBGradientReplacer.INSTANCE);
+            lateDynamicReplacers.add(RGBGradientReplacer.INSTANCE);
         }
     }
 
