@@ -159,14 +159,18 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
 
-        if (isPluginEnabled("AdvancedBan")) {
-            core.setBanProvider(new AdvancedBanBanProvider());
-        } else if (isPluginEnabled("BanManager")) {
-            core.setBanProvider(new BanManagerBanProvider());
-        } else if (isPluginEnabled("MaxBans")) {
-            core.setBanProvider(new MaxBansBanProvider());
-        } else {
-            core.setBanProvider(new BukkitBanProvider(getServer()));
+        try {
+            if (isPluginEnabled("AdvancedBan")) {
+                core.setBanProvider(new AdvancedBanBanProvider());
+            } else if (isPluginEnabled("BanManager")) {
+                core.setBanProvider(new BanManagerBanProvider());
+            } else if (isPluginEnabled("MaxBans")) {
+                core.setBanProvider(new MaxBansBanProvider());
+            } else {
+                core.setBanProvider(new BukkitBanProvider(getServer()));
+            }
+        } catch (Throwable e) {
+            getLogger().log(ERROR, "Failed to register ban provider", e);
         }
 
         getLogger().log(INFO, getDisplayName() + " enabled.");

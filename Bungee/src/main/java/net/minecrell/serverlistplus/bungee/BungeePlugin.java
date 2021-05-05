@@ -110,10 +110,14 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
         // Register commands
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
 
-        if (isPluginLoaded("AdvancedBan")) {
-            core.setBanProvider(new AdvancedBanBanProvider());
-        } else if (isPluginLoaded("BungeeBan")) {
-            core.setBanProvider(new BungeeBanBanProvider());
+        try {
+            if (isPluginLoaded("AdvancedBan")) {
+                core.setBanProvider(new AdvancedBanBanProvider());
+            } else if (isPluginLoaded("BungeeBan")) {
+                core.setBanProvider(new BungeeBanBanProvider());
+            }
+        } catch (Throwable e) {
+            getLogger().log(ERROR, "Failed to register ban provider", e);
         }
     }
 
