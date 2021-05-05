@@ -20,6 +20,7 @@ package net.minecrell.serverlistplus.bukkit;
 
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.ERROR;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.INFO;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
@@ -72,7 +73,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlugin {
     private ServerListPlusCore core;
@@ -131,28 +131,28 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             try {
                 this.protocol = new ProtocolLibHandler(this);
             } catch (Throwable e) {
-                getLogger().log(Level.SEVERE, "Failed to construct ProtocolLib handler. Is your ProtocolLib version up-to-date?", e);
+                getLogger().log(ERROR, "Failed to construct ProtocolLib handler. Is your ProtocolLib version up-to-date?", e);
             }
         } else if (serverType != ServerType.PAPER)
-            getLogger().log(Level.SEVERE, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+            getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
 
         if (isPluginEnabled("PlaceholderAPI")) {
             try {
                 ReplacementManager.getDynamic().add(new PlaceholderAPIDynamicReplacer(getServer()));
             } catch (Throwable e) {
-                getLogger().log(Level.SEVERE, "Failed to register PlaceholderAPI replacer", e);
+                getLogger().log(ERROR, "Failed to register PlaceholderAPI replacer", e);
             }
         }
 
         try { // Load the core first
             ServerListPlusLogger clogger = new JavaServerListPlusLogger(getLogger(), ServerListPlusLogger.CORE_PREFIX);
             this.core = new ServerListPlusCore(this, clogger);
-            getLogger().info("Successfully loaded!");
+            getLogger().log(INFO, "Successfully loaded!");
         } catch (ServerListPlusException e) {
-            getLogger().info("Please fix the error before restarting the server!");
+            getLogger().log(INFO, "Please fix the error before restarting the server!");
             disablePlugin(); return; // Disable bukkit to show error in /plugins
         } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "An internal error occurred while loading the core!", e);
+            getLogger().log(ERROR, "An internal error occurred while loading the core!", e);
             disablePlugin(); return; // Disable bukkit to show error in /plugins
         }
 
@@ -169,7 +169,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             core.setBanProvider(new BukkitBanProvider(getServer()));
         }
 
-        getLogger().info(getDisplayName() + " enabled.");
+        getLogger().log(INFO, getDisplayName() + " enabled.");
     }
 
     @Override
@@ -177,7 +177,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         try {
             core.stop();
         } catch (ServerListPlusException ignored) {}
-        getLogger().info(getDisplayName() + " disabled.");
+        getLogger().log(INFO, getDisplayName() + " disabled.");
     }
 
     // Commands
@@ -356,7 +356,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         if (requestCacheConf == null || requestCache == null || !requestCacheConf.equals(conf.Caches.Request)) {
             if (requestCache != null) {
                 // Delete the request cache
-                getLogger().fine("Deleting old request cache due to configuration changes.");
+                getLogger().log(DEBUG, "Deleting old request cache due to configuration changes.");
                 requestCache.invalidateAll();
                 requestCache.cleanUp();
                 this.requestCache = null;
