@@ -22,7 +22,12 @@ import net.minecrell.serverlistplus.core.player.PlayerIdentity;
 
 import java.util.Date;
 
-public class NoBanProvider implements BanProvider {
+public final class NoBanProvider implements BanProvider {
+
+    public static final BanProvider INSTANCE = new NoBanProvider();
+
+    private NoBanProvider() {
+    }
 
     @Override
     public boolean isBanned(PlayerIdentity playerIdentity) {

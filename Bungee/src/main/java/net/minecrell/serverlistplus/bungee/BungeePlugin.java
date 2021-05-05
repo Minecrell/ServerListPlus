@@ -53,7 +53,6 @@ import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.player.ban.NoBanProvider;
 import net.minecrell.serverlistplus.core.player.ban.integration.AdvancedBanBanProvider;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
@@ -115,8 +114,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             core.setBanProvider(new AdvancedBanBanProvider());
         } else if (isPluginLoaded("BungeeBan")) {
             core.setBanProvider(new BungeeBanBanProvider());
-        } else {
-            core.setBanProvider(new NoBanProvider());
         }
     }
 

@@ -85,7 +85,7 @@ public class ServerListPlusCore {
 
     private String faviconCacheConf;
 
-    private @Getter @Setter BanProvider banProvider;
+    private @Getter @Setter BanProvider banProvider = NoBanProvider.INSTANCE;
 
     public ServerListPlusCore(ServerListPlusPlugin plugin, ServerListPlusLogger logger) throws ServerListPlusException {
         this(plugin, logger, null);
@@ -98,7 +98,6 @@ public class ServerListPlusCore {
         this.plugin = Preconditions.checkNotNull(plugin, "plugin");
         this.logger = Preconditions.checkNotNull(logger, "logger");
         this.info = CoreDescription.load(this);
-        this.banProvider = new NoBanProvider();
 
         try {
             if (Float.parseFloat(JAVA_CLASS_VERSION.value()) < 52.0) {
