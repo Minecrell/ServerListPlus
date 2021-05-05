@@ -94,7 +94,7 @@ public enum DefaultPatternPlaceholder implements DynamicPlaceholder {
                         result.append(players.next());
                     }
 
-                    return result.toString();
+                    return result;
                 }
             });
         }

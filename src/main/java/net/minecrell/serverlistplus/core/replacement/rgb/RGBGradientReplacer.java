@@ -78,9 +78,9 @@ public class RGBGradientReplacer extends PatternPlaceholder {
     private static String replace(ServerListPlusCore core, String s, final boolean onlyStatic) {
         final RGBFormat rgbFormat = core.getPlugin().getRGBFormat();
         final Matcher matcher = PATTERN.matcher(s);
-        return Patterns.replace(matcher, s, new ContinousIterator<String>() {
+        return Patterns.replace(matcher, s, new ContinousIterator<Object>() {
             @Override
-            public String next() {
+            public Object next() {
                 String text = matcher.group(2);
                 if (Strings.isNullOrEmpty(text))
                     return "";
@@ -99,7 +99,7 @@ public class RGBGradientReplacer extends PatternPlaceholder {
                 Color first = gradients.get(0).start;
                 rgbFormat.append(builder, first.r, first.g, first.b).append(text.charAt(0));
                 if (steps == 0) {
-                    return builder.toString();
+                    return builder;
                 }
 
                 int ngradients = gradients.size();
@@ -132,7 +132,7 @@ public class RGBGradientReplacer extends PatternPlaceholder {
                     rgbFormat.append(builder, g.end.r, g.end.g, g.end.b).append(text.charAt(++i));
                 }
 
-                return builder.toString();
+                return builder;
             }
         });
     }
