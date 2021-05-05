@@ -19,16 +19,38 @@
 package net.minecrell.serverlistplus.core.replacement;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
+import net.minecrell.serverlistplus.core.replacement.rgb.RGBGradientReplacer;
 import net.minecrell.serverlistplus.core.util.FormattingCodes;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class RGBGradientReplacerTest {
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Object[] data() {
+        return new RGBFormat[]{ RGBFormat.ADVENTURE, RGBFormat.WEIRD_BUNGEE };
+    }
+
+    @Parameterized.Parameter
+    public RGBFormat rgbFormat;
 
     @Test
     public void testPreserveInput() {
         // Make sure the replacer always preserves the entire input
         // no matter how long the string is or how many colors are given
+
+        ServerListPlusCore core = mock(ServerListPlusCore.class);
+        ServerListPlusPlugin plugin = mock(ServerListPlusPlugin.class);
+        when(core.getPlugin()).thenReturn(plugin);
+        when(plugin.getRGBFormat()).thenReturn(rgbFormat);
 
         StringBuilder b = new StringBuilder();
         for (int i = 2; i < 32; ++i) {
@@ -50,9 +72,9 @@ public class RGBGradientReplacerTest {
 
                 b.append("%gradient%");
 
-                String result = RGBGradientReplacer.INSTANCE.replace(null, b.toString());
-                assertEquals(expected.length() * RGBGradientReplacer.REPLACEMENT_LENGTH, result.length());
-                assertEquals(expected, FormattingCodes.stripHex(result));
+                String result = RGBGradientReplacer.INSTANCE.replace(core, b.toString());
+                assertEquals(expected.length() * (rgbFormat.getLength() + 1), result.length());
+                assertEquals(expected, FormattingCodes.stripLegacyHex(result));
             }
         }
     }

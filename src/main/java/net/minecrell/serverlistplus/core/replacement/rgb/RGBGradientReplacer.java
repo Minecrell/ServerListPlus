@@ -16,19 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.core.replacement;
+package net.minecrell.serverlistplus.core.replacement.rgb;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.math.IntMath;
 import lombok.Data;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.replacement.StaticReplacer;
 import net.minecrell.serverlistplus.core.replacement.util.Patterns;
 import net.minecrell.serverlistplus.core.util.ContinousIterator;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +39,6 @@ public class RGBGradientReplacer implements StaticReplacer {
             Pattern.CASE_INSENSITIVE);
 
     private static final Splitter COLOR_SPLITTER = Splitter.on('#').omitEmptyStrings();
-    static final int REPLACEMENT_LENGTH = 9; // &#rrggbbC
 
     public static final RGBGradientReplacer INSTANCE = new RGBGradientReplacer();
 
@@ -70,15 +69,12 @@ public class RGBGradientReplacer implements StaticReplacer {
         return gradients;
     }
 
-    static void appendColor(Formatter formatter, Color color, char c) {
-        formatter.format("&#%02x%02x%02x%c", color.r, color.g, color.b, c);
-    }
-
     private RGBGradientReplacer() {
     }
 
     @Override
     public String replace(ServerListPlusCore core, String s) {
+        final RGBFormat rgbFormat = core.getPlugin().getRGBFormat();
         final Matcher matcher = PATTERN.matcher(s);
         return Patterns.replace(matcher, s, new ContinousIterator<String>() {
             @Override
@@ -88,12 +84,16 @@ public class RGBGradientReplacer implements StaticReplacer {
                     return "";
 
                 List<Gradient> gradients = parseGradients(matcher.group(1));
-                int steps = text.length() - 1;
-                Formatter formatter = new Formatter(new StringBuilder(steps * REPLACEMENT_LENGTH + REPLACEMENT_LENGTH));
-                appendColor(formatter, gradients.get(0).start, text.charAt(0));
+                if (gradients.isEmpty())
+                    return text;
 
+                int steps = text.length() - 1;
+                StringBuilder builder = new StringBuilder((steps + 1) * (rgbFormat.getLength() + 1));
+
+                Color first = gradients.get(0).start;
+                rgbFormat.append(builder, first.r, first.g, first.b).append(text.charAt(0));
                 if (steps == 0) {
-                    return formatter.toString();
+                    return builder.toString();
                 }
 
                 int ngradients = gradients.size();
@@ -115,19 +115,18 @@ public class RGBGradientReplacer implements StaticReplacer {
                         int diffB = g.end.b - g.start.b;
 
                         for (int j = 1; j < steps; j++) {
-                            Color c = new Color(
+                            rgbFormat.append(builder,
                                     g.start.r + IntMath.divide(diffR * j, steps + 1, RoundingMode.HALF_EVEN),
                                     g.start.g + IntMath.divide(diffG * j, steps + 1, RoundingMode.HALF_EVEN),
                                     g.start.b + IntMath.divide(diffB * j, steps + 1, RoundingMode.HALF_EVEN)
-                            );
-                            appendColor(formatter, c, text.charAt(++i));
+                            ).append(text.charAt(++i));
                         }
                     }
 
-                    appendColor(formatter, g.end, text.charAt(++i));
+                    rgbFormat.append(builder, g.end.r, g.end.g, g.end.b).append(text.charAt(++i));
                 }
 
-                return formatter.toString();
+                return builder.toString();
             }
         });
     }

@@ -26,13 +26,14 @@ public final class FormattingCodes {
     }
 
     private static final Pattern CONFIG_CODES_HEX = Pattern.compile("&([0-9A-FK-ORX]|#[0-9A-F]{6})", Pattern.CASE_INSENSITIVE);
+    private static final Pattern LEGACY_CODES_HEX = Pattern.compile("§([0-9A-FK-ORX]|#[0-9A-F]{6})", Pattern.CASE_INSENSITIVE);
 
     public static String colorizeHex(String s) {
         return CONFIG_CODES_HEX.matcher(s).replaceAll("§$1");
     }
 
-    public static String stripHex(String s) {
-        return CONFIG_CODES_HEX.matcher(s).replaceAll("");
+    public static String stripLegacyHex(String s) {
+        return LEGACY_CODES_HEX.matcher(s).replaceAll("");
     }
 
 }

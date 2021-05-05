@@ -21,17 +21,70 @@ package net.minecrell.serverlistplus.core.replacement.rgb;
 import net.minecrell.serverlistplus.core.replacement.StaticReplacer;
 
 public enum RGBFormat {
-    UNSUPPORTED,
-    ADVENTURE,
-    WEIRD_BUNGEE {
+    UNSUPPORTED(0),
+    ADVENTURE(8) { // §#rrggbb
+        @Override
+        public StringBuilder append(StringBuilder builder, int r, int g, int b) {
+            return builder
+                    .append(SECTION_CHAR)
+                    .append('#')
+                    .append(getHexChar(r >> 4))
+                    .append(getHexChar(r))
+                    .append(getHexChar(g >> 4))
+                    .append(getHexChar(g))
+                    .append(getHexChar(b >> 4))
+                    .append(getHexChar(b));
+        }
+    },
+    WEIRD_BUNGEE(14) { // §x§r§r§g§g§b§b
         @Override
         public StaticReplacer getReplacer() {
             return WeirdBungeeRGBReplacer.INSTANCE;
         }
+
+        @Override
+        public StringBuilder append(StringBuilder builder, int r, int g, int b) {
+            return builder
+                    .append(SECTION_CHAR)
+                    .append('x')
+                    .append(SECTION_CHAR)
+                    .append(getHexChar(r >> 4))
+                    .append(SECTION_CHAR)
+                    .append(getHexChar(r))
+                    .append(SECTION_CHAR)
+                    .append(getHexChar(g >> 4))
+                    .append(SECTION_CHAR)
+                    .append(getHexChar(g))
+                    .append(SECTION_CHAR)
+                    .append(getHexChar(b >> 4))
+                    .append(SECTION_CHAR)
+                    .append(getHexChar(b));
+        }
     };
+
+    static final char SECTION_CHAR = '§';
+    private final int length;
+
+    RGBFormat(int length) {
+        this.length = length;
+    }
+
+    public final int getLength() {
+        return length;
+    }
 
     public StaticReplacer getReplacer() {
         return null;
+    }
+
+    public StringBuilder append(StringBuilder builder, int r, int g, int b) {
+        return builder;
+    }
+
+    private static final char[] hexTable = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    protected static char getHexChar(int n) {
+        return hexTable[n & 0xf];
     }
 
 }
