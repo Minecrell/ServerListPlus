@@ -37,8 +37,8 @@ import java.util.regex.Pattern;
 
 public class RGBGradientReplacer extends PatternPlaceholder {
 
-    private static final Pattern PATTERN = Pattern.compile("%gradient((?:#[0-9A-F]{6}){2,})%(.*)%gradient%",
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN = Pattern.compile(
+            "%gradient((?:#[0-9A-F]{6}){2,})%((?:§[K-O])*)(.*)%gradient%", Pattern.CASE_INSENSITIVE);
 
     private static final Splitter COLOR_SPLITTER = Splitter.on('#').omitEmptyStrings();
 
@@ -81,7 +81,7 @@ public class RGBGradientReplacer extends PatternPlaceholder {
         return Patterns.replace(matcher, s, new ContinousIterator<Object>() {
             @Override
             public Object next() {
-                String text = matcher.group(2);
+                String text = matcher.group(3);
                 if (Strings.isNullOrEmpty(text))
                     return "";
 
@@ -93,11 +93,13 @@ public class RGBGradientReplacer extends PatternPlaceholder {
                 if (gradients.isEmpty())
                     return text;
 
+                String prefix = Strings.nullToEmpty(matcher.group(2));
+
                 int steps = text.length() - 1;
-                StringBuilder builder = new StringBuilder((steps + 1) * (rgbFormat.getLength() + 1));
+                StringBuilder builder = new StringBuilder((steps + 1) * (rgbFormat.getLength() + prefix.length() + 1));
 
                 Color first = gradients.get(0).start;
-                rgbFormat.append(builder, first.r, first.g, first.b).append(text.charAt(0));
+                rgbFormat.append(builder, first.r, first.g, first.b).append(prefix).append(text.charAt(0));
                 if (steps == 0) {
                     return builder;
                 }
@@ -125,11 +127,11 @@ public class RGBGradientReplacer extends PatternPlaceholder {
                                     g.start.r + IntMath.divide(diffR * j, steps + 1, RoundingMode.HALF_EVEN),
                                     g.start.g + IntMath.divide(diffG * j, steps + 1, RoundingMode.HALF_EVEN),
                                     g.start.b + IntMath.divide(diffB * j, steps + 1, RoundingMode.HALF_EVEN)
-                            ).append(text.charAt(++i));
+                            ).append(prefix).append(text.charAt(++i));
                         }
                     }
 
-                    rgbFormat.append(builder, g.end.r, g.end.g, g.end.b).append(text.charAt(++i));
+                    rgbFormat.append(builder, g.end.r, g.end.g, g.end.b).append(prefix).append(text.charAt(++i));
                 }
 
                 return builder;
