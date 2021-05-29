@@ -61,9 +61,6 @@ public class MaxBansBanProvider implements BanProvider {
     public Date getBanExpiration(PlayerIdentity playerIdentity) {
         final Ban ban = getBan(playerIdentity);
 
-        if (ban == null)
-            return null;
-
         if (!(ban instanceof TempBan))
             return null;
 
