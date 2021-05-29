@@ -30,6 +30,9 @@ import java.util.concurrent.TimeUnit;
 @Description({
         "PlayerTracking: Enable/disable tracking of player names to their IP-Addresses.",
         "  - Persistence can be disabled with the toggle in the Storage section.",
+        "StripRGBIfOutdated: Strip RGB color codes for outdated clients.",
+        "  - With this enabled you can put an old color code (e.g. &c) before RGB codes/gradients",
+        "    and they will be shown for outdated clients.",
         "Unknown: Placeholder replacement if the real value is unknown.",
         "Favicon: Options for the creation / downloading of favicons:",
         " - RecursiveFolderSearch: Also search for favicons in sub directories.",
@@ -39,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 })
 public class PluginConf {
     public PlayerTrackingConf PlayerTracking = new PlayerTrackingConf();
+    public boolean StripRGBIfOutdated = true;
     public UnknownConf Unknown = new UnknownConf();
     public FaviconConf Favicon = new FaviconConf();
 

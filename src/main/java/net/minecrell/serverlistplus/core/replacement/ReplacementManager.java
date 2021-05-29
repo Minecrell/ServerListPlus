@@ -19,6 +19,7 @@
 package net.minecrell.serverlistplus.core.replacement;
 
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.replacement.rgb.OutdatedRGBRemoveReplacer;
 import net.minecrell.serverlistplus.core.replacement.rgb.RGBFormat;
 import net.minecrell.serverlistplus.core.replacement.rgb.RGBGradientReplacer;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
@@ -70,6 +71,7 @@ public final class ReplacementManager {
         if (rgbFormat != RGBFormat.UNSUPPORTED) {
             lateStaticReplacers.add(RGBGradientReplacer.INSTANCE);
             lateDynamicReplacers.add(RGBGradientReplacer.INSTANCE);
+            lateDynamicReplacers.add(OutdatedRGBRemoveReplacer.INSTANCE);
         }
     }
 
