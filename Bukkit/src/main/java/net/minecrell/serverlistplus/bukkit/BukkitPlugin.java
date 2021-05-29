@@ -219,7 +219,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (core == null) return; // Too early, we haven't finished initializing yet
 
             UUID uuid = null;
-            try { uuid = event.getUniqueId(); } catch (NoSuchMethodError ignored) {}
+            try {
+                uuid = event.getUniqueId();
+            } catch (NoSuchMethodError ignored) {}
             core.updateClient(event.getAddress(), uuid, event.getName());
         }
     }
@@ -247,7 +249,9 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             if (core == null) return; // Too early, we haven't finished initializing yet
 
             UUID uuid = null;
-            try { uuid = event.getPlayer().getUniqueId(); } catch (NoSuchMethodError ignored) {}
+            try {
+                uuid = event.getPlayer().getUniqueId();
+            } catch (NoSuchMethodError ignored) {}
             core.updateClient(event.getPlayer().getAddress().getAddress(), uuid, event.getPlayer().getName());
         }
     }
@@ -308,9 +312,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public Iterator<String> getRandomPlayers(String worldName) {
         final World world = getServer().getWorld(worldName);
-        if (world == null) {
-            return null;
-        }
+        if (world == null) return null;
 
         Collection<? extends Player> players = getServer().getOnlinePlayers();
         List<String> result = new ArrayList<>();
