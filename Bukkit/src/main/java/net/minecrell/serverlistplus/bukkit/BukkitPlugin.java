@@ -280,8 +280,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     public CachedServerIcon getFavicon(FaviconSource source) {
-        Optional<CachedServerIcon> result = faviconCache.getUnchecked(source);
-        return result.isPresent() ? result.get() : null;
+        return faviconCache.getUnchecked(source).orNull();
     }
 
     @Override
