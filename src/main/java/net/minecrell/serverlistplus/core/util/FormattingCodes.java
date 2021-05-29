@@ -18,6 +18,8 @@
 
 package net.minecrell.serverlistplus.core.util;
 
+import net.minecrell.serverlistplus.core.replacement.util.Patterns;
+
 import java.util.regex.Pattern;
 
 public final class FormattingCodes {
@@ -33,7 +35,7 @@ public final class FormattingCodes {
     }
 
     public static String stripLegacyHex(String s) {
-        return LEGACY_CODES_HEX.matcher(s).replaceAll("");
+        return Patterns.replace(s, LEGACY_CODES_HEX, "");
     }
 
 }
