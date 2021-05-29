@@ -49,8 +49,8 @@ public final class Examples {
 
         if (core.getPlugin().getRGBFormat() != RGBFormat.UNSUPPORTED) {
             conf.Default.Description.add(Helper.joinLines(
-                    "&#45bf55A Minecraft &#0288d1Server.",
-                    "%gradient#ffbe00#f4511e%Now with RGB colors. Nice!%gradient%"
+                    "&a&#45bf55A Minecraft &#0288d1Server.",
+                    "&e%gradient#ffbe00#f4511e%Now with RGB colors. Nice!%gradient%"
             ));
         }
 
@@ -78,8 +78,8 @@ public final class Examples {
 
         if (core.getPlugin().getRGBFormat() != RGBFormat.UNSUPPORTED) {
             conf.Personalized.Description.add(Helper.joinLines(
-                    "&#45bf55A Minecraft &#0288d1Server.",
-                    "%gradient#ffbe00#f4511e%Now with RGB colors. Hello %player%!%gradient%"
+                    "&a&#45bf55A Minecraft &#0288d1Server.",
+                    "&e%gradient#ffbe00#f4511e%Now with RGB colors. Hello %player%!%gradient%"
             ));
         }
 
