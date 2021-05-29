@@ -132,7 +132,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.bukkit = new BukkitEventHandler(this);
         }
 
-        // Check if RGB color codes are supproted
+        // Check if RGB color codes are supported
         if (colorize("&x&a&b&c&d&e&f").charAt(0) != '&') {
             this.rgbFormat = RGBFormat.WEIRD_BUNGEE;
         }
