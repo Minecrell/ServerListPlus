@@ -17,7 +17,7 @@
  */
 
 plugins {
-    id("net.minecrell.plugin-yml.bungee") version "0.3.0"
+    id("net.minecrell.plugin-yml.bungee") version "0.4.0"
 }
 
 repositories {
