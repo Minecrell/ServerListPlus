@@ -223,13 +223,13 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
                 });
 
         // Description
-        String message = response.getDescription();
-        if (message != null) ping.setDescription(LEGACY_SERIALIZER.deserialize(message));
+        String description = response.getDescription();
+        if (description != null) ping.setDescription(LEGACY_SERIALIZER.deserialize(description));
 
         if (version != null) {
             // Version name
-            message = response.getVersion();
-            if (message != null) version.setName(message);
+            String versionName = response.getVersion();
+            if (versionName != null) version.setName(versionName);
             // Protocol version
             Integer protocol = response.getProtocolVersion();
             if (protocol != null) version.setProtocol(protocol);
@@ -252,16 +252,16 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
             }
 
             // Online players
-            Integer count = response.getOnlinePlayers();
-            if (count != null) newPlayers.setOnline(count);
+            Integer onlinePlayers = response.getOnlinePlayers();
+            if (onlinePlayers != null) newPlayers.setOnline(onlinePlayers);
             // Max players
-            count = response.getMaxPlayers();
-            if (count != null) newPlayers.setMax(count);
+            Integer maxPlayers = response.getMaxPlayers();
+            if (maxPlayers != null) newPlayers.setMax(maxPlayers);
 
             // Player hover
-            message = response.getPlayerHover();
-            if (message != null && !message.isEmpty()) {
-                List<String> lines = Helper.splitLinesToList(message);
+            String playerHover = response.getPlayerHover();
+            if (playerHover != null && !playerHover.isEmpty()) {
+                List<String> lines = Helper.splitLinesToList(playerHover);
 
                 UserProfile[] sample = new UserProfile[lines.size()];
                 for (int i = 0; i < sample.length; i++)

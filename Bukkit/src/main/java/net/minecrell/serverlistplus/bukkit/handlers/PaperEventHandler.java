@@ -82,12 +82,12 @@ public class PaperEventHandler extends BukkitEventHandler {
         );
 
         // Description
-        String message = response.getDescription();
-        if (message != null) event.setMotd(message);
+        String description = response.getDescription();
+        if (description != null) event.setMotd(description);
 
         // Version name
-        message = response.getVersion();
-        if (message != null) event.setVersion(message);
+        String version = response.getVersion();
+        if (version != null) event.setVersion(version);
         // Protocol version
         Integer protocol = response.getProtocolVersion();
         if (protocol != null) event.setProtocolVersion(protocol);
@@ -96,20 +96,20 @@ public class PaperEventHandler extends BukkitEventHandler {
             event.setHidePlayers(true);
         } else {
             // Online players
-            Integer count = response.getOnlinePlayers();
-            if (count != null) event.setNumPlayers(count);
+            Integer onlinePlayers = response.getOnlinePlayers();
+            if (onlinePlayers != null) event.setNumPlayers(onlinePlayers);
             // Max players
-            count = response.getMaxPlayers();
-            if (count != null) event.setMaxPlayers(count);
+            Integer maxPlayers = response.getMaxPlayers();
+            if (maxPlayers != null) event.setMaxPlayers(maxPlayers);
 
             // Player hover
-            message = response.getPlayerHover();
-            if (message != null) {
+            String playerHover = response.getPlayerHover();
+            if (playerHover != null) {
                 List<PlayerProfile> profiles = event.getPlayerSample();
                 profiles.clear();
 
-                if (!message.isEmpty()) {
-                    for (String line : Helper.splitLines(message)) {
+                if (!playerHover.isEmpty()) {
+                    for (String line : Helper.splitLines(playerHover)) {
                         profiles.add(bukkit.getServer().createProfile(UUIDs.EMPTY, line));
                     }
                 }

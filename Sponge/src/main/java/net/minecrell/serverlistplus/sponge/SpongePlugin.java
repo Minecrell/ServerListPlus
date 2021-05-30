@@ -238,8 +238,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
             });
 
             // Description
-            String message = response.getDescription();
-            if (message != null) ping.setDescription(TextSerializers.LEGACY_FORMATTING_CODE.deserialize(message));
+            String description = response.getDescription();
+            if (description != null) ping.setDescription(TextSerializers.LEGACY_FORMATTING_CODE.deserialize(description));
 
             // Version
             handler.setVersion(ping, response);
@@ -258,20 +258,20 @@ public class SpongePlugin implements ServerListPlusPlugin {
                     ping.setHidePlayers(true);
                 } else {
                     // Online players
-                    Integer count = response.getOnlinePlayers();
-                    if (count != null) players.setOnline(count);
+                    Integer onlinePlayers = response.getOnlinePlayers();
+                    if (onlinePlayers != null) players.setOnline(onlinePlayers);
 
                     // Max players
-                    count = response.getMaxPlayers();
-                    if (count != null) players.setMax(count);
+                    Integer maxPlayers = response.getMaxPlayers();
+                    if (maxPlayers != null) players.setMax(maxPlayers);
 
-                    message = response.getPlayerHover();
-                    if (message != null) {
+                    String playerHover = response.getPlayerHover();
+                    if (playerHover != null) {
                         List<GameProfile> profiles = players.getProfiles();
                         profiles.clear();
 
-                        if (!message.isEmpty()) {
-                            for (String line : Helper.splitLines(message)) {
+                        if (!playerHover.isEmpty()) {
+                            for (String line : Helper.splitLines(playerHover)) {
                                 profiles.add(GameProfile.of(UUIDs.EMPTY, line));
                             }
                         }

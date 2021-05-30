@@ -214,18 +214,18 @@ public class VelocityPlugin implements ServerListPlusPlugin {
             ServerPing.Builder builder = ping.asBuilder();
 
             // Description
-            String message = response.getDescription();
-            if (message != null) builder.description(LEGACY_SERIALIZER.deserialize(message));
+            String description = response.getDescription();
+            if (description != null) builder.description(LEGACY_SERIALIZER.deserialize(description));
 
             if (version != null) {
                 // Version name
-                message = response.getVersion();
+                String versionName = response.getVersion();
                 // Protocol version
                 Integer protocol = response.getProtocolVersion();
 
-                if (message != null || protocol != null) builder.version(new ServerPing.Version(
+                if (versionName != null || protocol != null) builder.version(new ServerPing.Version(
                         protocol != null ? protocol : version.getProtocol(),
-                        message != null ? message : version.getName()
+                        versionName != null ? versionName : version.getName()
                 ));
             }
 
@@ -234,19 +234,19 @@ public class VelocityPlugin implements ServerListPlusPlugin {
                     builder.nullPlayers();
                 } else {
                     // Online players
-                    Integer count = response.getOnlinePlayers();
-                    if (count != null) builder.onlinePlayers(count);
+                    Integer onlinePlayers = response.getOnlinePlayers();
+                    if (onlinePlayers != null) builder.onlinePlayers(onlinePlayers);
                     // Max players
-                    count = response.getMaxPlayers();
-                    if (count != null) builder.maximumPlayers(count);
+                    Integer maxPlayers = response.getMaxPlayers();
+                    if (maxPlayers != null) builder.maximumPlayers(maxPlayers);
 
                     // Player hover
-                    message = response.getPlayerHover();
-                    if (message != null) {
+                    String playerHover = response.getPlayerHover();
+                    if (playerHover != null) {
                         builder.clearSamplePlayers();
 
-                        if (!message.isEmpty()) {
-                            List<String> lines = Helper.splitLinesToList(message);
+                        if (!playerHover.isEmpty()) {
+                            List<String> lines = Helper.splitLinesToList(playerHover);
 
                             ServerPing.SamplePlayer[] sample = new ServerPing.SamplePlayer[lines.size()];
                             for (int i = 0; i < sample.length; i++)

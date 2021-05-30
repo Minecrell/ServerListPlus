@@ -215,13 +215,13 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     });
 
             // Description
-            String message = response.getDescription();
-            if (message != null) ping.setDescription(message);
+            String description = response.getDescription();
+            if (description != null) ping.setDescription(description);
 
             if (version != null) {
                 // Version name
-                message = response.getVersion();
-                if (message != null) version.setName(message);
+                String versionName = response.getVersion();
+                if (versionName != null) version.setName(versionName);
                 // Protocol version
                 Integer protocol = response.getProtocolVersion();
                 if (protocol != null) version.setProtocol(protocol);
@@ -232,19 +232,19 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     ping.setPlayers(null);
                 } else {
                     // Online players
-                    Integer count = response.getOnlinePlayers();
-                    if (count != null) players.setOnline(count);
+                    Integer onlinePlayers = response.getOnlinePlayers();
+                    if (onlinePlayers != null) players.setOnline(onlinePlayers);
                     // Max players
-                    count = response.getMaxPlayers();
-                    if (count != null) players.setMax(count);
+                    Integer maxPlayers = response.getMaxPlayers();
+                    if (maxPlayers != null) players.setMax(maxPlayers);
 
                     // Player hover
-                    message = response.getPlayerHover();
-                    if (message != null) {
-                        if (message.isEmpty()) {
+                    String playerHover = response.getPlayerHover();
+                    if (playerHover != null) {
+                        if (playerHover.isEmpty()) {
                             players.setSample(null);
                         } else {
-                            List<String> lines = Helper.splitLinesToList(message);
+                            List<String> lines = Helper.splitLinesToList(playerHover);
 
                             ServerPing.PlayerInfo[] sample = new ServerPing.PlayerInfo[lines.size()];
                             for (int i = 0; i < sample.length; i++)

@@ -206,8 +206,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             });
 
             // Description
-            String message = response.getDescription();
-            if (message != null) hook.setMotd(message);
+            String description = response.getDescription();
+            if (description != null) hook.setMotd(description);
 
             // Favicon
             FaviconSource favicon = response.getFavicon();
@@ -219,15 +219,15 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             }
 
             // Online players
-            Integer count = response.getOnlinePlayers();
-            if (count != null) hook.setCurrentPlayers(count);
+            Integer onlinePlayers = response.getOnlinePlayers();
+            if (onlinePlayers != null) hook.setCurrentPlayers(onlinePlayers);
             // Max players
-            count = response.getMaxPlayers();
-            if (count != null) hook.setMaxPlayers(count);
+            Integer maxPlayers = response.getMaxPlayers();
+            if (maxPlayers != null) hook.setMaxPlayers(maxPlayers);
 
             // Player hover
-            message = response.getPlayerHover();
-            if (message != null) {
+            String playerHover = response.getPlayerHover();
+            if (playerHover != null) {
                 List<GameProfile> profiles = hook.getProfiles();
                 if (!(profiles instanceof ArrayList)) {
                     profiles = new ArrayList<>();
@@ -236,8 +236,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
                     profiles.clear();
                 }
 
-                if (!message.isEmpty()) {
-                    for (String line : Helper.splitLines(message)) {
+                if (!playerHover.isEmpty()) {
+                    for (String line : Helper.splitLines(playerHover)) {
                         profiles.add(new GameProfile(UUIDs.EMPTY, line));
                     }
                 }

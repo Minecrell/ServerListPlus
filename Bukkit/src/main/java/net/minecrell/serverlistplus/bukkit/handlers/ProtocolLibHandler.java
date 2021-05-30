@@ -98,12 +98,12 @@ public class ProtocolLibHandler extends StatusHandler {
 
             // Description is modified in BukkitEventHandler, but we modify it here again,
             // because the BukkitEventHandler has no access to information like virtual hosts.
-            String message = response.getDescription();
-            if (message != null) ping.setMotD(message);
+            String description = response.getDescription();
+            if (description != null) ping.setMotD(description);
 
             // Version name
-            message = response.getVersion();
-            if (message != null) ping.setVersionName(message);
+            String version = response.getVersion();
+            if (version != null) ping.setVersionName(version);
             // Protocol version
             Integer protocol = response.getProtocolVersion();
             if (protocol != null) ping.setVersionProtocol(protocol);
@@ -113,20 +113,20 @@ public class ProtocolLibHandler extends StatusHandler {
                     ping.setPlayersVisible(false);
                 } else {
                     // Online players
-                    Integer count = response.getOnlinePlayers();
-                    if (count != null) ping.setPlayersOnline(count);
+                    Integer onlinePlayers = response.getOnlinePlayers();
+                    if (onlinePlayers != null) ping.setPlayersOnline(onlinePlayers);
 
                     // Max players are modified in BukkitEventHandler
-                    count = response.getMaxPlayers();
-                    if (count != null) ping.setPlayersMaximum(count);
+                    Integer maxPlayers = response.getMaxPlayers();
+                    if (maxPlayers != null) ping.setPlayersMaximum(maxPlayers);
 
                     // Player hover
-                    message = response.getPlayerHover();
-                    if (message != null) {
-                        if (message.isEmpty()) {
+                    String playerHover = response.getPlayerHover();
+                    if (playerHover != null) {
+                        if (playerHover.isEmpty()) {
                             ping.setPlayers(Collections.<WrappedGameProfile>emptyList());
                         } else {
-                            ping.setPlayers(Iterables.transform(Helper.splitLines(message),
+                            ping.setPlayers(Iterables.transform(Helper.splitLines(playerHover),
                                     new Function<String, WrappedGameProfile>() {
                                         @Override
                                         public WrappedGameProfile apply(String input) {
