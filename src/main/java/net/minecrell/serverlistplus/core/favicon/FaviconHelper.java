@@ -174,19 +174,6 @@ public final class FaviconHelper {
                 source.getSource()), FAVICON_SIZE, FAVICON_SIZE);
     }
 
-    public static BufferedImage loadSafely(ServerListPlusCore core, FaviconSource source) {
-        try { // Try loading the favicon
-            return load(core, source);
-        } catch (Exception e) {
-            core.getLogger()
-                    .log(WARN, "Unable to load favicon from {}: {} -> {}",
-                            source.getLoader(), source.getSource(), Helper.causedException(e))
-                    .log(DEBUG, e, "Unable to load favicon from {}: {}",
-                            source.getLoader(), source.getSource());
-            return null;
-        }
-    }
-
     private static boolean isSolidColor(BufferedImage image, int x, int y, int width, int height) {
         int base = image.getRGB(x, y);
         for (; x < width; x++) {

@@ -19,9 +19,7 @@
 package net.minecrell.serverlistplus.velocity;
 
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.SimpleCommand;
@@ -46,7 +44,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
-import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
+import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.Slf4jServerListPlusLogger;
@@ -87,18 +85,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     private EventHandler<ProxyPingEvent> pingListener;
     private Object connectionListener;
 
-    // Favicon cache
-    private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
-            new CacheLoader<FaviconSource, Optional<Favicon>>() {
-                @Override
-                public Optional<Favicon> load(FaviconSource source) throws Exception {
-                    // Try loading the favicon
-                    BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.empty(); // Favicon loading failed
-                    else return Optional.of(Favicon.create(image)); // Success!
-                }
-            };
-    private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
+    private FaviconCache<Favicon> faviconCache;
 
     @Inject
     public VelocityPlugin(Logger logger, ProxyServer proxy, @DataDirectory Path pluginFolder) {
@@ -263,7 +250,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
             if (favicon == FaviconSource.NONE) {
                 builder.clearFavicon();
             } else if (favicon != null) {
-                Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
+                Optional<Favicon> icon = faviconCache.get(favicon).toJavaUtil();
                 icon.ifPresent(builder::favicon);
             }
 
@@ -336,8 +323,8 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public LoadingCache<FaviconSource, Optional<Favicon>> getFaviconCache() {
-        return faviconCache;
+    public LoadingCache<FaviconSource, com.google.common.base.Optional<Favicon>> getFaviconCache() {
+        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
     }
 
     @Override
@@ -377,12 +364,15 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     @Override
     public void reloadFaviconCache(CacheBuilderSpec spec) {
         if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(faviconLoader);
+            faviconCache = new FaviconCache<Favicon>(core, spec) {
+                @Override protected Favicon createFavicon(BufferedImage image) throws Exception {
+                    return Favicon.create(image);
+                }
+            };
         } else {
             // Delete favicon cache
-            faviconCache.invalidateAll();
-            faviconCache.cleanUp();
-            this.faviconCache = null;
+            faviconCache.clear();
+            faviconCache = null;
         }
     }
 

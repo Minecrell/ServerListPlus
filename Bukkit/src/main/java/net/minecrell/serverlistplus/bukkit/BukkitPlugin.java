@@ -43,7 +43,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
-import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
+import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
@@ -86,18 +86,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private StatusHandler bukkit, protocol;
     private Listener loginListener, disconnectListener;
 
-    // Favicon cache
-    private final CacheLoader<FaviconSource, Optional<CachedServerIcon>> faviconLoader =
-            new CacheLoader<FaviconSource, Optional<CachedServerIcon>>() {
-                @Override
-                public Optional<CachedServerIcon> load(FaviconSource source) throws Exception {
-                    // Try loading the favicon
-                    BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.absent(); // Favicon loading failed
-                    else return Optional.of(getServer().loadServerIcon(image)); // Success!
-                }
-            };
-    private LoadingCache<FaviconSource, Optional<CachedServerIcon>> faviconCache;
+    private FaviconCache<CachedServerIcon> faviconCache;
 
     // Request cache
     private final CacheLoader<InetSocketAddress, StatusRequest> requestLoader =
@@ -280,7 +269,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     public CachedServerIcon getFavicon(FaviconSource source) {
-        return faviconCache.getUnchecked(source).orNull();
+        return faviconCache.get(source).orNull();
     }
 
     @Override
@@ -335,7 +324,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public LoadingCache<FaviconSource, Optional<CachedServerIcon>> getFaviconCache() {
-        return faviconCache;
+        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
     }
 
     @Override
@@ -396,12 +385,16 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void reloadFaviconCache(CacheBuilderSpec spec) {
         if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(faviconLoader);
+            faviconCache = new FaviconCache<CachedServerIcon>(core, spec) {
+                @Override
+                protected CachedServerIcon createFavicon(BufferedImage image) throws Exception {
+                    return getServer().loadServerIcon(image);
+                }
+            };
         } else {
             // Delete favicon cache
-            faviconCache.invalidateAll();
-            faviconCache.cleanUp();
-            this.faviconCache = null;
+            faviconCache.clear();
+            faviconCache = null;
         }
     }
 

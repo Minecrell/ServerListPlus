@@ -21,9 +21,7 @@ package net.minecrell.serverlistplus.server;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -32,7 +30,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
-import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
+import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.Log4j2ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
@@ -93,18 +91,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     private boolean playerTracking;
     private ImmutableList<String> loginMessages;
 
-    // Favicon cache
-    private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =
-            new CacheLoader<FaviconSource, Optional<String>>() {
-                @Override
-                public Optional<String> load(FaviconSource source) throws Exception {
-                    // Try loading the favicon
-                    BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.empty(); // Favicon loading failed
-                    else return Optional.of(Favicon.create(image));
-                }
-            };
-    private LoadingCache<FaviconSource, Optional<String>> faviconCache;
+    private FaviconCache<String> faviconCache;
 
     public ServerListPlusServer() throws UnknownHostException {
         checkState(instance == null, "Server was already initialized");
@@ -238,7 +225,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         // Favicon
         FaviconSource favicon = response.getFavicon();
         if (favicon != null && favicon != FaviconSource.NONE) {
-            Optional<String> icon = faviconCache.getUnchecked(favicon);
+            Optional<String> icon = faviconCache.get(favicon).toJavaUtil();
             icon.ifPresent(ping::setFavicon);
         }
 
@@ -356,8 +343,8 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     }
 
     @Override
-    public LoadingCache<FaviconSource, Optional<String>> getFaviconCache() {
-        return this.faviconCache;
+    public LoadingCache<FaviconSource, com.google.common.base.Optional<String>> getFaviconCache() {
+        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
     }
 
     @Override
@@ -393,12 +380,16 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     @Override
     public void reloadFaviconCache(CacheBuilderSpec spec) {
         if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(faviconLoader);
+            faviconCache = new FaviconCache<String>(core, spec) {
+                @Override
+                protected String createFavicon(BufferedImage image) throws Exception {
+                    return Favicon.create(image);
+                }
+            };
         } else {
             // Delete favicon cache
-            faviconCache.invalidateAll();
-            faviconCache.cleanUp();
-            this.faviconCache = null;
+            faviconCache.clear();
+            faviconCache = null;
         }
     }
 
