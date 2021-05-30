@@ -21,6 +21,7 @@ package net.minecrell.serverlistplus.bukkit;
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.ERROR;
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.INFO;
+import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.WARN;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
@@ -28,6 +29,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.minecrell.serverlistplus.bukkit.config.BukkitConf;
+import net.minecrell.serverlistplus.bukkit.config.ProtocolLibUsage;
 import net.minecrell.serverlistplus.bukkit.handlers.BukkitEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.PaperEventHandler;
 import net.minecrell.serverlistplus.bukkit.handlers.ProtocolLibHandler;
@@ -141,7 +144,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
                 getLogger().log(ERROR, "Failed to construct ProtocolLib handler. Is your ProtocolLib version up-to-date?", e);
             }
         } else if (serverType != ServerType.PAPER)
-            getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
+            getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work! " +
+                    "Alternatively, consider using Paper for full functionality without ProtocolLib!");
 
         if (isPluginEnabled("PlaceholderAPI")) {
             try {
@@ -357,7 +361,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void initialize(ServerListPlusCore core) {
-
+        core.registerConf(BukkitConf.class, new BukkitConf(), new BukkitConf(), "Bukkit");
     }
 
     @Override
@@ -429,17 +433,42 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         }
     }
 
+    private boolean useProtocolLib(ServerListPlusCore core) {
+        ProtocolLibUsage useProtocoLib = core.getConf(BukkitConf.class).ProtocolLib;
+        if (serverType != ServerType.PAPER) {
+            if (useProtocoLib == ProtocolLibUsage.AUTO) {
+                getLogger().log(INFO, "Using ProtocolLib for full functionality. Alternatively, " +
+                        "consider using Paper which supports full functionality without ProtocolLib");
+            }
+            return useProtocoLib != ProtocolLibUsage.DISABLE;
+        }
+
+        // Paper supports all functionality by default so keep ProtocolLib disabled if AUTO
+        if (useProtocoLib == ProtocolLibUsage.AUTO) {
+            getLogger().log(INFO, "ProtocolLib is no longer required (and used) by default when using Paper. " +
+                    "If this causes compatibility issues with other plugins, try setting ProtocolLib: ENABLE");
+        }
+        return useProtocoLib == ProtocolLibUsage.ENABLE;
+    }
+
     @Override
     public void statusChanged(StatusManager status, boolean hasChanges) {
         // Status packet listener
         if (hasChanges) {
             if (bukkit.register())
                 getLogger().log(DEBUG, "Registered ping event handler.");
-            if (protocol == null) {
-                if (serverType != ServerType.PAPER)
-                    getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work!");
-            } else if (protocol.register())
-                getLogger().log(DEBUG, "Registered status protocol handler.");
+            if (protocol != null) {
+                if (useProtocolLib(status.getCore())) {
+                    protocol.register();
+                } else {
+                    protocol.unregister();
+                    if (serverType != ServerType.PAPER)
+                        getLogger().log(WARN, "ProtocolLib IS NOT ENABLED! Most features will NOT work! " +
+                                "Alternatively, consider using Paper for full functionality without ProtocolLib!");
+                }
+            } else if (serverType != ServerType.PAPER)
+                getLogger().log(ERROR, "ProtocolLib IS NOT INSTALLED! Most features will NOT work! " +
+                        "Alternatively, consider using Paper for full functionality without ProtocolLib!");
         } else {
             if (bukkit.unregister())
                 getLogger().log(DEBUG, "Unregistered ping event handler.");
