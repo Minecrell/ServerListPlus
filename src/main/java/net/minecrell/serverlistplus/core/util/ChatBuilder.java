@@ -37,113 +37,91 @@ public class ChatBuilder implements CharSequence {
 	}
 
 	public ChatBuilder black() {
-		format('0');
-		return this;
+		return format('0');
 	}
 
 	public ChatBuilder darkBlue() {
-		format('1');
-		return this;
+		return format('1');
 	}
 
 	public ChatBuilder darkGreen() {
-		format('2');
-		return this;
+		return format('2');
 	}
 
 	public ChatBuilder darkAqua() {
-		format('3');
-		return this;
+		return format('3');
 	}
 
 	public ChatBuilder darkRed() {
-		format('4');
-		return this;
+		return format('4');
 	}
 
 	public ChatBuilder darkPurple() {
-		format('5');
-		return this;
+		return format('5');
 	}
 
 	public ChatBuilder gold() {
-		format('6');
-		return this;
+		return format('6');
 	}
 
 	public ChatBuilder gray() {
-		format('7');
-		return this;
+		return format('7');
 	}
 
 	public ChatBuilder darkGray() {
-		format('8');
-		return this;
+		return format('8');
 	}
 
 	public ChatBuilder blue() {
-		format('9');
-		return this;
+		return format('9');
 	}
 
 	public ChatBuilder green() {
-		format('a');
-		return this;
+		return format('a');
 	}
 
 	public ChatBuilder aqua() {
-		format('b');
-		return this;
+		return format('b');
 	}
 
 	public ChatBuilder red() {
-		format('c');
-		return this;
+		return format('c');
 	}
 
 	public ChatBuilder lightPurple() {
-		format('d');
-		return this;
+		return format('d');
 	}
 
 	public ChatBuilder yellow() {
-		format('e');
-		return this;
+		return format('e');
 	}
 
 	public ChatBuilder white() {
-		format('f');
-		return this;
+		return format('f');
 	}
 
 	public ChatBuilder obfuscated() {
-		format('k');
-		return this;
+		return format('k');
 	}
 
 	public ChatBuilder bold() {
-		format('l');
-		return this;
+		return format('l');
 	}
 
 	public ChatBuilder strikeThrough() {
-		format('m');
-		return this;
+		return format('m');
 	}
 
 	public ChatBuilder underline() {
-		format('n');
-		return this;
+		return format('n');
 	}
 
 	public ChatBuilder italic() {
-		format('o');
-		return this;
+		return format('o');
 	}
 
 	public ChatBuilder reset() {
-		format('r');
-		return this;
+		return format('r');
 	}
 
 	public ChatBuilder format(char c) {
