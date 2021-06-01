@@ -55,7 +55,7 @@ import net.minecrell.serverlistplus.core.profile.ProfileManager;
 import net.minecrell.serverlistplus.core.replacement.ReplacementManager;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
-import net.minecrell.serverlistplus.core.util.ChatFormat;
+import net.minecrell.serverlistplus.core.util.ChatBuilder;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.net.InetAddress;
@@ -215,14 +215,9 @@ public class ServerListPlusCore {
         return new StatusRequest(client, resolveClient(client));
     }
 
-    private static final String COMMAND_PREFIX_BASE = ChatFormat.GOLD + "[ServerListPlus] ";
-    private static final String COMMAND_PREFIX = COMMAND_PREFIX_BASE + ChatFormat.GRAY;
-    private static final String COMMAND_PREFIX_SUCCESS = COMMAND_PREFIX_BASE + ChatFormat.GREEN;
-    private static final String COMMAND_PREFIX_ERROR = COMMAND_PREFIX_BASE + ChatFormat.RED;
-
     private static final String ADMIN_PERMISSION = "serverlistplus.admin";
 
-    private static final String HELP_HEADER = ChatFormat.GOLD + "---- [ServerListPlus Help] ----";
+    private static final String HELP_HEADER = new ChatBuilder().gold().append("---- [ServerListPlus Help] ----").toString();
 
     private static final Set<String> SUB_COMMANDS = ImmutableSet.of("reload", "rl", "save", "enable", "disable",
             "clean", "info", "help");
@@ -240,6 +235,22 @@ public class ServerListPlusCore {
                 }
             });
 
+    private static ChatBuilder commandPrefixBase() {
+        return new ChatBuilder().gold().append("[ServerListPlus] ");
+    }
+
+    private static ChatBuilder commandPrefix() {
+        return commandPrefixBase().gray();
+    }
+
+    private static ChatBuilder commandPrefixError() {
+        return commandPrefixBase().red();
+    }
+
+    private static ChatBuilder commandPrefixSuccess() {
+        return commandPrefixBase().green();
+    }
+
     public void executeCommand(ServerCommandSender sender, String cmd, String[] args) {
         boolean admin = sender.hasPermission(ADMIN_PERMISSION);
 
@@ -248,54 +259,68 @@ public class ServerListPlusCore {
 
             if (!SUB_COMMANDS.contains(sub)) {
                 if (admin)
-                    sender.sendMessage(COMMAND_PREFIX + "Unknown command. Type " + ChatFormat.DARK_GRAY
-                            + "/slp help" + ChatFormat.GRAY + " for a list of available commands.");
+                    sender.sendMessage(commandPrefix()
+                        .append("Unknown command. Type ")
+                        .darkGray().append("/slp help")
+                        .gray().append(" for a list of available commands.").toString());
                 else
-                    sender.sendMessage(COMMAND_PREFIX + "Unknown command.");
+                    sender.sendMessage(commandPrefix().append("Unknown command.").toString());
                 return;
             }
 
             if (!admin)
-                sender.sendMessage(COMMAND_PREFIX_ERROR + "You do not have permission for this command.");
+                sender.sendMessage(commandPrefixError()
+                    .append("You do not have permission for this command.").toString());
 
             else if (sub.equals("reload") || sub.equals("rl")) {
-                sender.sendMessage(COMMAND_PREFIX + "Reloading configuration...");
+                sender.sendMessage(commandPrefix()
+                    .append("Reloading configuration...").toString());
 
                 try { // Reload the configuration
                     this.reload();
-                    sender.sendMessage(COMMAND_PREFIX_SUCCESS + "Configuration successfully reloaded!");
+                    sender.sendMessage(commandPrefixSuccess()
+                        .append("Configuration successfully reloaded!").toString());
                 } catch (ServerListPlusException e) {
-                    sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while reloading the " +
-                            "configuration.");
+                    sender.sendMessage(commandPrefixError()
+                        .append("An internal error occurred while reloading the configuration.").toString());
                 }
             } else if (sub.equals("save")) {
-                sender.sendMessage(COMMAND_PREFIX + "Saving configuration...");
+                sender.sendMessage(commandPrefix()
+                    .append("Saving configuration...").toString());
 
                 try { // Save the configuration
                     configManager.save();
                     ((JSONIdentificationStorage) storage).save();
-                    sender.sendMessage(COMMAND_PREFIX_SUCCESS + "Configuration successfully saved.");
+                    sender.sendMessage(commandPrefixSuccess()
+                        .append("Configuration successfully saved.").toString());
                 } catch (ServerListPlusException e) {
-                    sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while saving the " +
-                            "configuration.");
+                    sender.sendMessage(commandPrefixError()
+                        .append("An internal error occurred while saving the configuration.").toString());
                 }
             } else if (sub.equals("enable") || sub.equals("disable")) {
                 boolean enable = sub.equalsIgnoreCase("enable");
-                String tmp = enable ? "Enabling" : "Disabling";
-                sender.sendMessage(COMMAND_PREFIX + tmp + " ServerListPlus...");
+                sender.sendMessage(commandPrefix()
+                    .append(enable ? "Enabling" : "Disabling")
+                    .append(" ServerListPlus...").toString());
 
                 try { // Enable / disable the ServerListPlus profile
                     if (profileManager.setEnabled(enable)) {
-                        sender.sendMessage(COMMAND_PREFIX_SUCCESS + "ServerListPlus has been successfully " + (enable ?
-                                "enabled" : "disabled") + '!');
+                        sender.sendMessage(commandPrefixSuccess()
+                            .append("ServerListPlus has been successfully ")
+                            .append(enable ? "enabled" : "disabled")
+                            .append('!').toString());
                     } else {
                         enable = profileManager.isEnabled();
-                        sender.sendMessage(COMMAND_PREFIX_SUCCESS + "No changes. ServerListPlus is already " + (enable ?
-                                "enabled" : "disabled") + '!');
+                        sender.sendMessage(commandPrefixSuccess()
+                            .append("No changes. ServerListPlus is already ")
+                            .append(enable ? "enabled" : "disabled")
+                            .append('!').toString());
                     }
                 } catch (ServerListPlusException e) {
-                    sender.sendMessage(COMMAND_PREFIX_ERROR + "An internal error occurred while " +
-                            (enable ? "enabling" : "disabling") + " ServerListPlus.");
+                    sender.sendMessage(commandPrefixError()
+                        .append("An internal error occurred while ")
+                        .append(enable ? "enabling" : "disabling")
+                        .append(" ServerListPlus.").toString());
                 }
             } else if (sub.equals("clean")) {
                 if (args.length > 1) {
@@ -309,17 +334,22 @@ public class ServerListPlusCore {
                             cache.cleanUp();
                             getLogger().log(DEBUG, "Done.");
 
-                            sender.sendMessage(COMMAND_PREFIX_SUCCESS +
-                                    "Successfully cleaned up " + cacheName + " cache.");
+                            sender.sendMessage(commandPrefixSuccess()
+                                .append("Successfully cleaned up " + cacheName + " cache.").toString());
                         } else
-                            sender.sendMessage(COMMAND_PREFIX + "The " + cacheName + " cache is currently " +
-                                    "disabled. There is nothing to clean up.");
+                            sender.sendMessage(commandPrefix()
+                                .append("The " + cacheName + " cache is currently " +
+                                    "disabled. There is nothing to clean up.").toString());
                     } else
-                        sender.sendMessage(COMMAND_PREFIX_ERROR + "Unknown cache type. Type " + ChatFormat.DARK_RED
-                                + "/slp help" + ChatFormat.RED + " for more information.");
+                        sender.sendMessage(commandPrefixError()
+                            .append("Unknown cache type. Type ")
+                            .darkRed().append("/slp help")
+                            .red().append(" for more information.").toString());
                 } else
-                    sender.sendMessage(COMMAND_PREFIX_ERROR + "You need to specify the cache type. Type " +
-                            ChatFormat.DARK_RED + "/slp help" + ChatFormat.RED + " for more information.");
+                    sender.sendMessage(commandPrefixError()
+                        .append("You need to specify the cache type. Type ")
+                        .darkRed().append("/slp help")
+                        .red().append(" for more information.").toString());
             } else if (sub.equals("help")) {
                 sender.sendMessages(
                         HELP_HEADER,
@@ -337,19 +367,29 @@ public class ServerListPlusCore {
             return;
         }
         // Send the sender some information about the plugin
-        sender.sendMessage(ChatFormat.GOLD + this.getDisplayName());
+        sender.sendMessage(new ChatBuilder()
+            .gold().append(this.getDisplayName()).toString());
         if (info.getDescription() != null)
-            sender.sendMessage(ChatFormat.GRAY + info.getDescription());
+            sender.sendMessage(new ChatBuilder()
+                .gray().append(info.getDescription()).toString());
         if (info.getAuthor() != null)
-            sender.sendMessage(ChatFormat.GOLD + "Author: " + ChatFormat.GRAY + info.getAuthor());
+            sender.sendMessage(new ChatBuilder()
+                .gold().append("Author: ")
+                .gray().append(info.getAuthor()).toString());
         if (info.getWebsite() != null)
-            sender.sendMessage(ChatFormat.GOLD + "Website: " + ChatFormat.GRAY + info.getWebsite());
+            sender.sendMessage(new ChatBuilder()
+                .gold().append("Website: ")
+                .gray().append(info.getWebsite()).toString());
 
         if (admin) {
             if (info.getWiki() != null)
-                sender.sendMessage(ChatFormat.GOLD + "Wiki: " + ChatFormat.GRAY + info.getWiki());
-            sender.sendMessage(ChatFormat.GREEN + "Type " + ChatFormat.DARK_GREEN + "/slp help" + ChatFormat.GREEN
-                    + " for a list of available commands.");
+                sender.sendMessage(new ChatBuilder()
+                    .gold().append("Wiki: ")
+                    .gray().append(info.getWiki()).toString());
+            sender.sendMessage(new ChatBuilder()
+                .green().append("Type ")
+                .darkGreen().append("/slp help")
+                .green().append(" for a list of available commands.").toString());
         }
     }
 
@@ -371,11 +411,11 @@ public class ServerListPlusCore {
     }
 
     public static String buildCommandHelp(String cmd, String usage, String description) {
-        StringBuilder help = new StringBuilder();
-        help.append(ChatFormat.RED).append("/slp");
+        ChatBuilder help = new ChatBuilder();
+        help.red().append("/slp");
         if (cmd != null) help.append(' ').append(cmd);
-        if (usage != null) help.append(' ').append(ChatFormat.GOLD).append(usage);
-        return help.append(ChatFormat.WHITE).append(" - ").append(ChatFormat.GRAY).append(description).toString();
+        if (usage != null) help.append(' ').gold().append(usage);
+        return help.white().append(" - ").gray().append(description).toString();
     }
 
     public ConfigurationManager getConf() {
