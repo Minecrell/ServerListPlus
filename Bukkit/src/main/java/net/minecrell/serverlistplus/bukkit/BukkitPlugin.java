@@ -23,7 +23,6 @@ import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.INFO;
 import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger.WARN;
 
-import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
@@ -323,8 +322,8 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public LoadingCache<FaviconSource, Optional<CachedServerIcon>> getFaviconCache() {
-        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
+    public FaviconCache<?> getFaviconCache() {
+        return faviconCache;
     }
 
     @Override

@@ -23,7 +23,6 @@ import static org.spongepowered.api.Platform.Component.IMPLEMENTATION;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
@@ -341,8 +340,8 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public LoadingCache<FaviconSource, ?> getFaviconCache() {
-        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
+    public FaviconCache<?> getFaviconCache() {
+        return faviconCache;
     }
 
     @Override

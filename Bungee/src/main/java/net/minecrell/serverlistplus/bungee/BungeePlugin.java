@@ -25,7 +25,6 @@ import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.LoadingCache;
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -336,8 +335,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public LoadingCache<FaviconSource, Optional<Favicon>> getFaviconCache() {
-        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
+    public FaviconCache<?> getFaviconCache() {
+        return faviconCache;
     }
 
     @Override

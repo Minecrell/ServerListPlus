@@ -22,7 +22,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.kyori.adventure.text.Component;
@@ -343,8 +342,8 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     }
 
     @Override
-    public LoadingCache<FaviconSource, com.google.common.base.Optional<String>> getFaviconCache() {
-        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
+    public FaviconCache<?> getFaviconCache() {
+        return faviconCache;
     }
 
     @Override

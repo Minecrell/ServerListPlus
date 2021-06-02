@@ -20,7 +20,6 @@ package net.minecrell.serverlistplus.velocity;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.EventHandler;
@@ -323,8 +322,8 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public LoadingCache<FaviconSource, com.google.common.base.Optional<Favicon>> getFaviconCache() {
-        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
+    public FaviconCache<?> getFaviconCache() {
+        return faviconCache;
     }
 
     @Override

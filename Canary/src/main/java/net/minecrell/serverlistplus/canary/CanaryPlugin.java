@@ -21,7 +21,6 @@ package net.minecrell.serverlistplus.canary;
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.LoadingCache;
 import com.mojang.authlib.GameProfile;
 import lombok.SneakyThrows;
 import net.canarymod.Canary;
@@ -291,8 +290,8 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public LoadingCache<FaviconSource, ?> getFaviconCache() {
-        return (faviconCache == null) ? null : faviconCache.getLoadingCache();
+    public FaviconCache<?> getFaviconCache() {
+        return faviconCache;
     }
 
     @Override

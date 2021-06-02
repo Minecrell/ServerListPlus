@@ -41,6 +41,7 @@ import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.Examples;
+import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.logging.Logger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.IdentificationStorage;
@@ -231,7 +232,8 @@ public class ServerListPlusCore {
             "favicons", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
                 public Cache<?, ?> apply(ServerListPlusCore core) {
-                    return core.getPlugin().getFaviconCache();
+                    FaviconCache<?> cache = core.getPlugin().getFaviconCache();
+                    return (cache == null) ? null : cache.getLoadingCache();
                 }
             }, "requests", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
