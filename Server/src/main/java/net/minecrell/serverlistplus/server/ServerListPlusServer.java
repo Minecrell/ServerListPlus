@@ -225,7 +225,8 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         FaviconSource favicon = response.getFavicon();
         if (favicon != null && favicon != FaviconSource.NONE) {
             Optional<String> icon = faviconCache.get(favicon).toJavaUtil();
-            icon.ifPresent(ping::setFavicon);
+            if (icon.isPresent())
+                ping.setFavicon(icon.get());
         }
 
         if (response.hidePlayers()) {

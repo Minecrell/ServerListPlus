@@ -250,7 +250,8 @@ public class VelocityPlugin implements ServerListPlusPlugin {
                 builder.clearFavicon();
             } else if (favicon != null) {
                 Optional<Favicon> icon = faviconCache.get(favicon).toJavaUtil();
-                icon.ifPresent(builder::favicon);
+                if (icon.isPresent())
+                    builder.favicon(icon.get());
             }
 
             event.setPing(builder.build());
