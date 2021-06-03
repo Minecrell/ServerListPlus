@@ -84,12 +84,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     private EventHandler<ProxyPingEvent> pingListener;
     private Object connectionListener;
 
-    private final FaviconCache<Favicon> faviconCache = new FaviconCache<Favicon>() {
-        @Override
-        protected Favicon createFavicon(BufferedImage image) throws Exception {
-            return Favicon.create(image);
-        }
-    };
+    private FaviconCache<Favicon> faviconCache;
 
     @Inject
     public VelocityPlugin(Logger logger, ProxyServer proxy, @DataDirectory Path pluginFolder) {
@@ -111,8 +106,6 @@ public class VelocityPlugin implements ServerListPlusPlugin {
             logger.error("An internal error occurred while loading the core.", e);
             return;
         }
-
-        faviconCache.setCore(core);
 
         // Register commands
         this.proxy.getCommandManager().register("serverlistplus", new ServerListPlusCommand(), "slp");
@@ -368,12 +361,16 @@ public class VelocityPlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilderSpec spec) {
-        if (spec != null) {
-            faviconCache.reload(spec);
+    public void createFaviconCache(CacheBuilderSpec spec) {
+        if (faviconCache == null) {
+            faviconCache = new FaviconCache<Favicon>(core, spec) {
+                @Override
+                protected Favicon createFavicon(BufferedImage image) throws Exception {
+                    return Favicon.create(image);
+                }
+            };
         } else {
-            // Delete favicon cache
-            faviconCache.clear();
+            faviconCache.reload(spec);
         }
     }
 

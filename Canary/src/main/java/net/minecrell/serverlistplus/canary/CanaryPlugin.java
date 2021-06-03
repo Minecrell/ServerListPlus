@@ -83,12 +83,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     private final Field PROFILES_FIELD;
 
-    private final FaviconCache<String> faviconCache = new FaviconCache<String>() {
-        @Override
-        protected String createFavicon(BufferedImage image) throws Exception {
-            return CanaryFavicon.create(image);
-        }
-    };
+    private FaviconCache<String> faviconCache;
 
     private static void loadJAR(Path path) throws Exception {
         Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
@@ -124,8 +119,6 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             getLogman().error("An internal error occurred while loading the core.", e);
             return false;
         }
-
-        faviconCache.setCore(core);
 
         // Register command
         try {
@@ -334,12 +327,16 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilderSpec spec) {
-        if (spec != null) {
-            faviconCache.reload(spec);
+    public void createFaviconCache(CacheBuilderSpec spec) {
+        if (faviconCache == null) {
+            faviconCache = new FaviconCache<String>(core, spec) {
+                @Override
+                protected String createFavicon(BufferedImage image) throws Exception {
+                    return CanaryFavicon.create(image);
+                }
+            };
         } else {
-            // Delete favicon cache
-            faviconCache.clear();
+            faviconCache.reload(spec);
         }
     }
 

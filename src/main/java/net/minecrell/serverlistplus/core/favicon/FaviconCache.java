@@ -32,7 +32,7 @@ import static net.minecrell.serverlistplus.core.logging.Logger.Level.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 public abstract class FaviconCache<T> {
-    private ServerListPlusCore core;
+    private final ServerListPlusCore core;
     private LoadingCache<FaviconSource, Optional<T>> loadingCache;
 
     private final CacheLoader<FaviconSource, Optional<T>> cacheLoader =
@@ -55,16 +55,17 @@ public abstract class FaviconCache<T> {
             }
         };
 
-    public void setCore(ServerListPlusCore core) {
+    public FaviconCache(ServerListPlusCore core, CacheBuilderSpec spec) {
         this.core = core;
+        reload(spec);
     }
 
     public Optional<T> get(FaviconSource source) {
-        return (loadingCache == null) ? Optional.<T>absent() : loadingCache.getUnchecked(source);
+        return loadingCache.getUnchecked(source);
     }
 
     public boolean contains(FaviconSource source) {
-        return (loadingCache == null) ? false : (loadingCache.getIfPresent(source) != null);
+        return loadingCache.getIfPresent(source) != null;
     }
 
     public LoadingCache<FaviconSource, Optional<T>> getLoadingCache() {
@@ -72,10 +73,8 @@ public abstract class FaviconCache<T> {
     }
 
     public void clear() {
-        if (loadingCache == null) return;
         loadingCache.invalidateAll();
         loadingCache.cleanUp();
-        loadingCache = null;
     }
 
     public void reload(CacheBuilderSpec spec) {

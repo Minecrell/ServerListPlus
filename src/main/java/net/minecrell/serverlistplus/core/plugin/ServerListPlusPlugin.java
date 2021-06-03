@@ -56,7 +56,7 @@ public interface ServerListPlusPlugin {
 
     void initialize(ServerListPlusCore core);
     void reloadCaches(ServerListPlusCore core);
-    void reloadFaviconCache(CacheBuilderSpec spec);
+    void createFaviconCache(CacheBuilderSpec spec);
     void configChanged(ServerListPlusCore core, InstanceStorage<Object> confs);
     void statusChanged(StatusManager status, boolean hasChanges);
 }

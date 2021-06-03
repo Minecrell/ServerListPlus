@@ -90,12 +90,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     private boolean playerTracking;
     private ImmutableList<String> loginMessages;
 
-    private final FaviconCache<String> faviconCache = new FaviconCache<String>() {
-        @Override
-        protected String createFavicon(BufferedImage image) throws Exception {
-            return Favicon.create(image);
-        }
-    };
+    private FaviconCache<String> faviconCache;
 
     public ServerListPlusServer() throws UnknownHostException {
         checkState(instance == null, "Server was already initialized");
@@ -106,8 +101,6 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         logger.info("Loading...");
         ServerListPlusLogger clogger = new Log4j2ServerListPlusLogger(LogManager.getLogger(ServerListPlusCore.class), null);
         this.core = new ServerListPlusCore(this, clogger, new ServerProfileManager());
-
-        faviconCache.setCore(core);
 
         ServerConf conf = this.core.getConf(ServerConf.class);
         this.network = new NetworkManager(this, Netty.parseAddress(conf.Address));
@@ -384,12 +377,16 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilderSpec spec) {
-        if (spec != null) {
-            faviconCache.reload(spec);
+    public void createFaviconCache(CacheBuilderSpec spec) {
+        if (faviconCache == null) {
+            faviconCache = new FaviconCache<String>(core, spec) {
+                @Override
+                protected String createFavicon(BufferedImage image) throws Exception {
+                    return Favicon.create(image);
+                }
+            };
         } else {
-            // Delete favicon cache
-            faviconCache.clear();
+            faviconCache.reload(spec);
         }
     }
 

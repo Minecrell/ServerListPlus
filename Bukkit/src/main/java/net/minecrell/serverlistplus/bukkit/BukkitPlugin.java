@@ -85,12 +85,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private StatusHandler bukkit, protocol;
     private Listener loginListener, disconnectListener;
 
-    private final FaviconCache<CachedServerIcon> faviconCache = new FaviconCache<CachedServerIcon>() {
-        @Override
-        protected CachedServerIcon createFavicon(BufferedImage image) throws Exception {
-            return getServer().loadServerIcon(image);
-        }
-    };
+    private FaviconCache<CachedServerIcon> faviconCache;
 
     // Request cache
     private final CacheLoader<InetSocketAddress, StatusRequest> requestLoader =
@@ -159,8 +154,6 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             getLogger().log(ERROR, "An internal error occurred while loading the core!", e);
             disablePlugin(); return; // Disable bukkit to show error in /plugins
         }
-
-        faviconCache.setCore(core);
 
         // Register commands
         getCommand("serverlistplus").setExecutor(new ServerListPlusCommand());
@@ -389,12 +382,16 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilderSpec spec) {
-        if (spec != null) {
-            faviconCache.reload(spec);
+    public void createFaviconCache(CacheBuilderSpec spec) {
+        if (faviconCache == null) {
+            faviconCache = new FaviconCache<CachedServerIcon>(core, spec) {
+                @Override
+                protected CachedServerIcon createFavicon(BufferedImage image) throws Exception {
+                    return getServer().loadServerIcon(image);
+                }
+            };
         } else {
-            // Delete favicon cache
-            faviconCache.clear();
+            faviconCache.reload(spec);
         }
     }
 

@@ -99,12 +99,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     private Object loginListener, pingListener;
 
-    private final FaviconCache<Favicon> faviconCache = new FaviconCache<Favicon>() {
-        @Override
-        protected Favicon createFavicon(BufferedImage image) throws Exception {
-            return game.getRegistry().loadFavicon(image);
-        }
-    };
+    private FaviconCache<Favicon> faviconCache;
 
     @Inject
     public SpongePlugin(PluginManager pluginManager) {
@@ -129,8 +124,6 @@ public class SpongePlugin implements ServerListPlusPlugin {
             logger.error("An internal error occurred while loading the core.", e);
             return;
         }
-
-        faviconCache.setCore(core);
 
         game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "slp");
 
@@ -383,12 +376,16 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilderSpec spec) {
-        if (spec != null) {
-            faviconCache.reload(spec);
+    public void createFaviconCache(CacheBuilderSpec spec) {
+        if (faviconCache == null) {
+            faviconCache = new FaviconCache<Favicon>(core, spec) {
+                @Override
+                protected Favicon createFavicon(BufferedImage image) throws Exception {
+                    return game.getRegistry().loadFavicon(image);
+                }
+            };
         } else {
-            // Delete favicon cache
-            faviconCache.clear();
+            faviconCache.reload(spec);
         }
     }
 
