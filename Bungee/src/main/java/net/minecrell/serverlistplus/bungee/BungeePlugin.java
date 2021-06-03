@@ -33,7 +33,6 @@ import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.AsyncEvent;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
@@ -247,9 +246,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             if (favicon == FaviconSource.NONE) {
                 ping.setFavicon((Favicon) null);
             } else if (favicon != null) {
-                Optional<Favicon> icon;
-                // Check if instanceof AsyncEvent for compatibility with 1.7.10
-                if (event instanceof AsyncEvent && !faviconCache.contains(favicon)) {
+                Optional<Favicon> icon = faviconCache.getIfPresent(favicon);
+                if (icon == null) {
                     // Load favicon asynchronously
                     event.registerIntent(BungeePlugin.this);
                     getProxy().getScheduler().runAsync(BungeePlugin.this, new AsyncFaviconLoader(event, favicon));

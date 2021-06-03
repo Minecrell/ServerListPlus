@@ -64,8 +64,8 @@ public abstract class FaviconCache<T> {
         return loadingCache.getUnchecked(source);
     }
 
-    public boolean contains(FaviconSource source) {
-        return loadingCache.getIfPresent(source) != null;
+    public Optional<T> getIfPresent(FaviconSource source) {
+        return loadingCache.getIfPresent(source);
     }
 
     public LoadingCache<FaviconSource, Optional<T>> getLoadingCache() {
