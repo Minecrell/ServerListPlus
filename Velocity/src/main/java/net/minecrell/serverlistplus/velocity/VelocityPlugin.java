@@ -249,7 +249,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
             if (favicon == FaviconSource.NONE) {
                 builder.clearFavicon();
             } else if (favicon != null) {
-                Optional<Favicon> icon = faviconCache.get(favicon).toJavaUtil();
+                com.google.common.base.Optional<Favicon> icon = faviconCache.get(favicon);
                 if (icon.isPresent())
                     builder.favicon(icon.get());
             }

@@ -20,6 +20,7 @@ package net.minecrell.serverlistplus.server;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.collect.ImmutableList;
@@ -65,7 +66,6 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -224,7 +224,7 @@ public final class ServerListPlusServer implements ServerListPlusPlugin {
         // Favicon
         FaviconSource favicon = response.getFavicon();
         if (favicon != null && favicon != FaviconSource.NONE) {
-            Optional<String> icon = faviconCache.get(favicon).toJavaUtil();
+            Optional<String> icon = faviconCache.get(favicon);
             if (icon.isPresent())
                 ping.setFavicon(icon.get());
         }

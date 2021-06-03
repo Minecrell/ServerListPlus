@@ -235,7 +235,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
             if (favicon == FaviconSource.NONE) {
                 ping.setFavicon(null);
             } else if (favicon != null) {
-                Optional<Favicon> icon = faviconCache.get(favicon).toJavaUtil();
+                com.google.common.base.Optional<Favicon> icon = faviconCache.get(favicon);
                 if (icon.isPresent())
                     ping.setFavicon(icon.get());
             }
