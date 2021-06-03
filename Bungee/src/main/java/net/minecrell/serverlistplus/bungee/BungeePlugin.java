@@ -252,7 +252,6 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     event.registerIntent(BungeePlugin.this);
                     getProxy().getScheduler().runAsync(BungeePlugin.this, new AsyncFaviconLoader(event, favicon));
                 } else {
-                    icon = faviconCache.get(favicon);
                     if (icon.isPresent()) {
                         ping.setFavicon(icon.get());
                     }
