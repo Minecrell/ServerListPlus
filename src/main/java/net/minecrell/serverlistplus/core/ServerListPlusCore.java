@@ -232,8 +232,7 @@ public class ServerListPlusCore {
             "favicons", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
                 public Cache<?, ?> apply(ServerListPlusCore core) {
-                    FaviconCache<?> cache = core.getPlugin().getFaviconCache();
-                    return (cache == null) ? null : cache.getLoadingCache();
+                    return core.getPlugin().getFaviconCache().getLoadingCache();
                 }
             }, "requests", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override

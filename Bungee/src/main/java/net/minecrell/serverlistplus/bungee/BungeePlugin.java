@@ -76,7 +76,11 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     private RGBFormat rgbFormat = RGBFormat.UNSUPPORTED;
     private Listener connectionListener, pingListener;
 
-    private FaviconCache<Favicon> faviconCache;
+    private final FaviconCache<Favicon> faviconCache = new FaviconCache<Favicon>() {
+        @Override protected Favicon createFavicon(BufferedImage image) throws Exception {
+            return Favicon.create(image);
+        }
+    };;
 
     private boolean isPluginLoaded(String pluginName) {
         return getProxy().getPluginManager().getPlugin(pluginName) != null;
@@ -99,6 +103,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             getLogger().log(ERROR, "An internal error occurred while loading the core.", e);
             return;
         }
+
+        faviconCache.setCore(core);
 
         // Register commands
         getProxy().getPluginManager().registerCommand(this, new ServerListPlusCommand());
@@ -372,15 +378,10 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void reloadFaviconCache(CacheBuilderSpec spec) {
         if (spec != null) {
-            faviconCache = new FaviconCache<Favicon>(core, spec) {
-                @Override protected Favicon createFavicon(BufferedImage image) throws Exception {
-                    return Favicon.create(image);
-                }
-            };
+            faviconCache.reload(spec);
         } else {
             // Delete favicon cache
             faviconCache.clear();
-            faviconCache = null;
         }
     }
 
