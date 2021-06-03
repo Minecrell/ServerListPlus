@@ -32,55 +32,55 @@ import static net.minecrell.serverlistplus.core.logging.Logger.Level.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 public abstract class FaviconCache<T> {
-	private ServerListPlusCore core;
-	private LoadingCache<FaviconSource, Optional<T>> loadingCache;
+    private ServerListPlusCore core;
+    private LoadingCache<FaviconSource, Optional<T>> loadingCache;
 
-	private final CacheLoader<FaviconSource, Optional<T>> cacheLoader =
-		new CacheLoader<FaviconSource, Optional<T>>() {
-			@Override
-			public Optional<T> load(FaviconSource source) throws Exception {
-				BufferedImage image;
-				try {
-					image = FaviconHelper.load(core, source);
-				} catch (Exception e) {
-					core.getLogger()
-						.log(WARN, "Unable to load favicon from {}: {} -> {}",
-							source.getLoader(), source.getSource(), Helper.causedException(e))
-						.log(DEBUG, e, "Unable to load favicon from {}: {}",
-							source.getLoader(), source.getSource());
-					return Optional.absent();
-				}
+    private final CacheLoader<FaviconSource, Optional<T>> cacheLoader =
+        new CacheLoader<FaviconSource, Optional<T>>() {
+            @Override
+            public Optional<T> load(FaviconSource source) throws Exception {
+                BufferedImage image;
+                try {
+                    image = FaviconHelper.load(core, source);
+                } catch (Exception e) {
+                    core.getLogger()
+                        .log(WARN, "Unable to load favicon from {}: {} -> {}",
+                            source.getLoader(), source.getSource(), Helper.causedException(e))
+                        .log(DEBUG, e, "Unable to load favicon from {}: {}",
+                            source.getLoader(), source.getSource());
+                    return Optional.absent();
+                }
 
-				return Optional.of(createFavicon(image));
-			}
-		};
+                return Optional.of(createFavicon(image));
+            }
+        };
 
-	public void setCore(ServerListPlusCore core) {
-		this.core = core;
-	}
+    public void setCore(ServerListPlusCore core) {
+        this.core = core;
+    }
 
-	public Optional<T> get(FaviconSource source) {
-		return (loadingCache == null) ? Optional.<T>absent() : loadingCache.getUnchecked(source);
-	}
+    public Optional<T> get(FaviconSource source) {
+        return (loadingCache == null) ? Optional.<T>absent() : loadingCache.getUnchecked(source);
+    }
 
-	public boolean contains(FaviconSource source) {
-		return (loadingCache == null) ? false : (loadingCache.getIfPresent(source) != null);
-	}
+    public boolean contains(FaviconSource source) {
+        return (loadingCache == null) ? false : (loadingCache.getIfPresent(source) != null);
+    }
 
-	public LoadingCache<FaviconSource, Optional<T>> getLoadingCache() {
-		return loadingCache;
-	}
+    public LoadingCache<FaviconSource, Optional<T>> getLoadingCache() {
+        return loadingCache;
+    }
 
-	public void clear() {
-		if (loadingCache == null) return;
-		loadingCache.invalidateAll();
-		loadingCache.cleanUp();
-		loadingCache = null;
-	}
+    public void clear() {
+        if (loadingCache == null) return;
+        loadingCache.invalidateAll();
+        loadingCache.cleanUp();
+        loadingCache = null;
+    }
 
-	public void reload(CacheBuilderSpec spec) {
-		loadingCache = CacheBuilder.from(spec).build(cacheLoader);
-	}
+    public void reload(CacheBuilderSpec spec) {
+        loadingCache = CacheBuilder.from(spec).build(cacheLoader);
+    }
 
-	protected abstract T createFavicon(BufferedImage image) throws Exception;
+    protected abstract T createFavicon(BufferedImage image) throws Exception;
 }
