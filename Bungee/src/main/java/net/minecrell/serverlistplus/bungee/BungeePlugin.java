@@ -369,7 +369,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     @Override
     public void createFaviconCache(CacheBuilderSpec spec) {
         if (faviconCache == null) {
-            faviconCache = new FaviconCache<Favicon>(core, spec) {
+            faviconCache = new FaviconCache<Favicon>(this, spec) {
                 @Override protected Favicon createFavicon(BufferedImage image) throws Exception {
                     return Favicon.create(image);
                 }

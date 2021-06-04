@@ -329,7 +329,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     @Override
     public void createFaviconCache(CacheBuilderSpec spec) {
         if (faviconCache == null) {
-            faviconCache = new FaviconCache<String>(core, spec) {
+            faviconCache = new FaviconCache<String>(this, spec) {
                 @Override
                 protected String createFavicon(BufferedImage image) throws Exception {
                     return CanaryFavicon.create(image);

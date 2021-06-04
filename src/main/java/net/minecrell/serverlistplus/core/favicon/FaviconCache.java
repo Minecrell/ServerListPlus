@@ -23,7 +23,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import net.minecrell.serverlistplus.core.ServerListPlusCore;
+import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.util.Helper;
 
 import java.awt.image.BufferedImage;
@@ -32,7 +32,7 @@ import static net.minecrell.serverlistplus.core.logging.Logger.Level.DEBUG;
 import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 
 public abstract class FaviconCache<T> {
-    private final ServerListPlusCore core;
+    private final ServerListPlusPlugin plugin;
     private LoadingCache<FaviconSource, Optional<T>> loadingCache;
 
     private final CacheLoader<FaviconSource, Optional<T>> cacheLoader =
@@ -41,9 +41,9 @@ public abstract class FaviconCache<T> {
             public Optional<T> load(FaviconSource source) throws Exception {
                 BufferedImage image;
                 try {
-                    image = FaviconHelper.load(core, source);
+                    image = FaviconHelper.load(plugin.getCore(), source);
                 } catch (Exception e) {
-                    core.getLogger()
+                    plugin.getCore().getLogger()
                         .log(WARN, "Unable to load favicon from {}: {} -> {}",
                             source.getLoader(), source.getSource(), Helper.causedException(e))
                         .log(DEBUG, e, "Unable to load favicon from {}: {}",
@@ -55,8 +55,8 @@ public abstract class FaviconCache<T> {
             }
         };
 
-    public FaviconCache(ServerListPlusCore core, CacheBuilderSpec spec) {
-        this.core = core;
+    public FaviconCache(ServerListPlusPlugin plugin, CacheBuilderSpec spec) {
+        this.plugin = plugin;
         reload(spec);
     }
 

@@ -384,7 +384,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     @Override
     public void createFaviconCache(CacheBuilderSpec spec) {
         if (faviconCache == null) {
-            faviconCache = new FaviconCache<CachedServerIcon>(core, spec) {
+            faviconCache = new FaviconCache<CachedServerIcon>(this, spec) {
                 @Override
                 protected CachedServerIcon createFavicon(BufferedImage image) throws Exception {
                     return getServer().loadServerIcon(image);
