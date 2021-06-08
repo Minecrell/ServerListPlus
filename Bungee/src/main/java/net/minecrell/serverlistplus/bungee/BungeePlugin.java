@@ -251,10 +251,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
                     // Load favicon asynchronously
                     event.registerIntent(BungeePlugin.this);
                     getProxy().getScheduler().runAsync(BungeePlugin.this, new AsyncFaviconLoader(event, favicon));
-                } else {
-                    if (icon.isPresent()) {
-                        ping.setFavicon(icon.get());
-                    }
+                } else if (icon.isPresent()) {
+                    ping.setFavicon(icon.get());
                 }
             }
         }
@@ -370,7 +368,8 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     public void createFaviconCache(CacheBuilderSpec spec) {
         if (faviconCache == null) {
             faviconCache = new FaviconCache<Favicon>(this, spec) {
-                @Override protected Favicon createFavicon(BufferedImage image) throws Exception {
+                @Override
+                protected Favicon createFavicon(BufferedImage image) throws Exception {
                     return Favicon.create(image);
                 }
             };
