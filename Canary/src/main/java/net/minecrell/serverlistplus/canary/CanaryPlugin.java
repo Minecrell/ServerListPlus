@@ -20,10 +20,7 @@ package net.minecrell.serverlistplus.canary;
 
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.mojang.authlib.GameProfile;
 import lombok.SneakyThrows;
 import net.canarymod.Canary;
@@ -44,7 +41,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
-import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
+import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.Log4j2ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
@@ -86,18 +83,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     private final Field PROFILES_FIELD;
 
-    // Favicon cache
-    private final CacheLoader<FaviconSource, Optional<String>> faviconLoader =
-            new CacheLoader<FaviconSource, Optional<String>>() {
-                @Override
-                public Optional<String> load(FaviconSource source) throws Exception {
-                    // Try loading the favicon
-                    BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.absent(); // Favicon loading failed
-                    else return Optional.of(CanaryFavicon.create(image)); // Success!
-                }
-            };
-    private LoadingCache<FaviconSource, Optional<String>> faviconCache;
+    private FaviconCache<String> faviconCache;
 
     private static void loadJAR(Path path) throws Exception {
         Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
@@ -214,7 +200,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             if (favicon == FaviconSource.NONE) {
                 //hook.setFavicon(null); // FIXME (in Canary): Would cause a NPE
             } else if (favicon != null) {
-                Optional<String> icon = faviconCache.getUnchecked(favicon);
+                Optional<String> icon = faviconCache.get(favicon);
                 if (icon.isPresent()) hook.setFavicon(icon.get());
             }
 
@@ -304,7 +290,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public LoadingCache<FaviconSource, ?> getFaviconCache() {
+    public FaviconCache<?> getFaviconCache() {
         return faviconCache;
     }
 
@@ -341,14 +327,16 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilderSpec spec) {
-        if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(faviconLoader);
+    public void createFaviconCache(CacheBuilderSpec spec) {
+        if (faviconCache == null) {
+            faviconCache = new FaviconCache<String>(this, spec) {
+                @Override
+                protected String createFavicon(BufferedImage image) throws Exception {
+                    return CanaryFavicon.create(image);
+                }
+            };
         } else {
-            // Delete favicon cache
-            faviconCache.invalidateAll();
-            faviconCache.cleanUp();
-            this.faviconCache = null;
+            faviconCache.reload(spec);
         }
     }
 

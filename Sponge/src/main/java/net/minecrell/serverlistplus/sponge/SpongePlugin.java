@@ -22,16 +22,13 @@ import static org.spongepowered.api.Platform.Component.API;
 import static org.spongepowered.api.Platform.Component.IMPLEMENTATION;
 
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
-import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
+import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.Slf4jServerListPlusLogger;
@@ -102,18 +99,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     private Object loginListener, pingListener;
 
-    // Favicon cache
-    private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
-            new CacheLoader<FaviconSource, Optional<Favicon>>() {
-                @Override
-                public Optional<Favicon> load(FaviconSource source) throws Exception {
-                    // Try loading the favicon
-                    BufferedImage image = FaviconHelper.loadSafely(core, source);
-                    if (image == null) return Optional.empty(); // Favicon loading failed
-                    else return Optional.of(game.getRegistry().loadFavicon(image)); // Success!
-                }
-            };
-    private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
+    private FaviconCache<Favicon> faviconCache;
 
     @Inject
     public SpongePlugin(PluginManager pluginManager) {
@@ -249,8 +235,9 @@ public class SpongePlugin implements ServerListPlusPlugin {
             if (favicon == FaviconSource.NONE) {
                 ping.setFavicon(null);
             } else if (favicon != null) {
-                Optional<Favicon> icon = faviconCache.getUnchecked(favicon);
-                icon.ifPresent(ping::setFavicon);
+                com.google.common.base.Optional<Favicon> icon = faviconCache.get(favicon);
+                if (icon.isPresent())
+                    ping.setFavicon(icon.get());
             }
 
             if (players != null) {
@@ -354,7 +341,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public LoadingCache<FaviconSource, ?> getFaviconCache() {
+    public FaviconCache<?> getFaviconCache() {
         return faviconCache;
     }
 
@@ -390,14 +377,16 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilderSpec spec) {
-        if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(faviconLoader);
+    public void createFaviconCache(CacheBuilderSpec spec) {
+        if (faviconCache == null) {
+            faviconCache = new FaviconCache<Favicon>(this, spec) {
+                @Override
+                protected Favicon createFavicon(BufferedImage image) throws Exception {
+                    return game.getRegistry().loadFavicon(image);
+                }
+            };
         } else {
-            // Delete favicon cache
-            faviconCache.invalidateAll();
-            faviconCache.cleanUp();
-            this.faviconCache = null;
+            faviconCache.reload(spec);
         }
     }
 

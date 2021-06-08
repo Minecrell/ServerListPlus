@@ -24,10 +24,7 @@ import static net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger
 
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheBuilderSpec;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -36,7 +33,6 @@ import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.AsyncEvent;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
@@ -49,7 +45,7 @@ import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
-import net.minecrell.serverlistplus.core.favicon.FaviconHelper;
+import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
 import net.minecrell.serverlistplus.core.logging.JavaServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
@@ -79,18 +75,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     private RGBFormat rgbFormat = RGBFormat.UNSUPPORTED;
     private Listener connectionListener, pingListener;
 
-    // Favicon cache
-    private final CacheLoader<FaviconSource, Optional<Favicon>> faviconLoader =
-            new CacheLoader<FaviconSource, Optional<Favicon>>() {
-        @Override
-        public Optional<Favicon> load(FaviconSource source) throws Exception {
-            // Try loading the favicon
-            BufferedImage image = FaviconHelper.loadSafely(core, source);
-            if (image == null) return Optional.absent(); // Favicon loading failed
-            else return Optional.of(Favicon.create(image)); // Success!
-        }
-    };
-    private LoadingCache<FaviconSource, Optional<Favicon>> faviconCache;
+    private FaviconCache<Favicon> faviconCache;
 
     private boolean isPluginLoaded(String pluginName) {
         return getProxy().getPluginManager().getPlugin(pluginName) != null;
@@ -261,14 +246,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
             if (favicon == FaviconSource.NONE) {
                 ping.setFavicon((Favicon) null);
             } else if (favicon != null) {
-                Optional<Favicon> icon;
-                // Check if instanceof AsyncEvent for compatibility with 1.7.10
-                if (event instanceof AsyncEvent) {
-                    icon = faviconCache.getIfPresent(favicon);
-                } else {
-                    icon = faviconCache.getUnchecked(favicon);
-                }
-
+                Optional<Favicon> icon = faviconCache.getIfPresent(favicon);
                 if (icon == null) {
                     // Load favicon asynchronously
                     event.registerIntent(BungeePlugin.this);
@@ -292,7 +270,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
 
         @Override
         public void run() {
-            Optional<Favicon> favicon = faviconCache.getUnchecked(this.source);
+            Optional<Favicon> favicon = faviconCache.get(this.source);
             if (favicon.isPresent()) {
                 event.getResponse().setFavicon(favicon.get());
             }
@@ -352,7 +330,7 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public LoadingCache<FaviconSource, Optional<Favicon>> getFaviconCache() {
+    public FaviconCache<?> getFaviconCache() {
         return faviconCache;
     }
 
@@ -387,14 +365,16 @@ public class BungeePlugin extends BungeePluginBase implements ServerListPlusPlug
     }
 
     @Override
-    public void reloadFaviconCache(CacheBuilderSpec spec) {
-        if (spec != null) {
-            this.faviconCache = CacheBuilder.from(spec).build(faviconLoader);
+    public void createFaviconCache(CacheBuilderSpec spec) {
+        if (faviconCache == null) {
+            faviconCache = new FaviconCache<Favicon>(this, spec) {
+                @Override
+                protected Favicon createFavicon(BufferedImage image) throws Exception {
+                    return Favicon.create(image);
+                }
+            };
         } else {
-            // Delete favicon cache
-            faviconCache.invalidateAll();
-            faviconCache.cleanUp();
-            this.faviconCache = null;
+            faviconCache.reload(spec);
         }
     }
 

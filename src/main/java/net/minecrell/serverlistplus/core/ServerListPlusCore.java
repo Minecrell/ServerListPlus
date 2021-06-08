@@ -41,6 +41,7 @@ import net.minecrell.serverlistplus.core.config.CoreConf;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.ServerStatusConf;
 import net.minecrell.serverlistplus.core.config.help.Examples;
+import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.logging.Logger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.player.IdentificationStorage;
@@ -169,7 +170,7 @@ public class ServerListPlusCore {
                 !faviconCacheConf.equals(conf.Caches.Favicon))) {
             if (plugin.getFaviconCache() != null) {
                 getLogger().log(DEBUG, "Deleting old favicon cache due to configuration changes.");
-                plugin.reloadFaviconCache(null); // Delete the old favicon cache
+                plugin.getFaviconCache().clear(); // Delete the old favicon cache
             }
 
             if (enabled) {
@@ -177,11 +178,11 @@ public class ServerListPlusCore {
 
                 try {
                     this.faviconCacheConf = conf.Caches.Favicon;
-                    plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
+                    plugin.createFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 } catch (IllegalArgumentException e) {
                     getLogger().log(e, "Unable to create favicon cache using configuration settings.");
                     this.faviconCacheConf = getDefaultConf(CoreConf.class).Caches.Favicon;
-                    plugin.reloadFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
+                    plugin.createFaviconCache(CacheBuilderSpec.parse(faviconCacheConf));
                 }
 
                 getLogger().log(DEBUG, "Favicon cache created.");
@@ -231,7 +232,8 @@ public class ServerListPlusCore {
             "favicons", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
                 public Cache<?, ?> apply(ServerListPlusCore core) {
-                    return core.getPlugin().getFaviconCache();
+                    FaviconCache<?> cache = core.getPlugin().getFaviconCache();
+                    return (cache == null) ? null : cache.getLoadingCache();
                 }
             }, "requests", new Function<ServerListPlusCore, Cache<?, ?>>() {
                 @Override
