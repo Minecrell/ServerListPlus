@@ -31,7 +31,7 @@ dependencies {
     runtimeOnly("com.lmax:disruptor:3.4.4") // async loggers
 
     // Note: Before upgrading these dependencies, make sure the core would also compile against them!
-    implementation("com.google.guava:guava:30.1.1-jre") { isTransitive = false }
+    implementation("com.google.guava:guava:30.1.1-jre")
     implementation("org.yaml:snakeyaml:1.29")
     implementation("com.google.code.gson:gson:2.8.7")
 
@@ -46,6 +46,15 @@ tasks {
         manifest.attributes(mapOf("Main-Class" to "net.minecrell.serverlistplus.server.Main"))
     }
     named<ShadowJar>("shadowJar") {
+        dependencies {
+            // The Guava annotations are not needed at runtime https://github.com/google/guava/issues/2824
+            // but other Guava dependencies (e.g. com.google.guava:failureaccess) are!
+            exclude(dependency("com.google.code.findbugs:jsr305"))
+            exclude(dependency("org.checkerframework:checker-qual"))
+            exclude(dependency("com.google.errorprone:error_prone_annotations"))
+            exclude(dependency("com.google.j2objc:j2objc-annotations"))
+        }
+
         transform(Log4j2PluginsCacheFileTransformer())
     }
 }
