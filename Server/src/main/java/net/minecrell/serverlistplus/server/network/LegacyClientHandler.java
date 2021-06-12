@@ -25,7 +25,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minecrell.serverlistplus.server.ServerListPlusServer;
 import net.minecrell.serverlistplus.server.status.StatusPingResponse;
 
@@ -85,7 +85,7 @@ public class LegacyClientHandler extends ChannelInboundHandlerAdapter {
             case 0:
                 response = ServerListPlusServer.postLegacy(client, null);
                 sendResponse(ctx, String.format("%s§%d§%d",
-                        getFirstLine(PlainComponentSerializer.plain().serialize(response.getDescription())),
+                        getFirstLine(PlainTextComponentSerializer.plainText().serialize(response.getDescription())),
                         response.getPlayers().getOnline(),
                         response.getPlayers().getMax()));
                 break;

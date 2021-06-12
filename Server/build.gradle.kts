@@ -24,7 +24,7 @@ java {
 }
 
 dependencies {
-    implementation("io.netty:netty-all:4.1.63.Final")
+    implementation("io.netty:netty-all:4.1.65.Final")
 
     implementation("net.minecrell:terminalconsoleappender:1.2.0")
     runtimeOnly("org.jline:jline-terminal-jansi:3.12.1")
@@ -32,10 +32,10 @@ dependencies {
 
     // Note: Before upgrading these dependencies, make sure the core would also compile against them!
     implementation("com.google.guava:guava:30.1.1-jre") { isTransitive = false }
-    implementation("org.yaml:snakeyaml:1.28")
-    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("org.yaml:snakeyaml:1.29")
+    implementation("com.google.code.gson:gson:2.8.7")
 
-    implementation(platform("net.kyori:adventure-bom:4.7.0"))
+    implementation(platform("net.kyori:adventure-bom:4.8.0"))
     implementation("net.kyori:adventure-text-serializer-plain")
     implementation("net.kyori:adventure-text-serializer-legacy")
     implementation("net.kyori:adventure-text-serializer-gson")
