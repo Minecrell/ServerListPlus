@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public class RGBGradientReplacer extends PatternPlaceholder {
 
     private static final Pattern PATTERN = Pattern.compile(
-            "%gradient((?:#[0-9A-F]{6}){2,})%((?:§[K-O])*)(.*)%gradient%", Pattern.CASE_INSENSITIVE);
+            "%gradient((?:#[0-9A-F]{6}){2,})%((?:§[K-O])*)(.*?)%gradient%", Pattern.CASE_INSENSITIVE);
 
     private static final Splitter COLOR_SPLITTER = Splitter.on('#').omitEmptyStrings();
 
