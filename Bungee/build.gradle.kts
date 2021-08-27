@@ -17,7 +17,7 @@
  */
 
 plugins {
-    id("net.minecrell.plugin-yml.bungee") version "0.4.0"
+    id("net.minecrell.plugin-yml.bungee") version "0.5.0"
 }
 
 repositories {
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT")
 
     compileOnly("com.github.lucavinci:bungeeban:v2.7.0") { isTransitive = false }
 }

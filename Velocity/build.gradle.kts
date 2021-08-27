@@ -21,8 +21,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:1.1.5")
-    annotationProcessor("com.velocitypowered:velocity-api:1.1.5")
+    compileOnly("com.velocitypowered:velocity-api:3.0.0")
+    annotationProcessor("com.velocitypowered:velocity-api:3.0.0")
 }
 
 java {

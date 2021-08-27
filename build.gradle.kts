@@ -22,7 +22,7 @@ plugins {
     java
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "6.1.0" apply false
-    id("org.cadixdev.licenser") version "0.6.0"
+    id("org.cadixdev.licenser") version "0.6.1"
 }
 
 defaultTasks("clean", "build")
@@ -100,16 +100,16 @@ repositories {
 
 dependencies {
     implementation("com.google.guava:guava:21.0")
-    implementation("org.yaml:snakeyaml:1.27")
+    implementation("org.yaml:snakeyaml:1.28")
     implementation("com.google.code.gson:gson:2.8.0")
     implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 
-    compileOnly("org.slf4j:slf4j-api:1.7.30")
+    compileOnly("org.slf4j:slf4j-api:1.7.32")
     compileOnly("org.apache.logging.log4j:log4j-api:2.8.1")
     compileOnly("com.github.DevLeoko.AdvancedBan:AdvancedBan-Core:v2.3.0") { isTransitive = false }
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:3.9.0")
+    testImplementation("org.mockito:mockito-core:3.12.4")
 }
 
 java {
