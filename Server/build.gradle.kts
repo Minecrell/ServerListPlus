@@ -27,6 +27,7 @@ dependencies {
     implementation("io.netty:netty-all:4.1.67.Final")
 
     implementation("net.minecrell:terminalconsoleappender:1.3.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.15.0") // CVE-2021-44228
     runtimeOnly("org.jline:jline-terminal-jansi:3.20.0")
     runtimeOnly("com.lmax:disruptor:3.4.4") // async loggers
 
