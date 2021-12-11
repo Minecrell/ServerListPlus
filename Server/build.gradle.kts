@@ -49,6 +49,7 @@ tasks {
     named<ShadowJar>("shadowJar") {
         exclude("module-info.class")
         exclude("META-INF/versions/*/module-info.class")
+        manifest.attributes(mapOf("Multi-Release" to true))
 
         dependencies {
             // The Guava annotations are not needed at runtime https://github.com/google/guava/issues/2824
