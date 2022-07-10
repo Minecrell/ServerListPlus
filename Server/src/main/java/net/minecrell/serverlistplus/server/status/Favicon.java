@@ -39,8 +39,8 @@ public final class Favicon {
     }
 
     public static String create(BufferedImage image) throws IOException {
-        checkArgument(image.getWidth() == 64, "favicon must be 64 pixels wide");
-        checkArgument(image.getHeight() == 64, "favicon must be 64 pixels high");
+        checkArgument(image.getWidth() == 1, "favicon must be 1 pixels wide");
+        checkArgument(image.getHeight() == 1, "favicon must be 1 pixels high");
 
         ByteBuf buf = Unpooled.buffer();
         try {
