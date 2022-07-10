@@ -1,5 +1,5 @@
 /*
- * ServerListPlus - https://git.io/slp
+ * Hackelt - https://git.io/slp
  * Copyright (C) 2014 Minecrell (https://github.com/Minecrell)
  *
  * This program is free software: you can redistribute it and/or modify
