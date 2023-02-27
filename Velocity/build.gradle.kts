@@ -17,12 +17,13 @@
  */
 
 repositories {
-    maven("https://nexus.velocitypowered.com/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-releases/")
+    maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:3.0.0")
-    annotationProcessor("com.velocitypowered:velocity-api:3.0.0")
+    compileOnly("com.velocitypowered:velocity-api:3.1.1")
+    annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
 }
 
 java {

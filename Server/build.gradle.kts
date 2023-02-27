@@ -24,20 +24,19 @@ java {
 }
 
 dependencies {
-    implementation("io.netty:netty-all:4.1.71.Final")
+    implementation("io.netty:netty-all:4.1.89.Final")
 
     implementation("net.minecrell:terminalconsoleappender:1.3.0")
-    // CVE-2021-44228, CVE-2021-45046, CVE-2021-45105, CVE-2021-44832
-    implementation("org.apache.logging.log4j:log4j-core:2.17.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.20.0")
     runtimeOnly("org.jline:jline-terminal-jansi:3.20.0")
     runtimeOnly("com.lmax:disruptor:3.4.4") // async loggers
 
     // Note: Before upgrading these dependencies, make sure the core would also compile against them!
-    implementation("com.google.guava:guava:31.0.1-jre")
-    implementation("org.yaml:snakeyaml:1.29")
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.guava:guava:31.1-jre")
+    implementation("org.yaml:snakeyaml:1.33")
+    implementation("com.google.code.gson:gson:2.10.1")
 
-    implementation(platform("net.kyori:adventure-bom:4.9.3"))
+    implementation(platform("net.kyori:adventure-bom:4.12.0"))
     implementation("net.kyori:adventure-text-serializer-plain")
     implementation("net.kyori:adventure-text-serializer-legacy")
     implementation("net.kyori:adventure-text-serializer-gson")

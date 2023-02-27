@@ -25,8 +25,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spongepowered:spongeapi:7.3.0")
-    annotationProcessor("org.spongepowered:spongeapi:7.3.0")
+    compileOnly("org.spongepowered:spongeapi:7.4.0")
+    annotationProcessor("org.spongepowered:spongeapi:7.4.0")
 
     compileOnly("net.minecrell:statusprotocol:0.3")
 }

@@ -21,11 +21,8 @@ plugins {
 }
 
 repositories {
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
-    maven("https://repo.minecrell.net/snapshots/")
-    maven("https://destroystokyo.com/repo/repository/maven-snapshots/")
-    maven("https://repo.dmulloy2.net/nexus/repository/releases/")
-    maven("https://repo.dmulloy2.net/nexus/repository/snapshots/")
+    maven("https://repo.papermc.io/repository/maven-snapshots/")
+    maven("https://repo.dmulloy2.net/repository/releases/")
     maven("https://ci.frostcast.net/plugin/repository/everything/")
     maven("https://jitpack.io/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/");
@@ -33,13 +30,13 @@ repositories {
 
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib-API:4.4.0") { isTransitive = false }
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0") { isTransitive = false }
 
-    compileOnly("me.confuser.banmanager:BanManagerCommon:7.5.0") { isTransitive = false }
+    compileOnly("me.confuser.banmanager:BanManagerCommon:7.6.0") { isTransitive = false }
     compileOnly("com.github.seancfoley:ipaddress:5.3.3") /* For BanManager */
     compileOnly("com.github.netherfoam:MaxBans:156239e1f1") { isTransitive = false }
 
-    compileOnly("me.clip:placeholderapi:2.10.10") { isTransitive = false }
+    compileOnly("me.clip:placeholderapi:2.11.2") { isTransitive = false }
 }
 
 java {

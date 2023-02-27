@@ -39,8 +39,8 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.projectlombok:lombok:1.18.20")
-        annotationProcessor("org.projectlombok:lombok:1.18.20")
+        compileOnly("org.projectlombok:lombok:1.18.26")
+        annotationProcessor("org.projectlombok:lombok:1.18.26")
     }
 
     tasks.withType<JavaCompile> {
@@ -100,16 +100,16 @@ repositories {
 
 dependencies {
     implementation("com.google.guava:guava:21.0")
-    implementation("org.yaml:snakeyaml:1.28")
     implementation("com.google.code.gson:gson:2.8.0")
+    implementation("org.yaml:snakeyaml:1.19")
     implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 
-    compileOnly("org.slf4j:slf4j-api:1.7.32")
+    compileOnly("org.slf4j:slf4j-api:1.7.25")
     compileOnly("org.apache.logging.log4j:log4j-api:2.8.1")
     compileOnly("com.github.DevLeoko.AdvancedBan:AdvancedBan-Core:v2.3.0") { isTransitive = false }
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:3.12.4")
+    testImplementation("org.mockito:mockito-core:4.11.0")
 }
 
 java {

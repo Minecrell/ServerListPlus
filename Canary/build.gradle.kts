@@ -18,7 +18,6 @@
 
 repositories {
     maven("https://repo.neptunepowered.org/maven/")
-    maven("https://repo.minecrell.net/snapshots/")
     maven("https://libraries.minecraft.net/")
 }
 
