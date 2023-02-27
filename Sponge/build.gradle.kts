@@ -16,21 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.spongepowered.gradle.plugin.config.PluginLoaders
+
 plugins {
-    id("org.spongepowered.plugin") version "0.9.0"
+    id("org.spongepowered.gradle.plugin") version "2.1.1"
 }
 
-repositories {
-    maven("https://repo.minecrell.net/releases/")
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+sourceSets {
+    register("stub")
 }
 
 dependencies {
-    compileOnly("org.spongepowered:spongeapi:7.4.0")
-    annotationProcessor("org.spongepowered:spongeapi:7.4.0")
-
-    compileOnly("net.minecrell:statusprotocol:0.3")
+    compileOnly(sourceSets["stub"].output)
 }
 
 sponge {
-    plugin.id = "serverlistplus"
+    apiVersion("8.1.0")
+    license("GPL-3.0-or-later")
+    loader {
+        name(PluginLoaders.JAVA_PLAIN)
+        version("1.0")
+    }
+    plugin("serverlistplus") {
+        displayName(rootProject.name)
+        entrypoint("net.minecrell.serverlistplus.sponge.SpongePlugin")
+
+        links {
+            val url: String by extra
+            homepage(url)
+            source(url)
+            issues("$url-issues")
+        }
+        val author: String by extra
+        contributor(author) {
+            description("Developer")
+        }
+    }
 }

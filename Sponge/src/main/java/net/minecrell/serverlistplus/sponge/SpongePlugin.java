@@ -24,14 +24,16 @@ import static org.spongepowered.api.Platform.Component.IMPLEMENTATION;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
 import com.google.inject.Inject;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.PluginConf;
 import net.minecrell.serverlistplus.core.config.storage.InstanceStorage;
 import net.minecrell.serverlistplus.core.favicon.FaviconCache;
 import net.minecrell.serverlistplus.core.favicon.FaviconSource;
+import net.minecrell.serverlistplus.core.logging.Log4j2ServerListPlusLogger;
 import net.minecrell.serverlistplus.core.logging.ServerListPlusLogger;
-import net.minecrell.serverlistplus.core.logging.Slf4jServerListPlusLogger;
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.plugin.ServerListPlusPlugin;
 import net.minecrell.serverlistplus.core.plugin.ServerType;
@@ -40,38 +42,39 @@ import net.minecrell.serverlistplus.core.status.ResponseFetcher;
 import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.status.StatusResponse;
+import net.minecrell.serverlistplus.core.util.FormattingCodes;
 import net.minecrell.serverlistplus.core.util.Helper;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import net.minecrell.serverlistplus.core.util.UUIDs;
-import net.minecrell.serverlistplus.sponge.protocol.DummyStatusProtocolHandler;
 import net.minecrell.serverlistplus.sponge.protocol.StatusProtocolHandler;
-import net.minecrell.serverlistplus.sponge.protocol.StatusProtocolHandlerImpl;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.command.CommandCallable;
+import org.spongepowered.api.ResourceKey;
+import org.spongepowered.api.command.Command;
+import org.spongepowered.api.command.CommandCause;
+import org.spongepowered.api.command.CommandCompletion;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.exception.CommandException;
+import org.spongepowered.api.command.parameter.ArgumentReader;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.event.lifecycle.ConstructPluginEvent;
+import org.spongepowered.api.event.lifecycle.RefreshGameEvent;
+import org.spongepowered.api.event.lifecycle.RegisterCommandEvent;
+import org.spongepowered.api.event.lifecycle.StoppedGameEvent;
+import org.spongepowered.api.event.network.ServerSideConnectionEvent;
 import org.spongepowered.api.event.server.ClientPingServerEvent;
 import org.spongepowered.api.network.status.Favicon;
-import org.spongepowered.api.plugin.Dependency;
-import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.profile.GameProfile;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
-import org.spongepowered.api.util.annotation.NonnullByDefault;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
+import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.world.server.ServerWorld;
+import org.spongepowered.plugin.PluginContainer;
+import org.spongepowered.plugin.builtin.jvm.Plugin;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,41 +83,33 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-
-@Plugin(id = "serverlistplus", name = "ServerListPlus",
-        dependencies = @Dependency(id = "statusprotocol", optional = true))
+@Plugin("serverlistplus")
 public class SpongePlugin implements ServerListPlusPlugin {
+
+    static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().hexColors().build();
 
     @Inject protected Game game;
     @Inject protected Logger logger;
+    @Inject protected PluginContainer plugin;
 
     @ConfigDir(sharedRoot = false) @Inject
-    protected File configDir;
+    protected Path configDir;
 
-    private final StatusProtocolHandler handler;
-
+    private StatusProtocolHandler handler;
     private ServerListPlusCore core;
 
     private Object loginListener, pingListener;
 
     private FaviconCache<Favicon> faviconCache;
 
-    @Inject
-    public SpongePlugin(PluginManager pluginManager) {
-        this.handler = pluginManager.isLoaded("statusprotocol") ? new StatusProtocolHandlerImpl() : new DummyStatusProtocolHandler();
-    }
-
     @Listener
-    public void enable(GamePreInitializationEvent event) {
-        if (this.handler.isDummy()) {
-            this.logger.warn("You don't have StatusProtocol installed. Support for custom player slots will be disabled. Please install it from "
-                    + "https://github.com/Minecrell/statusprotocol/releases if you intend to use this feature.");
-        }
+    public void construct(ConstructPluginEvent event) {
+        this.handler = StatusProtocolHandler.create(this.logger);
 
         try {
-            ServerListPlusLogger clogger = new Slf4jServerListPlusLogger(this.logger, ServerListPlusLogger.CORE_PREFIX);
+            ServerListPlusLogger clogger = new Log4j2ServerListPlusLogger(this.logger, ServerListPlusLogger.CORE_PREFIX);
             this.core = new ServerListPlusCore(this, clogger);
             logger.info("Successfully loaded!");
         } catch (ServerListPlusException e) {
@@ -125,56 +120,68 @@ public class SpongePlugin implements ServerListPlusPlugin {
             return;
         }
 
-        game.getCommandManager().register(this, new ServerListPlusCommand(), "serverlistplus", "slp");
-
         core.setBanProvider(new SpongeBanProvider());
     }
 
     @Listener
-    public void disable(GameStoppingServerEvent event) {
+    public void registerCommand(RegisterCommandEvent<Command.Raw> event) {
+        event.register(this.plugin, new ServerListPlusCommand(), "serverlistplus", "slp");
+    }
+
+    @Listener
+    public void stop(StoppedGameEvent event) {
         try {
             core.stop();
         } catch (ServerListPlusException ignored) {}
     }
 
+    @Listener
+    public void refresh(RefreshGameEvent event) {
+        core.reload();
+    }
+
     private static final Pattern ARGUMENT_PATTERN = Pattern.compile(" ", Pattern.LITERAL);
 
-    @NonnullByDefault
-    public final class ServerListPlusCommand implements CommandCallable {
+    static String[] splitArgs(ArgumentReader arguments) {
+        String input = arguments.input();
+        return input.isEmpty() ? new String[0] : ARGUMENT_PATTERN.split(input);
+    }
+
+    public final class ServerListPlusCommand implements Command.Raw {
 
         @Override
-        public CommandResult process(CommandSource source, String arguments) {
-            String[] args = arguments.isEmpty() ? new String[0] : ARGUMENT_PATTERN.split(arguments);
-            core.executeCommand(new SpongeCommandSender(source), "serverlistplus", args);
+        public CommandResult process(CommandCause cause, ArgumentReader.Mutable arguments) {
+            core.executeCommand(new SpongeCommandSender(cause), "serverlistplus", splitArgs(arguments));
             return CommandResult.success();
         }
 
         @Override
-        public List<String> getSuggestions(CommandSource source, String arguments, @Nullable Location<World> targetPosition) {
-            return core.tabComplete(new SpongeCommandSender(source), "serverlistplus",
-                    ARGUMENT_PATTERN.split(arguments));
+        public List<CommandCompletion> complete(CommandCause cause, ArgumentReader.Mutable arguments) throws CommandException {
+            return core.tabComplete(new SpongeCommandSender(cause), "serverlistplus", splitArgs(arguments))
+                    .stream()
+                    .map(CommandCompletion::of)
+                    .collect(Collectors.toList());
         }
 
         @Override
-        public boolean testPermission(CommandSource source) {
-            return source.hasPermission("serverlistplus.command");
+        public boolean canExecute(CommandCause cause) {
+            return cause.hasPermission("serverlistplus.command");
         }
 
         @Override
-        public Optional<Text> getShortDescription(CommandSource source) {
+        public Optional<Component> shortDescription(CommandCause cause) {
+            return Optional.of(Component.text("Configure ServerListPlus"));
+        }
+
+        @Override
+        public Optional<Component> extendedDescription(CommandCause cause) {
             return Optional.empty();
         }
 
         @Override
-        public Optional<Text> getHelp(CommandSource source) {
-            return Optional.empty();
+        public Component usage(CommandCause cause) {
+            return Component.text("/serverlistplus");
         }
-
-        @Override
-        public Text getUsage(CommandSource source) {
-            return Text.of();
-        }
-
     }
 
     // Player tracking
@@ -182,15 +189,15 @@ public class SpongePlugin implements ServerListPlusPlugin {
         private LoginListener() {}
 
         @Listener
-        public void onPlayerJoin(ClientConnectionEvent.Login event) {
-            core.updateClient(event.getConnection().getAddress().getAddress(),
-                    event.getProfile().getUniqueId(), event.getProfile().getName().get());
+        public void onPlayerJoin(ServerSideConnectionEvent.Login event) {
+            core.updateClient(event.connection().address().getAddress(),
+                    event.profile().uuid(), event.profile().name().get());
         }
 
         @Listener
-        public void onPlayerQuit(ClientConnectionEvent.Disconnect event) {
-            core.updateClient(event.getTargetEntity().getConnection().getAddress().getAddress(),
-                    event.getTargetEntity().getUniqueId(), event.getTargetEntity().getName());
+        public void onPlayerQuit(ServerSideConnectionEvent.Disconnect event) {
+            core.updateClient(event.player().connection().address().getAddress(),
+                    event.profile().uuid(), event.player().name());
         }
     }
 
@@ -199,22 +206,22 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
         @Listener
         public void onStatusPing(ClientPingServerEvent event) {
-            StatusRequest request = core.createRequest(event.getClient().getAddress().getAddress());
-            event.getClient().getVirtualHost().ifPresent(request::setTarget);
+            StatusRequest request = core.createRequest(event.client().address().getAddress());
+            event.client().virtualHost().ifPresent(request::setTarget);
             handler.getProtocolVersion(event).ifPresent(request::setProtocolVersion);
 
-            final ClientPingServerEvent.Response ping = event.getResponse();
-            final ClientPingServerEvent.Response.Players players = ping.getPlayers().orElse(null);
+            final ClientPingServerEvent.Response ping = event.response();
+            final ClientPingServerEvent.Response.Players players = ping.players().orElse(null);
 
             StatusResponse response = request.createResponse(core.getStatus(), new ResponseFetcher() {
                 @Override
                 public Integer getOnlinePlayers() {
-                    return players != null ? players.getOnline() : null;
+                    return players != null ? players.online() : null;
                 }
 
                 @Override
                 public Integer getMaxPlayers() {
-                    return players != null ? players.getMax() : null;
+                    return players != null ? players.max() : null;
                 }
 
                 @Override
@@ -225,7 +232,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
             // Description
             String description = response.getDescription();
-            if (description != null) ping.setDescription(TextSerializers.LEGACY_FORMATTING_CODE.deserialize(description));
+            if (description != null) ping.setDescription(LEGACY_SERIALIZER.deserialize(description));
 
             // Version
             handler.setVersion(ping, response);
@@ -254,12 +261,12 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
                     String playerHover = response.getPlayerHover();
                     if (playerHover != null) {
-                        List<GameProfile> profiles = players.getProfiles();
+                        List<GameProfile> profiles = players.profiles();
                         profiles.clear();
 
                         if (!playerHover.isEmpty()) {
                             for (String line : Helper.splitLines(playerHover)) {
-                                profiles.add(GameProfile.of(UUIDs.EMPTY, line));
+                                profiles.add(GameProfile.of(new java.util.UUID(0, 42), line));
                             }
                         }
                     }
@@ -280,24 +287,26 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public String getServerImplementation() {
-        Platform platform = game.getPlatform();
-        return platform.getContainer(IMPLEMENTATION).getName() + " v" + platform.getContainer(IMPLEMENTATION).getVersion().orElse("UNKNOWN")
-                + " (" + platform.getContainer(API).getName() + " v" + platform.getContainer(API).getVersion().orElse("UNKNOWN") + ')';
+        Platform platform = game.platform();
+        PluginContainer api = platform.container(API);
+        PluginContainer impl = platform.container(IMPLEMENTATION);
+        return impl.metadata().name().orElse("SpongeAPI") + " v" + impl.metadata().version()
+                + " (" + api.metadata().name().orElse("Sponge") + " v" + api.metadata().version() + ')';
     }
 
     @Override
     public Path getPluginFolder() {
-        return configDir.toPath();
+        return configDir;
     }
 
     @Override
     public Integer getOnlinePlayers(String location) {
-        World world = game.getServer().getWorld(location).orElse(null);
+        ServerWorld world = game.server().worldManager().world(ResourceKey.resolve(location)).orElse(null);
         if (world == null) return null;
 
         int count = 0;
-        for (Player player : game.getServer().getOnlinePlayers()) {
-            if (player.getWorld().equals(world)) count++;
+        for (Player player : game.server().onlinePlayers()) {
+            if (player.world().equals(world)) count++;
         }
 
         return count;
@@ -305,11 +314,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public Iterator<String> getRandomPlayers() {
-        Collection<Player> players = game.getServer().getOnlinePlayers();
+        Collection<ServerPlayer> players = game.server().onlinePlayers();
         List<String> result = new ArrayList<>(players.size());
 
         for (Player player : players) {
-            result.add(player.getName());
+            result.add(player.name());
         }
 
         return Randoms.shuffle(result).iterator();
@@ -317,15 +326,15 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Override
     public Iterator<String> getRandomPlayers(String location) {
-        World world = game.getServer().getWorld(location).orElse(null);
+        ServerWorld world = game.server().worldManager().world(ResourceKey.resolve(location)).orElse(null);
         if (world == null) return null;
 
-        Collection<Player> players = game.getServer().getOnlinePlayers();
+        Collection<ServerPlayer> players = game.server().onlinePlayers();
         List<String> result = new ArrayList<>();
 
         for (Player player : players) {
-            if (player.getWorld().equals(world)) {
-                result.add(player.getName());
+            if (player.world().equals(world)) {
+                result.add(player.name());
             }
         }
 
@@ -346,24 +355,25 @@ public class SpongePlugin implements ServerListPlusPlugin {
     }
 
     @Override
-    public void runAsync(Runnable task) {
-        game.getScheduler().createTaskBuilder().async().execute(task).submit(this);
+    public void runAsync(Runnable runnable) {
+        Task task = Task.builder().plugin(this.plugin).execute(runnable).build();
+        game.asyncScheduler().submit(task);
     }
 
     @Override
-    public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
-        return new ScheduledSpongeTask(game.getScheduler().createTaskBuilder()
-                .async().interval(repeat, unit).execute(task).submit(this));
+    public ScheduledTask scheduleAsync(Runnable runnable, long repeat, TimeUnit unit) {
+        Task task = Task.builder().plugin(this.plugin).interval(repeat, unit).execute(runnable).build();
+        return new ScheduledSpongeTask(game.asyncScheduler().submit(task));
     }
 
     @Override
     public String colorize(String s) {
-        return TextSerializers.FORMATTING_CODE.replaceCodes(s, TextSerializers.LEGACY_FORMATTING_CODE);
+        return FormattingCodes.colorizeHex(s);
     }
 
     @Override
     public RGBFormat getRGBFormat() {
-        return RGBFormat.UNSUPPORTED;
+        return RGBFormat.ADVENTURE;
     }
 
     @Override
@@ -382,7 +392,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
             faviconCache = new FaviconCache<Favicon>(this, spec) {
                 @Override
                 protected Favicon createFavicon(BufferedImage image) throws Exception {
-                    return game.getRegistry().loadFavicon(image);
+                    return Favicon.load(image);
                 }
             };
         } else {
@@ -395,11 +405,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
         // Player tracking
         if (confs.get(PluginConf.class).PlayerTracking.Enabled) {
             if (loginListener == null) {
-                game.getEventManager().registerListeners(this, this.loginListener = new LoginListener());
+                game.eventManager().registerListeners(this.plugin, this.loginListener = new LoginListener());
                 logger.debug("Registered player tracking listener.");
             }
         } else if (loginListener != null) {
-            game.getEventManager().unregisterListeners(loginListener);
+            game.eventManager().unregisterListeners(loginListener);
             this.loginListener = null;
             logger.debug("Unregistered player tracking listener.");
         }
@@ -410,11 +420,11 @@ public class SpongePlugin implements ServerListPlusPlugin {
         // Status listener
         if (hasChanges) {
             if (pingListener == null) {
-                game.getEventManager().registerListeners(this, this.pingListener = new PingListener());
+                game.eventManager().registerListeners(this.plugin, this.pingListener = new PingListener());
                 logger.debug("Registered ping listener.");
             }
         } else if (pingListener != null) {
-            game.getEventManager().unregisterListeners(pingListener);
+            game.eventManager().unregisterListeners(pingListener);
             this.pingListener = null;
             logger.debug("Unregistered ping listener.");
         }

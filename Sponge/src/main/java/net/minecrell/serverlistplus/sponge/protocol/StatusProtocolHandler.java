@@ -19,18 +19,28 @@
 package net.minecrell.serverlistplus.sponge.protocol;
 
 import net.minecrell.serverlistplus.core.status.StatusResponse;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.event.server.ClientPingServerEvent;
 
 import java.util.OptionalInt;
 
 public interface StatusProtocolHandler {
 
-    boolean isDummy();
-
     OptionalInt getProtocolVersion(ClientPingServerEvent event);
 
     OptionalInt getProtocolVersion(org.spongepowered.api.network.status.StatusResponse response);
 
     void setVersion(ClientPingServerEvent.Response ping, StatusResponse response);
+
+    static StatusProtocolHandler create(Logger logger) {
+        try {
+            return new MinecraftStatusProtocolHandler(logger);
+        } catch (Throwable e) {
+            logger.warn("Failed to load implementation-specific code (does it need updating?). " +
+                    "Support for custom player slots will be disabled.");
+            logger.debug("Exception loading implementation-specific code", e);
+            return new DummyStatusProtocolHandler();
+        }
+    }
 
 }

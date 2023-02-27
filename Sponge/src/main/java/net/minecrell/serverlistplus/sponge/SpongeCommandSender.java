@@ -20,22 +20,21 @@ package net.minecrell.serverlistplus.sponge;
 
 import net.minecrell.serverlistplus.core.plugin.ServerCommandSender;
 import net.minecrell.serverlistplus.core.util.Wrapper;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.command.CommandCause;
 
-public class SpongeCommandSender extends Wrapper<CommandSource> implements ServerCommandSender {
-    public SpongeCommandSender(CommandSource handle) {
+public class SpongeCommandSender extends Wrapper<CommandCause> implements ServerCommandSender {
+    public SpongeCommandSender(CommandCause handle) {
         super(handle);
     }
 
     @Override
     public String getName() {
-        return handle.getName();
+        return handle.friendlyIdentifier().orElse(handle.identifier());
     }
 
     @Override
     public void sendMessage(String message) {
-        handle.sendMessage(TextSerializers.LEGACY_FORMATTING_CODE.deserialize(message));
+        handle.audience().sendMessage(SpongePlugin.LEGACY_SERIALIZER.deserialize(message));
     }
 
     @Override

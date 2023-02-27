@@ -16,27 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.sponge.protocol;
+package net.minecraft.network.protocol.status;
 
-import net.minecrell.serverlistplus.core.status.StatusResponse;
-import org.spongepowered.api.event.server.ClientPingServerEvent;
+/**
+ * Stub implementation of Minecraft's internal status representation,
+ * used to set values not exposed in SpongeAPI.
+ */
+public class ServerStatus {
 
-import java.util.OptionalInt;
+    public void setVersion(Version version) {
 
-final class DummyStatusProtocolHandler implements StatusProtocolHandler {
-
-    @Override
-    public OptionalInt getProtocolVersion(ClientPingServerEvent event) {
-        return OptionalInt.empty();
     }
 
-    @Override
-    public OptionalInt getProtocolVersion(org.spongepowered.api.network.status.StatusResponse response) {
-        return OptionalInt.empty();
-    }
+    public static class Version {
 
-    @Override
-    public void setVersion(ClientPingServerEvent.Response ping, StatusResponse response) {
+        public Version(String name, int protocol) {
+
+        }
 
     }
 

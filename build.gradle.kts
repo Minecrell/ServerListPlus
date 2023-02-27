@@ -82,7 +82,7 @@ subprojects {
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
         if (project.name != "Server") {
-            exclude("META-INF/")
+            exclude("META-INF/maven/", "META-INF/proguard/", "META-INF/services/")
 
             dependencies {
                 include(project(rootProject.path))

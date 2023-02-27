@@ -16,28 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.sponge.protocol;
+package org.spongepowered.common;
 
-import net.minecrell.serverlistplus.core.status.StatusResponse;
-import org.spongepowered.api.event.server.ClientPingServerEvent;
-
-import java.util.OptionalInt;
-
-final class DummyStatusProtocolHandler implements StatusProtocolHandler {
-
-    @Override
-    public OptionalInt getProtocolVersion(ClientPingServerEvent event) {
-        return OptionalInt.empty();
-    }
-
-    @Override
-    public OptionalInt getProtocolVersion(org.spongepowered.api.network.status.StatusResponse response) {
-        return OptionalInt.empty();
-    }
-
-    @Override
-    public void setVersion(ClientPingServerEvent.Response ping, StatusResponse response) {
-
-    }
-
+public interface ProtocolMinecraftVersion {
+    int getProtocol();
 }
