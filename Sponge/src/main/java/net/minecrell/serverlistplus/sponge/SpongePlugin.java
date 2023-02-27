@@ -266,7 +266,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
                         if (!playerHover.isEmpty()) {
                             for (String line : Helper.splitLines(playerHover)) {
-                                profiles.add(GameProfile.of(new java.util.UUID(0, 42), line));
+                                profiles.add(GameProfile.of(UUIDs.EMPTY, line));
                             }
                         }
                     }
