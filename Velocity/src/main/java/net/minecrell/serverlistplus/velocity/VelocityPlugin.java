@@ -70,7 +70,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "serverlistplus")
+@Plugin(id = "serverlistplus", name = "ServerListPlus", version = "%version%",
+    description = "%description%", url = "%url%", authors = {"%author%"})
 public class VelocityPlugin implements ServerListPlusPlugin {
 
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder().hexColors().build();

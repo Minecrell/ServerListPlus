@@ -16,6 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+plugins {
+    id("net.kyori.blossom") version "1.2.0"
+}
+
 repositories {
     maven("https://repo.papermc.io/repository/maven-releases/")
     maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
@@ -28,4 +32,12 @@ dependencies {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+blossom {
+    replaceTokenIn("src/main/java/net/minecrell/serverlistplus/velocity/VelocityPlugin.java")
+    replaceToken("%version%", version)
+    replaceToken("%description%", description)
+    replaceToken("%url%", extra["url"])
+    replaceToken("%author%", extra["author"])
 }
