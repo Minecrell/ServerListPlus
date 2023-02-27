@@ -81,8 +81,8 @@ public final class FaviconHelper {
     }
 
     private static final String SKIN_UUID_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
-    private static final String STEVE_URL = "http://assets.mojang.com/SkinTemplates/steve.png";
-    private static final String ALEX_URL = "http://assets.mojang.com/SkinTemplates/alex.png";
+    private static final String STEVE_URL = "https://assets.mojang.com/SkinTemplates/steve.png";
+    private static final String ALEX_URL = "https://assets.mojang.com/SkinTemplates/alex.png";
 
     private static final int HEAD_X = 8, HEAD_Y = 8;
     private static final int HELM_X = 40, HELM_Y = 8;
