@@ -16,15 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecraft.network.protocol.status;
+package net.minecraft.network;
 
 /**
  * Stub implementation of Minecraft's internal status representation,
- * used to set values not exposed in SpongeAPI. (Mojang mappings)
+ * used to set values not exposed in SpongeAPI. (MCP mappings)
  */
-public class ServerStatus {
+public class ServerStatusResponse {
 
-    public void setVersion(Version version) {
+    public void func_151321_a(Version version) {
 
     }
 

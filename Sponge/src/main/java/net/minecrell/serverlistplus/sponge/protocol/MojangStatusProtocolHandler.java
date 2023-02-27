@@ -28,13 +28,14 @@ import org.spongepowered.common.ProtocolMinecraftVersion;
 
 import java.util.OptionalInt;
 
-final class MinecraftStatusProtocolHandler implements StatusProtocolHandler {
+final class MojangStatusProtocolHandler implements StatusProtocolHandler {
 
-    MinecraftStatusProtocolHandler(Logger logger) {
+    MojangStatusProtocolHandler(Logger logger) {
         ServerStatus status = new ServerStatus();
         ServerStatus.Version version = new ServerStatus.Version("ServerListPlus", 9999);
         status.setVersion(version);
         logger.debug("Platform protocol version: {}", getProtocolVersion(Sponge.platform().minecraftVersion()));
+        logger.info("Using implementation-specific code with Mojang mappings. Full functionality is available.");
     }
 
     private static OptionalInt getProtocolVersion(MinecraftVersion version) {

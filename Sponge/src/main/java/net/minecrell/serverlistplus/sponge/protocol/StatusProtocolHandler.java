@@ -34,12 +34,18 @@ public interface StatusProtocolHandler {
 
     static StatusProtocolHandler create(Logger logger) {
         try {
-            return new MinecraftStatusProtocolHandler(logger);
-        } catch (Throwable e) {
-            logger.warn("Failed to load implementation-specific code (does it need updating?). " +
-                    "Support for custom player slots will be disabled.");
-            logger.debug("Exception loading implementation-specific code", e);
-            return new DummyStatusProtocolHandler();
+            return new MojangStatusProtocolHandler(logger);
+        } catch (Throwable eMojang) {
+            logger.debug("Failed to load implementation-specific code with Mojang mappings", eMojang);
+            try {
+                return new McpStatusProtocolHandler(logger);
+            } catch (Throwable eMcp) {
+                logger.debug("Failed to load implementation-specific code with MCP mappings", eMcp);
+
+                logger.warn("Failed to load implementation-specific code (does it need updating?). " +
+                        "Support for custom player slots will be disabled.");
+                return new DummyStatusProtocolHandler();
+            }
         }
     }
 
