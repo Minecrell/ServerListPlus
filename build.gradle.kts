@@ -21,7 +21,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "6.1.0" apply false
+    id("com.github.johnrengelman.shadow") version "8.1.0" apply false
     id("org.cadixdev.licenser") version "0.6.1"
 }
 
@@ -77,8 +77,8 @@ subprojects {
     tasks.withType<ShadowJar> {
         artifacts.add("archives", this)
 
-        baseName = rootProject.name
-        classifier = project.name
+        archiveBaseName.set(rootProject.name)
+        archiveClassifier.set(project.name)
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
         if (project.name != "Server") {
@@ -130,7 +130,7 @@ tasks {
     val universal = register<Jar>("universal") {
         artifacts.add("archives", this)
 
-        classifier = "Universal"
+        archiveClassifier.set("Universal")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         for (p in arrayOf("Bukkit", "Bungee", "Canary", "Sponge", "Velocity")) {
