@@ -27,7 +27,9 @@ java {
 }
 
 sourceSets {
-    register("stub")
+    register("stub") {
+        configurations[compileOnlyConfigurationName].extendsFrom(configurations["spongeApi"])
+    }
 }
 
 dependencies {
@@ -56,4 +58,8 @@ sponge {
             description("Developer")
         }
     }
+}
+
+license {
+    exclude("org/spongepowered/api/")
 }

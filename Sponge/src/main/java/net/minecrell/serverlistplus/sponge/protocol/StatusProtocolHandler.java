@@ -34,17 +34,22 @@ public interface StatusProtocolHandler {
 
     static StatusProtocolHandler create(Logger logger) {
         try {
-            return new MojangStatusProtocolHandler(logger);
-        } catch (Throwable eMojang) {
-            logger.debug("Failed to load implementation-specific code with Mojang mappings", eMojang);
+            return new SpongeStatusProtocolHandler(logger);
+        } catch (Throwable eSponge) {
+            logger.debug("Failed to use new protocol version support from SpongeAPI. Update Sponge?", eSponge);
             try {
-                return new McpStatusProtocolHandler(logger);
-            } catch (Throwable eMcp) {
-                logger.debug("Failed to load implementation-specific code with MCP mappings", eMcp);
+                return new MojangStatusProtocolHandler(logger);
+            } catch (Throwable eMojang) {
+                logger.debug("Failed to load implementation-specific code with Mojang mappings", eMojang);
+                try {
+                    return new McpStatusProtocolHandler(logger);
+                } catch (Throwable eMcp) {
+                    logger.debug("Failed to load implementation-specific code with MCP mappings", eMcp);
 
-                logger.warn("Failed to load implementation-specific code (does it need updating?). " +
-                        "Support for custom player slots will be disabled.");
-                return new DummyStatusProtocolHandler();
+                    logger.warn("Failed to load implementation-specific code (does it need updating?). " +
+                            "Support for custom player slots will be disabled.");
+                    return new DummyStatusProtocolHandler();
+                }
             }
         }
     }
