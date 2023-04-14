@@ -22,7 +22,7 @@ plugins {
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-releases/")
-    maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
+    maven("https://repo.papermc.io/repository/maven-snapshots/")
 }
 
 dependencies {
