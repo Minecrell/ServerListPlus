@@ -36,7 +36,7 @@ dependencies {
     compileOnly("com.github.seancfoley:ipaddress:5.3.3") /* For BanManager */
     compileOnly("com.github.netherfoam:MaxBans:156239e1f1") { isTransitive = false }
 
-    compileOnly("me.clip:placeholderapi:2.11.2") { isTransitive = false }
+    compileOnly("me.clip:placeholderapi:2.11.3") { isTransitive = false }
 }
 
 java {
