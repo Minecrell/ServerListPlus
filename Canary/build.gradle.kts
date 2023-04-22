@@ -29,7 +29,7 @@ dependencies {
 
 tasks {
     val generate = register<WriteProperties>("generateCanaryInf") {
-        setOutputFile(Callable { File(temporaryDir, "Canary.inf") })
+        destinationFile.fileProvider(provider { File(temporaryDir, "Canary.inf") })
         properties(mapOf(
             "main-class" to "net.minecrell.serverlistplus.canary.CanaryPlugin",
             "name" to rootProject.name,

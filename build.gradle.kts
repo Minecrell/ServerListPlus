@@ -65,7 +65,8 @@ allprojects {
 
 subprojects {
     base {
-        archivesBaseName = "${rootProject.name}$archivesBaseName"
+        // Using archivesName.map { "${rootProject.name}$it" } seems to cause StackOverflowError...
+        archivesName.set("${rootProject.name}${archivesName.get()}")
     }
 
     dependencies {
