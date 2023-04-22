@@ -75,10 +75,10 @@ public interface MinecraftVersion extends Comparable<MinecraftVersion> {
 
     @Override
     default int compareTo(MinecraftVersion o) {
-        final int result = Boolean.compare(isLegacy(), o.isLegacy());
+        final int result = Boolean.compare(this.isLegacy(), o.isLegacy());
         if (result != 0) {
             return result;
         }
-        return protocolVersion() - o.protocolVersion();
+        return this.protocolVersion() - o.protocolVersion();
     }
 }
