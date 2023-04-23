@@ -130,6 +130,7 @@ public class SpongePlugin implements ServerListPlusPlugin {
 
     @Listener
     public void stop(StoppedGameEvent event) {
+        if (core == null) return;
         try {
             core.stop();
         } catch (ServerListPlusException ignored) {}

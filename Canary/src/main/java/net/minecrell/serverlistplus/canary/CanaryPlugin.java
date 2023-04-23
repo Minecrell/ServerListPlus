@@ -135,6 +135,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
 
     @Override
     public void disable() {
+        if (core == null) return;
         try {
             core.stop();
         } catch (ServerListPlusException ignored) {}

@@ -177,6 +177,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void onDisable() {
+        if (core == null) return;
         try {
             core.stop();
         } catch (ServerListPlusException ignored) {}

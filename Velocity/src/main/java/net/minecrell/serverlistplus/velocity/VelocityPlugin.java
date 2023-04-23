@@ -114,6 +114,7 @@ public class VelocityPlugin implements ServerListPlusPlugin {
 
     @Subscribe
     public void shutdown(ProxyShutdownEvent event) {
+        if (core == null) return;
         try {
             core.stop();
         } catch (ServerListPlusException ignored) {}
