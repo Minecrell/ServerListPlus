@@ -23,6 +23,7 @@ import static net.minecrell.serverlistplus.core.logging.Logger.Level.WARN;
 import com.google.common.base.Throwables;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.config.UnknownConf;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Node;
@@ -31,7 +32,7 @@ public class UnknownConfigurationConstructor extends CustomClassLoaderConstructo
     private final ServerListPlusCore core;
 
     public UnknownConfigurationConstructor(ServerListPlusCore core) {
-        super(core.getClass().getClassLoader());
+        super(core.getClass().getClassLoader(), new LoaderOptions());
         this.core = core;
     }
 
