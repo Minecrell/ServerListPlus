@@ -82,20 +82,17 @@ subprojects {
         archiveClassifier.set(project.name)
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        dependencies {
-            include(dependency("org.yaml:snakeyaml"))
-        }
-        relocate("org.yaml.snakeyaml", "net.minecrell.serverlistplus.core.lib.snakeyaml")
-
         if (project.name != "Server") {
             exclude("META-INF/maven/", "META-INF/proguard/", "META-INF/services/")
 
             dependencies {
                 include(project(rootProject.path))
                 include(dependency("org.ocpsoft.prettytime:prettytime"))
+                include(dependency("org.yaml:snakeyaml"))
             }
 
             relocate("org.ocpsoft.prettytime", "net.minecrell.serverlistplus.core.lib.prettytime")
+            relocate("org.yaml.snakeyaml", "net.minecrell.serverlistplus.core.lib.snakeyaml")
         }
     }
 }
