@@ -88,9 +88,11 @@ subprojects {
             dependencies {
                 include(project(rootProject.path))
                 include(dependency("org.ocpsoft.prettytime:prettytime"))
+                include(dependency("org.yaml:snakeyaml"))
             }
 
             relocate("org.ocpsoft.prettytime", "net.minecrell.serverlistplus.core.lib.prettytime")
+            relocate("org.yaml.snakeyaml", "net.minecrell.serverlistplus.core.lib.snakeyaml")
         }
     }
 }
@@ -102,7 +104,7 @@ repositories {
 dependencies {
     implementation("com.google.guava:guava:21.0")
     implementation("com.google.code.gson:gson:2.8.0")
-    implementation("org.yaml:snakeyaml:1.19")
+    implementation("org.yaml:snakeyaml:2.0")
     implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 
     compileOnly("org.slf4j:slf4j-api:1.7.25")

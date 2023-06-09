@@ -33,7 +33,6 @@ dependencies {
 
     // Note: Before upgrading these dependencies, make sure the core would also compile against them!
     implementation("com.google.guava:guava:31.1-jre")
-    implementation("org.yaml:snakeyaml:1.33")
     implementation("com.google.code.gson:gson:2.10.1")
 
     implementation(platform("net.kyori:adventure-bom:4.13.1"))

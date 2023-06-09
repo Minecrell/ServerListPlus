@@ -18,6 +18,7 @@
 
 package net.minecrell.serverlistplus.core.config.yaml;
 
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeId;
@@ -31,7 +32,8 @@ import java.util.Map;
 
 public class ConfigurationRepresenter extends Representer {
 
-    public ConfigurationRepresenter() {
+    public ConfigurationRepresenter(DumperOptions dumperOptions) {
+        super(dumperOptions);
         // Remove existing representers so we can add something in the beginning
         Map<Class<?>, Represent> backup = new LinkedHashMap<>(multiRepresenters);
         multiRepresenters.clear();
