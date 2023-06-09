@@ -22,7 +22,6 @@ import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilderSpec;
 import com.mojang.authlib.GameProfile;
-import lombok.SneakyThrows;
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.world.World;
@@ -59,7 +58,6 @@ import net.minecrell.serverlistplus.core.util.UUIDs;
 import net.visualillusionsent.utils.TaskManager;
 
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
@@ -77,15 +75,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
     private Path pluginFolder;
     private PluginListener loginListener, pingListener;
 
-    private final Field PROFILES_FIELD;
-
     private FaviconCache<String> faviconCache;
-
-    @SneakyThrows
-    public CanaryPlugin() {
-        this.PROFILES_FIELD = ServerListPingHook.class.getDeclaredField("profiles");
-        PROFILES_FIELD.setAccessible(true);
-    }
 
     @Override
     public boolean enable() {
@@ -199,12 +189,7 @@ public class CanaryPlugin extends Plugin implements ServerListPlusPlugin {
             String playerHover = response.getPlayerHover();
             if (playerHover != null) {
                 List<GameProfile> profiles = hook.getProfiles();
-                if (!(profiles instanceof ArrayList)) {
-                    profiles = new ArrayList<>();
-                    PROFILES_FIELD.set(hook, profiles);
-                } else {
-                    profiles.clear();
-                }
+                profiles.clear();
 
                 if (!playerHover.isEmpty()) {
                     for (String line : Helper.splitLines(playerHover)) {
