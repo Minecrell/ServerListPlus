@@ -39,8 +39,8 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.projectlombok:lombok:1.18.26")
-        annotationProcessor("org.projectlombok:lombok:1.18.26")
+        compileOnly("org.projectlombok:lombok:1.18.28")
+        annotationProcessor("org.projectlombok:lombok:1.18.28")
     }
 
     tasks.withType<JavaCompile> {
@@ -102,8 +102,10 @@ repositories {
 }
 
 dependencies {
+    // Provided by platform at runtime
     implementation("com.google.guava:guava:21.0")
     implementation("com.google.code.gson:gson:2.8.0")
+    // Included in ServerListPlus JAR (with relocation)
     implementation("org.yaml:snakeyaml:2.0")
     implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 

@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0") { isTransitive = false }
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0") { isTransitive = false }
 
     compileOnly("me.confuser.banmanager:BanManagerCommon:7.6.0") { isTransitive = false }
     compileOnly("com.github.seancfoley:ipaddress:5.3.3") /* For BanManager */
