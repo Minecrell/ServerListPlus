@@ -82,6 +82,8 @@ subprojects {
         archiveClassifier.set(project.name)
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
+        exclude("module-info.class", "META-INF/versions/*/module-info.class")
+
         if (project.name != "Server") {
             exclude("META-INF/maven/", "META-INF/proguard/", "META-INF/services/")
 

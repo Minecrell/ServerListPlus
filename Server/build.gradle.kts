@@ -46,8 +46,6 @@ tasks {
         manifest.attributes(mapOf("Main-Class" to "net.minecrell.serverlistplus.server.Main"))
     }
     named<ShadowJar>("shadowJar") {
-        exclude("module-info.class")
-        exclude("META-INF/versions/*/module-info.class")
         manifest.attributes(mapOf("Multi-Release" to true))
 
         dependencies {
