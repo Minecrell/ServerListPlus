@@ -5,7 +5,7 @@
 > Contributions are welcome! If you are happy with ServerListPlus, you can continue using it.
 
 [ServerListPlus](http://git.io/slp) is an extremely customizable server status ping plugin for Minecraft. It provides an easy-to-use configuration for almost everything possible using the server status ping. The plugin aims to become the universal solution for server status ping customization, available for:
-- Bukkit/Spigot/Paper
+- Bukkit/Spigot/Paper/Folia
 - CanaryMod
 - Sponge
 - BungeeCord
