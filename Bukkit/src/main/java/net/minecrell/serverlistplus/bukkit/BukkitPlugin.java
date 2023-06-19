@@ -37,6 +37,9 @@ import net.minecrell.serverlistplus.bukkit.handlers.StatusHandler;
 import net.minecrell.serverlistplus.bukkit.integration.BanManagerBanProvider;
 import net.minecrell.serverlistplus.bukkit.integration.MaxBansBanProvider;
 import net.minecrell.serverlistplus.bukkit.integration.PlaceholderAPIDynamicReplacer;
+import net.minecrell.serverlistplus.bukkit.scheduler.BukkitScheduler;
+import net.minecrell.serverlistplus.bukkit.scheduler.FoliaScheduler;
+import net.minecrell.serverlistplus.bukkit.scheduler.Scheduler;
 import net.minecrell.serverlistplus.core.ServerListPlusCore;
 import net.minecrell.serverlistplus.core.ServerListPlusException;
 import net.minecrell.serverlistplus.core.config.CoreConf;
@@ -56,6 +59,7 @@ import net.minecrell.serverlistplus.core.status.StatusManager;
 import net.minecrell.serverlistplus.core.status.StatusRequest;
 import net.minecrell.serverlistplus.core.util.Randoms;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -69,6 +73,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.CachedServerIcon;
 
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,6 +86,7 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
     private ServerListPlusCore core;
     private ServerType serverType;
     private RGBFormat rgbFormat = RGBFormat.UNSUPPORTED;
+    private Scheduler scheduler;
 
     private StatusHandler bukkit, protocol;
     private Listener loginListener, disconnectListener;
@@ -118,6 +124,16 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
             this.bukkit = new PaperEventHandler(this);
         } catch (ClassNotFoundException e) {
             this.bukkit = new BukkitEventHandler(this);
+        }
+
+        this.scheduler = new BukkitScheduler(this);
+        try {
+            Class<?> clazz = Class.forName("io.papermc.paper.threadedregions.scheduler.AsyncScheduler");
+            Method method = Server.class.getMethod("getAsyncScheduler");
+            if (method.getReturnType().equals(clazz)) {
+                this.scheduler = new FoliaScheduler(this, method);
+            }
+        } catch (Throwable ignored) {
         }
 
         // Check if RGB color codes are supported
@@ -329,14 +345,12 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
 
     @Override
     public void runAsync(Runnable task) {
-        getServer().getScheduler().runTaskAsynchronously(this, task);
+        scheduler.runAsync(task);
     }
 
     @Override
     public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
-        repeat = unit.toMillis(repeat) / 50;
-        return new ScheduledBukkitTask(
-                getServer().getScheduler().runTaskTimerAsynchronously(this, task, repeat, repeat));
+        return scheduler.scheduleAsync(task, repeat, unit);
     }
 
     @Override

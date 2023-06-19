@@ -16,19 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.minecrell.serverlistplus.bukkit;
+package net.minecrell.serverlistplus.bukkit.scheduler;
 
 import net.minecrell.serverlistplus.core.plugin.ScheduledTask;
 import net.minecrell.serverlistplus.core.util.Wrapper;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
-public class ScheduledBukkitTask extends Wrapper<BukkitTask> implements ScheduledTask {
-    public ScheduledBukkitTask(BukkitTask handle) {
-        super(handle);
+import java.util.concurrent.TimeUnit;
+
+public final class BukkitScheduler implements Scheduler {
+    private final Plugin plugin;
+
+    public BukkitScheduler(Plugin plugin) {
+        this.plugin = plugin;
     }
 
     @Override
-    public void cancel() {
-        handle.cancel();
+    public void runAsync(Runnable task) {
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, task);
+    }
+
+    @Override
+    public ScheduledTask scheduleAsync(Runnable task, long repeat, TimeUnit unit) {
+        repeat = unit.toMillis(repeat) / 50;
+        return new Task(plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, task, repeat, repeat));
+    }
+
+    static final class Task extends Wrapper<BukkitTask> implements ScheduledTask {
+        public Task(BukkitTask handle) {
+            super(handle);
+        }
+
+        @Override
+        public void cancel() {
+            handle.cancel();
+        }
     }
 }

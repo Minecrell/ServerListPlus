@@ -39,12 +39,25 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.3") { isTransitive = false }
 }
 
+sourceSets {
+    register("stub") {
+        dependencies {
+            compileOnlyConfigurationName("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+            compileOnly(output)
+        }
+        tasks.named<JavaCompile>(compileJavaTaskName) {
+            sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+        }
+    }
+}
+
 java {
     disableAutoTargetJvm()
 }
 
 bukkit {
     apiVersion = "1.13"
+    foliaSupported = true
     main = "net.minecrell.serverlistplus.bukkit.BukkitPlugin"
 
     name = rootProject.name
@@ -67,4 +80,8 @@ bukkit {
             children = listOf("serverlistplus.command")
         }
     }
+}
+
+license {
+    exclude("io/papermc/")
 }
