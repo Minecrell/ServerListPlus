@@ -11,6 +11,8 @@
 - BungeeCord
 - Velocity
 
+ServerListPlus is also available as [standalone server](https://www.spigotmc.org/resources/serverlistplusserver.20301/) that can be used independent from other server implementations e.g. during maintenance.
+
 ## Features
 [ServerListPlus](https://git.io/slp) provides options in the configuration for:
 
