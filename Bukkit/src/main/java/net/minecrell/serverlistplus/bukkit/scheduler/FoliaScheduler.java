@@ -20,7 +20,6 @@ package net.minecrell.serverlistplus.bukkit.scheduler;
 
 import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import lombok.NonNull;
 import net.minecrell.serverlistplus.core.util.Wrapper;
 import org.bukkit.plugin.Plugin;
 
@@ -48,7 +47,7 @@ public final class FoliaScheduler implements Scheduler {
     }
 
     static final class RunnableConsumer<T> extends Wrapper<Runnable> implements Consumer<T> {
-        public RunnableConsumer(@NonNull Runnable handle) {
+        public RunnableConsumer(Runnable handle) {
             super(handle);
         }
 
