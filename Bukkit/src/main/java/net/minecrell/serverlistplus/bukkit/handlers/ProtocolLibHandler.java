@@ -137,6 +137,8 @@ public class ProtocolLibHandler extends StatusHandler {
                     }
                 }
             }
+
+            event.getPacket().getServerPings().write(0, ping);
         }
     }
 
