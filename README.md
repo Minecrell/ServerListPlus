@@ -22,6 +22,7 @@ ServerListPlus is also available as [standalone server](https://www.spigotmc.org
 - [**Custom player slot format**](https://github.com/Minecrell/ServerListPlus/wiki/Player-Slots)
 - [**Player Hover Message**](https://github.com/Minecrell/ServerListPlus/wiki/Status-Configuration#player-hover-messages): Displayed when a player hovers the player count in the server list
 - [**Virtual/Forced Hosts**](https://github.com/Minecrell/ServerListPlus/wiki/Virtual-Hosts): Use a custom configuration if players ping the server by using a special IP/hostname to connect with
+- [**Various placeholders**](https://github.com/Minecrell/ServerListPlus/wiki/Placeholders) and [PlaceholderAPI support](https://github.com/Minecrell/ServerListPlus/wiki/Placeholders#placeholderapi) (Bukkit only)
 - Multiple entries to choose a random one from the list
 - Personalize the status ping by adding the player's name to the messages
 
