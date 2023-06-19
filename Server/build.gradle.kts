@@ -46,8 +46,6 @@ tasks {
         manifest.attributes(mapOf("Main-Class" to "net.minecrell.serverlistplus.server.Main"))
     }
     named<ShadowJar>("shadowJar") {
-        manifest.attributes(mapOf("Multi-Release" to true))
-
         dependencies {
             // The Guava annotations are not needed at runtime https://github.com/google/guava/issues/2824
             // but other Guava dependencies (e.g. com.google.guava:failureaccess) are!

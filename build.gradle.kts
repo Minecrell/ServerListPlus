@@ -82,6 +82,7 @@ subprojects {
         archiveClassifier.set(project.name)
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
+        manifest.attributes(mapOf("Multi-Release" to true))
         exclude("module-info.class", "META-INF/versions/*/module-info.class")
 
         if (project.name != "Server") {
@@ -139,6 +140,8 @@ tasks {
 
         archiveClassifier.set("Universal")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        manifest.attributes(mapOf("Multi-Release" to true))
 
         for (p in arrayOf("Bukkit", "Bungee", "Canary", "Sponge", "Velocity")) {
             val task = project(p).tasks.named("shadowJar")
