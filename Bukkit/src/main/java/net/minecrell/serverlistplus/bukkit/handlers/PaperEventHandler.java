@@ -34,7 +34,7 @@ import org.bukkit.util.CachedServerIcon;
 import java.net.InetSocketAddress;
 import java.util.List;
 
-public class PaperEventHandler extends BukkitEventHandler {
+public abstract class PaperEventHandler extends BukkitEventHandler {
 
     public PaperEventHandler(BukkitPlugin plugin) {
         super(plugin);
@@ -50,6 +50,8 @@ public class PaperEventHandler extends BukkitEventHandler {
             super.onServerListPing(event);
         }
     }
+
+    protected abstract void setPlayerHover(PaperServerListPingEvent event, String playerHover);
 
     private void handlePaperServerListPing(final PaperServerListPingEvent event) {
         if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
@@ -104,16 +106,7 @@ public class PaperEventHandler extends BukkitEventHandler {
 
             // Player hover
             String playerHover = response.getPlayerHover();
-            if (playerHover != null) {
-                List<PlayerProfile> profiles = event.getPlayerSample();
-                profiles.clear();
-
-                if (!playerHover.isEmpty()) {
-                    for (String line : Helper.splitLines(playerHover)) {
-                        profiles.add(bukkit.getServer().createProfile(UUIDs.EMPTY, line));
-                    }
-                }
-            }
+            if (playerHover != null) setPlayerHover(event, playerHover);
         }
 
         // Favicon
@@ -124,6 +117,44 @@ public class PaperEventHandler extends BukkitEventHandler {
             CachedServerIcon icon = bukkit.getFavicon(favicon);
             if (icon != null)
                 event.setServerIcon(icon);
+        }
+    }
+
+    public static class PlayerSample extends PaperEventHandler {
+
+        public PlayerSample(BukkitPlugin plugin) {
+            super(plugin);
+        }
+
+        @Override
+        protected void setPlayerHover(PaperServerListPingEvent event, String playerHover) {
+            List<PlayerProfile> profiles = event.getPlayerSample();
+            profiles.clear();
+
+            if (!playerHover.isEmpty()) {
+                for (String line : Helper.splitLines(playerHover)) {
+                    profiles.add(bukkit.getServer().createProfile(UUIDs.EMPTY, line));
+                }
+            }
+        }
+    }
+
+    public static class ListedPlayers extends PaperEventHandler {
+
+        public ListedPlayers(BukkitPlugin plugin) {
+            super(plugin);
+        }
+
+        @Override
+        protected void setPlayerHover(PaperServerListPingEvent event, String playerHover) {
+            List<PaperServerListPingEvent.ListedPlayerInfo> profiles = event.getListedPlayers();
+            profiles.clear();
+
+            if (!playerHover.isEmpty()) {
+                for (String line : Helper.splitLines(playerHover)) {
+                    profiles.add(new PaperServerListPingEvent.ListedPlayerInfo(line, UUIDs.EMPTY));
+                }
+            }
         }
     }
 

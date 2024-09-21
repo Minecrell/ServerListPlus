@@ -119,9 +119,14 @@ public class BukkitPlugin extends BukkitPluginBase implements ServerListPlusPlug
         } catch (ClassNotFoundException ignored) {}
 
         try {
-            Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
+            Class<?> clazz = Class.forName("com.destroystokyo.paper.event.server.PaperServerListPingEvent");
             this.serverType = ServerType.PAPER;
-            this.bukkit = new PaperEventHandler(this);
+            try {
+                clazz.getMethod("getListedPlayers");
+                this.bukkit = new PaperEventHandler.ListedPlayers(this);
+            } catch (NoSuchMethodException e) {
+                this.bukkit = new PaperEventHandler.PlayerSample(this);
+            }
         } catch (ClassNotFoundException e) {
             this.bukkit = new BukkitEventHandler(this);
         }
