@@ -22,11 +22,12 @@ plugins {
 
 repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://libraries.minecraft.net/")
     maven("https://jitpack.io/")
 }
 
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.20-R0.1-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord-api:1.21-R0.1-SNAPSHOT")
 
     compileOnly("com.github.lucavinci:bungeeban:v2.7.0") { isTransitive = false }
 }
