@@ -1,6 +1,7 @@
 /*
  * Taken from https://github.com/PaperMC/Paper to still allow compiling
  * ServerListPlus against Java 8 for now. GPL-3.0 license
+ * Added stubs for getListedPlayers().
  */
 package com.destroystokyo.paper.event.server;
 
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  * Extended version of {@link ServerListPingEvent} that allows full control
  * of the response sent to the client.
  */
-public class PaperServerListPingEvent extends ServerListPingEvent implements Cancellable {
+public abstract class PaperServerListPingEvent extends ServerListPingEvent implements Cancellable {
 
     @NotNull private final StatusClient client;
 
@@ -150,6 +151,18 @@ public class PaperServerListPingEvent extends ServerListPingEvent implements Can
     }
 
     /**
+     * Returns a mutable list of {@link ListedPlayerInfo} that will be displayed
+     * as online players on the client.
+     * <p>
+     * The Vanilla Minecraft client will display them when hovering the
+     * player count with the mouse.
+     *
+     * @return The mutable player sample list
+     */
+    @NotNull
+    public abstract List<ListedPlayerInfo> getListedPlayers();
+
+    /**
      * Returns a mutable list of {@link PlayerProfile} that will be displayed
      * as online players on the client.
      *
@@ -159,6 +172,7 @@ public class PaperServerListPingEvent extends ServerListPingEvent implements Can
      * @return The mutable player sample list
      */
     @NotNull
+    @Deprecated
     public List<PlayerProfile> getPlayerSample() {
         return this.playerSample;
     }
@@ -332,6 +346,14 @@ public class PaperServerListPingEvent extends ServerListPingEvent implements Can
             if (originalPlayerCount) {
                 numPlayers--;
             }
+        }
+    }
+
+    /**
+     * Represents a player that will be displayed in the player sample of the server list.
+     */
+    public static class ListedPlayerInfo {
+        public ListedPlayerInfo(@NotNull String name, @NotNull UUID id) {
         }
     }
 
