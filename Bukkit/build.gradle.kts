@@ -83,5 +83,5 @@ bukkit {
 }
 
 license {
-    exclude("io/papermc/")
+    exclude("io/papermc/", "com/destroystokyo/paper/")
 }
