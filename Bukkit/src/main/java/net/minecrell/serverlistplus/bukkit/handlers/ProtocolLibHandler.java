@@ -55,7 +55,8 @@ public class ProtocolLibHandler extends StatusHandler {
             if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
 
             PacketContainer packet = event.getPacket();
-            if (packet.getProtocols().read(0) != PacketType.Protocol.STATUS) return;
+            PacketType.Protocol protocol = packet.getProtocols().readSafely(0);
+            if (protocol != null && protocol != PacketType.Protocol.STATUS) return;
 
             StatusRequest request = bukkit.getRequest(event.getPlayer().getAddress());
             request.setProtocolVersion(packet.getIntegers().read(0));
