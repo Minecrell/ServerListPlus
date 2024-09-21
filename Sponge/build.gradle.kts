@@ -19,7 +19,7 @@
 import org.spongepowered.gradle.plugin.config.PluginLoaders
 
 plugins {
-    id("org.spongepowered.gradle.plugin") version "2.1.1"
+    id("org.spongepowered.gradle.plugin") version "2.2.0"
 }
 
 java {

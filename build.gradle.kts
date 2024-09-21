@@ -21,7 +21,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
+    id("com.gradleup.shadow") version "8.3.2" apply false
     id("org.cadixdev.licenser") version "0.6.1"
 }
 
@@ -39,8 +39,8 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.projectlombok:lombok:1.18.28")
-        annotationProcessor("org.projectlombok:lombok:1.18.28")
+        compileOnly("org.projectlombok:lombok:1.18.34")
+        annotationProcessor("org.projectlombok:lombok:1.18.34")
     }
 
     tasks.withType<JavaCompile> {
@@ -73,7 +73,7 @@ subprojects {
         implementation(rootProject)
     }
 
-    plugins.apply("com.github.johnrengelman.shadow")
+    plugins.apply("com.gradleup.shadow")
 
     tasks.withType<ShadowJar> {
         artifacts.add("archives", this)
@@ -109,7 +109,7 @@ dependencies {
     implementation("com.google.guava:guava:21.0")
     implementation("com.google.code.gson:gson:2.8.0")
     // Included in ServerListPlus JAR (with relocation)
-    implementation("org.yaml:snakeyaml:2.0")
+    implementation("org.yaml:snakeyaml:2.3")
     implementation("org.ocpsoft.prettytime:prettytime:4.0.6.Final")
 
     compileOnly("org.slf4j:slf4j-api:1.7.25")

@@ -24,17 +24,18 @@ java {
 }
 
 dependencies {
-    implementation("io.netty:netty-all:4.1.94.Final")
+    implementation("io.netty:netty-all:4.1.113.Final")
 
     implementation("net.minecrell:terminalconsoleappender:1.3.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.20.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.24.0")
     runtimeOnly("org.jline:jline-terminal-jansi:3.20.0")
     runtimeOnly("com.lmax:disruptor:3.4.4") // async loggers
 
     // Note: Before upgrading these dependencies, make sure the core would also compile against them!
-    implementation("com.google.guava:guava:32.0.1-jre")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.guava:guava:33.3.0-jre")
+    implementation("com.google.code.gson:gson:2.11.0")
 
+    // TODO: 4.15.0 changes serialization of UUIDs, which breaks hover messages
     implementation(platform("net.kyori:adventure-bom:4.14.0"))
     implementation("net.kyori:adventure-text-serializer-plain")
     implementation("net.kyori:adventure-text-serializer-legacy")
