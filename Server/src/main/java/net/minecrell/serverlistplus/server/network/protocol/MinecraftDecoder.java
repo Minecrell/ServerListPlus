@@ -42,12 +42,14 @@ public final class MinecraftDecoder extends ByteToMessageDecoder {
         ClientPacket packet = ClientHandler.getState(ctx).getPacket(id);
         if (packet == null) {
             logger.warn("Unknown packet: {}", Integer.toHexString(id));
+            in.skipBytes(in.readableBytes());
             return;
         }
 
         packet.read(in);
         if (in.isReadable()) {
             logger.warn("Packet {} was not fully read: {} bytes left", id, in.readableBytes());
+            in.skipBytes(in.readableBytes());
         }
 
         out.add(packet);
