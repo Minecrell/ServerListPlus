@@ -54,7 +54,8 @@ public abstract class PaperEventHandler extends BukkitEventHandler {
     protected abstract void setPlayerHover(PaperServerListPingEvent event, String playerHover);
 
     private void handlePaperServerListPing(final PaperServerListPingEvent event) {
-        if (bukkit.getCore() == null) return; // Too early, we haven't finished initializing yet
+        if (bukkit.getCore() == null)
+            return; // Too early, we haven't finished initializing yet
 
         StatusRequest request = bukkit.getCore().createRequest(event.getAddress());
         request.setProtocolVersion(event.getClient().getProtocolVersion());
@@ -80,43 +81,51 @@ public abstract class PaperEventHandler extends BukkitEventHandler {
                     public int getProtocolVersion() {
                         return event.getProtocolVersion();
                     }
-                }
-        );
+                });
 
         // Description
         String description = response.getDescription();
-        if (description != null) event.setMotd(description);
+        if (description != null)
+            event.setMotd(description);
 
         // Version name
         String version = response.getVersion();
-        if (version != null) event.setVersion(version);
+        if (version != null)
+            event.setVersion(version);
         // Protocol version
         Integer protocol = response.getProtocolVersion();
-        if (protocol != null) event.setProtocolVersion(protocol);
+        if (protocol != null)
+            event.setProtocolVersion(protocol);
 
         if (response.hidePlayers()) {
             event.setHidePlayers(true);
         } else {
             // Online players
             Integer onlinePlayers = response.getOnlinePlayers();
-            if (onlinePlayers != null) event.setNumPlayers(onlinePlayers);
+            if (onlinePlayers != null)
+                event.setNumPlayers(onlinePlayers);
             // Max players
             Integer maxPlayers = response.getMaxPlayers();
-            if (maxPlayers != null) event.setMaxPlayers(maxPlayers);
+            if (maxPlayers != null)
+                event.setMaxPlayers(maxPlayers);
 
             // Player hover
             String playerHover = response.getPlayerHover();
-            if (playerHover != null) setPlayerHover(event, playerHover);
+            if (playerHover != null)
+                setPlayerHover(event, playerHover);
         }
 
         // Favicon
-        FaviconSource favicon = response.getFavicon();
-        if (favicon == FaviconSource.NONE) {
-            event.setServerIcon(null);
-        } else if (favicon != null) {
-            CachedServerIcon icon = bukkit.getFavicon(favicon);
-            if (icon != null)
-                event.setServerIcon(icon);
+        try {
+            FaviconSource favicon = response.getFavicon();
+            if (favicon == FaviconSource.NONE) {
+                event.setServerIcon(null);
+            } else if (favicon != null) {
+                CachedServerIcon icon = bukkit.getFavicon(favicon);
+                if (icon != null)
+                    event.setServerIcon(icon);
+            }
+        } catch (Exception ignore) {
         }
     }
 
